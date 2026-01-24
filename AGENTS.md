@@ -50,6 +50,7 @@ Example: For understanding how a GitHub project works, use these tools instead o
 ## Agent Updates
 
 - Refined Engineer and Tester agents with scoped tools, GPT-5.1-Codex-Max models, and clearer responsibilities.
+- Added landing header components (AppHeader, MoneyLogo, CsvUploadButton) plus shared CSV parser in src/lib/csv.ts for the MoneyWiz visualization UI shell.
 
 ---
 

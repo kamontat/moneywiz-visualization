@@ -13,8 +13,10 @@ Analyze all current changes in the repository and create a well-structured conve
 ## Process
 
 1. **Check Git Status**: Run `git status --porcelain` to see all modified, added, and deleted files.
-2. **Stage Files**: Stage relevant changes by running `git add -A` (do not stage secrets or credentials).
-3. **Analyze Staged Changes**: Run `git.diff --staged` to inspect what will be committed; run `git diff` for any unstaged work.
+2. **Check Staged Files**: Run `git diff --cached --name-only` to check if files are already staged.
+   - If files are already staged, skip to analyzing staged changes.
+   - If no files are staged, run `git add -A` to stage relevant changes (do not stage secrets or credentials).
+3. **Analyze Staged Changes**: Run `git diff --staged` to inspect what will be committed; run `git diff` for any unstaged work.
 4. **Determine Commit Type**: Based on the changes, determine the appropriate conventional commit type:
    - `feat`: New feature or functionality
    - `fix`: Bug fix
