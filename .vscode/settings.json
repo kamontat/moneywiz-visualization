@@ -3,7 +3,8 @@
 		"*.css": "tailwindcss"
 	},
 	"chat.tools.terminal.autoApprove": {
-		"bun": true
+		"bun": true,
+		"git add": true
 	},
 	"git.branchProtectionPrompt": "alwaysCommit"
 }
