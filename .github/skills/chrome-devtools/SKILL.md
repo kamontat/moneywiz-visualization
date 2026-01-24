@@ -14,11 +14,12 @@ A specialized skill for controlling and inspecting a live Chrome browser. This s
 
 Use this skill when:
 
-- **Browser Automation**: Navigating pages, clicking elements, filling forms, and handling dialogs.
-- **Visual Inspection**: Taking screenshots or text snapshots of web pages.
-- **Debugging**: Inspecting console messages, evaluating JavaScript in the page context, and analyzing network requests.
-- **Performance Analysis**: Recording and analyzing performance traces to identify bottlenecks and Core Web Vital issues.
-- **Emulation**: Resizing the viewport or emulating network/CPU conditions.
+- **DataFrame Testing**: Testing CSV upload flows, data parsing, chart rendering
+- **Visual Inspection**: Verifying Tailwind CSS styling, responsive breakpoints, chart appearance
+- **Debugging**: Checking browser console for TypeScript errors, validating API responses
+- **Performance Analysis**: Profiling chart initialization, data processing performance
+- **Emulation**: Testing mobile responsiveness (375px, 768px, 1280px, 1920px viewports)
+- **MoneyWiz Workflows**: CSV upload → data parse → dashboard visualization
 
 ## Tool Categories
 
@@ -89,9 +90,36 @@ Identify why a page is slow.
 3. `performance_analyze_insight` to find LCP issues or layout shifts.
 ```
 
-## Best Practices
+## MoneyWiz Application Pages
+
+### Key Pages to Test
+
+1. **Dashboard (Root)** - `http://localhost:5173/`
+   - CSV upload button (CsvUploadButton.svelte)
+   - Summary cards showing totals
+   - Top categories chart
+   - Daily expenses chart
+   - Income vs expenses ratio chart
+
+2. **Components to Interact With**
+   - CSV file upload input
+   - "Clear CSV" button in header
+   - Chart visualizations (rendered with Svelte)
+
+### Expected Elements
+
+- AppHeader with logo and clear button
+- MoneyLogo component
+- SummaryCards (THB currency)
+- TopCategoriesChart
+- DailyExpensesChart
+- IncomeExpenseRatioChart
+
+## Best Practices for MoneyWiz
 
 - **Context Awareness**: Always run `list_pages` and `select_page` if you are unsure which tab is currently active.
-- **Snapshots**: Take a new snapshot after any major navigation or DOM change, as `uid` values may change.
-- **Timeouts**: Use reasonable timeouts for `wait_for` to avoid hanging on slow-loading elements.
-- **Screenshots**: Use `take_screenshot` sparingly for visual verification, but rely on `take_snapshot` for logic.
+- **Snapshots**: Take a new snapshot after CSV upload or data changes, as DOM structure updates
+- **Timeouts**: Use reasonable timeouts (2-5s) for data processing after CSV upload
+- **Screenshots**: Capture before/after for chart rendering validation
+- **CSV Testing**: Upload test CSV (e.g., `build/data/report.csv`) to verify parsing and visualization
+- **TypeScript Errors**: Check console for compilation errors from Vite dev server

@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: 'Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping'
+description: 'Execute git commit with conventional commit message analysis, intelligent staging, and message generation for MoneyWiz SvelteKit projects. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping'
 license: MIT
 ---
 
@@ -35,6 +35,23 @@ Create standardized, semantic git commits using the Conventional Commits specifi
 | `ci`       | CI/config changes              |
 | `chore`    | Maintenance/misc               |
 | `revert`   | Revert commit                  |
+
+## MoneyWiz Project Scopes
+
+Common scopes for this SvelteKit project:
+
+| Scope                | Files Affected                                              |
+| -------------------- | ----------------------------------------------------------- |
+| `csv`                | CSV upload flow, CSV parser, `src/lib/csv.ts`, CSV handling |
+| `charts`             | Chart components (`DailyExpensesChart`, etc.)               |
+| `dashboard`          | Main dashboard (`src/routes/+page.svelte`)                  |
+| `header`             | `AppHeader.svelte`, navigation, clear button                |
+| `analytics`          | Business logic, `src/lib/analytics.ts`, calculations        |
+| `store`              | State management, `src/lib/stores/csv.ts`                   |
+| `styling`            | Tailwind CSS, component styles                              |
+| `test`.              | Unit tests (`.spec.ts` files)                               |
+| `e2e`                | Playwright tests in `e2e/` directory                        |
+| `config`             | All kind of configuration                                   |
 
 ## Breaking Changes
 
@@ -106,13 +123,37 @@ EOF
 )"
 ```
 
+## MoneyWiz Commit Examples
+
+```
+# Add new chart component
+feat(charts): add income vs expense ratio visualization
+
+# Fix CSV parsing issue
+fix(csv): handle MoneyWiz sep= preamble correctly
+
+# Update analytics calculation
+feat(analytics): add savings rate calculation to summary
+
+# Add E2E test for CSV upload
+test(e2e): add test for CSV upload and dashboard update
+
+# Refactor component structure
+refactor(dashboard): extract chart rendering to separate components
+
+# Update Tailwind styling
+style(header): reduce padding for compact appearance
+```
+
 ## Best Practices
 
 - One logical change per commit
 - Present tense: "add" not "added"
 - Imperative mood: "fix bug" not "fixes bug"
+- Use appropriate scope from the MoneyWiz scope list
 - Reference issues: `Closes #123`, `Refs #456`
 - Keep description under 72 characters
+- Always use `bun` for package operations (never `npm`)
 
 ## Git Safety Protocol
 

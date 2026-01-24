@@ -5,15 +5,25 @@ description: 'This skill enables visual inspection of websites running locally o
 
 # Web Design Reviewer
 
-This skill enables visual inspection and validation of website design quality, identifying and fixing issues at the source code level.
+This skill enables visual inspection and validation of website design quality for the **MoneyWiz Visualization** application, identifying and fixing issues at the source code level.
+
+## MoneyWiz Project Context
+
+- **Framework:** SvelteKit with Svelte 5 components
+- **Styling System:** Tailwind CSS v4
+- **Language:** TypeScript
+- **Components:** AppHeader, MoneyLogo, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart
+- **Dev Server:** http://localhost:5173/
+- **Package Manager:** Bun
+- **Source Structure:** `src/components/` for UI, `src/lib/` for logic, `src/routes/` for pages
 
 ## Scope of Application
 
-- Static sites (HTML/CSS/JS)
-- SPA frameworks such as React / Vue / Angular / Svelte
-- Full-stack frameworks such as Next.js / Nuxt / SvelteKit
-- CMS platforms such as WordPress / Drupal
-- Any other web application
+- **MoneyWiz Dashboard** - Main visualization page with charts and CSV upload
+- **Responsive Design** - Mobile (375px), Tablet (768px), Desktop (1280px), Wide (1920px)
+- **Component Styling** - Tailwind CSS classes and responsive utilities
+- **Chart Appearance** - Data visualization layout, legend positioning, colors
+- **Accessibility** - Focus states, color contrast, ARIA labels
 
 ## Prerequisites
 
@@ -65,45 +75,76 @@ When making fixes, gather the following information:
 | Source Location | Where are style files and components located? |
 | Review Scope    | Specific pages only or entire site?           |
 
-### 1.3 Automatic Project Detection
+### 1.3 Automatic Project Detection - MoneyWiz
 
-Attempt automatic detection from files in the workspace:
+Automatically detected for this project:
 
 ```
 Detection targets:
-├── package.json     → Framework and dependencies
-├── tsconfig.json    → TypeScript usage
-├── tailwind.config  → Tailwind CSS
-├── next.config      → Next.js
-├── vite.config      → Vite
-├── nuxt.config      → Nuxt
-└── src/ or app/     → Source directory
+├── package.json     → SvelteKit + Tailwind CSS (confirmed)
+├── tsconfig.json    → TypeScript (confirmed)
+├── tailwind.config  → Tailwind CSS v4 (confirmed)
+├── vite.config.ts   → Vite build system (confirmed)
+├── svelte.config.js → SvelteKit routing & adapters
+└── src/
+    ├── components/  → Svelte components
+    ├── lib/         → TypeScript utilities
+    └── routes/      → SvelteKit file-based routing
 ```
 
-### 1.4 Identifying Styling Method
+### 1.4 Styling Method - MoneyWiz Uses Tailwind CSS
 
-| Method            | Detection           | Edit Target                 |
-| ----------------- | ------------------- | --------------------------- |
-| Pure CSS          | `*.css` files       | Global CSS or component CSS |
-| SCSS/Sass         | `*.scss`, `*.sass`  | SCSS files                  |
-| CSS Modules       | `*.module.css`      | Module CSS files            |
-| Tailwind CSS      | `tailwind.config.*` | className in components     |
-| styled-components | `styled.` in code   | JS/TS files                 |
-| Emotion           | `@emotion/` imports | JS/TS files                 |
-| CSS-in-JS (other) | Inline styles       | JS/TS files                 |
+**MoneyWiz uses Tailwind CSS v4** exclusively:
+
+| Item                    | Value                                  |
+| ----------------------- | -------------------------------------- |
+| Styling System          | Tailwind CSS v4                        |
+| Config File             | `tailwind.config.js` (or TypeScript)   |
+| Component Styling       | `class` attributes in `.svelte` files |
+| Global Styles           | `src/routes/layout.css` (Tailwind)    |
+| Build Integration       | @tailwindcss/vite plugin               |
+| Responsive Prefixes     | `sm:`, `md:`, `lg:`, `xl:` (standard) |
+| Hover/Focus States      | `hover:`, `focus:`, etc.               |
+| Dark Mode               | Configured in tailwind.config.js       |
+
+**Editing Targets:**
+- Svelte components: `src/components/*.svelte` - update `class=` attributes
+- Route pages: `src/routes/*.svelte` - update styling classes
+- Global styles: `src/routes/layout.css` - Tailwind directives
 
 ---
 
 ## Step 2: Visual Inspection Phase
 
-### 2.1 Page Traversal
+### 2.1 MoneyWiz Page Traversal
 
-1. Navigate to the specified URL
-2. Capture screenshots
-3. Retrieve DOM structure/snapshot (if possible)
-4. If additional pages exist, traverse through navigation
+1. **Start at Dashboard:** `http://localhost:5173/`
+2. **Verify Header:** AppHeader with MoneyLogo and Clear button
+3. **Test CSV Upload:** Upload functionality via CsvUploadButton
+4. **Visualize Data:** Charts render correctly (TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart)
+5. **Check Summary:** Summary cards display correct values
+6. **Responsive Test:** Verify layout at all breakpoints
 
-### 2.2 Inspection Items
+**Elements to Check:**
+- AppHeader component layout
+- CSV upload input and button
+- Chart containers and legends
+- Summary cards alignment
+- Mobile menu (if applicable)
+- Accessibility features (focus states, labels)
+
+### 2.2 MoneyWiz Component Inspection Items
+
+**Key Components to Verify:**
+- **AppHeader.svelte** - Navigation, logo, clear button layout
+- **MoneyLogo.svelte** - Logo rendering and sizing
+- **CsvUploadButton.svelte** - Upload input accessibility and styling
+- **SummaryCards.svelte** - Card grid layout, value alignment, currency display
+- **TopCategoriesChart.svelte** - Chart rendering, legend positioning
+- **DailyExpensesChart.svelte** - Timeline chart, axis labels
+- **IncomeExpenseRatioChart.svelte** - Donut chart, savings rate indicator
+
+### 2.3 Inspection Items
 
 #### Layout Issues
 
@@ -187,16 +228,48 @@ Identify source files from problematic elements:
 
 ### 3.3 Applying Fixes
 
-#### Framework-specific Fix Guidelines
+#### Framework-specific Fix Guidelines for SvelteKit
 
-See [references/framework-fixes.md](references/framework-fixes.md) for details.
+**Svelte Component Styling (`.svelte` files):**
+```svelte
+<script lang="ts">
+  let className = 'text-lg font-bold';
+</script>
 
-#### Fix Principles
+<div class="{className}">
+  <!-- content -->
+</div>
 
-1. **Minimal Changes**: Only make the minimum changes necessary to resolve the issue
-2. **Respect Existing Patterns**: Follow existing code style in the project
-3. **Avoid Breaking Changes**: Be careful not to affect other areas
-4. **Add Comments**: Add comments to explain the reason for fixes where appropriate
+<style>
+  /* Scoped CSS (optional - usually use Tailwind instead) */
+  :global(.custom-class) { /* ... */ }
+</style>
+```
+
+**Tailwind CSS Classes:**
+- Use responsive prefixes: `md:flex`, `lg:grid-cols-3`
+- Hover/focus: `hover:bg-blue-600`, `focus:ring-2`
+- Use `@apply` in `layout.css` for common patterns
+- Reference: [references/framework-fixes.md](references/framework-fixes.md) for SvelteKit-specific patterns
+
+#### Fix Principles for MoneyWiz
+
+1. **Minimal Changes**: Update only the affected component's `class` attributes
+2. **Respect Existing Patterns**: 
+   - Use Tailwind CSS classes (never add inline styles)
+   - Follow responsive-first design (mobile → tablet → desktop)
+   - Match existing component spacing (consistent padding/margin)
+3. **Avoid Breaking Changes**: 
+   - Test all chart components after changes
+   - Verify responsive behavior at all breakpoints
+   - Check that data visualizations still render correctly
+4. **TypeScript Best Practices**: 
+   - Maintain type safety in component props
+   - Use `lang="ts"` in script tags
+5. **Svelte 5 Syntax**: 
+   - Use event attributes: `onchange`, `onclick` (not `on:change`)
+   - Use `$derived()` for reactive values
+   - Use `$effect()` for side effects
 
 ---
 
