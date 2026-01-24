@@ -2,7 +2,6 @@
 name: 'mw.project-commit'
 description: 'Analyze changes and create conventional commit with intelligent staging and message generation'
 agent: 'agent'
-model: 'GPT-5 mini'
 tools: ['read', 'search', 'web']
 ---
 
