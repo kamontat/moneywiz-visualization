@@ -36,6 +36,33 @@ bun vitest run --project=client
 
 **Note:** Always use `bun` as the package manager and command runner (not `npm` or `npx`).
 
+### Debugging
+
+Enable debug logs to troubleshoot issues:
+
+**Terminal:**
+```sh
+DEBUG=moneywiz:* bun run dev       # All MoneyWiz logs
+DEBUG=moneywiz:csv bun run dev     # CSV parser only
+DEBUG=moneywiz:store:* bun run dev # Store operations
+```
+
+**Browser Console:**
+```javascript
+localStorage.debug = 'moneywiz:*'   // All MoneyWiz logs
+localStorage.debug = 'moneywiz:csv' // CSV parser only
+localStorage.debug = '*'            // All debug logs (includes 3rd-party)
+```
+
+**Available Namespaces:**
+- `moneywiz:csv` - CSV parsing operations
+- `moneywiz:store:csv` - CSV store updates
+- `moneywiz:component:upload` - Upload button interactions
+- `moneywiz:page:dashboard` - Dashboard rendering
+- `moneywiz:fetch` - Data fetching
+
+After setting `localStorage.debug`, refresh the page to apply changes.
+
 ### Building
 
 To create a production build:
@@ -56,7 +83,10 @@ bun run preview
   - `AppHeader.svelte` - Main header with logo and CSV upload
   - `CsvUploadButton.svelte` - CSV file upload handler
   - `MoneyLogo.svelte` - App logo component
-- `src/lib/csv.ts` - CSV parsing utilities
+- `src/lib/` - Shared utilities and libraries
+  - `csv.ts` - CSV parsing with error handling
+  - `debug.ts` - Debug logging with namespace filtering
+  - `stores/` - Svelte stores (CSV state management)
 - `src/routes/` - Page routes
 - `static/` - Static assets
 
@@ -73,8 +103,11 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
 - 📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
   - Automatic `sep=` delimiter detection for MoneyWiz exports
   - BOM handling for proper encoding
-  - Real-time preview of uploaded data (first 5 rows)
-- 📊 **Data Parsing**: Robust CSV parser with quoted field support
+  - Error handling with descriptive messages
+- 📊 **Data Parsing**: Robust CSV parser with quoted field support and validation
+- 🐛 **Debug Logging**: Comprehensive logging system with namespace filtering
+  - Enable via `DEBUG=moneywiz:* bun run dev` (terminal)
+  - Or `localStorage.debug = 'moneywiz:*'` (browser)
 - 🎨 **Professional UI**: Clean, accessible design with success/error feedback
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
 

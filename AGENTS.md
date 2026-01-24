@@ -57,10 +57,15 @@ Example: For understanding how a GitHub project works, use these tools instead o
 
 ### Recent Improvements (Jan 2026)
 
-- **Debug Logging**: Added `debug` package with namespace filtering (`moneywiz:*`). See `src/lib/debug.ts` for available loggers
-- **CSV Upload System**: Enhanced parser to handle MoneyWiz exports with `sep=` preamble detection, BOM handling, and real-time preview UI
+- **Debug Logging System**: Comprehensive debug logging with builder pattern API and namespace filtering
+  - Created `src/lib/debug.ts` with fluent API: `createLogger('module').sub('feature').build()`
+  - Pre-built loggers for csv, store, component, page, and fetch operations
+  - Enable via `DEBUG=moneywiz:* bun run dev` or `localStorage.debug = 'moneywiz:*'`
+  - Reduced tokenize logging to summary only for cleaner output
+- **CSV Error Handling**: Added `CsvParseError` class that throws descriptive errors instead of returning empty results
+- **CSV Upload System**: Enhanced parser to handle MoneyWiz exports with `sep=` preamble detection, BOM handling, and error feedback
 - **Development Workflow**: Added dev server reuse guidance and standardized on `bun` for all commands
-- **Test Infrastructure**: Documented test commands and created CSV parser unit tests
+- **Test Infrastructure**: Documented test commands and created CSV parser unit tests with error cases
 - **Fixed CsvUploadButton.svelte**: Resolved 500 error by properly destructuring props with fallback ID generation
 - **Enhanced git-commit prompt**: Added intelligent check for already-staged files before staging new changes
 - **Basic Dashboard**: Added THB-only summary cards (Income, Expenses, Net, Transactions) and simple SVG charts (Top Categories, Daily Expenses). Loads default `static/data/report.csv` on startup and reacts to uploads via a global `csvStore`.
