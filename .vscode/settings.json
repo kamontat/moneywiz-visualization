@@ -1,5 +1,9 @@
 {
 	"files.associations": {
 		"*.css": "tailwindcss"
-	}
+	},
+	"chat.tools.terminal.autoApprove": {
+		"bun": true
+	},
+	"git.branchProtectionPrompt": "alwaysCommit"
 }
