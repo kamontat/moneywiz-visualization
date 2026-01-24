@@ -92,14 +92,14 @@ import { test, expect } from '@playwright/test';
 
 test('Upload CSV and verify dashboard updates', async ({ page }) => {
   await page.goto('http://localhost:5173/');
-  
+
   // Upload CSV file
   const fileInput = page.locator('input[type="file"]');
   await fileInput.setInputFiles('build/data/report.csv');
-  
+
   // Verify data loaded
   await expect(page.locator('[data-testid="summary-total"]')).toBeVisible();
-  
+
   // Check that charts render
   await expect(page.locator('canvas')).toBeVisible();  // Chart canvas
 });
@@ -110,15 +110,15 @@ test('Upload CSV and verify dashboard updates', async ({ page }) => {
 ```typescript
 test('Clear CSV resets dashboard', async ({ page }) => {
   await page.goto('http://localhost:5173/');
-  
+
   // Upload CSV first
   const fileInput = page.locator('input[type="file"]');
   await fileInput.setInputFiles('build/data/report.csv');
   await expect(page.locator('[data-testid="summary-total"]')).toBeVisible();
-  
+
   // Click clear button
   await page.click('button:has-text("Clear")');
-  
+
   // Verify reset
   await expect(page.locator('[data-testid="summary-total"]')).not.toBeVisible();
 });
@@ -138,11 +138,11 @@ test.describe.parallel('Responsive Design', () => {
     test(`renders correctly on ${name}`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       await page.goto('http://localhost:5173/');
-      
+
       // Verify layout adapts
       const header = page.locator('header');
       await expect(header).toBeVisible();
-      
+
       // Take screenshot for visual comparison
       await page.screenshot({ path: `screenshots/${name}.png` });
     });
@@ -155,11 +155,11 @@ test.describe.parallel('Responsive Design', () => {
 ```typescript
 test('Charts render with correct data', async ({ page }) => {
   await page.goto('http://localhost:5173/');
-  
+
   // Upload CSV
   const fileInput = page.locator('input[type="file"]');
   await fileInput.setInputFiles('build/data/report.csv');
-  
+
   // Verify chart containers
   await expect(page.locator('[data-testid="top-categories-chart"]')).toBeVisible();
   await expect(page.locator('[data-testid="daily-expenses-chart"]')).toBeVisible();

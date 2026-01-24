@@ -255,18 +255,18 @@ Identify source files from problematic elements:
 #### Fix Principles for MoneyWiz
 
 1. **Minimal Changes**: Update only the affected component's `class` attributes
-2. **Respect Existing Patterns**: 
+2. **Respect Existing Patterns**:
    - Use Tailwind CSS classes (never add inline styles)
    - Follow responsive-first design (mobile → tablet → desktop)
    - Match existing component spacing (consistent padding/margin)
-3. **Avoid Breaking Changes**: 
+3. **Avoid Breaking Changes**:
    - Test all chart components after changes
    - Verify responsive behavior at all breakpoints
    - Check that data visualizations still render correctly
-4. **TypeScript Best Practices**: 
+4. **TypeScript Best Practices**:
    - Maintain type safety in component props
    - Use `lang="ts"` in script tags
-5. **Svelte 5 Syntax**: 
+5. **Svelte 5 Syntax**:
    - Use event attributes: `onchange`, `onclick` (not `on:change`)
    - Use `$derived()` for reactive values
    - Use `$effect()` for side effects
