@@ -47,6 +47,12 @@ Use DeepWiki MCP tools to explore GitHub repository documentation:
 
 Example: For understanding how a GitHub project works, use these tools instead of manually browsing files.
 
+## Development Guidelines
+
+- **No Single-File Implementations**: Never create entire features in a single file. Keep UI, logic, and tests separated for clarity and maintainability.
+- **Component vs Logic Separation**: Place UI components under `src/components/` and shared/business logic under `src/lib/`. Keep files small, focused, and reusable.
+- **Testing via Playwright MCP**: You can test flows with Playwright MCP tools (browser init, snapshots, interactions). Prefer role-based locators and web-first assertions as documented in `.github/instructions/playwright-typescript.instructions.md`.
+
 ## Agent Updates
 
 ### Recent Improvements (Jan 2026)
@@ -56,6 +62,7 @@ Example: For understanding how a GitHub project works, use these tools instead o
 - **Test Infrastructure**: Documented test commands and created CSV parser unit tests
 - **Fixed CsvUploadButton.svelte**: Resolved 500 error by properly destructuring props with fallback ID generation
 - **Enhanced git-commit prompt**: Added intelligent check for already-staged files before staging new changes
+- **Basic Dashboard**: Added THB-only summary cards (Income, Expenses, Net, Transactions) and simple SVG charts (Top Categories, Daily Expenses). Loads default `static/data/report.csv` on startup and reacts to uploads via a global `csvStore`.
 
 ### Previous Updates
 

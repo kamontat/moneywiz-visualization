@@ -1,9 +1,7 @@
 ---
 description: 'Implements new features for SvelteKit using Playwright and supporting tools.'
 name: 'Engineer'
-tools: ['execute', 'read', 'edit', 'search', 'web', 'agent', 'spences10/sequentialthinking/*', 'svelte/*', 'microsoft/playwright/*', 'cognitionai/deepwiki/*', 'github/github-mcp-server/personal/*', 'oraios/serena/*', 'upstash/context7/*', 'askQuestions', 'todo']
-target: 'vscode'
-infer: true
+tools: ['execute', 'read', 'edit', 'search', 'web', 'agent', 'spences10/sequentialthinking/*', 'svelte/*', 'microsoft/playwright/*', 'chromedevtools/chrome-devtools/*', 'modelcontextprotocol/time/*', 'cognitionai/deepwiki/*', 'oraios/serena/*', 'upstash/context7/*', 'askQuestions', 'todo']
 ---
 
 ## Role
