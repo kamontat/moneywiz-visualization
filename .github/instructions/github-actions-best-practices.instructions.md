@@ -9,6 +9,28 @@ description: "Comprehensive guide for building robust, secure, and efficient CI/
 
 As GitHub Copilot, you are an expert in designing and optimizing CI/CD pipelines using GitHub Actions. Your mission is to assist developers in creating efficient, secure, and reliable automated workflows for building, testing, and deploying their applications. You must prioritize best practices, ensure security, and provide actionable, detailed guidance.
 
+## Project Context
+
+This project (MoneyWiz Visualization) uses the following stack:
+
+| Component | Technology |
+|-----------|------------|
+| Framework | SvelteKit (Svelte 5) with @sveltejs/adapter-static |
+| Package Manager | Bun |
+| Unit Testing | Vitest (server + client projects) |
+| E2E Testing | Playwright |
+| Styling | TailwindCSS 4 |
+| Deployment | Static site to https://moneywiz.kamontat.net/ |
+
+**Key Commands:**
+- `bun install` - Install dependencies
+- `bun run build` - Build static site
+- `bun run check` - TypeScript and Svelte checks
+- `bun test` - Run all tests (unit + e2e)
+- `bun vitest run --project=server` - Server-side unit tests
+- `bun vitest run --project=client` - Svelte component tests
+- `bun run test:e2e` - Playwright E2E tests
+
 ## Core Concepts and Structure
 
 ### **1. Workflow Structure (`.github/workflows/*.yml`)**
@@ -40,7 +62,7 @@ As GitHub Copilot, you are an expert in designing and optimizing CI/CD pipelines
   - Use `needs` to define dependencies between jobs, ensuring sequential execution and logical flow.
   - Employ `outputs` to pass data between jobs efficiently, promoting modularity.
   - Utilize `if` conditions for conditional job execution (e.g., deploy only on `main` branch pushes, run E2E tests only for certain PRs, skip jobs based on file changes).
-- **Example (Conditional Deployment and Output Passing):**
+- **Example (SvelteKit Build with Conditional Deployment):**
 
 ```yaml
 jobs:
@@ -51,40 +73,43 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 18
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          npm run build
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Run Svelte checks
+        run: bun run check
+      - name: Build static site
+        run: bun run build
       - name: Package application
         id: package_app
-        run: | # Assume this creates a 'dist.zip' file
-          zip -r dist.zip dist
-          echo "path=dist.zip" >> "$GITHUB_OUTPUT"
+        run: |
+          tar -czf build.tar.gz build/
+          echo "path=build.tar.gz" >> "$GITHUB_OUTPUT"
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: my-app-build
-          path: dist.zip
+          name: sveltekit-build
+          path: build/
+          retention-days: 7
 
   deploy-staging:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     environment: staging
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: my-app-build
+          name: sveltekit-build
+          path: build/
       - name: Deploy to Staging
         run: |
-          unzip dist.zip
           echo "Deploying ${{ needs.build.outputs.artifact_path }} to staging..."
-          # Add actual deployment commands here
+          # Deploy static files to your hosting provider (Cloudflare Pages, Vercel, etc.)
 ```
 
 ### **3. Steps and Actions**
@@ -236,19 +261,41 @@ jobs:
   - Use `actions/cache@v3` for caching common package manager dependencies (Node.js `node_modules`, Python `pip` packages, Java Maven/Gradle dependencies) and build artifacts.
   - Design highly effective cache keys using `hashFiles` to ensure optimal cache hit rates.
   - Advise on using `restore-keys` to gracefully fall back to previous caches.
-- **Example (Advanced Caching for Monorepo):**
+- **Example (Bun Caching for SvelteKit):**
 
 ```yaml
-- name: Cache Node.js modules
-  uses: actions/cache@v3
+- name: Setup Bun with caching
+  uses: oven-sh/setup-bun@v2
+  with:
+    bun-version: latest
+
+- name: Cache Bun dependencies
+  uses: actions/cache@v4
   with:
     path: |
-      ~/.npm
-      ./node_modules # For monorepos, cache specific project node_modules
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
+      ~/.bun/install/cache
+      node_modules
+    key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
     restore-keys: |
-      ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
-      ${{ runner.os }}-node-
+      ${{ runner.os }}-bun-
+
+- name: Cache Playwright browsers
+  uses: actions/cache@v4
+  with:
+    path: ~/.cache/ms-playwright
+    key: ${{ runner.os }}-playwright-${{ hashFiles('**/package.json') }}
+    restore-keys: |
+      ${{ runner.os }}-playwright-
+
+- name: Cache SvelteKit build
+  uses: actions/cache@v4
+  with:
+    path: |
+      .svelte-kit
+      build
+    key: ${{ runner.os }}-sveltekit-${{ hashFiles('**/svelte.config.js', '**/vite.config.ts') }}-${{ github.sha }}
+    restore-keys: |
+      ${{ runner.os }}-sveltekit-
 ```
 
 ### **2. Matrix Strategies for Parallelization**
@@ -263,27 +310,48 @@ jobs:
   - Utilize `strategy.matrix` to test applications against different environments, programming language versions, or operating systems concurrently.
   - Suggest `include` and `exclude` for specific matrix combinations to optimize test coverage without unnecessary runs.
   - Advise on setting `fail-fast: true` (default) for quick feedback on critical failures, or `fail-fast: false` for comprehensive test reporting.
-- **Example (Multi-version, Multi-OS Test Matrix):**
+- **Example (Vitest + Playwright Matrix for SvelteKit):**
 
 ```yaml
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
+  unit-tests:
+    runs-on: ubuntu-latest
     strategy:
-      fail-fast: false # Run all tests even if one fails
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        node-version: [16.x, 18.x, 20.x]
-        browser: [chromium, firefox]
+        project: [server, client]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Run ${{ matrix.project }} unit tests
+        run: bun vitest run --project=${{ matrix.project }}
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+        shardIndex: [1, 2]
+        shardTotal: [2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Install Playwright ${{ matrix.browser }}
+        run: bunx playwright install --with-deps ${{ matrix.browser }}
+      - name: Build SvelteKit app
+        run: bun run build
+      - name: Run Playwright E2E tests
+        run: bun run test:e2e --project=${{ matrix.browser }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install Playwright browsers
-        run: npx playwright install ${{ matrix.browser }}
-      - name: Run tests
-        run: npm test
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.shardIndex }}
+          path: test-results/
+          retention-days: 7
 ```
 
 ### **3. Self-Hosted Runners**
@@ -343,6 +411,30 @@ jobs:
   - Use appropriate language-specific test runners and frameworks (Jest, Vitest, Pytest, Go testing, JUnit, NUnit, XUnit, RSpec).
   - Recommend collecting and publishing code coverage reports and integrating with services like Codecov, Coveralls, or SonarQube for trend analysis.
   - Suggest strategies for parallelizing unit tests to reduce execution time.
+- **Example (Vitest Unit Tests for SvelteKit):**
+
+```yaml
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Run server-side unit tests
+        run: bun vitest run --project=server --coverage
+      - name: Run Svelte component tests
+        run: bun vitest run --project=client
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+```
 
 ### **2. Integration Tests**
 
@@ -372,6 +464,35 @@ jobs:
   - Recommend running E2E tests against a deployed staging environment to catch issues before production and validate the full deployment process.
   - Configure test reporting, video recordings, and screenshots on failure to aid debugging and provide richer context for test results.
   - Advise on strategies to minimize E2E test flakiness, such as robust element selection and retry mechanisms.
+- **Example (Playwright E2E for SvelteKit Static Site):**
+
+```yaml
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps
+      - name: Build SvelteKit static site
+        run: bun run build
+      - name: Run Playwright tests
+        run: bun run test:e2e
+        env:
+          CI: true
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+```
 
 ### **4. Performance and Load Testing**
 
@@ -632,6 +753,120 @@ This section provides an expanded guide to diagnosing and resolving frequent pro
     - Check network connectivity between deployed components (e.g., application to database, service to service) within the new environment. Review firewall rules, security groups, and Kubernetes network policies.
   - **Rollback Immediately:**
     - If a production deployment fails or causes degradation, trigger the rollback strategy immediately to restore service. Diagnose the issue in a non-production environment.
+
+## Complete SvelteKit CI/CD Workflow Example
+
+Here's a complete workflow example tailored for this project:
+
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lint-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Run Svelte checks
+        run: bun run check
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [server, client]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+      - run: bun install --frozen-lockfile
+      - name: Run ${{ matrix.project }} tests
+        run: bun vitest run --project=${{ matrix.project }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint-and-check, unit-tests]
+    outputs:
+      build-sha: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Build static site
+        run: bun run build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sveltekit-build-${{ github.sha }}
+          path: build/
+          retention-days: 7
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sveltekit-build-${{ github.sha }}
+          path: build/
+      - name: Install Playwright ${{ matrix.browser }}
+        run: bunx playwright install --with-deps ${{ matrix.browser }}
+      - name: Run E2E tests
+        run: bun run test:e2e --project=${{ matrix.browser }}
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 7
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build, e2e-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://moneywiz.kamontat.net/
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sveltekit-build-${{ github.sha }}
+          path: build/
+      - name: Deploy to production
+        run: |
+          echo "Deploying build ${{ github.sha }} to production..."
+          # Add your deployment commands here (e.g., Cloudflare Pages, Vercel, etc.)
+```
 
 ## Conclusion
 
