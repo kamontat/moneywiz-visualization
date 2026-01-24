@@ -1,4 +1,5 @@
 ---
+name: mw.playwright-generate-test
 agent: agent
 description: "Generate a Playwright test based on a scenario using Playwright MCP"
 tools:

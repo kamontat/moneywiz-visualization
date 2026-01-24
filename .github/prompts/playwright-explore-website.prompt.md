@@ -1,4 +1,5 @@
 ---
+name: mw.playwright-explore
 agent: agent
 description: "Website exploration for testing using Playwright MCP"
 tools:
