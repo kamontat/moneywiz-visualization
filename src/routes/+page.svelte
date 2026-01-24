@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { csvStore, type CsvState } from '$lib/stores/csv';
-	import { parseCsv } from '$lib/csv';
 	import { log } from '$lib/debug';
 	import {
 		getTHBRows,
@@ -22,28 +21,6 @@
 			log.pageDashboard('store updated: fileName=%s', value.fileName);
 			csv = value;
 		});
-
-		// Load default sample CSV if none uploaded yet
-		(async () => {
-			if (!csv.data) {
-				log.fetch('loading default CSV from /data/report.csv');
-				try {
-					const res = await fetch('/data/report.csv');
-					if (res.ok) {
-						const text = await res.text();
-						log.fetch('default CSV loaded: %d bytes', text.length);
-						const parsed = parseCsv(text);
-						csvStore.set({ fileName: 'report.csv', data: parsed });
-					} else {
-						log.fetch('failed to load default CSV: status=%d', res.status);
-					}
-				} catch (err) {
-					// Ignore fetch errors; dashboard will show empty state
-					log.fetch('error loading default CSV: %O', err);
-					console.error('Failed to load default CSV', err);
-				}
-			}
-		})();
 
 		return () => {
 			log.pageDashboard('unmounting dashboard');

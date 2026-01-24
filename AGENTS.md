@@ -26,11 +26,12 @@ bun run preview                    # Preview production build
 
 ## Recent Updates (Jan 2026)
 
+- **No Auto-Load CSV:** Dashboard no longer auto-loads `data/report.csv`; users must explicitly upload CSV files (test data is for local development only)
 - **Clear CSV Feature:** Header now includes a clear button to reset loaded data and start fresh
 - **Compact Header:** Reduced header padding and font sizes for a more compact appearance
 - **Dashboard Refactoring:** Split monolithic +page.svelte into reusable components (SummaryCards, TopCategoriesChart, DailyExpensesChart) and extracted business logic to `src/lib/analytics.ts` and `src/lib/finance.ts`
 - **Path Alias:** Added `$components` alias in svelte.config.js for cleaner imports
-- **Dashboard:** THB-only summary cards + charts (Top Categories, Daily Expenses). Loads `static/data/report.csv` on startup, reacts to CSV uploads via `csvStore`
+- **Dashboard:** THB-only summary cards + charts (Top Categories, Daily Expenses). Reacts to CSV uploads via `csvStore`
 - **Debug Logging:** Builder API in `src/lib/debug.ts`. Enable with `DEBUG=moneywiz:*` or `localStorage.debug = 'moneywiz:*'`
 - **CSV Handling:** Parser handles MoneyWiz `sep=` preamble, BOM, throws `CsvParseError` on failures
 - **Svelte 5 Migration:** Event attributes (`onchange`), `$derived()`, `$effect()` - no deprecation warnings

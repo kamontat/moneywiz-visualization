@@ -3,6 +3,10 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard - Basic summaries', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    // Upload CSV since it no longer auto-loads
+    const fileInput = page.locator('input[type="file"]').first();
+    await fileInput.setInputFiles('static/data/report.csv');
+    await expect(page.getByText('Income (THB)')).toBeVisible();
   });
 
   test('renders heading and summary cards', async ({ page }) => {
@@ -24,6 +28,10 @@ test.describe('Dashboard - Basic summaries', () => {
 test.describe('Dashboard - Top Categories Chart', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    // Upload CSV since it no longer auto-loads
+    const fileInput = page.locator('input[type="file"]').first();
+    await fileInput.setInputFiles('static/data/report.csv');
+    await expect(page.getByText('Income (THB)')).toBeVisible();
   });
 
   test('displays category labels without truncation overlap', async ({ page }) => {
@@ -40,11 +48,12 @@ test.describe('Dashboard - Top Categories Chart', () => {
 
     await test.step('Verify category labels are fully visible', async () => {
       // Ensure all category names render completely without being cut off
-      await expect(page.getByText('Uncategorized')).toBeVisible();
-      await expect(page.getByText('Compensation > Salary')).toBeVisible();
-      await expect(page.getByText('Payment > Loan')).toBeVisible();
-      await expect(page.getByText('Payment > Debt Repayment')).toBeVisible();
-      await expect(page.getByText('Compensation > Dividend')).toBeVisible();
+      const chart = page.getByRole('region', { name: 'Top Categories' });
+      await expect(chart.getByText('Uncategorized')).toBeVisible();
+      await expect(chart.getByText('Compensation > Salary')).toBeVisible();
+      await expect(chart.getByText('Payment > Loan')).toBeVisible();
+      await expect(chart.getByText('Payment > Debt Repayment')).toBeVisible();
+      await expect(chart.getByText('Compensation > Dividend')).toBeVisible();
     });
 
     await test.step('Verify bar tracks have proper width', async () => {

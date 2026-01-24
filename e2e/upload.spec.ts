@@ -6,13 +6,13 @@ test.describe('CSV Upload - MoneyWiz file', () => {
   });
 
   test('uploads CSV file and updates dashboard', async ({ page }) => {
-    await test.step('Wait for default CSV to load', async () => {
-      // Dashboard loads default report.csv on startup
+    await test.step('Verify empty state on fresh load', async () => {
+      // Dashboard shows empty state since no CSV is auto-loaded
       await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-      await expect(page.getByText('Income (THB)')).toBeVisible();
+      await expect(page.getByText('No data loaded yet')).toBeVisible();
     });
 
-    await test.step('Upload custom CSV via hidden input', async () => {
+    await test.step('Upload CSV via hidden input', async () => {
       const fileInput = page.locator('input[type="file"]').first();
       await fileInput.setInputFiles('static/data/report.csv');
     });
