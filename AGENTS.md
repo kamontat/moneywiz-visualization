@@ -1,248 +1,138 @@
-You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
+# MoneyWiz Visualization
 
-## Agent Guidelines
+SvelteKit-based web application for visualizing MoneyWiz financial data exports.
 
-**Important:** When working on this project, you MUST:
+## Quick Start
 
-1. **Always update this AGENTS.md file** after making any changes to the project configuration, setup, or resolving issues
-2. **Always check available MCP tools** and utilize them if they match what you're trying to accomplish
-3. **Always use Context7 and DeepWiki MCP tools** when you need to understand or search for information about 3rd-party dependencies
+```bash
+# Install dependencies
+bun install
 
-## Available MCP Tools:
+# Start development server
+bun run dev
 
-### 1. list-sections
+# Run tests
+bun test                           # All tests (unit + e2e)
+bun vitest run --project=server    # Server-side unit tests
+bun vitest run --project=client    # Svelte component tests
+bun run test:e2e                   # E2E tests only
 
-Use this FIRST to discover all available documentation sections. Returns a structured list with titles, use_cases, and paths.
-When asked about Svelte or SvelteKit topics, ALWAYS use this tool at the start of the chat to find relevant sections.
+# Build for production
+bun run build
+bun run preview                    # Preview production build
+```
 
-### 2. get-documentation
+**Note:** Always use `bun` as package manager (not `npm` or `npx`).
 
-Retrieves full documentation content for specific sections. Accepts single or multiple sections.
-After calling the list-sections tool, you MUST analyze the returned documentation sections (especially the use_cases field) and then use the get-documentation tool to fetch ALL documentation sections that are relevant for the user's task.
+## Recent Updates (Jan 2026)
 
-### 3. svelte-autofixer
+- **Dashboard:** THB-only summary cards + charts (Top Categories, Daily Expenses). Loads `static/data/report.csv` on startup, reacts to CSV uploads via `csvStore`
+- **Debug Logging:** Builder API in `src/lib/debug.ts`. Enable with `DEBUG=moneywiz:*` or `localStorage.debug = 'moneywiz:*'`
+- **CSV Handling:** Parser handles MoneyWiz `sep=` preamble, BOM, throws `CsvParseError` on failures
+- **Svelte 5 Migration:** Event attributes (`onchange`), `$derived()`, `$effect()` - no deprecation warnings
 
-Analyzes Svelte code and returns issues and suggestions.
-You MUST use this tool whenever writing Svelte code before sending it to the user. Keep calling it until no issues or suggestions are returned.
+## Project Structure
 
-### 4. playground-link
-
-Generates a Svelte Playground link with the provided code.
-After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
-
-### 5. context7 (mcp_upstash_conte_*)
-
-Use Context7 MCP tools to retrieve up-to-date documentation and code examples for any library:
-- **resolve-library-id**: First, resolve the library name to get the Context7-compatible library ID
-- **query-docs**: Then query documentation with the library ID and your question
-
-Example: For TailwindCSS questions, first resolve "tailwindcss" to get library ID, then query with specific questions.
-
-### 6. deepwiki (mcp_cognitionai_d_*)
-
-Use DeepWiki MCP tools to explore GitHub repository documentation:
-- **read_wiki_structure**: Get a list of documentation topics available in a repository
-- **read_wiki_contents**: View detailed documentation about a specific GitHub repository
-- **ask_question**: Ask any question about a GitHub repository
-
-Example: For understanding how a GitHub project works, use these tools instead of manually browsing files.
+```
+src/
+  components/      # UI components (AppHeader, MoneyLogo, CsvUploadButton)
+  lib/             # Business logic (csv.ts, debug.ts, stores/)
+  routes/          # SvelteKit routes (file-based routing)
+static/            # Static assets (copied to build/)
+e2e/               # Playwright e2e tests
+.github/
+  instructions/    # Custom instructions (auto-applied by file pattern)
+  skills/          # Reusable skills (invoke as needed)
+  prompts/         # Custom prompts (invoke with /)
+```
 
 ## Development Guidelines
 
-- **No Single-File Implementations**: Never create entire features in a single file. Keep UI, logic, and tests separated for clarity and maintainability.
-- **Component vs Logic Separation**: Place UI components under `src/components/` and shared/business logic under `src/lib/`. Keep files small, focused, and reusable.
-- **Testing via Playwright MCP**: You can test flows with Playwright MCP tools (browser init, snapshots, interactions). Prefer role-based locators and web-first assertions as documented in `.github/instructions/playwright-typescript.instructions.md`.
+### File Organization
 
-## Agent Updates
+- **UI Components:** Place in `src/components/` - Keep focused and reusable
+- **Business Logic:** Place in `src/lib/` - Separate from UI concerns
+- **Tests:** Co-locate with source files using `.spec.ts` suffix
+- **Routes:** SvelteKit file-based routing in `src/routes/`
 
-### Recent Improvements (Jan 2026)
+### Code Structure
 
-- **Svelte 5 Event Syntax Migration**: Fixed deprecation warnings in CsvUploadButton.svelte
-  - Migrated `on:change` → `onchange` and `on:click` → `onclick` per Svelte 5 event attribute syntax
-  - Fixed `id` prop reactivity warning using `$derived()` for reactive state
-  - Moved logging to `$effect()` for proper reactive tracking
-  - Build now completes without deprecation warnings
-- **Debug Logging System**: Comprehensive debug logging with builder pattern API and namespace filtering
-  - Created `src/lib/debug.ts` with fluent API: `createLogger('module').sub('feature').build()`
-  - Pre-built loggers for csv, store, component, page, and fetch operations
-  - Enable via `DEBUG=moneywiz:* bun run dev` or `localStorage.debug = 'moneywiz:*'`
-  - Reduced tokenize logging to summary only for cleaner output
-- **CSV Error Handling**: Added `CsvParseError` class that throws descriptive errors instead of returning empty results
-- **CSV Upload System**: Enhanced parser to handle MoneyWiz exports with `sep=` preamble detection, BOM handling, and error feedback
-- **Development Workflow**: Added dev server reuse guidance and standardized on `bun` for all commands
-- **Test Infrastructure**: Documented test commands and created CSV parser unit tests with error cases
-- **Fixed CsvUploadButton.svelte**: Resolved 500 error by properly destructuring props with fallback ID generation
-- **Enhanced git-commit prompt**: Added intelligent check for already-staged files before staging new changes
-- **Basic Dashboard**: Added THB-only summary cards (Income, Expenses, Net, Transactions) and simple SVG charts (Top Categories, Daily Expenses). Loads default `static/data/report.csv` on startup and reacts to uploads via a global `csvStore`.
+- **No Single-File Implementations:** Keep UI, logic, and tests separated
+- **Component vs Logic Separation:** Components in `src/components/`, logic in `src/lib/`
+- **Keep Files Small:** Each file should have a single, clear responsibility
 
-### Previous Updates
+## Deployment Configuration
 
-- Refined Engineer and Tester agents with scoped tools, GPT-5.1-Codex-Max models, and clearer responsibilities
-- Added landing header components (AppHeader, MoneyLogo, CsvUploadButton) plus shared CSV parser in src/lib/csv.ts
+### Static Site Generation
 
----
-
-## Project Configuration
-
-### Deployment Target
-- **Custom Domain:** https://moneywiz.kamontat.net/
-- **Hosting:** Root-level deployment (no base path required)
-- **Adapter:** `@sveltejs/adapter-static` for static site generation
-
-### SvelteKit Configuration
-
-#### svelte.config.js
-```javascript
-import adapter from '@sveltejs/adapter-static';
-
-const config = {
-  kit: {
-    adapter: adapter({
-      pages: 'build',
-      assets: 'build',
-      fallback: '404.html'
-    })
-  }
-};
-```
-
-**Note:** No `paths.base` configuration is needed since the site deploys to a custom domain at root level.
-
-#### Prerendering Setup
-All pages must be prerendered for static deployment. This is configured in `src/routes/+layout.ts`:
-
-```typescript
-// Prerender all pages for static deployment
-export const prerender = true;
-```
-
-This ensures all routes are statically generated at build time, which is required for static hosting.
+- **Domain:** https://moneywiz.kamontat.net/
+- **Adapter:** `@sveltejs/adapter-static` for root-level deployment
+- **Prerendering:** All pages prerendered via `export const prerender = true` in `src/routes/+layout.ts`
+- **No Base Path:** Site deploys to custom domain root (no `paths.base` needed)
 
 ### Image Handling
 
-Images imported from `$lib/images/` are automatically processed by Vite during build:
-- Images are hashed and placed in `build/_app/immutable/assets/`
-- Paths are resolved as absolute from root (e.g., `/_app/immutable/assets/svelte-welcome.BVO9-vKb.webp`)
-- Works correctly for root-level deployment without requiring manual path resolution
+Images imported from `$lib/images/` are automatically processed by Vite:
+- Hashed and placed in `build/_app/immutable/assets/`
+- Paths resolved as absolute from root
+- No manual path resolution needed
 
-Example usage:
 ```svelte
 <script lang="ts">
   import welcome from '$lib/images/svelte-welcome.webp';
 </script>
-
 <img src={welcome} alt="Welcome" />
 ```
 
 ### Service Worker
 
-An empty service worker (`static/sw.js`) is included to prevent 404 errors from SvelteKit's client-side service worker update checks:
+Empty service worker at `static/sw.js` prevents SvelteKit client-side 404 errors. It's copied to `build/sw.js` during build.
 
-```javascript
-// Empty service worker to prevent 404 errors
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', () => self.clients.claim());
+## Common Issues & Solutions
+
+### Dev Server Management
+
+Before starting dev server, check http://localhost:5173/ to reuse existing instance. Avoid launching `bun run dev` if already running to prevent port conflicts.
+
+### MoneyWiz CSV Format
+
+MoneyWiz exports include a leading `sep=` line. Parser honors this and skips the preamble automatically. UI shows preview after successful parse.
+
+### Debug Logging
+
+Enable debug logs with:
+- **Terminal:** `DEBUG=moneywiz:* bun run dev`
+- **Browser:** `localStorage.debug = 'moneywiz:*'` (then refresh)
+- **Namespaces:** `moneywiz:csv`, `moneywiz:store:csv`, etc.
+- **All libs:** `DEBUG=*` or `localStorage.debug = '*'`
+
+Implemented via `src/lib/debug.ts` with fluent builder API:
+```typescript
+const log = createLogger('module').sub('feature').build();
 ```
 
-This file is copied to `build/sw.js` during the build process.
+### Svelte 5 Event Syntax
 
-### Build Commands
+- Use event attributes: `onchange`, `onclick` (not `on:change`, `on:click`)
+- Use `$derived()` for reactive computed values
+- Use `$effect()` for side effects
+- Reference: [CsvUploadButton.svelte](src/components/CsvUploadButton.svelte)
 
-- `bun run dev` - Development server
-- `bun run build` - Production build (outputs to `build/` directory)
-- `bun run preview` - Preview production build locally
+## Available Assets
 
-**Note:** Always use `bun` as the package manager and command runner (not `npm` or `npx`).
+### Instructions (Auto-Applied)
+- **mcp-tools** - MCP tools usage (Svelte, Context7, DeepWiki, Playwright, and more)
+- **svelte** - Svelte 5 and SvelteKit best practices
+- **playwright-typescript** - Playwright test generation
+- **nodejs-javascript-vitest** - Node.js testing with Vitest
 
-### Common Issues & Solutions
+### Skills (Invoke as Needed)
+- **git-commit** - Intelligent git commit with staging and conventional messages
+- **chrome-devtools** - Browser automation and debugging via Chrome DevTools MCP
 
-1. **500 Error on localhost:5173/**
-   - Fixed by correcting CsvUploadButton.svelte prop destructuring
-   - Issue: `props.id()` was calling undefined function
-   - Solution: Properly destructure `id` prop and generate fallback ID if not provided
+### Prompts (Use with `/`)
+- **/mw.project-archive** - Summarize session, update docs, and commit changes
+- **/mw.project-status** - Current status and recent improvements
+- **/playwright-generate-test** - Generate e2e tests with MCP integration
 
-2. **404 /sw.js Error**
-   - Fixed by adding empty service worker in `static/sw.js`
-
-3. **Images Not Loading**
-   - Ensure `src/routes/+layout.ts` has `export const prerender = true`
-   - Images from `src/lib/images/` are automatically processed by Vite
-   - No manual path resolution needed for root-level deployment
-
-4. **Routes Not Rendering**
-   - All routes must be prerendered with `export const prerender = true`
-   - Set at root layout level to apply to all pages
-
-5. **Dev Server Already Running**
-  - Before starting a new dev server, check http://localhost:5173/ to reuse the existing instance
-  - Avoid launching `bun run dev` if the page is already being served to prevent port conflicts
-
-6. **MoneyWiz CSV Uploads**
-  - MoneyWiz exports include a leading `sep=` line; parser now honors it and skips the preamble
-  - UI shows a quick preview of uploaded CSVs after a successful parse
-
-7. **Running Tests**
-   - Always run tests after code or test changes to validate results
-   - Use `bun vitest run --project=server` for server-side tests (includes csv.spec.ts)
-   - Use `bun vitest run --project=client` for Svelte component tests
-   - Use `bun test` to run full test suite (unit + e2e)
-
-8. **Debug Logging**
-   - Enable debug logs with `DEBUG` env var or `localStorage.debug` in browser
-   - Namespaces use `moneywiz:` prefix (e.g., `moneywiz:csv`, `moneywiz:store:csv`)
-   - Terminal: `DEBUG=moneywiz:* bun run dev` - Enable all MoneyWiz logs
-   - Terminal: `DEBUG=moneywiz:csv bun run dev` - CSV parser only
-   - Browser: `localStorage.debug = 'moneywiz:*'` - Enable all MoneyWiz logs
-   - Browser: `localStorage.debug = 'moneywiz:csv'` - CSV parser only
-   - Browser: `localStorage.debug = '*'` - Enable ALL debug logs (useful for debugging 3rd-party libs)
-   - After setting `localStorage.debug`, refresh the page to apply
-
-9. **Svelte 5 Deprecation Warnings**
-   - Use event attributes (`onchange`, `onclick`) instead of event directives (`on:change`, `on:click`)
-   - Use `$derived()` for reactive computed values based on props
-   - Use `$effect()` for side effects that should re-run when dependencies change
-   - See [CsvUploadButton.svelte](src/components/CsvUploadButton.svelte) for reference implementation
-
-### Available Assets
-
-**Instructions:**
-- **Node.js + JavaScript + Vitest** - Guidelines for Node.js and JavaScript code with Vitest testing
-
-**Agents:**
-- **Playwright Tester** (`@playwright-tester`) - Specialized agent for Playwright test automation
-- **TDD Red Phase** (`@tdd-red`) - Write failing tests first based on GitHub issue requirements
-- **TDD Green Phase** (`@tdd-green`) - Implement minimal code to make tests pass
-- **TDD Refactor Phase** (`@tdd-refactor`) - Improve code quality while keeping tests green
-- **Engineer** (`@engineer`) - General software engineering agent
-
-**Prompts:**
-- **/mw.project-status** - Get current project status and recent improvements (start here!)
-- **/mw.next-actions** - Next development priorities and action items
-- **/mw.git-commit** - Analyze changes and create conventional commits with intelligent staging
-- **/playwright-generate-test** - Generate Playwright e2e tests with MCP integration
-- **/playwright-explore-website** - Explore and analyze websites using Playwright
-- **/suggest-awesome-github-copilot-collections** - Discover more GitHub Copilot collections
-
-### How to Use Installed Assets
-
-**Instructions (.instructions.md):**
-- Automatically activate when editing matching files
-- Apply project-specific coding standards and best practices
-- No explicit invocation needed - they're always active in context
-
-**Prompts (.prompt.md):**
-- Invoke with `/` in GitHub Copilot Chat (e.g., `/playwright-generate-test`)
-- Run from Command Palette: `Chat: Run Prompt`
-- Click run button when viewing prompt file in VS Code
-
-**Agents (.agent.md):**
-- Switch agents using `@agent-name` in Copilot Chat (e.g., `@tdd-red`)
-- Specialized agents provide focused expertise for specific tasks
-- Can hand off between agents for workflow automation
-
-### Usage Examples
-
-- **TDD Workflow:** Use the three TDD agents (`@tdd-red`, `@tdd-green`, `@tdd-refactor`) for Test-Driven Development cycle
-- **Playwright Testing:** Use `/playwright-generate-test` prompt to create e2e tests with MCP integration
-- **Test Automation:** Use `@playwright-tester` agent for complex Playwright testing scenarios
-
+See `.github/instructions/`, `.github/skills/`, `.github/prompts/` for full details.
