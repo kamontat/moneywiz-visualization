@@ -137,54 +137,24 @@ This file is copied to `build/sw.js` during the build process.
 
 ## Installed GitHub Copilot Collections
 
-This project has three curated GitHub Copilot collections installed from [awesome-copilot](https://github.com/github/awesome-copilot) to enhance development workflow:
+This project has curated GitHub Copilot collections installed from [awesome-copilot](https://github.com/github/awesome-copilot) relevant to the Svelte + TypeScript + Playwright + Vitest stack:
 
-### 1. Frontend Web Development Collection (11 items)
+### Available Assets
 
-Essential prompts, instructions, and agents for modern frontend web development including React, Angular, Vue, TypeScript, and CSS frameworks.
+**Instructions:**
+- **Node.js + JavaScript + Vitest** - Guidelines for Node.js and JavaScript code with Vitest testing
 
-**Installed Assets:**
-- **Instructions:** Angular, Next.js, Next.js + Tailwind, ReactJS, TanStack Start + Shadcn, VueJS 3, Node.js + JavaScript + Vitest, Playwright Python, Playwright TypeScript
-- **Agents:** Electron Angular Native, Expert React Frontend Engineer
-- **Prompts:** Playwright Generate Test, Playwright Explore Website
+**Agents:**
+- **Playwright Tester** (`@playwright-tester`) - Specialized agent for Playwright test automation
+- **TDD Red Phase** (`@tdd-red`) - Write failing tests first based on GitHub issue requirements
+- **TDD Green Phase** (`@tdd-green`) - Implement minimal code to make tests pass
+- **TDD Refactor Phase** (`@tdd-refactor`) - Improve code quality while keeping tests green
+- **Engineer** (`@engineer`) - General software engineering agent
 
-**Usage Examples:**
-- React Development: Instructions automatically apply to `.tsx`, `.jsx` files
-- Next.js + Tailwind: Instructions guide best practices for App Router, Server Components, and Tailwind
-- Playwright Testing: Use `/playwright-generate-test` prompt to create e2e tests with MCP integration
-- Expert React Agent: Switch to specialized React agent for complex component development
-
-### 2. Testing & Test Automation Collection (11 items)
-
-Comprehensive collection for writing tests, test automation, and test-driven development including unit tests, integration tests, and end-to-end testing strategies.
-
-**Installed Assets:**
-- **Agents:** Playwright Tester, TDD Red Phase, TDD Green Phase, TDD Refactor Phase
-- **Prompts:** JUnit Best Practices, NUnit Best Practices, AI Prompt Safety Review
-- **Instructions:** Playwright Python, Playwright TypeScript
-
-**Usage Examples:**
-- **TDD Workflow:** Use three specialized TDD agents for Test-Driven Development cycle:
-  1. **/red**: TDD Red Phase agent - Write failing tests first based on GitHub issue requirements
-  2. **/green**: TDD Green Phase agent - Implement minimal code to make tests pass
-  3. **/refactor**: TDD Refactor Phase agent - Improve code quality while keeping tests green
-- **Playwright Testing:** Use `/playwright-generate-test` prompt to create e2e tests with MCP integration
-- **Best Practices:** Use `/junit-best-practices` or `/nunit-best-practices` for unit testing guidance
-
-### 3. Security & Code Quality Collection (6 items)
-
-Security frameworks, accessibility guidelines, performance optimization, and code quality best practices for building secure, maintainable, and high-performance applications.
-
-**Installed Assets:**
-- **Instructions:** Accessibility, Object Calisthenics, Performance Optimization, Secure Coding (OWASP), Self-Explanatory Code
-- **Prompts:** AI Prompt Safety Review
-
-**Usage Examples:**
-- **Accessibility:** Instructions automatically apply to ensure WCAG compliance in web code
-- **Security:** OWASP guidelines automatically enforce secure coding practices (SQL injection prevention, XSS protection, etc.)
-- **Performance:** Instructions guide optimization strategies for frontend, backend, and database
-- **Code Quality:** Object Calisthenics rules enforce clean, maintainable code in business logic
-- **Prompt Safety:** Use `/ai-prompt-safety-review` to analyze and improve AI prompts for safety and bias
+**Prompts:**
+- **/playwright-generate-test** - Generate Playwright e2e tests with MCP integration
+- **/playwright-explore-website** - Explore and analyze websites using Playwright
+- **/suggest-awesome-github-copilot-collections** - Discover more GitHub Copilot collections
 
 ### How to Use Installed Assets
 
@@ -203,11 +173,9 @@ Security frameworks, accessibility guidelines, performance optimization, and cod
 - Specialized agents provide focused expertise for specific tasks
 - Can hand off between agents for workflow automation
 
-### Collection Benefits for This Project
+### Usage Examples
 
-1. **Svelte/TypeScript Development:** React and TypeScript instructions provide relevant patterns adaptable to Svelte
-2. **Playwright Integration:** Test automation tools work seamlessly with existing Playwright + Vitest setup
-3. **Tailwind CSS:** Next.js + Tailwind instructions align with project's Tailwind 4 configuration
-4. **Security & Performance:** OWASP and performance guidelines ensure production-ready code
-5. **Test-Driven Development:** TDD agents enable disciplined testing workflow with GitHub issue integration
+- **TDD Workflow:** Use the three TDD agents (`@tdd-red`, `@tdd-green`, `@tdd-refactor`) for Test-Driven Development cycle
+- **Playwright Testing:** Use `/playwright-generate-test` prompt to create e2e tests with MCP integration
+- **Test Automation:** Use `@playwright-tester` agent for complex Playwright testing scenarios
 
