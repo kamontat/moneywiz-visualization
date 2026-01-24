@@ -4,7 +4,7 @@ description: "Fix bugs and create resilient Playwright tests for regressions"
 agent: "agent"
 tools: ["execute", "read", "edit/editFiles", "search", "web/fetch", "svelte/*", "microsoft/playwright/*"]
 argument-hint: "briefly describe the bug, page, or failing flow"
-model: Claude Opus 4.5 (copilot)
+model: Claude Haiku 4.5 (copilot)
 ---
 
 ## Mission

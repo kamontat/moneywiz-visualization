@@ -4,7 +4,7 @@ description: "Implement requested website features with SvelteKit, tests, and MC
 agent: agent
 tools: ["execute", "read", "edit", "search", "web", "agent", "spences10/sequentialthinking/*", "svelte/*", "microsoft/playwright/*", "chromedevtools/chrome-devtools/*", "modelcontextprotocol/time/*", "cognitionai/deepwiki/*", "upstash/context7/*", "askQuestions", "todo"]
 argument-hint: "Provide the feature request and any acceptance criteria."
-model: Claude Opus 4.5 (copilot)
+model: Gemini 3 Pro (Preview) (copilot)
 ---
 
 # Project Implement
