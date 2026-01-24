@@ -1,17 +1,18 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { parseCsvFile, type ParsedCsv } from '$lib/csv';
 	import { log } from '$lib/debug';
 
-	let { label = 'Upload CSV', id }: { label?: string; id?: string } = $props();
+	interface Props {
+		label?: string;
+		id?: string;
+		onparsed?: (detail: { file: File; data: ParsedCsv }) => void;
+		onerror?: (detail: { file: File | null; message: string }) => void;
+	}
+
+	let { label = 'Upload CSV', id, onparsed, onerror }: Props = $props();
 	const fallbackId = `csv-upload-${Math.random().toString(36).slice(2, 9)}`;
 	const inputId = $derived(id ?? fallbackId);
 	$effect(() => log.componentUpload('initialized with id=%s', inputId));
-
-	const dispatch = createEventDispatcher<{
-		parsed: { file: File; data: ParsedCsv };
-		error: { file: File | null; message: string };
-	}>();
 
 	let isParsing = $state(false);
 
@@ -35,12 +36,12 @@
 
 		try {
 			const data = await parseCsvFile(file);
-			log.componentUpload('parse successful, dispatching parsed event');
-			dispatch('parsed', { file, data });
+			log.componentUpload('parse successful, calling onparsed callback');
+			onparsed?.({ file, data });
 		} catch (error) {
 			const message = error instanceof Error ? error.message : 'Failed to parse CSV';
 			log.componentUpload('parse error: %s', message);
-			dispatch('error', { file, message });
+			onerror?.({ file, message });
 			console.error(message, error);
 		} finally {
 			if (target) {

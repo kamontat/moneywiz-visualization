@@ -9,17 +9,17 @@
 	let parsedUpload: { fileName: string; data: ParsedCsv } | null = $state(null);
 	let errorMessage: string | null = $state(null);
 
-	function handleParsed(event: CustomEvent<{ file: File; data: ParsedCsv }>) {
-		parsedUpload = { fileName: event.detail.file.name, data: event.detail.data };
+	function handleParsed(detail: { file: File; data: ParsedCsv }) {
+		parsedUpload = { fileName: detail.file.name, data: detail.data };
 		errorMessage = null;
 
 		// Publish to global store for the dashboard
 		csvStore.set({ fileName: parsedUpload.fileName, data: parsedUpload.data });
 	}
 
-	function handleError(event: CustomEvent<{ file: File | null; message: string }>) {
+	function handleError(detail: { file: File | null; message: string }) {
 		parsedUpload = null;
-		errorMessage = event.detail.message;
+		errorMessage = detail.message;
 
 		// Clear store on error
 		csvStore.set({ fileName: null, data: null });
@@ -29,7 +29,7 @@
 </script>
 
 <div class="app">
-	<AppHeader on:parsed={handleParsed} on:error={handleError} />
+	<AppHeader onparsed={handleParsed} onerror={handleError} />
 	<main class="page-shell">
 		{#if parsedUpload}
 			<section class="upload-summary" aria-live="polite">

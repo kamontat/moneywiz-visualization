@@ -1,21 +1,14 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import type { ParsedCsv } from '$lib/csv';
 	import CsvUploadButton from './CsvUploadButton.svelte';
 	import MoneyLogo from './MoneyLogo.svelte';
 
-	const dispatch = createEventDispatcher<{
-		parsed: { file: File; data: ParsedCsv };
-		error: { file: File | null; message: string };
-	}>();
-
-	function handleParsed(event: CustomEvent<{ file: File; data: ParsedCsv }>) {
-		dispatch('parsed', event.detail);
+	interface Props {
+		onparsed?: (detail: { file: File; data: ParsedCsv }) => void;
+		onerror?: (detail: { file: File | null; message: string }) => void;
 	}
 
-	function handleError(event: CustomEvent<{ file: File | null; message: string }>) {
-		dispatch('error', event.detail);
-	}
+	let { onparsed, onerror }: Props = $props();
 </script>
 
 <header class="app-header">
@@ -26,7 +19,7 @@
 		</div>
 	</div>
 
-	<CsvUploadButton on:parsed={handleParsed} on:error={handleError} />
+	<CsvUploadButton {onparsed} {onerror} />
 </header>
 
 <style>
