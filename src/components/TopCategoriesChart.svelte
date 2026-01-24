@@ -7,20 +7,17 @@
 <section aria-labelledby="cat-title" class="chart">
 	<h2 id="cat-title">Top Categories</h2>
 	{#if data.items.length > 0}
-		<svg
-			class="bar-chart"
-			viewBox="0 0 100 {data.items.length * 16}"
-			preserveAspectRatio="none"
-			aria-label="Top categories by total amount"
-		>
-			{#each data.items as item, i}
-				{@const barWidth = data.max ? (item.value / data.max) * 95 : 0}
-				<g transform={`translate(0, ${i * 16})`}>
-					<text x="0" y="12" class="bar-label">{item.name}</text>
-					<rect x="35" y="4" width={barWidth} height="8" rx="2" class="bar"></rect>
-				</g>
+		<ul class="bar-list" aria-label="Top categories by total amount">
+			{#each data.items as item (item.name)}
+				{@const barPercent = data.max ? (item.value / data.max) * 100 : 0}
+				<li class="bar-item">
+					<span class="bar-label">{item.name}</span>
+					<div class="bar-track">
+						<div class="bar" style="width: {barPercent}%"></div>
+					</div>
+				</li>
 			{/each}
-		</svg>
+		</ul>
 	{:else}
 		<p class="empty">No category data.</p>
 	{/if}
@@ -34,18 +31,44 @@
 		padding: 0.75rem;
 	}
 
-	.bar-chart {
-		width: 100%;
-		height: 180px;
+	.bar-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
-	.bar {
-		fill: #10a164;
+	.bar-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
 	}
 
 	.bar-label {
-		fill: #374151;
-		font-size: 10px;
+		flex-shrink: 0;
+		width: 180px;
+		font-size: 0.875rem;
+		color: #374151;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.bar-track {
+		flex: 1;
+		height: 12px;
+		background: #e5e7eb;
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	.bar {
+		height: 100%;
+		background: #10a164;
+		border-radius: 6px;
+		min-width: 4px;
 	}
 
 	.empty {
