@@ -1,0 +1,77 @@
+{
+	"servers": {
+		"svelte": {
+			"url": "https://mcp.svelte.dev/mcp"
+		},
+		"upstash/context7": {
+			"type": "http",
+			"url": "https://mcp.context7.com/mcp",
+			"headers": {
+				"CONTEXT7_API_KEY": "${input:context7_api_key}"
+			}
+		},
+		"cognitionai/deepwiki": {
+			"type": "http",
+			"url": "https://mcp.deepwiki.com/mcp"
+		},
+		"oraios/serena": {
+			"type": "stdio",
+			"command": "mise",
+			"args": [
+				"exec",
+				"pipx:oraios/serena@main",
+				"--",
+				"serena",
+				"start-mcp-server",
+				"--context",
+				"ide",
+				"--project",
+				"${workspaceFolder}"
+			]
+		},
+		"modelcontextprotocol/time": {
+			"type": "stdio",
+			"command": "mise",
+			"args": [
+				"exec",
+				"pipx:mcp-server-time@latest",
+				"--",
+				"mcp-server-time"
+			]
+		},
+		"spences10/sequentialthinking": {
+			"type": "stdio",
+			"command": "mise",
+			"args": [
+				"exec",
+				"npm:mcp-sequentialthinking-tools@latest",
+				"--",
+				"mcp-sequentialthinking-tools"
+			]
+		},
+		"microsoft/playwright": {
+			"type": "stdio",
+			"command": "mise",
+			"args": [
+				"exec",
+				"npm:playwright-mcp@latest",
+				"--",
+				"playwright-mcp"
+			]
+		},
+		"chromedevtools/chrome-devtools": {
+			"type": "stdio",
+			"command": "mise",
+			"args": [
+				"exec",
+				"npm:chrome-devtools-mcp@latest",
+				"--",
+				"chrome-devtools-mcp"
+			]
+		},
+		"github/github-mcp-server/personal": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp"
+		}
+	}
+}
