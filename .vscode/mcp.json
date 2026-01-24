@@ -54,9 +54,11 @@
 			"command": "mise",
 			"args": [
 				"exec",
-				"npm:playwright-mcp@latest",
+				"npm:@playwright/mcp@latest",
 				"--",
-				"playwright-mcp"
+				"playwright-mcp",
+				"--config",
+				"${workspaceFolder}/configs/playwright/config.json"
 			]
 		},
 		"chromedevtools/chrome-devtools": {
