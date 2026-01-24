@@ -47,6 +47,10 @@ Use DeepWiki MCP tools to explore GitHub repository documentation:
 
 Example: For understanding how a GitHub project works, use these tools instead of manually browsing files.
 
+## Agent Updates
+
+- Refined Engineer and Tester agents with scoped tools, GPT-5.1-Codex-Max models, and clearer responsibilities.
+
 ---
 
 ## Project Configuration
