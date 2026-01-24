@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { parseCsvFile, type ParsedCsv } from '$lib/csv';
+	import { log } from '$lib/debug';
 
 	let { label = 'Upload CSV', id }: { label?: string; id?: string } = $props();
 	const inputId = id || `csv-upload-${Math.random().toString(36).slice(2, 9)}`;
+	log.componentUpload('initialized with id=%s', inputId);
 
 	const dispatch = createEventDispatcher<{
 		parsed: { file: File; data: ParsedCsv };
@@ -13,6 +15,7 @@
 	let isParsing = $state(false);
 
 	function openPicker() {
+		log.componentUpload('opening file picker');
 		const fileInput = document.getElementById(inputId) as HTMLInputElement | null;
 		fileInput?.click();
 	}
@@ -21,15 +24,21 @@
 		const target = event.currentTarget as HTMLInputElement | null;
 		const file = target?.files?.[0];
 
-		if (!file) return;
+		if (!file) {
+			log.componentUpload('no file selected');
+			return;
+		}
 
+		log.componentUpload('file selected: %s (%d bytes)', file.name, file.size);
 		isParsing = true;
 
 		try {
 			const data = await parseCsvFile(file);
+			log.componentUpload('parse successful, dispatching parsed event');
 			dispatch('parsed', { file, data });
 		} catch (error) {
 			const message = error instanceof Error ? error.message : 'Failed to parse CSV';
+			log.componentUpload('parse error: %s', message);
 			dispatch('error', { file, message });
 			console.error(message, error);
 		} finally {
@@ -37,6 +46,7 @@
 				target.value = '';
 			}
 			isParsing = false;
+			log.componentUpload('parsing complete, isParsing=%s', isParsing);
 		}
 	}
 </script>

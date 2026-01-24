@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCsv } from './csv';
+import { parseCsv, CsvParseError } from './csv';
 
 describe('parseCsv', () => {
 	it('skips sep preamble and respects declared delimiter', () => {
@@ -12,8 +12,21 @@ describe('parseCsv', () => {
 		]);
 	});
 
-	it('returns empty result for empty input', () => {
-		const result = parseCsv('');
-		expect(result).toEqual({ headers: [], rows: [] });
+	it('throws CsvParseError for empty input', () => {
+		expect(() => parseCsv('')).toThrow(CsvParseError);
+		expect(() => parseCsv('')).toThrow('CSV contains no data');
+	});
+
+	it('throws CsvParseError for whitespace-only input', () => {
+		expect(() => parseCsv('   \n\n  ')).toThrow(CsvParseError);
+		expect(() => parseCsv('   \n\n  ')).toThrow('CSV contains no data');
+	});
+
+	it('parses headers-only CSV without rows', () => {
+		const sample = 'Name,Age,City\n';
+		const result = parseCsv(sample);
+
+		expect(result.headers).toEqual(['Name', 'Age', 'City']);
+		expect(result.rows).toEqual([]);
 	});
 });

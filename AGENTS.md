@@ -57,6 +57,7 @@ Example: For understanding how a GitHub project works, use these tools instead o
 
 ### Recent Improvements (Jan 2026)
 
+- **Debug Logging**: Added `debug` package with namespace filtering (`moneywiz:*`). See `src/lib/debug.ts` for available loggers
 - **CSV Upload System**: Enhanced parser to handle MoneyWiz exports with `sep=` preamble detection, BOM handling, and real-time preview UI
 - **Development Workflow**: Added dev server reuse guidance and standardized on `bun` for all commands
 - **Test Infrastructure**: Documented test commands and created CSV parser unit tests
@@ -175,6 +176,16 @@ This file is copied to `build/sw.js` during the build process.
    - Use `bun vitest run --project=server` for server-side tests (includes csv.spec.ts)
    - Use `bun vitest run --project=client` for Svelte component tests
    - Use `bun test` to run full test suite (unit + e2e)
+
+8. **Debug Logging**
+   - Enable debug logs with `DEBUG` env var or `localStorage.debug` in browser
+   - Namespaces use `moneywiz:` prefix (e.g., `moneywiz:csv`, `moneywiz:store:csv`)
+   - Terminal: `DEBUG=moneywiz:* bun run dev` - Enable all MoneyWiz logs
+   - Terminal: `DEBUG=moneywiz:csv bun run dev` - CSV parser only
+   - Browser: `localStorage.debug = 'moneywiz:*'` - Enable all MoneyWiz logs
+   - Browser: `localStorage.debug = 'moneywiz:csv'` - CSV parser only
+   - Browser: `localStorage.debug = '*'` - Enable ALL debug logs (useful for debugging 3rd-party libs)
+   - After setting `localStorage.debug`, refresh the page to apply
 ### Available Assets
 
 **Instructions:**

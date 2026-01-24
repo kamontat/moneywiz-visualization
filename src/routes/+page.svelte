@@ -2,33 +2,44 @@
 	import { onMount } from 'svelte';
 	import { csvStore, type CsvState } from '$lib/stores/csv';
 	import { parseCsv, type ParsedCsv } from '$lib/csv';
+	import { log } from '$lib/debug';
 
 	let csv: CsvState = $state({ fileName: null, data: null });
 
 	// Subscribe to global store
 	onMount(() => {
+		log.pageDashboard('mounting dashboard');
 		const unsub = csvStore.subscribe((value) => {
+			log.pageDashboard('store updated: fileName=%s', value.fileName);
 			csv = value;
 		});
 
 		// Load default sample CSV if none uploaded yet
 		(async () => {
 			if (!csv.data) {
+				log.fetch('loading default CSV from /data/report.csv');
 				try {
 					const res = await fetch('/data/report.csv');
 					if (res.ok) {
 						const text = await res.text();
+						log.fetch('default CSV loaded: %d bytes', text.length);
 						const parsed = parseCsv(text);
 						csvStore.set({ fileName: 'report.csv', data: parsed });
+					} else {
+						log.fetch('failed to load default CSV: status=%d', res.status);
 					}
 				} catch (err) {
 					// Ignore fetch errors; dashboard will show empty state
+					log.fetch('error loading default CSV: %O', err);
 					console.error('Failed to load default CSV', err);
 				}
 			}
 		})();
 
-		return () => unsub();
+		return () => {
+			log.pageDashboard('unmounting dashboard');
+			unsub();
+		};
 	});
 
 	// Helpers
@@ -48,8 +59,13 @@
 	}
 
 	function getTHBRows(data: ParsedCsv | null): Record<string, string>[] {
-		if (!data) return [];
-		return data.rows.filter((r) => (r['Currency'] || '').toUpperCase() === 'THB');
+		if (!data) {
+			log.pageDashboard('getTHBRows: no data');
+			return [];
+		}
+		const rows = data.rows.filter((r) => (r['Currency'] || '').toUpperCase() === 'THB');
+		log.pageDashboard('getTHBRows: filtered %d THB rows from %d total', rows.length, data.rows.length);
+		return rows;
 	}
 
 	// Derived metrics
