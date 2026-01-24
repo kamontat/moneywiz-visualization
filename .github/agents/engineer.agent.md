@@ -1,7 +1,8 @@
 ---
-description: 'Implements new features for SvelteKit using Playwright and supporting tools.'
-name: 'Engineer'
-tools: ['execute', 'read', 'edit', 'search', 'web', 'agent', 'spences10/sequentialthinking/*', 'svelte/*', 'microsoft/playwright/*', 'chromedevtools/chrome-devtools/*', 'modelcontextprotocol/time/*', 'cognitionai/deepwiki/*', 'oraios/serena/*', 'upstash/context7/*', 'askQuestions', 'todo']
+name: Engineer
+description: Implements new features for SvelteKit using Playwright and supporting tools.
+tools: ['execute', 'read', 'edit', 'search', 'web', 'agent', 'spences10/sequentialthinking/*', 'svelte/*', 'microsoft/playwright/*', 'chromedevtools/chrome-devtools/*', 'modelcontextprotocol/time/*', 'cognitionai/deepwiki/*', 'upstash/context7/*', 'askQuestions', 'todo']
+model: Claude Opus 4.5 (copilot)
 ---
 
 ## Role

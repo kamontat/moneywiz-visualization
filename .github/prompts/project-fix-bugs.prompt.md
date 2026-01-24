@@ -2,7 +2,7 @@
 name: 'mw.project-fix-bugs'
 description: 'Fix bugs and create resilient Playwright tests for regressions'
 agent: 'agent'
-tools: ['execute', 'read', 'edit/editFiles', 'search', 'web/fetch', 'microsoft/playwright/*']
+tools: ['execute', 'read', 'edit/editFiles', 'search', 'web/fetch', 'svelte/*', 'microsoft/playwright/*']
 argument-hint: 'briefly describe the bug, page, or failing flow'
 ---
 
