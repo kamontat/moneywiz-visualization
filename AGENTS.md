@@ -26,6 +26,7 @@ bun run preview                    # Preview production build
 
 ## Recent Updates (Jan 2026)
 
+- **UI Standardization:** Migrated to Tailwind CSS v4 with centralized theme configuration and utility classes for all components
 - **Income vs Expenses Chart:** New donut chart showing income/expense ratio with savings rate indicator, gradient fills, and detailed legend
 - **No Auto-Load CSV:** Dashboard no longer auto-loads `data/report.csv`; users must explicitly upload CSV files (test data is for local development only)
 - **Clear CSV Feature:** Header now includes a clear button to reset loaded data and start fresh
@@ -92,20 +93,6 @@ Example usage:
 - **Adapter:** `@sveltejs/adapter-static` for root-level deployment
 - **Prerendering:** All pages prerendered via `export const prerender = true` in `src/routes/+layout.ts`
 - **No Base Path:** Site deploys to custom domain root (no `paths.base` needed)
-
-### Image Handling
-
-Images imported from `$lib/images/` are automatically processed by Vite:
-- Hashed and placed in `build/_app/immutable/assets/`
-- Paths resolved as absolute from root
-- No manual path resolution needed
-
-```svelte
-<script lang="ts">
-  import welcome from '$lib/images/svelte-welcome.webp';
-</script>
-<img src={welcome} alt="Welcome" />
-```
 
 ### Service Worker
 

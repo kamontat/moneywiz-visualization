@@ -53,69 +53,15 @@
 	}
 </script>
 
-<div class="upload">
+<div class="flex items-center">
 	<input
-		class="visually-hidden"
+		class="sr-only"
 		accept=".csv,text/csv"
 		onchange={handleFileChange}
 		id={inputId}
 		type="file"
 	/>
-	<button class="upload-button" type="button" onclick={openPicker} disabled={isParsing}>
+	<button class="inline-flex items-center gap-1 px-3.5 py-2 text-sm font-bold text-white bg-gradient-to-br from-mw-primary to-mw-primary-dark border border-mw-primary rounded-lg shadow-md shadow-emerald-600/20 cursor-pointer transition-all duration-150 ease-in-out hover:not-disabled:from-emerald-500 hover:not-disabled:to-emerald-600 hover:not-disabled:shadow-lg hover:not-disabled:shadow-emerald-600/30 hover:not-disabled:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-mw-primary focus-visible:outline-offset-2 disabled:from-teal-300 disabled:to-teal-400 disabled:border-teal-300 disabled:shadow-none disabled:cursor-not-allowed" type="button" onclick={openPicker} disabled={isParsing}>
 		{isParsing ? 'Uploading…' : label}
 	</button>
 </div>
-
-<style>
-	.upload {
-		display: flex;
-		align-items: center;
-	}
-
-	.visually-hidden {
-		border: 0;
-		clip: rect(0 0 0 0);
-		height: 1px;
-		margin: -1px;
-		overflow: hidden;
-		padding: 0;
-		position: absolute;
-		white-space: nowrap;
-		width: 1px;
-	}
-
-	.upload-button {
-		align-items: center;
-		background: linear-gradient(135deg, #0f9d58, #2e8f62);
-		border: 1px solid #0f9d58;
-		border-radius: 8px;
-		box-shadow: 0 6px 16px rgba(15, 157, 88, 0.18);
-		color: #f7fbf9;
-		cursor: pointer;
-		display: inline-flex;
-		font-size: 0.875rem;
-		font-weight: 700;
-		gap: 0.25rem;
-		letter-spacing: 0.01em;
-		padding: 0.45rem 0.85rem;
-		transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-	}
-
-	.upload-button:hover:not(:disabled) {
-		background: linear-gradient(135deg, #10a164, #35a869);
-		box-shadow: 0 10px 22px rgba(15, 157, 88, 0.24);
-		transform: translateY(-1px);
-	}
-
-	.upload-button:focus-visible {
-		outline: 2px solid #0f9d58;
-		outline-offset: 2px;
-	}
-
-	.upload-button:disabled {
-		background: linear-gradient(135deg, #9fb7a7, #a9c0b0);
-		border-color: #9fb7a7;
-		box-shadow: none;
-		cursor: not-allowed;
-	}
-</style>

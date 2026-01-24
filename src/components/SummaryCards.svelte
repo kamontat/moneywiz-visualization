@@ -5,59 +5,21 @@
 	let { totals }: { totals: Totals } = $props();
 </script>
 
-<div class="cards" role="list">
-	<div class="card" role="listitem">
-		<p class="label">Income (THB)</p>
-		<p class="value">{formatTHB(totals.income)}</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3" role="list">
+	<div class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-lg shadow-gray-900/5" role="listitem">
+		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Income (THB)</p>
+		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{formatTHB(totals.income)}</p>
 	</div>
-	<div class="card" role="listitem">
-		<p class="label">Expenses (THB)</p>
-		<p class="value">{formatTHB(Math.abs(totals.expenses))}</p>
+	<div class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-lg shadow-gray-900/5" role="listitem">
+		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Expenses (THB)</p>
+		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{formatTHB(Math.abs(totals.expenses))}</p>
 	</div>
-	<div class="card" role="listitem">
-		<p class="label">Net (THB)</p>
-		<p class="value">{formatTHB(totals.net)}</p>
+	<div class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-lg shadow-gray-900/5" role="listitem">
+		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Net (THB)</p>
+		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{formatTHB(totals.net)}</p>
 	</div>
-	<div class="card" role="listitem">
-		<p class="label">Transactions</p>
-		<p class="value">{totals.count}</p>
+	<div class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-lg shadow-gray-900/5" role="listitem">
+		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Transactions</p>
+		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{totals.count}</p>
 	</div>
 </div>
-
-<style>
-	.cards {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 0.75rem;
-	}
-
-	.card {
-		background: #ffffff;
-		border: 1px solid #e5e7eb;
-		border-radius: 12px;
-		padding: 0.75rem;
-		box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
-	}
-
-	.label {
-		margin: 0;
-		color: #6b7280;
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-	}
-
-	.value {
-		margin: 0.35rem 0 0;
-		color: #1f2937;
-		font-weight: 800;
-		font-size: 1.1rem;
-	}
-
-	@media (max-width: 800px) {
-		.cards {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-</style>

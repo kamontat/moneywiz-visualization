@@ -13,107 +13,20 @@
 	let { onparsed, onerror, onclear, csvLoaded = false }: Props = $props();
 </script>
 
-<header class="app-header">
-	<div class="brand">
+<header class="sticky top-0 z-10 flex flex-col sm:flex-row items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2 bg-mw-surface-alt border-b border-mw-border">
+	<div class="inline-flex items-center gap-2 min-w-0">
 		<MoneyLogo size={28} />
-		<div class="brand-text">
-			<span class="app-name">MoneyWiz Visualization</span>
+		<div class="flex items-center gap-1 min-w-0">
+			<span class="text-mw-text-main text-sm sm:text-base font-extrabold tracking-wide uppercase whitespace-nowrap">MoneyWiz Visualization</span>
 		</div>
 	</div>
 
-	<div class="actions">
+	<div class="flex w-full sm:w-auto items-center justify-end gap-2">
 		{#if csvLoaded}
-			<button class="clear-button" type="button" onclick={onclear} aria-label="Clear loaded CSV">
+			<button class="inline-flex items-center gap-1 px-3 py-[0.45rem] text-sm font-semibold text-mw-text-secondary bg-white border border-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out hover:bg-red-50 hover:border-red-300 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2" type="button" onclick={onclear} aria-label="Clear loaded CSV">
 				Clear
 			</button>
 		{/if}
 		<CsvUploadButton {onparsed} {onerror} />
 	</div>
 </header>
-
-<style>
-	.app-header {
-		align-items: center;
-		background: #f7fbfd;
-		border-bottom: 1px solid #e2e8f0;
-		display: flex;
-		gap: 0.75rem;
-		justify-content: space-between;
-		padding: 0.5rem 1rem;
-		position: sticky;
-		top: 0;
-		z-index: 10;
-	}
-
-	.brand {
-		align-items: center;
-		display: inline-flex;
-		gap: 0.5rem;
-		min-width: 0;
-	}
-
-	.brand-text {
-		align-items: center;
-		display: flex;
-		gap: 0.25rem;
-		min-width: 0;
-	}
-
-	.app-name {
-		color: #1f2328;
-		font-size: 1rem;
-		font-weight: 800;
-		letter-spacing: 0.02em;
-		text-transform: uppercase;
-		white-space: nowrap;
-	}
-
-	.actions {
-		align-items: center;
-		display: flex;
-		gap: 0.5rem;
-	}
-
-	.clear-button {
-		align-items: center;
-		background: #fff;
-		border: 1px solid #d1d5db;
-		border-radius: 8px;
-		color: #4b5563;
-		cursor: pointer;
-		display: inline-flex;
-		font-size: 0.875rem;
-		font-weight: 600;
-		gap: 0.25rem;
-		padding: 0.45rem 0.75rem;
-		transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
-	}
-
-	.clear-button:hover {
-		background: #fef2f2;
-		border-color: #fca5a5;
-		color: #dc2626;
-	}
-
-	.clear-button:focus-visible {
-		outline: 2px solid #dc2626;
-		outline-offset: 2px;
-	}
-
-	@media (max-width: 640px) {
-		.app-header {
-			align-items: flex-start;
-			flex-direction: column;
-			padding: 0.5rem 0.75rem;
-		}
-
-		.app-name {
-			font-size: 0.9rem;
-		}
-
-		.actions {
-			width: 100%;
-			justify-content: flex-end;
-		}
-	}
-</style>

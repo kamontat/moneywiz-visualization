@@ -4,74 +4,21 @@
 	let { data }: { data: TopCategoriesData } = $props();
 </script>
 
-<section aria-labelledby="cat-title" class="chart">
-	<h2 id="cat-title">Top Categories</h2>
+<section aria-labelledby="cat-title" class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-sm">
+	<h2 id="cat-title" class="text-mw-text-main text-base font-normal mb-3">Top Categories</h2>
 	{#if data.items.length > 0}
-		<ul class="bar-list" aria-label="Top categories by total amount">
+		<ul class="flex flex-col gap-2 m-0 p-0 list-none" aria-label="Top categories by total amount">
 			{#each data.items as item (item.name)}
 				{@const barPercent = data.max ? (item.value / data.max) * 100 : 0}
-				<li class="bar-item">
-					<span class="bar-label">{item.name}</span>
-					<div class="bar-track">
-						<div class="bar" style="width: {barPercent}%"></div>
+				<li class="flex items-center gap-3">
+					<span class="flex-shrink-0 w-[180px] text-sm text-mw-text-secondary overflow-hidden text-ellipsis whitespace-nowrap">{item.name}</span>
+					<div class="flex-1 h-3 bg-gray-200 rounded-md overflow-hidden">
+						<div class="h-full bg-mw-primary rounded-md min-w-[4px]" style="width: {barPercent}%"></div>
 					</div>
 				</li>
 			{/each}
 		</ul>
 	{:else}
-		<p class="empty">No category data.</p>
+		<p class="text-mw-text-muted">No category data.</p>
 	{/if}
 </section>
-
-<style>
-	.chart {
-		background: #ffffff;
-		border: 1px solid #e5e7eb;
-		border-radius: 12px;
-		padding: 0.75rem;
-	}
-
-	.bar-list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.bar-item {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.bar-label {
-		flex-shrink: 0;
-		width: 180px;
-		font-size: 0.875rem;
-		color: #374151;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.bar-track {
-		flex: 1;
-		height: 12px;
-		background: #e5e7eb;
-		border-radius: 6px;
-		overflow: hidden;
-	}
-
-	.bar {
-		height: 100%;
-		background: #10a164;
-		border-radius: 6px;
-		min-width: 4px;
-	}
-
-	.empty {
-		color: #6b7280;
-	}
-</style>

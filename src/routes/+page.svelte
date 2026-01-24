@@ -41,72 +41,24 @@
 	<meta name="description" content="Visualize MoneyWiz CSV data: summaries and charts." />
 </svelte:head>
 
-<section aria-labelledby="dash-title" class="dashboard">
-	<h1 id="dash-title">Dashboard</h1>
+<section aria-labelledby="dash-title" class="flex flex-col gap-4">
+	<h1 id="dash-title" class="m-0 mb-2 text-2xl font-normal text-mw-text-main">Dashboard</h1>
 
 	{#if csv.data}
 		<SummaryCards {totals} />
 
-		<div class="charts">
-			<section aria-labelledby="ratio-title" class="chart-panel">
-				<h2 id="ratio-title">Income vs Expenses</h2>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<section aria-labelledby="ratio-title" class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-sm">
+				<h2 id="ratio-title" class="m-0 mb-3 text-base font-normal text-mw-text-main">Income vs Expenses</h2>
 				<IncomeExpenseRatioChart income={totals.income} expenses={totals.expenses} />
 			</section>
 			<TopCategoriesChart data={topCategories} />
 			<DailyExpensesChart data={dailyExpenses} />
 		</div>
 	{:else}
-		<p class="empty">No data loaded yet. Upload a CSV to begin.</p>
+		<p class="text-mw-text-muted">No data loaded yet. Upload a CSV to begin.</p>
 	{/if}
 </section>
 
 <!-- Keep a small blank canvas to satisfy existing tests and layout spacing -->
-<section class="blank-canvas" aria-hidden="true"></section>
-
-<style>
-	.dashboard {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	h1 {
-		margin: 0 0 0.5rem 0;
-		font-size: 1.4rem;
-		color: #111827;
-	}
-
-	.charts {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-	}
-
-	.chart-panel {
-		background: #ffffff;
-		border: 1px solid #e5e7eb;
-		border-radius: 12px;
-		padding: 0.75rem;
-	}
-
-	.chart-panel h2 {
-		margin: 0 0 0.5rem 0;
-		font-size: 1rem;
-		color: #111827;
-	}
-
-	.empty {
-		color: #6b7280;
-	}
-
-	.blank-canvas {
-		flex: 0;
-		min-height: 24px;
-	}
-
-	@media (max-width: 800px) {
-		.charts {
-			grid-template-columns: 1fr;
-		}
-	}
-</style>
+<section class="blank-canvas flex-none min-h-6" aria-hidden="true"></section>
