@@ -126,6 +126,8 @@ This file is copied to `build/sw.js` during the build process.
 - `bun run build` - Production build (outputs to `build/` directory)
 - `bun run preview` - Preview production build locally
 
+**Note:** Always use `bun` as the package manager and command runner (not `npm` or `npx`).
+
 ### Common Issues & Solutions
 
 1. **500 Error on localhost:5173/**
@@ -149,12 +151,15 @@ This file is copied to `build/sw.js` during the build process.
   - Before starting a new dev server, check http://localhost:5173/ to reuse the existing instance
   - Avoid launching `bun run dev` if the page is already being served to prevent port conflicts
 
----
+6. **MoneyWiz CSV Uploads**
+  - MoneyWiz exports include a leading `sep=` line; parser now honors it and skips the preamble
+  - UI shows a quick preview of uploaded CSVs after a successful parse
 
-## Installed GitHub Copilot Collections
-
-This project has curated GitHub Copilot collections installed from [awesome-copilot](https://github.com/github/awesome-copilot) relevant to the Svelte + TypeScript + Playwright + Vitest stack:
-
+7. **Running Tests**
+   - Always run tests after code or test changes to validate results
+   - Use `bun vitest run --project=server` for server-side tests (includes csv.spec.ts)
+   - Use `bun vitest run --project=client` for Svelte component tests
+   - Use `bun test` to run full test suite (unit + e2e)
 ### Available Assets
 
 **Instructions:**
