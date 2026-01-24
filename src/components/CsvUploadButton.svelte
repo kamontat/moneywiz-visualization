@@ -4,8 +4,9 @@
 	import { log } from '$lib/debug';
 
 	let { label = 'Upload CSV', id }: { label?: string; id?: string } = $props();
-	const inputId = id || `csv-upload-${Math.random().toString(36).slice(2, 9)}`;
-	log.componentUpload('initialized with id=%s', inputId);
+	const fallbackId = `csv-upload-${Math.random().toString(36).slice(2, 9)}`;
+	const inputId = $derived(id ?? fallbackId);
+	$effect(() => log.componentUpload('initialized with id=%s', inputId));
 
 	const dispatch = createEventDispatcher<{
 		parsed: { file: File; data: ParsedCsv };
@@ -55,11 +56,11 @@
 	<input
 		class="visually-hidden"
 		accept=".csv,text/csv"
-		on:change={handleFileChange}
+		onchange={handleFileChange}
 		id={inputId}
 		type="file"
 	/>
-		<button class="upload-button" type="button" on:click={openPicker} disabled={isParsing}>
+	<button class="upload-button" type="button" onclick={openPicker} disabled={isParsing}>
 		{isParsing ? 'Uploading…' : label}
 	</button>
 </div>

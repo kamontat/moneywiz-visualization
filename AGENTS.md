@@ -57,6 +57,11 @@ Example: For understanding how a GitHub project works, use these tools instead o
 
 ### Recent Improvements (Jan 2026)
 
+- **Svelte 5 Event Syntax Migration**: Fixed deprecation warnings in CsvUploadButton.svelte
+  - Migrated `on:change` → `onchange` and `on:click` → `onclick` per Svelte 5 event attribute syntax
+  - Fixed `id` prop reactivity warning using `$derived()` for reactive state
+  - Moved logging to `$effect()` for proper reactive tracking
+  - Build now completes without deprecation warnings
 - **Debug Logging System**: Comprehensive debug logging with builder pattern API and namespace filtering
   - Created `src/lib/debug.ts` with fluent API: `createLogger('module').sub('feature').build()`
   - Pre-built loggers for csv, store, component, page, and fetch operations
@@ -191,6 +196,13 @@ This file is copied to `build/sw.js` during the build process.
    - Browser: `localStorage.debug = 'moneywiz:csv'` - CSV parser only
    - Browser: `localStorage.debug = '*'` - Enable ALL debug logs (useful for debugging 3rd-party libs)
    - After setting `localStorage.debug`, refresh the page to apply
+
+9. **Svelte 5 Deprecation Warnings**
+   - Use event attributes (`onchange`, `onclick`) instead of event directives (`on:change`, `on:click`)
+   - Use `$derived()` for reactive computed values based on props
+   - Use `$effect()` for side effects that should re-run when dependencies change
+   - See [CsvUploadButton.svelte](src/components/CsvUploadButton.svelte) for reference implementation
+
 ### Available Assets
 
 **Instructions:**
