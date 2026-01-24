@@ -3,6 +3,7 @@ name: 'mw.project-commit'
 description: 'Analyze changes and create conventional commit with intelligent staging and message generation'
 agent: 'agent'
 tools: ['execute/getTerminalOutput', 'execute/runInTerminal', 'read', 'search', 'web']
+model: Claude Opus 4.5 (copilot)
 ---
 
 # Git Commit Current Changes

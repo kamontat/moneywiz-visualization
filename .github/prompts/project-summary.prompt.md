@@ -3,6 +3,7 @@ name: 'mw.project-summary'
 description: 'Summarize chat session work and update project documentation with changes'
 agent: 'agent'
 tools: ['execute', 'read', 'edit', 'search', 'upstash/context7/*']
+model: Claude Sonnet 4.5 (copilot)
 ---
 
 # Project Session Summary and Documentation Update

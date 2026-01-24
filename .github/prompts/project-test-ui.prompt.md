@@ -4,6 +4,7 @@ description: 'Generate Playwright test from scenario using live browser interact
 agent: 'agent'
 tools: ['execute', 'read', 'edit/editFiles', 'search', 'web/fetch', 'microsoft/playwright/*']
 argument-hint: '<test scenario>'
+model: Claude Sonnet 4.5 (copilot)
 ---
 
 # Test Generation with Playwright MCP

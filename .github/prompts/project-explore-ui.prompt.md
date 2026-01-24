@@ -4,6 +4,7 @@ description: 'Explore website functionality and identify key user flows for test
 agent: 'agent'
 tools: ['execute', 'read', 'edit/editFiles', 'search', 'web/fetch', 'microsoft/playwright/*']
 argument-hint: '<url>'
+model: Claude Sonnet 4.5 (copilot)
 ---
 
 # Website Exploration for Testing
