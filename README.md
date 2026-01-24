@@ -83,12 +83,18 @@ bun run preview
   - `AppHeader.svelte` - Main header with logo and CSV upload
   - `CsvUploadButton.svelte` - CSV file upload handler
   - `MoneyLogo.svelte` - App logo component
+  - `SummaryCards.svelte` - Dashboard summary cards (Income, Expenses, Net, Transactions)
+  - `TopCategoriesChart.svelte` - Bar chart for top spending categories
+  - `DailyExpensesChart.svelte` - Bar chart for daily expenses
 - `src/lib/` - Shared utilities and libraries
   - `csv.ts` - CSV parsing with error handling
+  - `analytics.ts` - Financial analytics calculations (totals, categories, daily expenses)
+  - `finance.ts` - Financial data parsing and formatting utilities
   - `debug.ts` - Debug logging with namespace filtering
   - `stores/` - Svelte stores (CSV state management)
 - `src/routes/` - Page routes
 - `static/` - Static assets
+- `e2e/` - Playwright end-to-end tests
 
 ## Deployment
 
@@ -100,7 +106,12 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
 
 ## Features
 
-- 📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
+- � **Dashboard**: Financial overview with THB-only summary cards and charts
+  - Income, Expenses, Net balance, and transaction count
+  - Top spending categories bar chart
+  - Daily expenses trend visualization
+  - Loads default data on startup, reacts to CSV uploads
+- �📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
   - Automatic `sep=` delimiter detection for MoneyWiz exports
   - BOM handling for proper encoding
   - Error handling with descriptive messages

@@ -26,6 +26,8 @@ bun run preview                    # Preview production build
 
 ## Recent Updates (Jan 2026)
 
+- **Dashboard Refactoring:** Split monolithic +page.svelte into reusable components (SummaryCards, TopCategoriesChart, DailyExpensesChart) and extracted business logic to `src/lib/analytics.ts` and `src/lib/finance.ts`
+- **Path Alias:** Added `$components` alias in svelte.config.js for cleaner imports
 - **Dashboard:** THB-only summary cards + charts (Top Categories, Daily Expenses). Loads `static/data/report.csv` on startup, reacts to CSV uploads via `csvStore`
 - **Debug Logging:** Builder API in `src/lib/debug.ts`. Enable with `DEBUG=moneywiz:*` or `localStorage.debug = 'moneywiz:*'`
 - **CSV Handling:** Parser handles MoneyWiz `sep=` preamble, BOM, throws `CsvParseError` on failures
@@ -35,8 +37,8 @@ bun run preview                    # Preview production build
 
 ```
 src/
-  components/      # UI components (AppHeader, MoneyLogo, CsvUploadButton)
-  lib/             # Business logic (csv.ts, debug.ts, stores/)
+  components/      # UI components (AppHeader, MoneyLogo, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart)
+  lib/             # Business logic (csv.ts, analytics.ts, finance.ts, debug.ts, stores/)
   routes/          # SvelteKit routes (file-based routing)
 static/            # Static assets (copied to build/)
 e2e/               # Playwright e2e tests
@@ -54,12 +56,28 @@ e2e/               # Playwright e2e tests
 - **Business Logic:** Place in `src/lib/` - Separate from UI concerns
 - **Tests:** Co-locate with source files using `.spec.ts` suffix
 - **Routes:** SvelteKit file-based routing in `src/routes/`
+- **Minimal Route Files:** Keep `src/routes/*.svelte` and `src/routes/*.ts` files as small as possible. Move all business logic to `src/lib/` and reusable UI/design components to `src/components/`
 
 ### Code Structure
 
 - **No Single-File Implementations:** Keep UI, logic, and tests separated
 - **Component vs Logic Separation:** Components in `src/components/`, logic in `src/lib/`
 - **Keep Files Small:** Each file should have a single, clear responsibility
+
+### Path Aliases
+
+The project uses SvelteKit path aliases configured in `svelte.config.js`:
+
+- `$lib` → `src/lib/` (built-in SvelteKit alias)
+- `$components` → `src/components/` (custom alias for cleaner imports)
+
+Example usage:
+```svelte
+<script lang="ts">
+  import SummaryCards from '$components/SummaryCards.svelte';
+  import { parseCsv } from '$lib/csv';
+</script>
+```
 
 ## Deployment Configuration
 
@@ -132,7 +150,8 @@ const log = createLogger('module').sub('feature').build();
 
 ### Prompts (Use with `/`)
 - **/mw.project-archive** - Summarize session, update docs, and commit changes
-- **/mw.project-status** - Current status and recent improvements
-- **/playwright-generate-test** - Generate e2e tests with MCP integration
+- **/mw.project-explore-ui** - Explore website and identify key user flows for testing
+- **/mw.project-fix-bugs** - Fix bugs and create Playwright tests for regressions
+- **/mw.project-test-ui** - Generate Playwright tests from scenario using live browser
 
 See `.github/instructions/`, `.github/skills/`, `.github/prompts/` for full details.

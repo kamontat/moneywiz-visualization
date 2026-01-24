@@ -7,7 +7,10 @@ const config = {
 			pages: 'build',
 			assets: 'build',
 			fallback: '404.html'
-		})
+		}),
+		alias: {
+			$components: 'src/components'
+		}
 	}
 };
 

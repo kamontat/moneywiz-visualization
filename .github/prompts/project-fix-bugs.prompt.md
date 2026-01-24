@@ -26,13 +26,13 @@ Deliver reliable fixes and Playwright tests that prevent regressions while minim
 
 1. Explore: Reproduce the issue manually or with Playwright MCP and capture snapshots/logs.
 2. Design: Define a minimal, robust test case that reproduces the failure using role-based locators.
-3. Implement: Add or update a TypeScript Playwright spec under `tests/` with `test.step()` grouping and web-first assertions.
+3. Implement: Add or update a TypeScript Playwright spec under `e2e/` with `test.step()` grouping and web-first assertions.
 4. Run & Iterate: Execute the test, diagnose failures using snapshots/logs, refine locators or test flow (avoid expanding timeouts).
 5. Document: Summarize what was fixed, add follow-up notes (flaky indicators, edge cases), and propose extra cases if needed.
 
 ## Output Expectations
 
-- A passing Playwright spec that reliably reproduces the fixed behavior (file in `tests/` following naming `<feature>.spec.ts`).
+- A passing Playwright spec that reliably reproduces the fixed behavior (file in `e2e/` following naming `<feature>.spec.ts`).
 - A short changelog note describing the fix and any test-only helpers added.
 - If code changes were required, include clear reasoning and a minimal diff.
 

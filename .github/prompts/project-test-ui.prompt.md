@@ -16,7 +16,7 @@ Generate a complete Playwright TypeScript test by executing the scenario step-by
 ## Scope & Preconditions
 
 - Target framework: `@playwright/test` (TypeScript)
-- Test location: `tests/` directory
+- Test location: `e2e/` directory
 - Prerequisites: Playwright MCP Server must be available
 - Related files: [Playwright Instructions](../instructions/playwright-typescript.instructions.md)
 
@@ -37,8 +37,8 @@ Generate a complete Playwright TypeScript test by executing the scenario step-by
    - Message history of executed steps
    - Discovered locators (prefer role-based)
    - Validated assertions
-4. **Save Test File**: Write the test to `tests/<feature-name>.spec.ts` using kebab-case naming
-5. **Execute Test**: Run the generated test using `npx playwright test --project=chromium`
+4. **Save Test File**: Write the test to `e2e/<feature-name>.spec.ts` using kebab-case naming
+5. **Execute Test**: Run the generated test using `bunx playwright test --project=chromium`
 6. **Iterate Until Passing**: If the test fails:
    - Analyze failure reasons
    - Refine locators or assertions
@@ -48,7 +48,7 @@ Generate a complete Playwright TypeScript test by executing the scenario step-by
 
 - **Format**: TypeScript test file using `@playwright/test`
 - **Structure**: Follow [Playwright TypeScript Instructions](../instructions/playwright-typescript.instructions.md)
-- **Location**: `tests/<feature-name>.spec.ts`
+- **Location**: `e2e/<feature-name>.spec.ts`
 - **Success Criteria**: Test executes successfully and passes
 
 ## Quality Assurance
@@ -57,7 +57,7 @@ Generate a complete Playwright TypeScript test by executing the scenario step-by
 - [ ] Generated test uses role-based locators (getByRole, getByLabel, etc.)
 - [ ] Test includes proper test.describe() and test.step() structure
 - [ ] Test passes when executed with `npx playwright test --project=chromium`
-- [ ] Test file saved in `tests/` directory with appropriate naming
+- [ ] Test file saved in `e2e/` directory with appropriate naming
 
 ## Guard Rails
 
