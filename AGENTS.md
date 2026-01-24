@@ -49,10 +49,18 @@ Example: For understanding how a GitHub project works, use these tools instead o
 
 ## Agent Updates
 
-- Refined Engineer and Tester agents with scoped tools, GPT-5.1-Codex-Max models, and clearer responsibilities.
-- Added landing header components (AppHeader, MoneyLogo, CsvUploadButton) plus shared CSV parser in src/lib/csv.ts for the MoneyWiz visualization UI shell.
-- **Fixed CsvUploadButton.svelte**: Resolved 500 error by removing broken `props.id()` call and properly destructuring props with fallback ID generation
-- **Enhanced git-commit prompt**: Added intelligent check for already-staged files before staging new changes, respecting user's intentional staging
+### Recent Improvements (Jan 2026)
+
+- **CSV Upload System**: Enhanced parser to handle MoneyWiz exports with `sep=` preamble detection, BOM handling, and real-time preview UI
+- **Development Workflow**: Added dev server reuse guidance and standardized on `bun` for all commands
+- **Test Infrastructure**: Documented test commands and created CSV parser unit tests
+- **Fixed CsvUploadButton.svelte**: Resolved 500 error by properly destructuring props with fallback ID generation
+- **Enhanced git-commit prompt**: Added intelligent check for already-staged files before staging new changes
+
+### Previous Updates
+
+- Refined Engineer and Tester agents with scoped tools, GPT-5.1-Codex-Max models, and clearer responsibilities
+- Added landing header components (AppHeader, MoneyLogo, CsvUploadButton) plus shared CSV parser in src/lib/csv.ts
 
 ---
 

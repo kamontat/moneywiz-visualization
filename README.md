@@ -12,6 +12,30 @@ bun run dev
 
 The dev server runs on `http://localhost:5173` (or next available port).
 
+**Tip:** Before starting a new dev server, check if http://localhost:5173/ is already running to reuse the existing instance and avoid port conflicts.
+
+### Testing
+
+Run the full test suite:
+
+```sh
+bun test
+```
+
+Run server-side tests only (includes CSV parser):
+
+```sh
+bun vitest run --project=server
+```
+
+Run client-side tests only (Svelte components):
+
+```sh
+bun vitest run --project=client
+```
+
+**Note:** Always use `bun` as the package manager and command runner (not `npm` or `npx`).
+
 ### Building
 
 To create a production build:
@@ -46,10 +70,27 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
 
 ## Features
 
-- 📤 Upload MoneyWiz CSV files
-- 📊 Parse and prepare data for visualization
-- 🎨 Professional, accessible UI
-- 📱 Responsive design
+- 📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
+  - Automatic `sep=` delimiter detection for MoneyWiz exports
+  - BOM handling for proper encoding
+  - Real-time preview of uploaded data (first 5 rows)
+- 📊 **Data Parsing**: Robust CSV parser with quoted field support
+- 🎨 **Professional UI**: Clean, accessible design with success/error feedback
+- 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
+
+## CSV Format
+
+The app supports MoneyWiz CSV exports with the following format:
+
+```csv
+sep=,
+"Account","Transfers","Description","Payee","Category","Date","Time","Memo","Amount","Currency","Check #","Tags"
+"Wallet A","Wallet B","Transfer to Wallet B","","","23/01/2026","21:18","","173,250.46","THB","",""
+```
+
+- Leading `sep=` line is automatically detected and respected
+- Supports quoted fields with embedded commas and quotes
+- BOM (Byte Order Mark) is automatically stripped
 
 ## Tech Stack
 
