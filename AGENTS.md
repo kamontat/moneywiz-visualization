@@ -51,6 +51,8 @@ Example: For understanding how a GitHub project works, use these tools instead o
 
 - Refined Engineer and Tester agents with scoped tools, GPT-5.1-Codex-Max models, and clearer responsibilities.
 - Added landing header components (AppHeader, MoneyLogo, CsvUploadButton) plus shared CSV parser in src/lib/csv.ts for the MoneyWiz visualization UI shell.
+- **Fixed CsvUploadButton.svelte**: Resolved 500 error by removing broken `props.id()` call and properly destructuring props with fallback ID generation
+- **Enhanced git-commit prompt**: Added intelligent check for already-staged files before staging new changes, respecting user's intentional staging
 
 ---
 
@@ -126,15 +128,20 @@ This file is copied to `build/sw.js` during the build process.
 
 ### Common Issues & Solutions
 
-1. **404 /sw.js Error**
+1. **500 Error on localhost:5173/**
+   - Fixed by correcting CsvUploadButton.svelte prop destructuring
+   - Issue: `props.id()` was calling undefined function
+   - Solution: Properly destructure `id` prop and generate fallback ID if not provided
+
+2. **404 /sw.js Error**
    - Fixed by adding empty service worker in `static/sw.js`
 
-2. **Images Not Loading**
+3. **Images Not Loading**
    - Ensure `src/routes/+layout.ts` has `export const prerender = true`
    - Images from `src/lib/images/` are automatically processed by Vite
    - No manual path resolution needed for root-level deployment
 
-3. **Routes Not Rendering**
+4. **Routes Not Rendering**
    - All routes must be prerendered with `export const prerender = true`
    - Set at root layout level to apply to all pages
 
@@ -157,6 +164,9 @@ This project has curated GitHub Copilot collections installed from [awesome-copi
 - **Engineer** (`@engineer`) - General software engineering agent
 
 **Prompts:**
+- **/mw.project-status** - Get current project status and recent improvements (start here!)
+- **/mw.next-actions** - Next development priorities and action items
+- **/mw.git-commit** - Analyze changes and create conventional commits with intelligent staging
 - **/playwright-generate-test** - Generate Playwright e2e tests with MCP integration
 - **/playwright-explore-website** - Explore and analyze websites using Playwright
 - **/suggest-awesome-github-copilot-collections** - Discover more GitHub Copilot collections

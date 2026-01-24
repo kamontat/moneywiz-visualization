@@ -1,42 +1,60 @@
-# sv
+# MoneyWiz Visualization
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A Svelte-based web application for visualizing MoneyWiz CSV export data.
 
-## Creating a project
+## Getting Started
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
+### Development Server
 
 ```sh
-# recreate this project
-bun x sv create --template demo --types ts --add vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:static" devtools-json mcp="ide:vscode+setup:remote" --install bun .
+bun run dev
 ```
 
-## Developing
+The dev server runs on `http://localhost:5173` (or next available port).
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Building
+
+To create a production build:
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun run build
 ```
 
-## Building
-
-To create a production version of your app:
+Preview the production build:
 
 ```sh
-npm run build
+bun run preview
 ```
 
-You can preview the production build with `npm run preview`.
+## Project Structure
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- `src/components/` - Reusable UI components
+  - `AppHeader.svelte` - Main header with logo and CSV upload
+  - `CsvUploadButton.svelte` - CSV file upload handler
+  - `MoneyLogo.svelte` - App logo component
+- `src/lib/csv.ts` - CSV parsing utilities
+- `src/routes/` - Page routes
+- `static/` - Static assets
+
+## Deployment
+
+Deploys to custom domain: https://moneywiz.kamontat.net/
+
+- Uses `@sveltejs/adapter-static` for static site generation
+- All pages are prerendered via `export const prerender = true`
+- No base path configuration needed (root-level deployment)
+
+## Features
+
+- 📤 Upload MoneyWiz CSV files
+- 📊 Parse and prepare data for visualization
+- 🎨 Professional, accessible UI
+- 📱 Responsive design
+
+## Tech Stack
+
+- **Framework**: SvelteKit 5
+- **Language**: TypeScript
+- **Testing**: Playwright (e2e), Vitest (unit)
+- **Package Manager**: Bun
+- **Build Tool**: Vite
