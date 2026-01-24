@@ -145,6 +145,10 @@ This file is copied to `build/sw.js` during the build process.
    - All routes must be prerendered with `export const prerender = true`
    - Set at root layout level to apply to all pages
 
+5. **Dev Server Already Running**
+  - Before starting a new dev server, check http://localhost:5173/ to reuse the existing instance
+  - Avoid launching `bun run dev` if the page is already being served to prevent port conflicts
+
 ---
 
 ## Installed GitHub Copilot Collections
