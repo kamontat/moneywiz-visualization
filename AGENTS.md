@@ -27,6 +27,7 @@ bun run preview                    # Preview production build
 ## Recent Updates (Jan 2026)
 
 - **UI Standardization:** Migrated to Tailwind CSS v4 with centralized theme configuration and utility classes for all components
+- **CSV Preview Layout:** Fixed preview table scrolling and layout issues (headers wrapping, border gaps) with standard Tailwind utility classes
 - **Income vs Expenses Chart:** New donut chart showing income/expense ratio with savings rate indicator, gradient fills, and detailed legend
 - **No Auto-Load CSV:** Dashboard no longer auto-loads `data/report.csv`; users must explicitly upload CSV files (test data is for local development only)
 - **Clear CSV Feature:** Header now includes a clear button to reset loaded data and start fresh
