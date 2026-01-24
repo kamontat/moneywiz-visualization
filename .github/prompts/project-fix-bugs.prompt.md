@@ -1,9 +1,9 @@
 ---
-name: 'mw.project-fix-bugs'
-description: 'Fix bugs and create resilient Playwright tests for regressions'
-agent: 'agent'
-tools: ['execute', 'read', 'edit/editFiles', 'search', 'web/fetch', 'svelte/*', 'microsoft/playwright/*']
-argument-hint: 'briefly describe the bug, page, or failing flow'
+name: "mw.project-fix-bugs"
+description: "Fix bugs and create resilient Playwright tests for regressions"
+agent: "agent"
+tools: ["execute", "read", "edit/editFiles", "search", "web/fetch", "svelte/*", "microsoft/playwright/*"]
+argument-hint: "briefly describe the bug, page, or failing flow"
 model: Claude Opus 4.5 (copilot)
 ---
 
@@ -47,20 +47,20 @@ Deliver reliable fixes and Playwright tests that prevent regressions while minim
 ## Example Test Snippet
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('Feature - reproduces bug X and stays stable', async ({ page }) => {
-	await test.step('Navigate to page', async () => {
-		await page.goto('/path');
-	});
+test("Feature - reproduces bug X and stays stable", async ({ page }) => {
+  await test.step("Navigate to page", async () => {
+    await page.goto("/path");
+  });
 
-	await test.step('Perform action', async () => {
-		await page.getByRole('button', { name: 'Submit' }).click();
-	});
+  await test.step("Perform action", async () => {
+    await page.getByRole("button", { name: "Submit" }).click();
+  });
 
-	await test.step('Assert outcome', async () => {
-		await expect(page.getByRole('status')).toHaveText('Success');
-	});
+  await test.step("Assert outcome", async () => {
+    await expect(page.getByRole("status")).toHaveText("Success");
+  });
 });
 ```
 
@@ -72,4 +72,3 @@ test('Feature - reproduces bug X and stays stable', async ({ page }) => {
 ## Final Notes
 
 Keep changes minimal and test-focused. When in doubt, prefer adding a test and a short mitigation note over large product refactors.
-

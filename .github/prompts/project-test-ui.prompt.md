@@ -1,9 +1,9 @@
 ---
-name: 'mw.project-test-ui'
-description: 'Generate Playwright test from scenario using live browser interaction and Playwright MCP'
-agent: 'agent'
-tools: ['execute', 'read', 'edit/editFiles', 'search', 'web/fetch', 'microsoft/playwright/*']
-argument-hint: '<test scenario>'
+name: "mw.project-test-ui"
+description: "Generate Playwright test from scenario using live browser interaction and Playwright MCP"
+agent: "agent"
+tools: ["execute", "read", "edit/editFiles", "search", "web/fetch", "microsoft/playwright/*"]
+argument-hint: "<test scenario>"
 model: Claude Sonnet 4.5 (copilot)
 ---
 

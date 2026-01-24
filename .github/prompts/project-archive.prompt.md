@@ -2,8 +2,7 @@
 name: "mw.project-archive"
 description: "Summarize session work, detect and fix errors, update documentation, and commit all changes with conventional commit message"
 agent: "agent"
-tools:
-  ["execute", "read", "edit", "search", "web", "svelte/*", "upstash/context7/*"]
+tools: ["execute", "read", "edit", "search", "web", "svelte/*", "upstash/context7/*"]
 model: Claude Opus 4.5 (copilot)
 ---
 
