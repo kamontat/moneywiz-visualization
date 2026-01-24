@@ -26,6 +26,7 @@ bun run preview                    # Preview production build
 
 ## Recent Updates (Jan 2026)
 
+- **Income vs Expenses Chart:** New donut chart showing income/expense ratio with savings rate indicator, gradient fills, and detailed legend
 - **No Auto-Load CSV:** Dashboard no longer auto-loads `data/report.csv`; users must explicitly upload CSV files (test data is for local development only)
 - **Clear CSV Feature:** Header now includes a clear button to reset loaded data and start fresh
 - **Compact Header:** Reduced header padding and font sizes for a more compact appearance
@@ -40,7 +41,7 @@ bun run preview                    # Preview production build
 
 ```
 src/
-  components/      # UI components (AppHeader, MoneyLogo, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart)
+  components/      # UI components (AppHeader, MoneyLogo, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart)
   lib/             # Business logic (csv.ts, analytics.ts, finance.ts, debug.ts, stores/)
   routes/          # SvelteKit routes (file-based routing)
 static/            # Static assets (copied to build/)

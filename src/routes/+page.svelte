@@ -11,6 +11,7 @@
 	import SummaryCards from '$components/SummaryCards.svelte';
 	import TopCategoriesChart from '$components/TopCategoriesChart.svelte';
 	import DailyExpensesChart from '$components/DailyExpensesChart.svelte';
+	import IncomeExpenseRatioChart from '$components/IncomeExpenseRatioChart.svelte';
 
 	let csv: CsvState = $state({ fileName: null, data: null });
 
@@ -47,6 +48,10 @@
 		<SummaryCards {totals} />
 
 		<div class="charts">
+			<section aria-labelledby="ratio-title" class="chart-panel">
+				<h2 id="ratio-title">Income vs Expenses</h2>
+				<IncomeExpenseRatioChart income={totals.income} expenses={totals.expenses} />
+			</section>
 			<TopCategoriesChart data={topCategories} />
 			<DailyExpensesChart data={dailyExpenses} />
 		</div>
@@ -75,6 +80,19 @@
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1rem;
+	}
+
+	.chart-panel {
+		background: #ffffff;
+		border: 1px solid #e5e7eb;
+		border-radius: 12px;
+		padding: 0.75rem;
+	}
+
+	.chart-panel h2 {
+		margin: 0 0 0.5rem 0;
+		font-size: 1rem;
+		color: #111827;
 	}
 
 	.empty {
