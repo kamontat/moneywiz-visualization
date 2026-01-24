@@ -8,6 +8,7 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 
 	test: {
+		exclude: ['e2e/**', 'node_modules/**'],
 		expect: { requireAssertions: true },
 
 		projects: [

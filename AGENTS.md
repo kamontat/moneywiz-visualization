@@ -37,6 +37,7 @@ bun run preview                    # Preview production build
 - **Debug Logging:** Builder API in `src/lib/debug.ts`. Enable with `DEBUG=moneywiz:*` or `localStorage.debug = 'moneywiz:*'`
 - **CSV Handling:** Parser handles MoneyWiz `sep=` preamble, BOM, throws `CsvParseError` on failures
 - **Svelte 5 Migration:** Event attributes (`onchange`), `$derived()`, `$effect()` - no deprecation warnings
+- **Test Stability:** Resolved Vitest vs Playwright conflicts and fixed dashboard E2E selectors
 - **Skill Updates:** Updated `chrome-devtools`, `git-commit`, `web-design-reviewer`, and `webapp-testing` skills with project-specific context (SvelteKit, Tailwind, Bun)
 
 ## Project Structure

@@ -61,10 +61,14 @@ test.describe('Dashboard - Top Categories Chart', () => {
       const firstItem = page.getByRole('listitem').filter({ hasText: 'Uncategorized' });
       await expect(firstItem).toBeVisible();
 
-      // Check that the bar container (track) exists within each item
+      // Check that the bar container exists within each item (the gray background div)
       // The CSS flexbox layout ensures labels and bars are side-by-side
-      const barTrack = firstItem.locator('.bar-track');
+      const barTrack = firstItem.locator('div.h-3.bg-gray-200').first();
       await expect(barTrack).toBeVisible();
+
+      // Verify the bar fill is rendered within the track
+      const barFill = barTrack.locator('div.bg-mw-primary');
+      await expect(barFill).toBeVisible();
     });
   });
 });

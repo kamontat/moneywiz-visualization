@@ -50,20 +50,20 @@
 				{#if (parsedUpload.data?.rows?.length ?? 0) > 0}
 					<div class="flex flex-col gap-2">
 						<h2 class="text-mw-text-main text-lg m-0">Preview (first {Math.min(maxPreviewRows, parsedUpload.data?.rows?.length ?? 0)} rows)</h2>
-						<div class="overflow-auto border border-mw-border rounded-lg max-w-full">
-							<table class="min-w-full border-collapse">
+						<div class="overflow-x-auto border border-mw-border rounded-lg">
+							<table class="border-collapse" style="table-layout: auto; min-width: 100%;">
 								<thead class="bg-gray-50">
-									<tr>
+									<tr class="border-b border-mw-border">
 										{#each (parsedUpload.data?.headers ?? []) as header}
-											<th scope="col" class="border-b border-mw-border px-3 py-2.5 text-left text-[0.95rem] font-bold text-mw-text-main">{header}</th>
+											<th scope="col" class="px-3 py-2 text-left text-sm font-bold text-mw-text-main whitespace-nowrap">{header}</th>
 										{/each}
 									</tr>
 								</thead>
 								<tbody>
 									{#each (parsedUpload.data?.rows ?? []).slice(0, maxPreviewRows) as row}
-										<tr>
+										<tr class="border-b border-mw-border">
 											{#each (parsedUpload.data?.headers ?? []) as header}
-												<td class="border-b border-mw-border px-3 py-2.5 text-left text-[0.95rem] text-mw-text-secondary last:border-b-0">{row[header]}</td>
+												<td class="px-3 py-2 text-left text-sm text-mw-text-secondary overflow-hidden text-ellipsis">{row[header]}</td>
 											{/each}
 										</tr>
 									{/each}
