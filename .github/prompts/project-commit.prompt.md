@@ -2,7 +2,7 @@
 name: 'mw.project-commit'
 description: 'Analyze changes and create conventional commit with intelligent staging and message generation'
 agent: 'agent'
-tools: ['read', 'search', 'web']
+tools: ['execute/getTerminalOutput', 'execute/runInTerminal', 'read', 'search', 'web']
 ---
 
 # Git Commit Current Changes

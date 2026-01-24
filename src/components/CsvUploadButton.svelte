@@ -45,11 +45,11 @@
 	<input
 		class="visually-hidden"
 		accept=".csv,text/csv"
-		onchange={handleFileChange}
+		on:change={handleFileChange}
 		id={inputId}
 		type="file"
 	/>
-	<button class="upload-button" type="button" onclick={openPicker} disabled={isParsing}>
+		<button class="upload-button" type="button" on:click={openPicker} disabled={isParsing}>
 		{isParsing ? 'Uploading…' : label}
 	</button>
 </div>

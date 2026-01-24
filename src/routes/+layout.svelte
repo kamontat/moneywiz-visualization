@@ -1,6 +1,7 @@
 <script lang="ts">
 	import AppHeader from '../components/AppHeader.svelte';
 	import type { ParsedCsv } from '$lib/csv';
+	import { csvStore } from '$lib/stores/csv';
 	import './layout.css';
 
 	let { children } = $props();
@@ -11,11 +12,17 @@
 	function handleParsed(event: CustomEvent<{ file: File; data: ParsedCsv }>) {
 		parsedUpload = { fileName: event.detail.file.name, data: event.detail.data };
 		errorMessage = null;
+
+		// Publish to global store for the dashboard
+		csvStore.set({ fileName: parsedUpload.fileName, data: parsedUpload.data });
 	}
 
 	function handleError(event: CustomEvent<{ file: File | null; message: string }>) {
 		parsedUpload = null;
 		errorMessage = event.detail.message;
+
+		// Clear store on error
+		csvStore.set({ fileName: null, data: null });
 	}
 
 	const maxPreviewRows = 5;
@@ -31,25 +38,25 @@
 						<p class="eyebrow">Upload successful</p>
 						<h1 class="file-name">{parsedUpload.fileName}</h1>
 					</div>
-					<p class="counts">{parsedUpload.data.rows.length} rows · {parsedUpload.data.headers.length} columns</p>
+					<p class="counts">{(parsedUpload.data?.rows?.length ?? 0)} rows · {(parsedUpload.data?.headers?.length ?? 0)} columns</p>
 				</header>
 
-				{#if parsedUpload.data.rows.length > 0}
+				{#if (parsedUpload.data?.rows?.length ?? 0) > 0}
 					<div class="preview">
-						<h2>Preview (first {Math.min(maxPreviewRows, parsedUpload.data.rows.length)} rows)</h2>
+						<h2>Preview (first {Math.min(maxPreviewRows, parsedUpload.data?.rows?.length ?? 0)} rows)</h2>
 						<div class="table-wrapper">
 							<table>
 								<thead>
 									<tr>
-										{#each parsedUpload.data.headers as header}
+										{#each (parsedUpload.data?.headers ?? []) as header}
 											<th scope="col">{header}</th>
 										{/each}
 									</tr>
 								</thead>
 								<tbody>
-									{#each parsedUpload.data.rows.slice(0, maxPreviewRows) as row}
+									{#each (parsedUpload.data?.rows ?? []).slice(0, maxPreviewRows) as row}
 										<tr>
-											{#each parsedUpload.data.headers as header}
+											{#each (parsedUpload.data?.headers ?? []) as header}
 												<td>{row[header]}</td>
 											{/each}
 										</tr>
