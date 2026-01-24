@@ -152,6 +152,7 @@ const log = createLogger('module').sub('feature').build();
 - **/mw.project-archive** - Summarize session, update docs, and commit changes
 - **/mw.project-explore-ui** - Explore website and identify key user flows for testing
 - **/mw.project-fix-bugs** - Fix bugs and create Playwright tests for regressions
+- **/mw.project-implement** - Implement website features with SvelteKit and Playwright
 - **/mw.project-test-ui** - Generate Playwright tests from scenario using live browser
 
 See `.github/instructions/`, `.github/skills/`, `.github/prompts/` for full details.
