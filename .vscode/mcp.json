@@ -41,7 +41,7 @@
 				"exec",
 				"npm:@playwright/mcp@latest",
 				"--",
-				"playwright-mcp",
+				"mcp",
 				"--config",
 				"${workspaceFolder}/configs/playwright/config.json"
 			]
