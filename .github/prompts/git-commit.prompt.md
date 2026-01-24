@@ -12,9 +12,10 @@ Analyze all current changes in the repository and create a well-structured conve
 
 ## Process
 
-1. **Check Git Status**: Run `git status --porcelain` to see all modified, added, and deleted files
-2. **Analyze Changes**: Run `git diff` for unstaged changes and `git diff --staged` for staged changes
-3. **Determine Commit Type**: Based on the changes, determine the appropriate conventional commit type:
+1. **Check Git Status**: Run `git status --porcelain` to see all modified, added, and deleted files.
+2. **Stage Files**: Stage relevant changes by running `git add -A` (do not stage secrets or credentials).
+3. **Analyze Staged Changes**: Run `git.diff --staged` to inspect what will be committed; run `git diff` for any unstaged work.
+4. **Determine Commit Type**: Based on the changes, determine the appropriate conventional commit type:
    - `feat`: New feature or functionality
    - `fix`: Bug fix
    - `docs`: Documentation changes only
@@ -25,11 +26,16 @@ Analyze all current changes in the repository and create a well-structured conve
    - `build`: Build system or dependency changes
    - `ci`: CI/CD configuration changes
    - `chore`: Maintenance or miscellaneous tasks
-4. **Determine Scope**: Identify the area/module affected (e.g., `auth`, `api`, `ui`, `deps`, `config`)
-5. **Generate Description**: Create a concise description (imperative mood, present tense, <72 chars)
-6. **Stage Files**: Stage all relevant files with `git add -A` or stage specific logical groups
-7. **Create Commit**: Execute the commit with the generated conventional commit message
-8. **Verify**: Show the commit log to confirm successful commit
+5. **Determine Scope**: Identify the area/module affected (e.g., `auth`, `api`, `ui`, `deps`, `config`).
+6. **Generate Description**: Create a concise description (imperative mood, present tense, <72 chars).
+7. **Create Commit**: Commit the staged changes with the generated conventional commit message, for example:
+
+```
+git commit -m "<type>(<scope>): short description" -m "Optional detailed body explaining what and why"
+```
+
+Or run `git commit` to edit the full message in your editor.
+8. **Verify**: Confirm the commit with `git log -1 --stat` to show the last commit and affected files.
 
 ## Commit Message Format
 
