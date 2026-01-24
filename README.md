@@ -34,7 +34,7 @@ Run client-side tests only (Svelte components):
 bun vitest run --project=client
 ```
 
-**Note:** Always use `bun` as the package manager and command runner (not `npm` or `npx`).
+**Note:** Always use `bun` as the package manager and command runner (not `npm`, `npx`, or `bunx`).
 
 ### Debugging
 

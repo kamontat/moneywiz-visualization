@@ -25,11 +25,17 @@
 		csvStore.set({ fileName: null, data: null });
 	}
 
+	function handleClear() {
+		parsedUpload = null;
+		errorMessage = null;
+		csvStore.reset();
+	}
+
 	const maxPreviewRows = 5;
 </script>
 
 <div class="app">
-	<AppHeader onparsed={handleParsed} onerror={handleError} />
+	<AppHeader onparsed={handleParsed} onerror={handleError} onclear={handleClear} csvLoaded={!!parsedUpload} />
 	<main class="page-shell">
 		{#if parsedUpload}
 			<section class="upload-summary" aria-live="polite">

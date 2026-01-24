@@ -88,15 +88,16 @@
 		align-items: center;
 		background: linear-gradient(135deg, #0f9d58, #2e8f62);
 		border: 1px solid #0f9d58;
-		border-radius: 10px;
-		box-shadow: 0 8px 20px rgba(15, 157, 88, 0.18);
+		border-radius: 8px;
+		box-shadow: 0 6px 16px rgba(15, 157, 88, 0.18);
 		color: #f7fbf9;
 		cursor: pointer;
 		display: inline-flex;
+		font-size: 0.875rem;
 		font-weight: 700;
-		gap: 0.35rem;
+		gap: 0.25rem;
 		letter-spacing: 0.01em;
-		padding: 0.65rem 1rem;
+		padding: 0.45rem 0.85rem;
 		transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
 	}
 

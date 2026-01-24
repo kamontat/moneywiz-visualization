@@ -22,10 +22,12 @@ bun run build
 bun run preview                    # Preview production build
 ```
 
-**Note:** Always use `bun` as package manager (not `npm` or `npx`).
+**Note:** Always use `bun` as package manager (not `npm`, `npx`, or `bunx`).
 
 ## Recent Updates (Jan 2026)
 
+- **Clear CSV Feature:** Header now includes a clear button to reset loaded data and start fresh
+- **Compact Header:** Reduced header padding and font sizes for a more compact appearance
 - **Dashboard Refactoring:** Split monolithic +page.svelte into reusable components (SummaryCards, TopCategoriesChart, DailyExpensesChart) and extracted business logic to `src/lib/analytics.ts` and `src/lib/finance.ts`
 - **Path Alias:** Added `$components` alias in svelte.config.js for cleaner imports
 - **Dashboard:** THB-only summary cards + charts (Top Categories, Daily Expenses). Loads `static/data/report.csv` on startup, reacts to CSV uploads via `csvStore`

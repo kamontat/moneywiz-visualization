@@ -245,7 +245,7 @@ Use this checklist to scan for common issues:
 
 ### Documentation
 
-- [ ] Commands use correct package manager (`bun` not `npm`/`npx`)
+- [ ] Commands use correct package manager (`bun` not `bunx`/`npm`/`npx`)
 - [ ] File paths are correct and files exist
 - [ ] Code examples compile/run without errors
 - [ ] Instructions match current project structure

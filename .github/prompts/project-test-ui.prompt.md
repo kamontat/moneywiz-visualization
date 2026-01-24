@@ -38,7 +38,7 @@ Generate a complete Playwright TypeScript test by executing the scenario step-by
    - Discovered locators (prefer role-based)
    - Validated assertions
 4. **Save Test File**: Write the test to `e2e/<feature-name>.spec.ts` using kebab-case naming
-5. **Execute Test**: Run the generated test using `bunx playwright test --project=chromium`
+5. **Execute Test**: Run the generated test using `bun playwright test`
 6. **Iterate Until Passing**: If the test fails:
    - Analyze failure reasons
    - Refine locators or assertions
@@ -56,7 +56,7 @@ Generate a complete Playwright TypeScript test by executing the scenario step-by
 - [ ] Test scenario executed step-by-step before code generation
 - [ ] Generated test uses role-based locators (getByRole, getByLabel, etc.)
 - [ ] Test includes proper test.describe() and test.step() structure
-- [ ] Test passes when executed with `npx playwright test --project=chromium`
+- [ ] Test passes when executed with `bun playwright test`
 - [ ] Test file saved in `e2e/` directory with appropriate naming
 
 ## Guard Rails
