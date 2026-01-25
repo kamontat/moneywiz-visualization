@@ -16,7 +16,7 @@ describe('Layout.svelte', () => {
         // But vitest-browser-svelte render might handle slots/snippets differently.
         // Assuming no children for now or just empty.
 
-        expect(container).toHaveTextContent('MoneyWiz Visualization');
+        expect(container).toHaveTextContent('MoneyWiz Report');
         expect(container.querySelector('.blank-canvas')).toBeInTheDocument();
         expect(container).not.toHaveTextContent('Upload successful');
     });

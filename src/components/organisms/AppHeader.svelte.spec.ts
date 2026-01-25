@@ -5,7 +5,7 @@ import AppHeader from './AppHeader.svelte';
 describe('AppHeader.svelte', () => {
     it('renders logo and title', async () => {
         const { container } = render(AppHeader);
-        expect(container).toHaveTextContent('MoneyWiz Visualization');
+        expect(container).toHaveTextContent('MoneyWiz Report');
         // Logo check might be finding SVG or specific class
         const logo = container.querySelector('.text-mw-primary'); // Assuming MoneyLogo has this class or similar structure key
         expect(container.querySelector('svg')).toBeInTheDocument(); // At least one SVG (logo or upload icon)

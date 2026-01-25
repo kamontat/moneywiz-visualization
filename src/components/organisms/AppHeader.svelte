@@ -14,19 +14,19 @@
 	let { onparsed, onerror, onclear, csvLoaded = false }: Props = $props();
 </script>
 
-<header class="sticky top-0 z-10 flex flex-col sm:flex-row items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2 bg-mw-surface-alt border-b border-mw-border">
+<header class="sticky top-0 z-50 flex flex-row items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2 bg-white/70 dark:bg-mw-surface-alt/80 backdrop-blur-md border-b border-mw-border/50">
 	<div class="inline-flex items-center gap-2 min-w-0">
-		<MoneyLogo size={28} />
+		<MoneyLogo size={32} />
 		<div class="flex items-center gap-1 min-w-0">
-			<span class="text-mw-text-main text-sm sm:text-base font-extrabold tracking-wide uppercase whitespace-nowrap">MoneyWiz Visualization</span>
+			<span class="text-mw-text-main text-base sm:text-lg font-bold tracking-tight uppercase whitespace-nowrap">MoneyWiz Report</span>
 		</div>
 	</div>
 
-	<div class="flex w-full sm:w-auto items-center justify-end gap-2">
+	<div class="flex items-center justify-end gap-2">
 		{#if csvLoaded}
-			<button class="inline-flex items-center gap-1.5 px-3 py-[0.45rem] text-sm font-semibold text-mw-text-secondary bg-white border border-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out hover:bg-red-50 hover:border-red-300 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2" type="button" onclick={onclear} aria-label="Clear loaded CSV">
-				<TrashIcon class="w-[1.125rem] h-[1.125rem]" aria-hidden="true" />
-				Clear
+			<button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-red-600 bg-red-50 border border-red-200/50 rounded-full cursor-pointer transition-all duration-150 ease-in-out hover:bg-red-100 hover:border-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2" type="button" onclick={onclear} aria-label="Clear loaded CSV">
+				<TrashIcon class="w-4 h-4" aria-hidden="true" />
+				<span class="hidden sm:inline">Clear</span>
 			</button>
 		{/if}
 		<CsvUploadButton {onparsed} {onerror} />
