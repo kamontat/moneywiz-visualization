@@ -36,7 +36,7 @@ test.describe('CSV Preview Table Layout', () => {
       // Find the table and its immediate parent (overflow container)
       const table = page.locator('table').first();
       const overflowContainer = page.locator('.border.border-mw-border.rounded-lg').filter({ has: table }).first();
-      
+
       const containerBox = await overflowContainer.boundingBox();
       const tableBox = await table.boundingBox();
 
