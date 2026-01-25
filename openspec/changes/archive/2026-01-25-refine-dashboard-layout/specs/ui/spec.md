@@ -13,6 +13,8 @@ The application SHALL prioritize data visualizations and summaries with clear st
 - **And** the "Quick Summary" (SummaryCards) MUST be separated from the chart panels within the "Overview" tab
 - **And** the CSV Preview table MUST remain below the dashboard visualizations
 
+## NEW Requirements
+
 ### Requirement: Dashboard Information Hierarchy
 The application SHALL provide clear and concise information about the loaded data.
 

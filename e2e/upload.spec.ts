@@ -36,7 +36,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
       await fileInput.setInputFiles('static/data/report.csv');
 
       // Verify upload was successful - preview should appear
-      await expect(page.getByText('Upload successful')).toBeVisible();
+      await expect(page.getByText('Income (THB)')).toBeVisible();
     });
 
     await test.step('Clear button should be visible after upload', async () => {
@@ -50,7 +50,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 
     await test.step('Verify data is cleared', async () => {
       // Preview section should be gone
-      await expect(page.getByText('Upload successful')).not.toBeVisible();
+      await expect(page.getByText('Income (THB)')).not.toBeVisible();
 
       // Clear button should be hidden
       await expect(page.getByRole('button', { name: 'Clear loaded CSV' })).not.toBeVisible();

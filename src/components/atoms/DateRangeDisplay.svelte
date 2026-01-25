@@ -2,9 +2,10 @@
 	interface Props {
 		start: Date;
 		end: Date;
+		class?: string;
 	}
 
-	let { start, end }: Props = $props();
+	let { start, end, class: className = 'text-xs text-mw-text-secondary' }: Props = $props();
 
 	function formatDate(d: Date): string {
 		return d.toLocaleDateString('en-GB', {
@@ -15,6 +16,6 @@
 	}
 </script>
 
-<span class="text-xs font-medium text-mw-text-secondary whitespace-nowrap">
-	{formatDate(start)} <span class="text-mw-text-muted/50 mx-1">—</span> {formatDate(end)}
+<span class="font-medium whitespace-nowrap {className}">
+	{formatDate(start)} <span class="opacity-50 mx-1">—</span> {formatDate(end)}
 </span>

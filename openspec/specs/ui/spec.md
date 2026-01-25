@@ -2,7 +2,6 @@
 
 ## Purpose
 Defines the user interface requirements for the MoneyWiz Visualization application, including header design, component organization, dashboard behavior, and layout hierarchy to ensure a modern, accessible, and user-friendly experience.
-
 ## Requirements
 ### Requirement: Header Action Buttons
 The header action buttons SHALL provide clear visual cues for their functionality using both text and icons.
@@ -58,11 +57,27 @@ The application SHALL provide access to its source code to facilitate developer 
 - **And** the link MUST open in a new tab
 
 ### Requirement: Document Layout Hierarchy
-The application SHALL prioritize data visualizations over raw data previews.
+The application SHALL prioritize data visualizations and summaries with clear structural separation.
 
-#### Scenario: Visualizations above raw data
+#### Scenario: Visualizations above raw data (Enhanced)
 - **Given** a CSV file is successfully uploaded
-- **Then** the Dashboard (charts and summaries) MUST be rendered above the CSV Preview table
-- **And** the CSV Preview table MUST be collapsable to save vertical space
-- **And** the CSV Preview table SHOULD be collapsed by default
+- **Then** the Dashboard header MUST display the transaction date range on the top left
+- **And** the "Dashboard" title MUST be centered at the top
+- **And** a navigation tab system MUST be provided below the header
+- **And** the "Quick Summary" (SummaryCards) MUST be separated from the chart panels within the "Overview" tab
+- **And** the CSV Preview table MUST remain below the dashboard visualizations
+
+### Requirement: User uploads CSV which persists across reloads
+The application SHALL store the uploaded CSV data locally so that the user's session is preserved even if they refresh the page.
+
+#### Scenario: Data survives reload
+- GIVEN the user has uploaded "report.csv"
+- WHEN the user reloads the page
+- THEN the dashboard should still display the data from "report.csv"
+
+#### Scenario: Clearing data
+- GIVEN the user has persisted data
+- WHEN the user clicks "Clear loaded CSV"
+- THEN the data is removed from local storage
+- AND the dashboard returns to the empty state
 

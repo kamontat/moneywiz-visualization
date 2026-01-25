@@ -7,7 +7,8 @@ describe('SummaryCards.svelte', () => {
         income: 1000,
         expenses: -500,
         net: 500,
-        count: 10
+        count: 10,
+        savingRate: 50.0
     };
 
     it('renders income, expenses, net and count', async () => {
@@ -24,16 +25,17 @@ describe('SummaryCards.svelte', () => {
         // We match substring loosely
         expect(container).toHaveTextContent('Income (THB)');
         expect(container).toHaveTextContent('Expenses (THB)');
-        expect(container).toHaveTextContent('Net (THB)');
-        expect(container).toHaveTextContent('Transactions');
+        expect(container).toHaveTextContent('Net / Cash Flow (THB)');
+        expect(container).toHaveTextContent('Saving Rate');
 
-        // Count should be exact
-        expect(findValue('Transactions')).toContain('10');
+        // Saving rate should be exact
+        expect(findValue('Saving Rate')).toContain('50.0%');
     });
 
     it('handles zero values', async () => {
-        const { container } = render(SummaryCards, { totals: { income: 0, expenses: 0, net: 0, count: 0 } });
+        const { container } = render(SummaryCards, { totals: { income: 0, expenses: 0, net: 0, count: 0, savingRate: 0 } });
         // Typically formats to 0.00
-        expect(container).toHaveTextContent('Transactions');
+        expect(container).toHaveTextContent('Saving Rate');
+        expect(container).toHaveTextContent('0.0%');
     });
 });

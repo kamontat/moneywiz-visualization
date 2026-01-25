@@ -110,17 +110,20 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
 
 ## Features
 
-- � **Dashboard**: Financial overview with THB-only summary cards and charts
-  - Income, Expenses, Net balance, and transaction count
+- 📊 **Dashboard**: Financial overview with THB-only summary cards and charts
+  - Income, Expenses, Net balance, and Saving Rate percentage
   - Top spending categories bar chart
   - Daily expenses trend visualization
   - Clean empty state: "Dashboard" heading hidden until data is loaded
   - Loads default data on startup, reacts to CSV uploads
+  - **Data Persistence**: Uploaded CSV data persists across page reloads via localStorage
 - 📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
   - Automatic `sep=` delimiter detection for MoneyWiz exports
   - BOM handling for proper encoding
   - Error handling with descriptive messages
   - Preview table with collapse toggle (collapsed by default to focus on visualizations)
+  - **Persistent Storage**: Data survives page refreshes and browser restarts
+  - **Clear Data**: One-click button to remove persisted data and return to empty state
 - 📊 **Data Parsing**: Robust CSV parser with quoted field support and validation
 - 🐛 **Debug Logging**: Comprehensive logging system with namespace filtering
   - Enable via `DEBUG=moneywiz:* bun run dev` (terminal)

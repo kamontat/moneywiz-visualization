@@ -6,19 +6,23 @@
 
 	let { children } = $props();
 
-	let parsedUpload: { fileName: string; data: ParsedCsv } | null = $state(null);
+	// Use store as source of truth (automatically handles hydration)
+	let parsedUpload = $derived(
+		$csvStore.data && $csvStore.fileName
+			? { fileName: $csvStore.fileName, data: $csvStore.data }
+			: null
+	);
+
 	let errorMessage: string | null = $state(null);
 
 	function handleParsed(detail: { file: File; data: ParsedCsv }) {
-		parsedUpload = { fileName: detail.file.name, data: detail.data };
 		errorMessage = null;
 
 		// Publish to global store for the dashboard
-		csvStore.set({ fileName: parsedUpload.fileName, data: parsedUpload.data });
+		csvStore.set({ fileName: detail.file.name, data: detail.data });
 	}
 
 	function handleError(detail: { file: File | null; message: string }) {
-		parsedUpload = null;
 		errorMessage = detail.message;
 
 		// Clear store on error
@@ -26,7 +30,6 @@
 	}
 
 	function handleClear() {
-		parsedUpload = null;
 		errorMessage = null;
 		csvStore.reset();
 	}
