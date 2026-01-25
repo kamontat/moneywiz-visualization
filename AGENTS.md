@@ -1,3 +1,22 @@
+<!-- OPENSPEC:START -->
+# OpenSpec Instructions
+
+These instructions are for AI assistants working in this project.
+
+Always open `@/openspec/AGENTS.md` when the request:
+- Mentions planning or proposals (words like proposal, spec, change, plan)
+- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
+- Sounds ambiguous and you need the authoritative spec before coding
+
+Use `@/openspec/AGENTS.md` to learn:
+- How to create and apply change proposals
+- Spec format and conventions
+- Project structure and guidelines
+
+Keep this managed block so 'openspec update' can refresh the instructions.
+
+<!-- OPENSPEC:END -->
+
 # MoneyWiz Visualization
 
 SvelteKit-based web application for visualizing MoneyWiz financial data exports.
@@ -24,29 +43,12 @@ bun run preview                    # Preview production build
 
 **Note:** Always use `bun` as package manager (not `npm`, `npx`, or `bunx`).
 
-## Recent Updates (Jan 2026)
-
-- **UI Standardization:** Migrated to Tailwind CSS v4 with centralized theme configuration and utility classes for all components
-- **CSV Preview Layout:** Fixed preview table scrolling and layout issues (headers wrapping, border gaps) with standard Tailwind utility classes
-- **Income vs Expenses Chart:** New donut chart showing income/expense ratio with savings rate indicator, gradient fills, and detailed legend
-- **No Auto-Load CSV:** Dashboard no longer auto-loads `data/report.csv`; users must explicitly upload CSV files (test data is for local development only)
-- **Clear CSV Feature:** Header now includes a clear button to reset loaded data and start fresh
-- **Compact Header:** Reduced header padding and font sizes for a more compact appearance
-- **Dashboard Refactoring:** Split monolithic +page.svelte into reusable components (SummaryCards, TopCategoriesChart, DailyExpensesChart) and extracted business logic to `src/lib/analytics.ts` and `src/lib/finance.ts`
-- **Path Alias:** Added `$components` alias in svelte.config.js for cleaner imports
-- **Dashboard:** THB-only summary cards + charts (Top Categories, Daily Expenses). Reacts to CSV uploads via `csvStore`
-- **Debug Logging:** Builder API in `src/lib/debug.ts`. Enable with `DEBUG=moneywiz:*` or `localStorage.debug = 'moneywiz:*'`
-- **CSV Handling:** Parser handles MoneyWiz `sep=` preamble, BOM, throws `CsvParseError` on failures
-- **Svelte 5 Migration:** Event attributes (`onchange`), `$derived()`, `$effect()` - no deprecation warnings
-- **Test Stability:** Resolved Vitest vs Playwright conflicts and fixed dashboard E2E selectors
-- **Skill Updates:** Updated `chrome-devtools`, `git-commit`, `web-design-reviewer`, and `webapp-testing` skills with project-specific context (SvelteKit, Tailwind, Bun)
-
 ## Project Structure
 
 ```
 src/
-  components/      # UI components (AppHeader, MoneyLogo, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart)
-  lib/             # Business logic (csv.ts, analytics.ts, finance.ts, debug.ts, stores/)
+  components/      # UI components
+  lib/             # Business logic
   routes/          # SvelteKit routes (file-based routing)
 static/            # Static assets (copied to build/)
 e2e/               # Playwright e2e tests
@@ -95,10 +97,6 @@ Example usage:
 - **Adapter:** `@sveltejs/adapter-static` for root-level deployment
 - **Prerendering:** All pages prerendered via `export const prerender = true` in `src/routes/+layout.ts`
 - **No Base Path:** Site deploys to custom domain root (no `paths.base` needed)
-
-### Service Worker
-
-Empty service worker at `static/sw.js` prevents SvelteKit client-side 404 errors. It's copied to `build/sw.js` during build.
 
 ## Common Issues & Solutions
 
