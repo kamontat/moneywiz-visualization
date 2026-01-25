@@ -142,7 +142,7 @@ Clean up and finalize a work session by:
       ```
 
 17. **Verify Commit**:
-    - Confirm with `git log -1 --stat` to display last commit and affected files
+    - Confirm with `git --no-pager log -1 --stat` to display last commit and affected files
 
 ## Output Expectations
 
@@ -220,7 +220,7 @@ Use this checklist to scan for common issues:
 - [ ] Complex changes include explanatory body
 - [ ] Related issues referenced in footer
 - [ ] Breaking changes marked with `!` or footer
-- [ ] Commit verified with `git log -1 --stat`
+- [ ] Commit verified with `git --no-pager log -1 --stat`
 
 ## Guardrails
 
