@@ -51,12 +51,11 @@ Archive a deployed OpenSpec change by moving it to the archive folder and updati
 ### Phase 3: Validate Archive
 
 5. **Run Validation**:
-   - Execute `openspec validate --strict --no-interactive`
+   - Execute `openspec validate --strict --no-interactive --changes`
    - Address any validation issues
 
 6. **Inspect Results**:
-   - Run `openspec show <id>` to verify archived state
-   - Check `openspec list --specs` for updated specs
+   - Run `openspec view` to verify the result
 
 ## Output Expectations
 
