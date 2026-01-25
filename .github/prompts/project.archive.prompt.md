@@ -1,5 +1,6 @@
 ---
 description: Archive work session—review, fix errors, update docs, archive OpenSpec changes, and commit
+model: Claude Sonnet 4.5 (copilot)
 ---
 
 <!-- PROJECT WRAPPER: This prompt combines session archival + OpenSpec change archival -->

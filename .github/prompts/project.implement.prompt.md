@@ -1,5 +1,6 @@
 ---
 description: Implement an approved OpenSpec change with full SvelteKit integration and testing
+model: Gemini 3 Pro (Preview) (copilot)
 ---
 
 <!-- PROJECT WRAPPER: This prompt combines OpenSpec apply + project-specific implementation -->
