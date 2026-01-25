@@ -1,21 +1,104 @@
 ---
-description: 'Svelte 5 and SvelteKit development standards and best practices for component-based user interfaces and full-stack applications'
-applyTo: '**/*.svelte, **/*.ts, **/*.js, **/*.css, **/*.scss, **/*.json'
+name: common-svelte
+description: Comprehensive Svelte 5 and SvelteKit development guide. Covers Runes ($state, $derived, $effect), syntax migration, SvelteKit patterns, TypeScript integration, and best practices.
 ---
 
-# Svelte 5 and SvelteKit Development Instructions
+# Svelte 5 and SvelteKit Development
 
 Instructions for building high-quality Svelte 5 and SvelteKit applications with modern runes-based reactivity, TypeScript, and performance optimization.
 
-## Project Context
-- Svelte 5.x with runes system ($state, $derived, $effect, $props, $bindable)
-- SvelteKit for full-stack applications with file-based routing
-- TypeScript for type safety and better developer experience
-- Component-scoped styling with CSS custom properties
-- Progressive enhancement and performance-first approach
-- Modern build tooling (Vite) with optimizations
+## Svelte 5 Syntax Migration
 
-## Core Concepts
+Always use Svelte 5 runes. Never use Svelte 4 patterns.
+
+### Svelte 4 → Svelte 5
+
+| Svelte 4 ❌ | Svelte 5 ✅ |
+| --- | --- |
+| `export let foo` | `let { foo } = $props()` |
+| `export let foo = 'default'` | `let { foo = 'default' } = $props()` |
+| `$: doubled = x * 2` | `let doubled = $derived(x * 2)` |
+| `$: { sideEffect() }` | `$effect(() => { sideEffect() })` |
+| `on:click={handler}` | `onclick={handler}` |
+| `on:input={handler}` | `oninput={handler}` |
+| `on:click\|preventDefault={h}` | `onclick={e => { e.preventDefault(); h(e) }}` |
+| `<slot />` | `{@render children()}` |
+| `<slot name="x" />` | `{@render x?.()}` |
+| `$$props` | Use `$props()` with rest: `let { ...rest } = $props()` |
+| `$$restProps` | `let { known, ...rest } = $props()` |
+| `createEventDispatcher()` | Pass callback props: `let { onchange } = $props()` |
+
+### Stores → Runes
+
+| Svelte 4 ❌ | Svelte 5 ✅ |
+| --- | --- |
+| `import { writable } from 'svelte/store'` | Remove import |
+| `const count = writable(0)` | `let count = $state(0)` |
+| `$count` (auto-subscribe) | `count` (direct access) |
+| `count.set(1)` | `count = 1` |
+| `count.update(n => n + 1)` | `count += 1` |
+
+### Quick Reference
+
+```svelte
+<script>
+  // Props (with defaults and rest)
+  let { required, optional = 'default', ...rest } = $props();
+
+  // Two-way bindable prop
+  let { value = $bindable() } = $props();
+
+  // Reactive state
+  let count = $state(0);
+  let items = $state([]);      // arrays are deeply reactive
+  let user = $state({ name: '' }); // objects too
+
+  // Derived values
+  let doubled = $derived(count * 2);
+  let complex = $derived.by(() => {
+    // multi-line logic here
+    return expensiveCalc(count);
+  });
+
+  // Side effects
+  $effect(() => {
+    console.log(count);
+    return () => cleanup(); // optional cleanup
+  });
+</script>
+
+<!-- Events: native names, no colon -->
+<button onclick={() => count++}>Click</button>
+<input oninput={e => value = e.target.value} />
+
+<!-- Render snippets (replaces slots) -->
+{@render children?.()}
+```
+
+### Snippets (Replace Slots)
+
+```svelte
+<!-- Parent passes snippets -->
+<Dialog>
+  {#snippet header()}
+    <h1>Title</h1>
+  {/snippet}
+
+  {#snippet footer(close)}
+    <button onclick={close}>Done</button>
+  {/snippet}
+</Dialog>
+
+<!-- Child renders them -->
+<script>
+  let { header, footer, children } = $props();
+</script>
+{@render header?.()}
+{@render children?.()}
+{@render footer?.(() => open = false)}
+```
+
+## Core Concepts & Architecture
 
 ### Architecture
 - Use Svelte 5 runes system for all reactivity instead of legacy stores
@@ -35,7 +118,23 @@ Instructions for building high-quality Svelte 5 and SvelteKit applications with 
 - Pass `children` snippet for flexible parent-child composition
 - Design components to be testable and reusable
 
-## Reactivity and State
+## Svelte Development Workflow (MCP Tools)
+
+Utilize the configured Svelte MCP server to ensure code quality and bridge knowledge gaps.
+
+### 1. Documentation Lookup
+When uncertain about Svelte 5 syntax or SvelteKit patterns:
+1.  Run `list-sections` to see available topics.
+2.  Run `get-documentation` for the relevant sections (e.g., "$state, $derived, $effect").
+
+### 2. Code Analysis & Validation
+Before finalizing any component or when debugging:
+1.  Run `svelte-autofixer` on the file path or current code.
+2.  Review and apply suggested fixes for reactivity issues or deprecated patterns.
+
+> **Terminal Tip:** When passing code with runes via terminal, escape the `$` character as `\$` (e.g., `let count = \$state(0)`).
+
+## Reactivity and State Management
 
 ### Svelte 5 Runes System
 - Use `$state()` for reactive local state management
@@ -176,25 +275,6 @@ Instructions for building high-quality Svelte 5 and SvelteKit applications with 
 - Test with screen readers and accessibility tools
 - Implement focus management for dynamic content
 
-### Deployment
-- Use environment variables for configuration across different deployment stages
-- Implement proper SEO with SvelteKit's meta tags and structured data
-- Deploy with appropriate SvelteKit adapter based on hosting platform
-
-## Implementation Process
-1. Initialize SvelteKit project with TypeScript and desired adapters
-2. Set up project structure with proper folder organization
-3. Define TypeScript interfaces and component props
-4. Implement core components with Svelte 5 runes
-5. Add routing, layouts, and navigation with SvelteKit
-6. Implement data loading and form handling
-7. Add styling system with custom properties and responsive design
-8. Implement error handling and loading states
-9. Add comprehensive testing coverage
-10. Optimize performance and bundle size
-11. Ensure accessibility compliance
-12. Deploy with appropriate SvelteKit adapter
-
 ## Common Patterns
 - Renderless components with slots for flexible UI composition
 - Custom actions (`use:` directives) for cross-cutting concerns and DOM manipulation
@@ -204,3 +284,9 @@ Instructions for building high-quality Svelte 5 and SvelteKit applications with 
 - Server-side rendering with client-side hydration for optimal performance
 - Function bindings (`bind:value={() => value, setValue}`) for two-way binding
 - Avoid `$effect()` for state synchronization - use `$derived()` or callbacks instead
+
+## References
+
+- **[references/typescript.md](./references/typescript.md)** — Typing props, state, derived, snippets, events, context
+- **[references/patterns.md](./references/patterns.md)** — Context API, controlled inputs, forwarding props, async data, debouncing
+- **[references/gotchas.md](./references/gotchas.md)** — Reactivity edge cases, effect pitfalls, binding quirks

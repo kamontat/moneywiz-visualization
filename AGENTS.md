@@ -98,55 +98,32 @@ Example usage:
 - **Prerendering:** All pages prerendered via `export const prerender = true` in `src/routes/+layout.ts`
 - **No Base Path:** Site deploys to custom domain root (no `paths.base` needed)
 
-## Common Issues & Solutions
-
-### Dev Server Management
-
-Before starting dev server, check http://localhost:5173/ to reuse existing instance. Avoid launching `bun run dev` if already running to prevent port conflicts.
-
-### MoneyWiz CSV Format
-
-MoneyWiz exports include a leading `sep=` line. Parser honors this and skips the preamble automatically. UI shows preview after successful parse.
-
-### Debug Logging
-
-Enable debug logs with:
-- **Terminal:** `DEBUG=moneywiz:* bun run dev`
-- **Browser:** `localStorage.debug = 'moneywiz:*'` (then refresh)
-- **Namespaces:** `moneywiz:csv`, `moneywiz:store:csv`, etc.
-- **All libs:** `DEBUG=*` or `localStorage.debug = '*'`
-
-Implemented via `src/lib/debug.ts` with fluent builder API:
-```typescript
-const log = createLogger('module').sub('feature').build();
-```
-
-### Svelte 5 Event Syntax
-
-- Use event attributes: `onchange`, `onclick` (not `on:change`, `on:click`)
-- Use `$derived()` for reactive computed values
-- Use `$effect()` for side effects
-- Reference: [CsvUploadButton.svelte](src/components/CsvUploadButton.svelte)
-
 ## Available Assets
 
 ### Instructions (Auto-Applied)
-- **mcp-tools** - MCP tools usage (Svelte, Context7, DeepWiki, Playwright, and more)
-- **svelte** - Svelte 5 and SvelteKit best practices
-- **playwright-typescript** - Playwright test generation
-- **nodejs-javascript-vitest** - Node.js testing with Vitest
+- **agents** - Guidelines for creating custom agent files for GitHub Copilot
+- **instructions** - Guidelines for creating high-quality custom instruction files
+- **prompt** - Guidelines for creating high-quality prompt files
+- **skills** - Guidelines for creating high-quality Agent Skills
 
 ### Skills (Invoke as Needed)
-- **git-commit** - Intelligent git commit with staging and conventional messages
-- **chrome-devtools** - Browser automation and debugging via Chrome DevTools MCP
-- **web-design-reviewer** - Visual inspection and design validation for MoneyWiz UI
-- **webapp-testing** - E2E testing toolkit with Playwright and checking CSV workflows
+- **commit-github-actions** - Comprehensive guide for building robust, secure, and efficient CI/CD pipelines using GitHub Actions
+- **common-conventional-commits** - Execute git commit with conventional commit message analysis, intelligent staging, and message generation
+- **common-documentation** - Standards for creating and maintaining high-quality Markdown documentation
+- **common-svelte** - Comprehensive Svelte 5 and SvelteKit development guide
+- **common-troubleshooting** - Comprehensive troubleshooting guide for the MoneyWiz Visualization project
+- **mcp-chromedevtools** - Guideline for browser automation and debugging via Chrome DevTools MCP
+- **mcp-context7** - Retrieve up-to-date documentation and code examples for any library using Context7
+- **mcp-playwright** - Guideline for browser automation and testing via Playwright MCP
+- **mcp-sequential-thinking** - Systematic problem-solving and reasoning via Sequential Thinking MCP
+- **mcp-time** - Get current date, time, and timezone information
+- **web-designer** - Visual inspection and design validation for MoneyWiz UI
+- **web-e2e-tester** - Comprehensive guide for end-to-end testing with Playwright
+- **web-unit-tester** - Expert-level guide for unit testing using Vitest
 
 ### Prompts (Use with `/`)
-- **/mw.project-archive** - Summarize session, update docs, and commit changes
-- **/mw.project-explore-ui** - Explore website and identify key user flows for testing
-- **/mw.project-fix-bugs** - Fix bugs and create Playwright tests for regressions
-- **/mw.project-implement** - Implement website features with SvelteKit and Playwright
-- **/mw.project-test-ui** - Generate Playwright tests from scenario using live browser
+- **openspec-apply** - Implement an approved OpenSpec change and keep tasks in sync
+- **openspec-archive** - Archive a deployed OpenSpec change and update specs
+- **openspec-proposal** - Guide the user through creating a new OpenSpec change proposal
 
 See `.github/instructions/`, `.github/skills/`, `.github/prompts/` for full details.

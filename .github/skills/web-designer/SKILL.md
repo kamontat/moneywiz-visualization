@@ -1,9 +1,9 @@
 ---
-name: web-design-reviewer
+name: web-designer
 description: 'This skill enables visual inspection of websites running locally or remotely to identify and fix design issues. Triggers on requests like "review website design", "check the UI", "fix the layout", "find design problems". Detects issues with responsive design, accessibility, visual consistency, and layout breakage, then performs fixes at the source code level.'
 ---
 
-# Web Design Reviewer
+# Web Designer
 
 This skill enables visual inspection and validation of website design quality for the **MoneyWiz Visualization** application, identifying and fixing issues at the source code level.
 
@@ -24,6 +24,46 @@ This skill enables visual inspection and validation of website design quality fo
 - **Component Styling** - Tailwind CSS classes and responsive utilities
 - **Chart Appearance** - Data visualization layout, legend positioning, colors
 - **Accessibility** - Focus states, color contrast, ARIA labels
+
+## Design Standards & Color Guidelines
+
+Follow these guidelines for all visual updates to ensure accessible, professional, and consistent designs.
+
+### 1. Color Palette & Balance (60-30-10 Rule)
+
+Balance colors across graphic elements like backgrounds, buttons, and cards:
+- **Primary Color (60%)**: Use a **Cool** or **Light** color (Blues, Greens, Purples).
+- **Secondary Color (30%)**: Use a **Cool** or **Light** color.
+- **Accent Color (10%)**: Use a complementary **Hot** color (Oranges, Reds, Yellows) to draw attention.
+
+### 2. Color Definitions
+
+- **Hot Colors**: Oranges, reds, and yellows.
+- **Cool Colors**: Blues, greens, and purples.
+- **Neutral Colors**: Grays and grayscale variations.
+- **Binary Colors**: Black and white.
+
+### 3. Usage Guidelines
+
+#### Background Colors
+- **Recommended**: White, off-white, light cool colors (light blues/greens), subtle neutrals, or light gradients.
+- **Forbidden**: Purple, magenta, red, orange, yellow, pink, or any saturated hot colors.
+
+#### Text Colors
+- **Recommended (Light BG)**: Dark neutrals (#1f2328, #24292f), near-blacks (#000000 to #333333), dark grays (#4d4d4d, #6c757d).
+- **Recommended (Dark BG)**: Near-whites (#ffffff to #f0f2f3).
+- **Forbidden**: Yellow (poor legibility), pink, pure white on light backgrounds, pure black on dark backgrounds.
+
+#### Colors to Use Sparingly (Hot Colors)
+- Reserve **Red, Orange, Yellow** for critical alerts, warnings, or error messages.
+- Limit to small accent areas; consider icons or bold text as alternatives first.
+
+### 4. Gradients
+
+Apply subtle transitions for professional aesthetics:
+- Keep color shifts minimal (e.g., #E6F2FF to #F5F7FA).
+- Stay within the same color family; **never** combine hot and cool colors in one gradient.
+- Prefer linear gradients over radial for backgrounds.
 
 ## Prerequisites
 

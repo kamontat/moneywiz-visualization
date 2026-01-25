@@ -1,5 +1,6 @@
+```skill
 ---
-name: chrome-devtools
+name: mcp-chromedevtools
 description: "Expert-level browser automation, debugging, and performance analysis using Chrome DevTools MCP. Use for interacting with web pages, capturing screenshots, analyzing network traffic, and profiling performance."
 license: MIT
 ---
@@ -123,3 +124,5 @@ Identify why a page is slow.
 - **Screenshots**: Capture before/after for chart rendering validation
 - **CSV Testing**: Upload test CSV (e.g., `build/data/report.csv`) to verify parsing and visualization
 - **TypeScript Errors**: Check console for compilation errors from Vite dev server
+
+```
