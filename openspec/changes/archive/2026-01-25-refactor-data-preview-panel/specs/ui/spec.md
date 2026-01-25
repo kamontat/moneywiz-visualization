@@ -2,7 +2,7 @@
 
 ## ADDED Requirements
 
-### Interactive Data Preview Panel
+### Requirement: Interactive Data Preview Panel
 The application SHALL utilize a dedicated component for the data preview table that aligns with the dashboard's interactive patterns.
 
 #### Scenario: Consistent Interactive Header
