@@ -49,9 +49,9 @@ Common scopes for this SvelteKit project:
 | `analytics`          | Business logic, `src/lib/analytics.ts`, calculations        |
 | `store`              | State management, `src/lib/stores/csv.ts`                   |
 | `styling`            | Tailwind CSS, component styles                              |
-| `test`.              | Unit tests (`.spec.ts` files)                               |
+| `test`               | Unit tests (`.spec.ts` files)                               |
 | `e2e`                | Playwright tests in `e2e/` directory                        |
-| `config`             | All kind of configuration                                   |
+| `config`             | All kinds of configuration                                  |
 
 ## Breaking Changes
 
