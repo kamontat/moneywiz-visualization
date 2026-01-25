@@ -81,3 +81,12 @@ The application SHALL store the uploaded CSV data locally so that the user's ses
 - THEN the data is removed from local storage
 - AND the dashboard returns to the empty state
 
+### Requirement: Visual Theme Palette
+The application SHALL use a consistent professional color palette focused on financial clarity.
+
+#### Scenario: Primary and Secondary Color Palette
+- **Given** the application is rendered
+- **Then** the primary brand color MUST be a professional blue (`#60a5fa`)
+- **And** the secondary brand color MUST be a professional purple (`#9333ea`)
+- **And** these colors MUST be used consistently across all components, including the logo, action buttons, and data visualizations
+

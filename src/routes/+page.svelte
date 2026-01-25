@@ -50,7 +50,7 @@
 		<!-- Dashboard Header -->
 		<header class="flex flex-col gap-1 py-1 pb-6">
 			<!-- Title -->
-			<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-primary tracking-tight">Dashboard</h1>
+			<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-text-main tracking-tight">Dashboard</h1>
 
 			<!-- Date (Subtitle) -->
 			{#if dateRange}

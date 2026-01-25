@@ -83,8 +83,8 @@
 			<!-- Gradients -->
 			<defs>
 				<linearGradient id="incomeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-					<stop offset="0%" stop-color="#10b981" />
-					<stop offset="100%" stop-color="#059669" />
+					<stop offset="0%" stop-color="#34d399" />
+					<stop offset="100%" stop-color="#10b981" />
 				</linearGradient>
 				<linearGradient id="expenseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
 					<stop offset="0%" stop-color="#f87171" />
@@ -94,7 +94,7 @@
 		</svg>
 		<!-- Center label -->
 		<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center flex flex-col gap-0.5">
-			<span class="text-xl font-bold {savingsRate >= 0 ? 'text-mw-primary' : 'text-red-600'}">
+			<span class="text-xl font-bold {savingsRate >= 0 ? 'text-emerald-500' : 'text-red-600'}">
 				{savingsRate >= 0 ? '+' : ''}{savingsRate.toFixed(0)}%
 			</span>
 			<span class="text-[0.7rem] text-gray-400 uppercase tracking-widest">Savings</span>
@@ -103,7 +103,7 @@
 
 	<div class="flex flex-col gap-4">
 		<div class="flex items-start gap-3">
-			<span class="w-3 h-3 rounded-full mt-1 flex-shrink-0 bg-gradient-to-br from-mw-primary to-mw-primary-dark shadow-[0_2px_4px_rgba(16,185,129,0.3)]"></span>
+			<span class="w-3 h-3 rounded-full mt-1 flex-shrink-0 bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-[0_2px_4px_rgba(16,185,129,0.3)]"></span>
 			<div class="flex flex-col gap-0.5">
 				<span class="text-xs font-semibold text-mw-text-main">Income</span>
 				<span class="text-sm font-bold text-gray-900">{formatTHB(income)}</span>

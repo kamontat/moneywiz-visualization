@@ -63,7 +63,7 @@
 		type="file"
 	/>
 	<button
-		class="inline-flex items-center gap-2 px-3.5 py-2 text-sm font-bold text-white bg-gradient-to-br from-mw-primary to-mw-primary-dark border border-mw-primary rounded-full shadow-md shadow-emerald-600/20 cursor-pointer transition-all duration-150 ease-in-out hover:not-disabled:from-emerald-500 hover:not-disabled:to-emerald-600 hover:not-disabled:shadow-lg hover:not-disabled:shadow-emerald-600/30 hover:not-disabled:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-mw-primary focus-visible:outline-offset-2 disabled:from-teal-300 disabled:to-teal-400 disabled:border-teal-300 disabled:shadow-none disabled:cursor-not-allowed"
+		class="inline-flex items-center gap-2 px-3.5 py-2 text-sm font-bold text-white bg-gradient-to-br from-mw-primary to-mw-primary-dark border border-mw-primary rounded-full shadow-md shadow-mw-primary/20 cursor-pointer transition-all duration-150 ease-in-out hover:not-disabled:from-mw-primary-dark hover:not-disabled:to-mw-primary-dark hover:not-disabled:shadow-lg hover:not-disabled:shadow-mw-primary/30 hover:not-disabled:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-mw-primary focus-visible:outline-offset-2 disabled:opacity-75 disabled:shadow-none disabled:cursor-not-allowed"
 		type="button"
 		onclick={openPicker}
 		disabled={isParsing}

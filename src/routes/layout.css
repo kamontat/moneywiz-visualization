@@ -4,8 +4,11 @@
 @import '@fontsource/fira-mono';
 
 @theme {
-	--color-mw-primary: #10a164;
-	--color-mw-primary-dark: #2e8f62;
+	--color-mw-primary: #60a5fa;
+	--color-mw-primary-dark: #3b82f6;
+
+	--color-mw-secondary: #9333ea;
+	--color-mw-secondary-dark: #7e22ce;
 
 	--color-mw-bg-0: rgb(202, 216, 228);
 	--color-mw-bg-1: hsl(209, 36%, 86%);
