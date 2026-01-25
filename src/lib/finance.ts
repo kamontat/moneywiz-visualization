@@ -27,9 +27,10 @@ export function parseDateDDMMYYYY(value: string): Date | null {
  * Format a number as THB currency
  */
 export function formatTHB(n: number): string {
-	return new Intl.NumberFormat(undefined, {
+	return new Intl.NumberFormat('th-TH', {
 		style: 'currency',
 		currency: 'THB',
+		currencyDisplay: 'symbol',
 		maximumFractionDigits: 2
 	}).format(n);
 }

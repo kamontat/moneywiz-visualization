@@ -19,7 +19,7 @@ The dev server runs on `http://localhost:5173` (or next available port).
 Run the full test suite:
 
 ```sh
-bun test
+bun run test
 ```
 
 Run server-side tests only (includes CSV parser):

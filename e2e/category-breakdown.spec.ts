@@ -5,7 +5,7 @@ test.describe('Dashboard - Category Breakdown', () => {
         await page.goto('/');
         const fileInput = page.locator('input[type="file"]').first();
         await fileInput.setInputFiles('static/data/report.csv');
-        await expect(page.getByText('Income (THB)')).toBeVisible();
+        await expect(page.getByText('Saving Rate')).toBeVisible();
     });
 
     test('collapsible panels are visible and interactive', async ({ page }) => {

@@ -31,7 +31,7 @@ This project (MoneyWiz Visualization) uses the following stack:
 - `bun install` - Install dependencies
 - `bun run build` - Build static site
 - `bun run check` - TypeScript and Svelte checks
-- `bun test` - Run all tests (unit + e2e)
+- `bun run test` - Run all tests (unit + e2e)
 - `bun vitest run --project=server` - Server-side unit tests
 - `bun vitest run --project=client` - Svelte component tests
 - `bun run test:e2e` - Playwright E2E tests

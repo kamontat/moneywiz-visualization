@@ -23,10 +23,15 @@ describe('SummaryCards.svelte', () => {
         // Note: formatTHB behavior depends on locale, simplified check
         // Assuming formatTHB calls standard Intl which usually formats 1000 to THB 1,000.00
         // We match substring loosely
-        expect(container).toHaveTextContent('Income (THB)');
-        expect(container).toHaveTextContent('Expenses (THB)');
-        expect(container).toHaveTextContent('Net / Cash Flow (THB)');
+        expect(container).toHaveTextContent('Income');
+        expect(container).toHaveTextContent('Expenses');
+        expect(container).toHaveTextContent('Net / Cash Flow');
         expect(container).toHaveTextContent('Saving Rate');
+
+        // Check for currency symbol in values
+        // Since we are monitoring text content of the container, it should contain the formatted values like ฿1,000.00
+        const text = container.textContent;
+        expect(text).toContain('฿');
 
         // Saving rate should be exact
         expect(findValue('Saving Rate')).toContain('50.0%');

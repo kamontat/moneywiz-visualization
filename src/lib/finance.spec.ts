@@ -49,13 +49,13 @@ describe('finance', () => {
     });
 
     describe('formatTHB', () => {
-        it('formats numbers as THB currency', () => {
-            // Note: Output depends on locale, but typically includes symbol or code
+        it('formats numbers as THB currency with symbol', () => {
              const formatted = formatTHB(1234.56);
-             // We check loosely because actual string depends on environment locale (e.g. THB 1,234.56 or ฿1,234.56)
-             // But we verify it contains the numbers and separators
+             // Verify it contains the Thai Baht symbol and the number
+             expect(formatted).toContain('฿');
              expect(formatted).toContain('1,234.56');
-             expect(formatted).toMatch(/THB|฿/);
+             // Specifically check for symbol instead of THB code
+             expect(formatted).not.toContain('THB');
         });
     });
 });

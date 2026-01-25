@@ -31,7 +31,7 @@ bun install
 bun run dev
 
 # Run tests
-bun test                           # All tests (unit + e2e)
+bun run test                       # All tests (unit + e2e)
 bun vitest run --project=server    # Server-side unit tests
 bun vitest run --project=client    # Svelte component tests
 bun run test:e2e                   # E2E tests only

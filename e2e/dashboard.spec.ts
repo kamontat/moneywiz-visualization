@@ -6,16 +6,18 @@ test.describe('Dashboard - Basic summaries', () => {
     // Upload CSV since it no longer auto-loads
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
-    await expect(page.getByText('Income (THB)')).toBeVisible();
+    // Wait for the "Saving Rate" card which is unique to summary cards
+    await expect(page.getByText('Saving Rate')).toBeVisible();
   });
 
   test('renders heading and summary cards', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
     // Cards section should show Income, Expenses, Net, Transactions
-    await expect(page.getByText('Income (THB)')).toBeVisible();
-    await expect(page.getByText('Expenses (THB)')).toBeVisible();
-    await expect(page.getByText('Net / Cash Flow (THB)')).toBeVisible();
+    // Use .first() to avoid strict mode errors if labels appear in charts too
+    await expect(page.getByText('Income', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Expenses', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Net / Cash Flow', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Saving Rate')).toBeVisible();
   });
 
@@ -31,7 +33,7 @@ test.describe('Dashboard - Top Categories Chart', () => {
     // Upload CSV since it no longer auto-loads
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
-    await expect(page.getByText('Income (THB)')).toBeVisible();
+    await expect(page.getByText('Saving Rate')).toBeVisible();
   });
 
   test('displays category labels without truncation overlap', async ({ page }) => {

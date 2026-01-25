@@ -66,7 +66,7 @@ Execute the OpenSpec apply workflow from [openspec-apply.prompt.md](openspec-app
    - Align tests with acceptance criteria
 
 7. **Run Validation Checks**:
-   - Run `bun test` for unit tests (when feasible)
+   - Run `bun run test:unit` for unit tests (when feasible)
    - Run `bun run test:e2e` for E2E tests (when feasible)
    - Note any skipped steps and why
 
