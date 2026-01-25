@@ -10,10 +10,6 @@
 				"CONTEXT7_API_KEY": "${input:context7_api_key}"
 			}
 		},
-		"cognitionai/deepwiki": {
-			"type": "http",
-			"url": "https://mcp.deepwiki.com/mcp"
-		},
 		"modelcontextprotocol/time": {
 			"type": "stdio",
 			"command": "mise",
@@ -55,10 +51,6 @@
 				"--",
 				"chrome-devtools-mcp"
 			]
-		},
-		"github/github-mcp-server/personal": {
-			"type": "http",
-			"url": "https://api.githubcopilot.com/mcp"
 		}
 	},
 	"inputs": [
