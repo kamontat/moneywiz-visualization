@@ -11,8 +11,8 @@ The header will remain sticky at the top, but will change from a solid color to 
 ### 2. Mobile Layout Strategy
 The header will strictly adhere to a single-line horizontal layout across all screen sizes. Vertical stacking is removed to maximize vertical space for content.
 
-- **Branding**: The title is shortened to "MoneyWiz Report".
-- **Responsive Elements**: 
+- **Branding**: The title is shortened to "MoneyWiz Report" and serves as a home link. The standalone Logo component is removed to save space on mobile.
+- **Responsive Elements**:
   - Buttons (Upload, Clear) will use CSS classes (e.g., `hidden sm:inline`) to hide text labels on small screens, showing only icons.
   - The layout uses `justify-between` and `items-center` on a single `flex-row` container.
 
@@ -27,11 +27,9 @@ The header will strictly adhere to a single-line horizontal layout across all sc
 - Update class strings for the main `<header>` element.
 - Refine the branding section for responsiveness.
 - Adjust button group layout.
-
-### MoneyLogo.svelte
-- Ensure it scales gracefully if needed.
+- Remove `MoneyLogo` usage.
 
 ## Testing Strategy
 - **Visual**: Manual check on mobile view and desktop.
-- **E2E**: Verify buttons remain clickable and logo is visible.
+- **E2E**: Verify buttons remain clickable and title link is working.
 - **Unit**: Ensure props and event handlers still function.

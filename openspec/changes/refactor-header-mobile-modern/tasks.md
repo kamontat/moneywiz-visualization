@@ -9,6 +9,7 @@
 - [x] Update `AppHeader.svelte` "Clear" button to show only icon on mobile (`hidden sm:inline` for text). <!-- id: 3 -->
 - [x] Update `CsvUploadButton.svelte` to support responsive label (hide text on mobile, show only icon). <!-- id: 4 -->
 - [x] Refine the "Clear" button styles to be more consistent with a modern minimal look (pill shape/rounded). <!-- id: 5 -->
+- [x] Remove `MoneyLogo` and make title a clickable link to home. <!-- id: 10 -->
 
 ## Validation
 - [x] Run `bun vitest run src/components/organisms/AppHeader.svelte.spec.ts` to ensure functionality is preserved. <!-- id: 6 -->

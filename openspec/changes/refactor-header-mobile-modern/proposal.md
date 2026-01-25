@@ -7,7 +7,7 @@ The current header design is functional but feels a bit dated and takes up signi
 - **Visual Modernization**: Implement a "Glassmorphism" effect using `backdrop-blur-md` and semi-transparent background.
 - **Improved Layout**: Ensure the header remains a single line on all screen sizes (no vertical stacking). Use horizontal layout consistently.
 - **Responsive Buttons**: Update buttons (Clear and Upload) to show only icons on mobile and icon + label on desktop.
-- **Branding Update**: Change title from "MoneyWiz Visualization" to "MoneyWiz Report" and use an icon instead of text before the title for a cleaner look.
+- **Branding Update**: Change title from "MoneyWiz Visualization" to "MoneyWiz Report", **remove the standalone logo component to simplify the layout**, and make the title a clickable link to the home page (`/`).
 - **Subtle Depth**: Add a very subtle shadow or a refined bottom border to distinguish the header from the content as it scrolls.
 
 ## Impact
