@@ -1,31 +1,27 @@
 ---
-description: Archive work session—review, fix errors, update docs, archive OpenSpec changes, and commit
+description: Review changes, update documentation, and commit work session
 model: Claude Sonnet 4.5 (copilot)
 ---
-
-<!-- PROJECT WRAPPER: This prompt combines session archival + OpenSpec change archival -->
 
 $ARGUMENTS
 
 ## Mission
 
-Archive the current work session by:
+Clean up and finalize a work session by:
 1. Reviewing and categorizing all work done
 2. Detecting and fixing errors, inconsistencies, or documentation gaps
-3. Archiving any deployed OpenSpec changes
-4. Updating project documentation
-5. Creating a well-structured conventional commit
+3. Updating project documentation
+4. Creating a well-structured conventional commit
 
 ## Scope & Preconditions
 
 - Chat session must contain meaningful changes to archive
 - Repository must be a valid git repository with commit permissions
 - Project documentation files exist (README.md, AGENTS.md, instructions, skills)
-- If OpenSpec changes were implemented, they must be validated and ready to archive
+- If OpenSpec changes were implemented, they should be archived first using `/project.archive`
 
 ## Inputs
 
-- **Change ID** (${input:changeId}): Optional OpenSpec change ID to archive (leave empty if no OpenSpec work)
 - **Session Context**: The current chat session history and changes made
 
 ## Workflow
@@ -84,59 +80,40 @@ Archive the current work session by:
      * Add validation for common mistakes
      * Document discovered gotchas
 
-### Phase 3: OpenSpec Change Archival (If Applicable)
+### Phase 3: Documentation Update
 
-**Execute this phase only if an OpenSpec change was implemented and needs archival.**
-
-7. **Identify Change to Archive**:
-   - If change ID provided in inputs, use it
-   - Otherwise, check if session involved OpenSpec implementation:
-     * Run `openspec list` to see pending changes
-     * Confirm with user which change (if any) to archive
-     * Skip this phase if no OpenSpec work was done
-
-8. **Archive OpenSpec Change**:
-   - Follow the workflow from [openspec-archive.prompt.md](openspec-archive.prompt.md):
-     * Validate the change ID with `openspec list` or `openspec show <id>`
-     * Run `openspec archive <id> --yes` to move change and update specs
-     * Review command output to confirm updates
-     * Validate with `openspec validate --strict --no-interactive`
-     * Inspect with `openspec show <id>` if needed
-
-### Phase 4: Documentation Update
-
-9. **Identify Affected Documentation**:
+7. **Identify Affected Documentation**:
    - Determine which documentation files need updates:
      * [README.md](../../README.md) - Project overview, setup, usage
      * [AGENTS.md](../../AGENTS.md) - Agent configurations
      * Other relevant documentation files
 
-10. **Update Documentation**:
-    - Edit identified files to reflect changes:
-      * Maintain existing style and formatting
-      * Use clear, concise language
-      * Add examples where helpful
-      * Update version information if applicable
-      * **Include lessons learned from session errors**
+8. **Update Documentation**:
+   - Edit identified files to reflect changes:
+     * Maintain existing style and formatting
+     * Use clear, concise language
+     * Add examples where helpful
+     * Update version information if applicable
+     * **Include lessons learned from session errors**
 
-11. **Verify Consistency**:
-    - Ensure all documentation updates are accurate and consistent with actual changes
-    - Check for broken links or references
+9. **Verify Consistency**:
+   - Ensure all documentation updates are accurate and consistent with actual changes
+   - Check for broken links or references
 
-### Phase 5: Git Commit
+### Phase 4: Git Commit
 
-12. **Check Git Status**:
+10. **Check Git Status**:
     - Run `git status --porcelain` to see modified, added, deleted files
 
-13. **Check Staged Files**:
+11. **Check Staged Files**:
     - Run `git diff --cached --name-only` to verify if files are already staged
     - If no files staged, run `git add -A` (never stage secrets)
 
-14. **Analyze Changes**:
+12. **Analyze Changes**:
     - Run `git diff --staged` to inspect staged changes
     - Run `git diff` for unstaged work
 
-15. **Determine Commit Type**:
+13. **Determine Commit Type**:
     - Select appropriate conventional commit type:
       * `feat` - New feature or functionality
       * `fix` - Bug fix
@@ -149,22 +126,22 @@ Archive the current work session by:
       * `ci` - CI/CD configuration changes
       * `chore` - Maintenance or miscellaneous tasks
 
-16. **Determine Scope**:
+14. **Determine Scope**:
     - Identify affected area/module (e.g., `dashboard`, `csv`, `docs`, `openspec`)
 
-17. **Generate Description**:
+15. **Generate Description**:
     - Create concise description:
       * Imperative mood, present tense
       * Under 72 characters
       * Clear and specific
 
-18. **Create Commit**:
+16. **Create Commit**:
     - Execute commit with conventional commit message:
       ```bash
       git commit -m "<type>(<scope>): <description>" -m "<optional detailed body>"
       ```
 
-19. **Verify Commit**:
+17. **Verify Commit**:
     - Confirm with `git log -1 --stat` to display last commit and affected files
 
 ## Output Expectations
@@ -225,13 +202,6 @@ Use this checklist to scan for common issues:
 - [ ] Test commands run successfully
 - [ ] Environment variables documented
 - [ ] Dependencies up to date in documentation
-
-### OpenSpec Archival (if applicable)
-- [ ] Change ID validated with `openspec list`
-- [ ] `openspec archive <id> --yes` completed successfully
-- [ ] Target specs updated correctly
-- [ ] Change moved to `changes/archive/`
-- [ ] `openspec validate --strict` passes
 
 ### Documentation
 - [ ] All significant changes documented
@@ -306,9 +276,14 @@ BREAKING CHANGE: API v1 endpoints are no longer supported.
 Migrate to v2 endpoints documented at /api/v2/docs
 ```
 
+## Related Prompts
+
+- Archive OpenSpec changes first: [project.3.archive.prompt.md](project.3.archive.prompt.md)
+- Create new proposals: [project.1.proposal.prompt.md](project.1.proposal.prompt.md)
+- Implement changes: [project.2.implement.prompt.md](project.2.implement.prompt.md)
+
 ## Reference
 
-- OpenSpec archival: [openspec-archive.prompt.md](openspec-archive.prompt.md)
 - Project guidelines: [AGENTS.md](../../AGENTS.md)
 - Commit skill: `.github/skills/common-conventional-commits/SKILL.md`
 - Svelte instructions: `.github/instructions/svelte.instructions.md`
