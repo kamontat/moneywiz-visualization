@@ -12,7 +12,7 @@ This skill enables visual inspection and validation of website design quality fo
 - **Framework:** SvelteKit with Svelte 5 components
 - **Styling System:** Tailwind CSS v4
 - **Language:** TypeScript
-- **Components:** AppHeader, MoneyLogo, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart
+- **Components:** AppHeader, CsvUploadButton, SummaryCards, TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart
 - **Dev Server:** http://localhost:5173/
 - **Package Manager:** Bun
 - **Source Structure:** `src/components/` for UI, `src/lib/` for logic, `src/routes/` for pages
@@ -159,7 +159,7 @@ Detection targets:
 ### 2.1 MoneyWiz Page Traversal
 
 1. **Start at Dashboard:** `http://localhost:5173/`
-2. **Verify Header:** AppHeader with MoneyLogo and Clear button
+2. **Verify Header:** AppHeader with "MoneyWiz Report" title link and Clear button
 3. **Test CSV Upload:** Upload functionality via CsvUploadButton
 4. **Visualize Data:** Charts render correctly (TopCategoriesChart, DailyExpensesChart, IncomeExpenseRatioChart)
 5. **Check Summary:** Summary cards display correct values
@@ -176,8 +176,7 @@ Detection targets:
 ### 2.2 MoneyWiz Component Inspection Items
 
 **Key Components to Verify:**
-- **AppHeader.svelte** - Navigation, logo, clear button layout
-- **MoneyLogo.svelte** - Logo rendering and sizing
+- **AppHeader.svelte** - Title link, glassmorphism effect, clear button layout
 - **CsvUploadButton.svelte** - Upload input accessibility and styling
 - **SummaryCards.svelte** - Card grid layout, value alignment, currency display
 - **TopCategoriesChart.svelte** - Chart rendering, legend positioning

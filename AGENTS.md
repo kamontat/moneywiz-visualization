@@ -89,7 +89,7 @@ Example usage:
 ```svelte
 <script lang="ts">
   import SummaryCards from '$components/organisms/SummaryCards.svelte';
-  import MoneyLogo from '$components/atoms/MoneyLogo.svelte';
+  import AppHeader from '$components/organisms/AppHeader.svelte';
   import { parseCsv } from '$lib/csv';
 </script>
 ```

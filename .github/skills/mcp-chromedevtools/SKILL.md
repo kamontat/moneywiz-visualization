@@ -108,8 +108,7 @@ Identify why a page is slow.
 
 ### Expected Elements
 
-- AppHeader with logo and clear button
-- MoneyLogo component
+- AppHeader with "MoneyWiz Report" title link and clear button
 - SummaryCards (THB currency)
 - TopCategoriesChart
 - DailyExpensesChart
