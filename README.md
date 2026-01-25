@@ -79,13 +79,17 @@ bun run preview
 
 ## Project Structure
 
-- `src/components/` - Reusable UI components
-  - `AppHeader.svelte` - Main header with logo and CSV upload
-  - `CsvUploadButton.svelte` - CSV file upload handler
-  - `MoneyLogo.svelte` - App logo component
-  - `SummaryCards.svelte` - Dashboard summary cards (Income, Expenses, Net, Transactions)
-  - `TopCategoriesChart.svelte` - Bar chart for top spending categories
-  - `DailyExpensesChart.svelte` - Bar chart for daily expenses
+- `src/components/` - Reusable UI components (organized using Atomic Design)
+  - `atoms/` - Basic building blocks
+    - `MoneyLogo.svelte` - App logo component
+  - `molecules/` - Simple component combinations
+    - `CsvUploadButton.svelte` - CSV file upload handler
+  - `organisms/` - Complex UI sections
+    - `AppHeader.svelte` - Main header with logo and CSV upload
+    - `SummaryCards.svelte` - Dashboard summary cards (Income, Expenses, Net, Transactions)
+    - `TopCategoriesChart.svelte` - Bar chart for top spending categories
+    - `DailyExpensesChart.svelte` - Bar chart for daily expenses
+    - `IncomeExpenseRatioChart.svelte` - Pie chart for income vs expenses ratio
 - `src/lib/` - Shared utilities and libraries
   - `csv.ts` - CSV parsing with error handling
   - `analytics.ts` - Financial analytics calculations (totals, categories, daily expenses)

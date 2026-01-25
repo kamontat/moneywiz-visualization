@@ -8,10 +8,10 @@
 		calculateTopCategories,
 		calculateDailyExpenses
 	} from '$lib/analytics';
-	import SummaryCards from '$components/SummaryCards.svelte';
-	import TopCategoriesChart from '$components/TopCategoriesChart.svelte';
-	import DailyExpensesChart from '$components/DailyExpensesChart.svelte';
-	import IncomeExpenseRatioChart from '$components/IncomeExpenseRatioChart.svelte';
+	import SummaryCards from '$components/organisms/SummaryCards.svelte';
+	import TopCategoriesChart from '$components/organisms/TopCategoriesChart.svelte';
+	import DailyExpensesChart from '$components/organisms/DailyExpensesChart.svelte';
+	import IncomeExpenseRatioChart from '$components/organisms/IncomeExpenseRatioChart.svelte';
 
 	let csv: CsvState = $state({ fileName: null, data: null });
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ParsedCsv } from '$lib/csv';
-	import CsvUploadButton from './CsvUploadButton.svelte';
-	import MoneyLogo from './MoneyLogo.svelte';
+	import CsvUploadButton from '../molecules/CsvUploadButton.svelte';
+	import MoneyLogo from '../atoms/MoneyLogo.svelte';
 	import TrashIcon from '@iconify-svelte/lucide/trash-2';
 
 	interface Props {

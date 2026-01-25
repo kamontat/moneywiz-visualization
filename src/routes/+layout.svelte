@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AppHeader from '../components/AppHeader.svelte';
+	import AppHeader from '../components/organisms/AppHeader.svelte';
 	import type { ParsedCsv } from '$lib/csv';
 	import { csvStore } from '$lib/stores/csv';
 	import './layout.css';

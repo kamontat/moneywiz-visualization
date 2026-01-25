@@ -62,7 +62,11 @@ e2e/               # Playwright e2e tests
 
 ### File Organization
 
-- **UI Components:** Place in `src/components/` - Keep focused and reusable
+- **UI Components:** Place in `src/components/` following Atomic Design methodology:
+  - `atoms/` - Basic building blocks (logos, icons, basic elements)
+  - `molecules/` - Simple component combinations (specialized buttons, form groups)
+  - `organisms/` - Complex UI sections (headers, charts, card groups)
+  - Keep components focused and reusable
 - **Business Logic:** Place in `src/lib/` - Separate from UI concerns
 - **Tests:** Co-locate with source files using `.spec.ts` suffix
 - **Routes:** SvelteKit file-based routing in `src/routes/`
@@ -84,7 +88,8 @@ The project uses SvelteKit path aliases configured in `svelte.config.js`:
 Example usage:
 ```svelte
 <script lang="ts">
-  import SummaryCards from '$components/SummaryCards.svelte';
+  import SummaryCards from '$components/organisms/SummaryCards.svelte';
+  import MoneyLogo from '$components/atoms/MoneyLogo.svelte';
   import { parseCsv } from '$lib/csv';
 </script>
 ```
