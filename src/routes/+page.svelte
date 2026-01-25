@@ -48,30 +48,35 @@
 <section aria-labelledby="dash-title" class="flex flex-col gap-6">
 	{#if csv.data}
 		<!-- Dashboard Header -->
-		<header class="flex flex-col items-start gap-1 py-1 pb-4">
-			<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-text-main tracking-tight">Dashboard</h1>
-			{#if dateRange}
-				<DateRangeDisplay start={dateRange.start} end={dateRange.end} />
-			{/if}
+		<header class="flex flex-wrap items-end justify-between gap-4 py-1 pb-4">
+			<div class="flex flex-col gap-1">
+				<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-text-main tracking-tight">Dashboard</h1>
+				<div class="flex items-center gap-2 text-xs text-mw-text-muted">
+					{#if dateRange}
+						<DateRangeDisplay start={dateRange.start} end={dateRange.end} />
+						<span class="text-mw-text-muted/30">|</span>
+					{/if}
+					<span class="font-medium">{(csv.data?.rows?.length ?? 0)} rows</span>
+					<span class="text-mw-text-muted/30">|</span>
+					<span class="font-medium">{(csv.data?.headers?.length ?? 0)} columns</span>
+				</div>
+			</div>
+
+			<div class="flex flex-col items-end gap-0.5">
+				<span class="font-mono text-xs text-mw-text-muted">{csv.fileName}</span>
+				<span class="flex items-center gap-1.5 text-xs text-green-600 font-medium">
+					<span class="relative flex h-1.5 w-1.5">
+						<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+						<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+					</span>
+					Upload successful
+				</span>
+			</div>
 		</header>
 
 		<!-- Quick Summary Section -->
 		<section aria-label="Quick Summary" class="flex flex-col gap-2">
 			<SummaryCards {totals} />
-			<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-mw-text-muted px-1">
-				<span class="font-medium">{(csv.data?.rows?.length ?? 0)} rows</span>
-				<span>·</span>
-				<span class="font-medium">{(csv.data?.headers?.length ?? 0)} columns</span>
-				<span>·</span>
-				<span class="font-mono">{csv.fileName}</span>
-				<span class="flex items-center gap-1.5 text-green-600 font-medium ml-auto sm:ml-0">
-					<span class="relative flex h-2 w-2">
-						<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-						<span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-					</span>
-					Upload successful
-				</span>
-			</div>
 		</section>
 
 		<!-- Tabs -->
