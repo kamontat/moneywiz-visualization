@@ -48,43 +48,28 @@
 
 		{#if parsedUpload}
 			<section
-				class="bg-mw-surface border border-mw-border rounded-xl shadow-lg shadow-gray-900/5 flex flex-col gap-4 mt-5 p-5"
+				class="bg-mw-surface border border-mw-border rounded-xl shadow-sm flex flex-col gap-4 mt-8"
 				aria-live="polite"
 			>
-				<header class="flex flex-wrap justify-between items-start gap-x-4 gap-y-2">
-					<div>
-						<p class="text-mw-primary-dark text-sm font-bold uppercase tracking-wide m-0">
-							Upload successful
-						</p>
-						<h1 class="text-mw-text-main text-2xl leading-tight mt-0.5 m-0">
-							{parsedUpload.fileName}
-						</h1>
-					</div>
-					<div class="flex items-center gap-4">
-						<p class="text-mw-text-secondary font-semibold m-0">
-							{(parsedUpload.data?.rows?.length ?? 0)} rows · {(parsedUpload.data?.headers?.length ?? 0)} columns
-						</p>
-						<button
-							onclick={() => (isCollapsed = !isCollapsed)}
-							class="inline-flex items-center gap-1 text-sm font-medium text-mw-primary hover:text-mw-primary-dark hover:underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-mw-primary rounded-md px-2 py-1"
-							aria-expanded={!isCollapsed}
-							aria-controls="preview-content"
-						>
-							{#if isCollapsed}
-								Show Preview <ChevronDownIcon class="w-4 h-4" />
-							{:else}
-								Hide Preview <ChevronUpIcon class="w-4 h-4" />
-							{/if}
-						</button>
-					</div>
+				<header class="flex flex-wrap justify-between items-center gap-4 px-4 py-3 border-b border-mw-border/50 bg-gray-50/50 rounded-t-xl">
+					<h2 class="text-sm font-semibold text-mw-text-main m-0">Data Preview</h2>
+					<button
+						onclick={() => (isCollapsed = !isCollapsed)}
+						class="inline-flex items-center gap-1 text-xs font-medium text-mw-text-muted hover:text-mw-text-main transition-colors"
+						aria-expanded={!isCollapsed}
+						aria-controls="preview-content"
+					>
+						{#if isCollapsed}
+							Show Table <ChevronDownIcon class="w-3.5 h-3.5" />
+						{:else}
+							Hide Table <ChevronUpIcon class="w-3.5 h-3.5" />
+						{/if}
+					</button>
 				</header>
 
 				{#if !isCollapsed}
-					<div id="preview-content" class="flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+					<div id="preview-content" class="flex flex-col gap-2 p-4 animate-in fade-in slide-in-from-top-1 duration-200">
 						{#if (parsedUpload.data?.rows?.length ?? 0) > 0}
-								<h2 class="text-mw-text-main text-lg m-0">
-									Preview (first {Math.min(maxPreviewRows, parsedUpload.data?.rows?.length ?? 0)} rows)
-								</h2>
 								<div class="overflow-x-auto border border-mw-border rounded-lg">
 									<table class="border-collapse" style="table-layout: auto; min-width: 100%;">
 										<thead class="bg-gray-50">

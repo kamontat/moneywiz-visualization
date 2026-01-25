@@ -11,6 +11,7 @@ export interface Totals {
 	expenses: number;
 	net: number;
 	count: number;
+	savingRate: number;
 }
 
 export interface CategoryItem {
@@ -59,7 +60,18 @@ export function calculateTotals(thbRows: Record<string, string>[]): Totals {
 		else expenses += amt; // negative
 	}
 	const net = income + expenses;
-	return { income, expenses, net, count: thbRows.length };
+
+	// Saving Rate = (Income - Expense) / Income * 100
+	// Note: Expenses are typically negative numbers in this system, so use Net (Income + Expenses)
+	// If expenses are negative, Net is (100 + (-80)) = 20.
+	// Saving Rate = (20 / 100) * 100 = 20%.
+
+	let savingRate = 0;
+	if (income > 0) {
+		savingRate = (net / income) * 100;
+	}
+
+	return { income, expenses, net, count: thbRows.length, savingRate };
 }
 
 /**
@@ -112,4 +124,20 @@ export function calculateDailyExpenses(thbRows: Record<string, string>[]): Daily
 	const items = perDay.map((v, i) => ({ day: i + 1, value: v }));
 	const label = `${latest.toLocaleString(undefined, { month: 'long' })} ${year}`;
 	return { items, max, label };
+}
+
+/**
+ * Get the date range (min and max date) from transactions
+ */
+export function getDateRange(thbRows: Record<string, string>[]): { start: Date; end: Date } | null {
+	const dates = thbRows
+		.map((r) => parseDateDDMMYYYY(r['Date'] || ''))
+		.filter((d): d is Date => d instanceof Date);
+
+	if (dates.length === 0) return null;
+
+	const start = new Date(Math.min(...dates.map((d) => d.getTime())));
+	const end = new Date(Math.max(...dates.map((d) => d.getTime())));
+
+	return { start, end };
 }

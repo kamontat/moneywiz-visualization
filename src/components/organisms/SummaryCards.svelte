@@ -15,11 +15,11 @@
 		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{formatTHB(Math.abs(totals.expenses))}</p>
 	</div>
 	<div class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-lg shadow-gray-900/5" role="listitem">
-		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Net (THB)</p>
+		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Net / Cash Flow (THB)</p>
 		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{formatTHB(totals.net)}</p>
 	</div>
 	<div class="bg-mw-surface border border-mw-border rounded-xl p-3 shadow-lg shadow-gray-900/5" role="listitem">
-		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Transactions</p>
-		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{totals.count}</p>
+		<p class="m-0 text-mw-text-muted font-bold text-xs uppercase tracking-wide">Saving Rate</p>
+		<p class="mt-1.5 m-0 text-mw-text-main font-extrabold text-lg">{totals.savingRate.toFixed(1)}%</p>
 	</div>
 </div>

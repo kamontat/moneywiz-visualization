@@ -15,8 +15,8 @@ test.describe('Dashboard - Basic summaries', () => {
     // Cards section should show Income, Expenses, Net, Transactions
     await expect(page.getByText('Income (THB)')).toBeVisible();
     await expect(page.getByText('Expenses (THB)')).toBeVisible();
-    await expect(page.getByText('Net (THB)')).toBeVisible();
-    await expect(page.getByText('Transactions')).toBeVisible();
+    await expect(page.getByText('Net / Cash Flow (THB)')).toBeVisible();
+    await expect(page.getByText('Saving Rate')).toBeVisible();
   });
 
   test('renders charts', async ({ page }) => {

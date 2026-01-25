@@ -9,7 +9,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
     await test.step('Verify empty state on fresh load', async () => {
       // Dashboard heading should be hidden when no data
       await expect(page.getByRole('heading', { name: 'Dashboard' })).not.toBeVisible();
-      await expect(page.getByText('No data loaded yet')).toBeVisible();
+      await expect(page.getByText('Welcome to MoneyWiz Report')).toBeVisible();
     });
 
     await test.step('Upload CSV via hidden input', async () => {
@@ -21,8 +21,8 @@ test.describe('CSV Upload - MoneyWiz file', () => {
       // After upload, dashboard should show summary cards
       await expect(page.getByText('Income (THB)')).toBeVisible();
       await expect(page.getByText('Expenses (THB)')).toBeVisible();
-      await expect(page.getByText('Net (THB)')).toBeVisible();
-      await expect(page.getByText('Transactions')).toBeVisible();
+      await expect(page.getByText('Net / Cash Flow (THB)')).toBeVisible();
+      await expect(page.getByText('Saving Rate')).toBeVisible();
 
       // Charts should be visible
       await expect(page.getByRole('heading', { name: 'Top Categories' })).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
       await expect(page.getByRole('button', { name: 'Clear loaded CSV' })).not.toBeVisible();
 
       // Dashboard should show empty state message
-      await expect(page.getByText('No data loaded yet')).toBeVisible();
+      await expect(page.getByText('Welcome to MoneyWiz Report')).toBeVisible();
     });
   });
 });

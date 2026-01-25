@@ -58,6 +58,16 @@ describe('analytics', () => {
             expect(result.expenses).toBe(-40);
             expect(result.net).toBe(80);
             expect(result.count).toBe(3);
+            // Income 120, Net 80 -> Saving Rate = 80/120 * 100 = 66.666...
+            expect(result.savingRate).toBeCloseTo(66.67, 1);
+        });
+
+        it('handles zero income for saving rate', () => {
+             vi.mocked(finance.parseAmountTHB).mockImplementation((val) => Number(val));
+             const rows = [{ Amount: '-50' }];
+             const result = analytics.calculateTotals(rows);
+             expect(result.income).toBe(0);
+             expect(result.savingRate).toBe(0);
         });
     });
 
@@ -139,6 +149,34 @@ describe('analytics', () => {
             const result = analytics.calculateDailyExpenses([{ Date: 'invalid' }]);
             expect(result.items).toEqual([]);
             expect(result.max).toBe(0);
+        });
+    });
+
+    describe('getDateRange', () => {
+        it('returns min and max dates', () => {
+            vi.mocked(finance.parseDateDDMMYYYY).mockImplementation((val) => {
+                const parts = val.split('/');
+                return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+            });
+
+            const rows = [
+                { Date: '15/01/2023' },
+                { Date: '01/01/2023' },
+                { Date: '20/02/2023' }
+            ] as Record<string, string>[];
+
+            const result = analytics.getDateRange(rows);
+            expect(result).not.toBeNull();
+            expect(result?.start.getDate()).toBe(1);
+            expect(result?.start.getMonth()).toBe(0); // Jan
+            expect(result?.end.getDate()).toBe(20);
+            expect(result?.end.getMonth()).toBe(1); // Feb
+        });
+
+        it('returns null for empty valid dates', () => {
+            vi.mocked(finance.parseDateDDMMYYYY).mockReturnValue(null);
+            const result = analytics.getDateRange([{ Date: 'invalid' }] as Record<string, string>[]);
+            expect(result).toBeNull();
         });
     });
 });
