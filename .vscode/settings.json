@@ -1,5 +1,7 @@
 {
 	"chat.agent.maxRequests": 50,
+	"chat.agent.thinkingStyle": "collapsed",
+	"chat.agent.thinking.collapsedTools": "off",
 	"files.associations": {
 		"*.css": "tailwindcss"
 	},
