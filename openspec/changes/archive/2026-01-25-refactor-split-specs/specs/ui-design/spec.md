@@ -1,8 +1,5 @@
-# ui Specification
+## ADDED Requirements
 
-## Purpose
-Defines the user interface requirements for the MoneyWiz Visualization application, including header design, component organization, dashboard behavior, and layout hierarchy to ensure a modern, accessible, and user-friendly experience.
-## Requirements
 ### Requirement: Header Action Buttons
 The header action buttons SHALL provide clear visual cues for their functionality using both text and icons.
 
@@ -56,31 +53,6 @@ The application SHALL provide access to its source code to facilitate developer 
 - **And** the link MUST use the official GitHub icon
 - **And** the link MUST open in a new tab
 
-### Requirement: Document Layout Hierarchy
-The application SHALL prioritize data visualizations and summaries with clear structural separation.
-
-#### Scenario: Visualizations above raw data (Enhanced)
-- **Given** a CSV file is successfully uploaded
-- **Then** the Dashboard header MUST display the transaction date range on the top left
-- **And** the "Dashboard" title MUST be centered at the top
-- **And** a navigation tab system MUST be provided below the header
-- **And** the "Quick Summary" (SummaryCards) MUST be separated from the chart panels within the "Overview" tab
-- **And** the CSV Preview table MUST remain below the dashboard visualizations
-
-### Requirement: User uploads CSV which persists across reloads
-The application SHALL store the uploaded CSV data locally so that the user's session is preserved even if they refresh the page.
-
-#### Scenario: Data survives reload
-- GIVEN the user has uploaded "report.csv"
-- WHEN the user reloads the page
-- THEN the dashboard should still display the data from "report.csv"
-
-#### Scenario: Clearing data
-- GIVEN the user has persisted data
-- WHEN the user clicks "Clear loaded CSV"
-- THEN the data is removed from local storage
-- AND the dashboard returns to the empty state
-
 ### Requirement: Visual Theme Palette
 The application SHALL use a consistent professional color palette focused on financial clarity.
 
@@ -91,16 +63,20 @@ The application SHALL use a consistent professional color palette focused on fin
 - **And** these colors MUST be used consistently across branding elements (logo, buttons)
 - **And** data visualizations SHOULD use the theme colors, except where semantic colors provide better clarity (e.g., green for income, red for expenses)
 
-### Requirement: Collapsible Category Breakdown
-The application SHALL provide a detailed breakdown of income and expenses by category in collapsible panels.
+### Requirement: Interactive Data Preview Panel
+The application SHALL utilize a dedicated component for the data preview table that aligns with the dashboard's interactive patterns.
 
-#### Scenario: Interactive Category Panels
-- **Given** the dashboard is rendered with data
-- **Then** two collapsible panels SHOULD be displayed: "Income by Category" and "Expense by Category"
-- **And** the panels MUST have rounded corners (`rounded-xl`)
-- **And** the entire header area of each panel MUST be clickable to toggle expansion
-- **And** the Income panel header SHOULD use a semantic green background
-- **And** the Expense panel header SHOULD use a semantic red background
-- **And** when expanded, each panel MUST list categories with their total amount and percentage of the group total
-- **And** expansion transitions SHOULD be smooth
+#### Scenario: Consistent Interactive Header
+- **Given** the data preview panel is visible
+- **Then** the panel header MUST have rounded corners (`rounded-xl` when collapsed)
+- **And** the entire header area MUST be clickable to toggle expansion
+- **And** the background color SHOULD be neutral (`gray-50` family) to differentiate from income/expense panels
+- **And** the panel state SHOULD default to collapsed
 
+### Requirement: General Dashboard Layout
+The application SHALL prioritize data visualizations and summaries with clear structural separation.
+
+#### Scenario: Visualizations above raw data
+- **Given** a CSV file is successfully uploaded
+- **Then** the CSV Preview table MUST remain below the dashboard visualizations
+- **And** the dashboard visualizations MUST be presented in a tabbed interface or clearly separated sections
