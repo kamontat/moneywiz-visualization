@@ -1,22 +1,36 @@
 import { writable } from 'svelte/store';
 import type { ParsedCsv } from '$lib/csv';
+import type { TagFilter } from '$lib/analytics';
 import { log } from '$lib/debug';
 
 export interface CsvState {
   fileName: string | null;
   data: ParsedCsv | null;
+  tagFilters: TagFilter[];
 }
 
 const STORAGE_KEY = 'mw_csv_data';
 
 function createCsvStore() {
+
+  const normalize = (value: CsvState): CsvState => ({
+    fileName: value.fileName ?? null,
+    data: value.data ?? null,
+    tagFilters: value.tagFilters ?? []
+  });
+
   // Hydrate from localStorage if available
-  let initialState: CsvState = { fileName: null, data: null };
+  let initialState: CsvState = { fileName: null, data: null, tagFilters: [] };
   if (typeof window !== 'undefined') {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        initialState = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Ensure legacy data gets empty filters
+        initialState = {
+          ...parsed,
+          tagFilters: parsed.tagFilters || []
+        };
         log.storeCsv('hydrated from localStorage: fileName=%s', initialState.fileName);
       }
     } catch (e) {
@@ -40,25 +54,42 @@ function createCsvStore() {
     }
   };
 
+    const customSet = (value: CsvState) => {
+      const next = normalize(value);
+      log.storeCsv('setting store: fileName=%s, rows=%d', next.fileName, next.data?.rows.length ?? 0);
+      saveToStorage(next);
+      set(next);
+  };
+
   return {
     subscribe,
-    set: (value: CsvState) => {
-      log.storeCsv('setting store: fileName=%s, rows=%d', value.fileName, value.data?.rows.length ?? 0);
-      saveToStorage(value);
-      set(value);
-    },
+    set: customSet,
     update: (updater) => {
       update((value) => {
-        const next = updater(value);
+        const next = normalize(updater(value));
         saveToStorage(next);
         return next;
       });
     },
     reset: () => {
       log.storeCsv('resetting store');
-      // This implicitly calls our custom set, which handles storage removal
-      saveToStorage({ fileName: null, data: null });
-      set({ fileName: null, data: null });
+      customSet({ fileName: null, data: null, tagFilters: [] });
+    },
+    setTagFilters: (filters: TagFilter[]) => {
+      log.storeCsv('updating tag filters: %d filters', filters.length);
+      update((state) => {
+        const next = { ...state, tagFilters: filters };
+        saveToStorage(next);
+        return next;
+      });
+    },
+    clearTagFilters: () => {
+      log.storeCsv('clearing tag filters');
+      update((state) => {
+        const next = { ...state, tagFilters: [] };
+        saveToStorage(next);
+        return next;
+      });
     }
   };
 }

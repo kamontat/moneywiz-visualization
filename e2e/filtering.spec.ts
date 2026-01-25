@@ -9,22 +9,22 @@ test.describe('Dashboard - Filtering', () => {
     });
 
     test('collapsible panel interaction', async ({ page }) => {
-        const toggleBtn = page.getByRole('button', { name: 'Date' });
+        const toggleBtn = page.getByRole('button', { name: /^Filter$/i });
         // Initially collapsed
-        await expect(page.getByLabel('Start Date')).not.toBeVisible();
+        await expect(page.getByLabel('Start')).not.toBeVisible();
 
         // Expand
         await toggleBtn.click();
-        await expect(page.getByLabel('Start Date')).toBeVisible();
+        await expect(page.getByLabel('Start')).toBeVisible();
 
-        // Collapse via Close button
-        await page.getByRole('button', { name: 'Close' }).click();
-        await expect(page.getByLabel('Start Date')).not.toBeVisible();
+        // Collapse via toggle button
+        await toggleBtn.click();
+        await expect(page.getByLabel('Start')).not.toBeVisible();
     });
 
     test('filters data by quick preset', async ({ page }) => {
         // Expand filter
-        await page.getByRole('button', { name: 'Date' }).click();
+        await page.getByRole('button', { name: /^Filter$/i }).click();
 
         // Get initial income count or value to compare
         // "Income" card value.
@@ -37,8 +37,8 @@ test.describe('Dashboard - Filtering', () => {
         // "Clear Filter" should be visible immediately
         await expect(page.getByRole('button', { name: 'Clear Filter' })).toBeVisible();
 
-        // Close panel to see "Active" badge
-        await page.getByRole('button', { name: 'Close' }).click();
+        // Collapse panel to see "Active" badge
+        await page.getByRole('button', { name: /^Filter$/i }).click();
         await expect(page.getByText('Active', { exact: true })).toBeVisible();
 
         // Verify "rows shown" count in header is less than total rows
@@ -57,12 +57,12 @@ test.describe('Dashboard - Filtering', () => {
     });
 
     test('filters by manual date range', async ({ page }) => {
-        await page.getByRole('button', { name: 'Date' }).click();
+        await page.getByRole('button', { name: 'Filter' }).click();
 
         // Set range to a specific day logic if possible, or just set start date.
         // Let's filter to 2025 where there is known data
-        await page.getByLabel('Start Date').fill('2025-12-01');
-        await page.getByLabel('End Date').fill('2025-12-31');
+        await page.getByLabel('Start').fill('2025-12-01');
+        await page.getByLabel('End').fill('2025-12-31');
 
         // Should show data for Dec 2025
         await expect(page.getByText('shown')).toBeVisible();

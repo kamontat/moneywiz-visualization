@@ -9,7 +9,9 @@
 		calculateDailyExpenses,
 		calculateCategoryBreakdown,
 		getDateRange,
-		filterByDateRange
+		filterByDateRange,
+		filterByTags,
+		type TagFilter
 	} from '$lib/analytics';
 	import FilterPanel from '$components/organisms/FilterPanel.svelte';
 	import SummaryCards from '$components/organisms/SummaryCards.svelte';
@@ -19,19 +21,30 @@
 	import CategoryBreakdown from '$components/organisms/CategoryBreakdown.svelte';
 	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte';
 
-	let csv: CsvState = $state({ fileName: null, data: null });
+	let csv = $state<CsvState>({
+		data: null,
+		fileName: null,
+		tagFilters: []
+	});
 	let activeTab = $state('overview');
 
 	// Filter State
 	let filterStart: Date | null = $state(null);
 	let filterEnd: Date | null = $state(null);
+	let tagFilters = $state<TagFilter[]>([]);
 
 	// Subscribe to global store
 	onMount(() => {
 		log.pageDashboard('mounting dashboard');
 		const unsub = csvStore.subscribe((value) => {
-			log.pageDashboard('store updated: fileName=%s', value.fileName);
-			csv = value;
+			const next = { ...value, tagFilters: value.tagFilters ?? [] };
+			log.pageDashboard('store updated: fileName=%s', next.fileName);
+			csv = next;
+
+			// Store -> Local Sync (keep tag filters defined)
+			if (JSON.stringify(tagFilters) !== JSON.stringify(next.tagFilters)) {
+				tagFilters = next.tagFilters;
+			}
 		});
 
 		return () => {
@@ -40,9 +53,18 @@
 		};
 	});
 
+	// Local -> Store Sync
+	$effect(() => {
+		// Only push to store if local state differs from derived store state
+		if (JSON.stringify(tagFilters) !== JSON.stringify(csv.tagFilters ?? [])) {
+			csvStore.setTagFilters(tagFilters);
+		}
+	});
+
 	// Derived metrics using extracted business logic
 	const thbRows = $derived(getTHBRows(csv.data));
-	const filteredRows = $derived(filterByDateRange(thbRows, filterStart, filterEnd));
+	const dateFilteredRows = $derived(filterByDateRange(thbRows, filterStart, filterEnd));
+	const filteredRows = $derived(filterByTags(dateFilteredRows, tagFilters));
 
 	const totals = $derived(calculateTotals(filteredRows));
 	const topCategories = $derived(calculateTopCategories(filteredRows));
@@ -80,7 +102,12 @@
 
 		<!-- Filter Panel -->
 		<section aria-label="Filters" class="z-20">
-			<FilterPanel bind:start={filterStart} bind:end={filterEnd} />
+			<FilterPanel
+				bind:start={filterStart}
+				bind:end={filterEnd}
+				bind:tagFilters={tagFilters}
+				rows={thbRows}
+			/>
 		</section>
 
 		<!-- Quick Summary Section -->

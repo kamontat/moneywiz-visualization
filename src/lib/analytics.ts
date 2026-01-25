@@ -40,6 +40,12 @@ export interface CategoryBreakdown {
 	expenses: CategoryItem[];
 }
 
+export interface TagFilter {
+	category: string;
+	values: string[];
+	mode: 'include' | 'exclude';
+}
+
 /**
  * Filter rows to only THB currency transactions
  */
@@ -204,6 +210,88 @@ export function filterByDateRange(
 
 		if (start && date < start) return false;
 		if (end && date > end) return false;
+
+		return true;
+	});
+}
+
+/**
+ * Parse tags from a single Tags field string.
+ * Format: "Category: Value; Category2: Value2; "
+ */
+export function parseTagsFromField(tagsField: string): Record<string, string> {
+	if (!tagsField) return {};
+
+	const tags: Record<string, string> = {};
+	const parts = tagsField.split(';').map((p) => p.trim()).filter((p) => p.length > 0);
+
+	for (const part of parts) {
+		const [category, ...valueParts] = part.split(':');
+		if (category && valueParts.length > 0) {
+			const cat = category.trim();
+			const val = valueParts.join(':').trim(); // Rejoin in case value contains colons
+			if (cat && val) {
+				tags[cat] = val;
+			}
+		}
+	}
+
+	return tags;
+}
+
+/**
+ * Extract all unique tag categories and their values from the dataset.
+ */
+export function parseAllTags(rows: Record<string, string>[]): Map<string, Set<string>> {
+	const allTags = new Map<string, Set<string>>();
+
+	for (const row of rows) {
+		const tagsStr = row['Tags'];
+		if (!tagsStr) continue;
+
+		const tags = parseTagsFromField(tagsStr);
+		for (const [category, value] of Object.entries(tags)) {
+			if (!allTags.has(category)) {
+				allTags.set(category, new Set());
+			}
+			allTags.get(category)?.add(value);
+		}
+	}
+
+	return allTags;
+}
+
+/**
+ * Filter rows by tag filters.
+ * Multiple filters combine with AND logic (row must pass all filters).
+ * For a single category filter:
+ * - Include mode: Row must have AT LEAST ONE of the selected values.
+ * - Exclude mode: Row must NOT have ANY of the selected values.
+ */
+export function filterByTags(
+	rows: Record<string, string>[],
+	filters: TagFilter[]
+): Record<string, string>[] {
+	if (!filters || filters.length === 0) return rows;
+
+	return rows.filter((row) => {
+		const rowTags = parseTagsFromField(row['Tags'] || '');
+
+		for (const filter of filters) {
+			const { category, values, mode } = filter;
+			if (values.length === 0) continue; // No values selected = no filter for this category
+
+			const rowTagValue = rowTags[category];
+
+			if (mode === 'include') {
+				// Must have the tag category AND value must be in selected values
+				if (!rowTagValue) return false;
+				if (!values.includes(rowTagValue)) return false;
+			} else if (mode === 'exclude') {
+				// If row has the tag category AND value is in selected values, reject it
+				if (rowTagValue && values.includes(rowTagValue)) return false;
+			}
+		}
 
 		return true;
 	});

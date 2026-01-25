@@ -32,6 +32,7 @@ describe('csvStore', () => {
         const state = get(csvStore);
         expect(state.fileName).toBeNull();
         expect(state.data).toBeNull();
+        expect(state.tagFilters).toEqual([]);
     });
 
     it('updates state via set', () => {
@@ -40,7 +41,8 @@ describe('csvStore', () => {
             data: {
                 headers: ['Col1'],
                 rows: [{ Col1: 'Val1' }]
-            }
+            },
+            tagFilters: []
         };
 
         csvStore.set(newData);
@@ -55,7 +57,8 @@ describe('csvStore', () => {
             data: {
                 headers: ['A'],
                 rows: [{ A: '1' }]
-            }
+            },
+            tagFilters: [{ category: 'G', values: ['V'], mode: 'include' }]
         };
 
         csvStore.set(newData);
@@ -67,7 +70,8 @@ describe('csvStore', () => {
     it('removes from localStorage when reset', () => {
         csvStore.set({
             fileName: 'test.csv',
-            data: { headers: [], rows: [] }
+            data: { headers: [], rows: [] },
+            tagFilters: []
         });
 
         expect(localStorage.getItem('mw_csv_data')).not.toBeNull();
@@ -80,6 +84,36 @@ describe('csvStore', () => {
         const state = get(csvStore);
         expect(state.fileName).toBeNull();
         expect(state.data).toBeNull();
+        expect(state.tagFilters).toEqual([]);
+    });
+
+    it('updates tag filters', () => {
+        csvStore.set({
+             fileName: 'test.csv',
+             data: { headers: [], rows: [] },
+             tagFilters: []
+        });
+
+        const filters = [{ category: 'Group', values: ['A'], mode: 'include' }] as any;
+        csvStore.setTagFilters(filters);
+
+        const state = get(csvStore);
+        expect(state.tagFilters).toEqual(filters);
+        expect(localStorage.getItem('mw_csv_data')).toContain('Group');
+    });
+
+    it('clears tag filters', () => {
+         csvStore.set({
+             fileName: 'test.csv',
+             data: { headers: [], rows: [] },
+             tagFilters: [{ category: 'Group', values: ['A'], mode: 'include' }]
+        });
+
+        csvStore.clearTagFilters();
+
+        const state = get(csvStore);
+        expect(state.tagFilters).toEqual([]);
+        expect(localStorage.getItem('mw_csv_data')).not.toContain('Group');
     });
 });
 

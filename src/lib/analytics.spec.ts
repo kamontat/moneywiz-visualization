@@ -256,4 +256,154 @@ describe('analytics', () => {
             expect(result).toHaveLength(0);
         });
     });
+
+    describe('parseTagsFromField', () => {
+        it('parses single tag entry', () => {
+            const result = analytics.parseTagsFromField('Group: KcNt; ');
+            expect(result).toEqual({ Group: 'KcNt' });
+        });
+
+        it('parses multiple tag entries', () => {
+            const result = analytics.parseTagsFromField('Group: KcNt; Type: Personal; ');
+            expect(result).toEqual({ Group: 'KcNt', Type: 'Personal' });
+        });
+
+        it('handles empty or missing tags', () => {
+            expect(analytics.parseTagsFromField('')).toEqual({});
+            expect(analytics.parseTagsFromField('   ')).toEqual({});
+        });
+
+        it('handles malformed entries', () => {
+            // Missing value
+            expect(analytics.parseTagsFromField('Group:;')).toEqual({});
+            // Missing category
+            expect(analytics.parseTagsFromField(':Value;')).toEqual({});
+            // No colon
+            expect(analytics.parseTagsFromField('JustText;')).toEqual({});
+        });
+
+        it('handles value with colons', () => {
+             const result = analytics.parseTagsFromField('Time: 12:00 PM; ');
+             expect(result).toEqual({ Time: '12:00 PM' });
+        });
+    });
+
+    describe('parseAllTags', () => {
+        it('extracts unique categories and values', () => {
+            const rows = [
+                { Tags: 'Group: A; Type: X;' },
+                { Tags: 'Group: B; Type: X;' },
+                { Tags: 'Group: A; Status: Active;' }
+            ] as Record<string, string>[];
+
+            const result = analytics.parseAllTags(rows);
+
+            expect(result.size).toBe(3);
+            expect(result.get('Group')).toEqual(new Set(['A', 'B']));
+            expect(result.get('Type')).toEqual(new Set(['X']));
+            expect(result.get('Status')).toEqual(new Set(['Active']));
+        });
+
+        it('ignores empty tags', () => {
+            const rows = [
+                { Tags: '' },
+                { Tags: 'Group: A;' },
+                { foo: 'bar' } // No Tags field
+            ] as Record<string, string>[];
+
+            const result = analytics.parseAllTags(rows);
+            expect(result.size).toBe(1);
+            expect(result.get('Group')).toEqual(new Set(['A']));
+        });
+    });
+
+    describe('filterByTags', () => {
+        const rows = [
+            { id: '1', Tags: 'Group: A; Type: X;' },
+            { id: '2', Tags: 'Group: B; Type: Y;' },
+            { id: '3', Tags: 'Group: C; Type: X;' },
+            { id: '4', Tags: 'Group: A; Type: Y;' },
+            { id: '5', Tags: '' }
+        ] as Record<string, string>[];
+
+        it('returns all rows if no filters', () => {
+            const result = analytics.filterByTags(rows, []);
+            expect(result).toHaveLength(5);
+        });
+
+        it('filters by include mode', () => {
+            const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['A'], mode: 'include' }
+            ];
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(2);
+            expect(result.map(r => r.id).sort()).toEqual(['1', '4']);
+        });
+
+        it('filters by include mode with multiple values (OR logic)', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['A', 'B'], mode: 'include' }
+            ];
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(3);
+            expect(result.map(r => r.id).sort()).toEqual(['1', '2', '4']);
+        });
+
+        it('filters by exclude mode', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['A'], mode: 'exclude' }
+            ];
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(3);
+            expect(result.map(r => r.id).sort()).toEqual(['2', '3', '5']);
+        });
+
+        it('filters by exclude mode with multiple values', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['A', 'B'], mode: 'exclude' }
+            ];
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(2); // C and empty
+            expect(result.map(r => r.id).sort()).toEqual(['3', '5']);
+        });
+
+        it('combines multiple filters with AND logic', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['A', 'B'], mode: 'include' }, // Keeps 1, 2, 4
+                { category: 'Type', values: ['X'], mode: 'include' }        // Keeps 1, 3
+            ];
+            // Intersection of (1,2,4) and (1,3) is (1)
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('1');
+        });
+
+        it('handles exclude logic combined with include', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Type', values: ['X', 'Y'], mode: 'include' }, // Keeps 1, 2, 3, 4
+                { category: 'Group', values: ['A'], mode: 'exclude' }      // Excludes 1, 4
+            ];
+            // Result should be 2, 3
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(2);
+            expect(result.map(r => r.id).sort()).toEqual(['2', '3']);
+        });
+
+        it('returns empty if include filter matches nothing', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['Z'], mode: 'include' }
+            ];
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(0);
+        });
+
+        it('returns all if exclude filter matches nothing', () => {
+             const filters: analytics.TagFilter[] = [
+                { category: 'Group', values: ['Z'], mode: 'exclude' }
+            ];
+            const result = analytics.filterByTags(rows, filters);
+            expect(result).toHaveLength(5);
+        });
+    });
 });
+
