@@ -15,4 +15,4 @@ The current theme uses an emerald/green primary color which was the initial choi
 ## Impact
 - **Visuals**: Modernized look and feel.
 - **Consistency**: Centralized secondary color definition rather than relying only on primary or text-secondary.
-- **Charts**: Updated chart colors to reflect the new theme.
+- **Charts**: Updated chart colors to use blue theme. Income visualization kept green for semantic clarity (positive=green).

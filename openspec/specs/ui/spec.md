@@ -88,5 +88,6 @@ The application SHALL use a consistent professional color palette focused on fin
 - **Given** the application is rendered
 - **Then** the primary brand color MUST be a professional blue (`#60a5fa`)
 - **And** the secondary brand color MUST be a professional purple (`#9333ea`)
-- **And** these colors MUST be used consistently across all components, including the logo, action buttons, and data visualizations
+- **And** these colors MUST be used consistently across branding elements (logo, buttons)
+- **And** data visualizations SHOULD use the theme colors, except where semantic colors provide better clarity (e.g., green for income, red for expenses)
 
