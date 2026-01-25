@@ -90,6 +90,7 @@ bun run preview
     - `TopCategoriesChart.svelte` - Bar chart for top spending categories
     - `DailyExpensesChart.svelte` - Bar chart for daily expenses
     - `IncomeExpenseRatioChart.svelte` - Pie chart for income vs expenses ratio
+    - `CategoryBreakdown.svelte` - Collapsible income/expense breakdown by category
 - `src/lib/` - Shared utilities and libraries
   - `csv.ts` - CSV parsing with error handling
   - `analytics.ts` - Financial analytics calculations (totals, categories, daily expenses)
@@ -114,6 +115,7 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
   - Income, Expenses, Net balance, and Saving Rate percentage
   - Top spending categories bar chart
   - Daily expenses trend visualization
+  - **Category Breakdown**: Collapsible panels for detailed income/expense categories with percentages
   - Clean empty state: "Dashboard" heading hidden until data is loaded
   - Loads default data on startup, reacts to CSV uploads
   - **Data Persistence**: Uploaded CSV data persists across page reloads via localStorage

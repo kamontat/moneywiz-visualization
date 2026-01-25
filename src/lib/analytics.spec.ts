@@ -8,12 +8,6 @@ vi.mock('./finance', () => ({
     parseDateDDMMYYYY: vi.fn()
 }));
 
-const mockThbRows = [
-    { Date: '01/01/2023', Amount: '100', Currency: 'THB', Category: 'Food' },
-    { Date: '02/01/2023', Amount: '-50', Currency: 'THB', Category: 'Transport' },
-    { Date: '03/01/2023', Amount: '200', Currency: 'THB', Category: 'Food' },
-];
-
 describe('analytics', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -26,8 +20,7 @@ describe('analytics', () => {
                 rows: [
                     { Currency: 'THB', Amount: '100' },
                     { Currency: 'USD', Amount: '50' },
-                    { Currency: 'thb', Amount: '20' } // case insensitive check based on implementation?
-                    // Implementation says: (r['Currency'] || '').toUpperCase() === 'THB'
+                    { Currency: 'thb', Amount: '20' }
                 ]
             };
 
@@ -44,7 +37,7 @@ describe('analytics', () => {
 
     describe('calculateTotals', () => {
         it('calculates income, expenses and net', () => {
-            vi.mocked(finance.parseAmountTHB).mockImplementation((val) => Number(val));
+            (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
 
             const rows = [
                 { Amount: '100' },
@@ -58,12 +51,11 @@ describe('analytics', () => {
             expect(result.expenses).toBe(-40);
             expect(result.net).toBe(80);
             expect(result.count).toBe(3);
-            // Income 120, Net 80 -> Saving Rate = 80/120 * 100 = 66.666...
             expect(result.savingRate).toBeCloseTo(66.67, 1);
         });
 
         it('handles zero income for saving rate', () => {
-             vi.mocked(finance.parseAmountTHB).mockImplementation((val) => Number(val));
+             (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
              const rows = [{ Amount: '-50' }];
              const result = analytics.calculateTotals(rows);
              expect(result.income).toBe(0);
@@ -73,7 +65,7 @@ describe('analytics', () => {
 
     describe('calculateTopCategories', () => {
         it('aggregates absolute amounts per category', () => {
-             vi.mocked(finance.parseAmountTHB).mockImplementation((val) => Number(val));
+             (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
 
              const rows = [
                  { Category: 'A', Amount: '-100' },
@@ -82,8 +74,6 @@ describe('analytics', () => {
              ];
 
              const result = analytics.calculateTopCategories(rows);
-             // A: |-100| + |20| = 120
-             // B: |50| = 50
 
              expect(result.items).toEqual([
                  { name: 'A', value: 120 },
@@ -93,7 +83,7 @@ describe('analytics', () => {
         });
 
         it('limits to top 5', () => {
-            vi.mocked(finance.parseAmountTHB).mockImplementation((val) => Number(val));
+            (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
             const rows = [
                 { Category: '1', Amount: '10' },
                 { Category: '2', Amount: '20' },
@@ -105,7 +95,6 @@ describe('analytics', () => {
 
             const result = analytics.calculateTopCategories(rows);
             expect(result.items).toHaveLength(5);
-            // Should be 5, 4, 3, 2, 1 descending
             expect(result.items[0].name).toBe('5');
             expect(result.items[4].name).toBe('1');
         });
@@ -113,39 +102,30 @@ describe('analytics', () => {
 
     describe('calculateDailyExpenses', () => {
         it('calculates daily expenses for the latest month', () => {
-            vi.mocked(finance.parseDateDDMMYYYY).mockImplementation((val) => {
+            (finance.parseDateDDMMYYYY as any).mockImplementation((val: any) => {
                 const parts = val.split('/');
                 return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
             });
-            vi.mocked(finance.parseAmountTHB).mockImplementation((val) => Number(val));
+            (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
 
-            // Latest date is 15/01/2023. Month is Jan 2023.
             const rows = [
-                { Date: '15/01/2023', Amount: '-100' }, // Expense, Day 15
-                { Date: '15/01/2023', Amount: '500' }, // Income (ignored by daily expenses?)
-                // Implementation:
-                // if (amt < 0) { const dayIdx = d.getDate() - 1; perDay[dayIdx] += Math.abs(amt); }
-                // So income IS ignored.
-                { Date: '01/01/2023', Amount: '-50' }, // Expense, Day 1
-                { Date: '31/12/2022', Amount: '-200' }, // Previous year/month (ignored)
+                { Date: '15/01/2023', Amount: '-100' },
+                { Date: '15/01/2023', Amount: '500' },
+                { Date: '01/01/2023', Amount: '-50' },
+                { Date: '31/12/2022', Amount: '-200' },
             ];
 
             const result = analytics.calculateDailyExpenses(rows);
 
-            // Month 0 (Jan), Year 2023. Days in Jan is 31.
             expect(result.items).toHaveLength(31);
-
-            // Day 1
             expect(result.items[0]).toEqual({ day: 1, value: 50 });
-            // Day 15
             expect(result.items[14]).toEqual({ day: 15, value: 100 });
-
             expect(result.max).toBe(100);
             expect(result.label).toContain('2023');
         });
 
         it('returns empty structure if no dates found', () => {
-            vi.mocked(finance.parseDateDDMMYYYY).mockReturnValue(null);
+            (finance.parseDateDDMMYYYY as any).mockReturnValue(null);
             const result = analytics.calculateDailyExpenses([{ Date: 'invalid' }]);
             expect(result.items).toEqual([]);
             expect(result.max).toBe(0);
@@ -154,7 +134,7 @@ describe('analytics', () => {
 
     describe('getDateRange', () => {
         it('returns min and max dates', () => {
-            vi.mocked(finance.parseDateDDMMYYYY).mockImplementation((val) => {
+            (finance.parseDateDDMMYYYY as any).mockImplementation((val: any) => {
                 const parts = val.split('/');
                 return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
             });
@@ -168,15 +148,47 @@ describe('analytics', () => {
             const result = analytics.getDateRange(rows);
             expect(result).not.toBeNull();
             expect(result?.start.getDate()).toBe(1);
-            expect(result?.start.getMonth()).toBe(0); // Jan
+            expect(result?.start.getMonth()).toBe(0);
             expect(result?.end.getDate()).toBe(20);
-            expect(result?.end.getMonth()).toBe(1); // Feb
+            expect(result?.end.getMonth()).toBe(1);
         });
 
         it('returns null for empty valid dates', () => {
-            vi.mocked(finance.parseDateDDMMYYYY).mockReturnValue(null);
+            (finance.parseDateDDMMYYYY as any).mockReturnValue(null);
             const result = analytics.getDateRange([{ Date: 'invalid' }] as Record<string, string>[]);
             expect(result).toBeNull();
+        });
+    });
+
+    describe('calculateCategoryBreakdown', () => {
+        it('separates income and expenses by category', () => {
+            (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
+            const rows = [
+                { Category: 'Work', Amount: '1000' },
+                { Category: 'Work', Amount: '500' },
+                { Category: 'Food', Amount: '-100' },
+                { Category: 'Transport', Amount: '-50' },
+                { Category: 'Food', Amount: '-20' }
+            ];
+
+            const result = analytics.calculateCategoryBreakdown(rows);
+
+            expect(result.income).toHaveLength(1);
+            expect(result.income[0]).toEqual({ name: 'Work', value: 1500 });
+            
+            expect(result.expenses).toHaveLength(2);
+            expect(result.expenses[0]).toEqual({ name: 'Food', value: 120 });
+            expect(result.expenses[1]).toEqual({ name: 'Transport', value: 50 });
+        });
+
+        it('handles uncategorized transactions', () => {
+             (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
+             const rows = [
+                 { Category: '', Amount: '-100' }
+             ];
+             const result = analytics.calculateCategoryBreakdown(rows);
+             expect(result.expenses[0].name).toBe('Uncategorized');
+             expect(result.expenses[0].value).toBe(100);
         });
     });
 });

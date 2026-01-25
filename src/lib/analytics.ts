@@ -35,6 +35,11 @@ export interface DailyExpensesData {
 	label: string;
 }
 
+export interface CategoryBreakdown {
+	income: CategoryItem[];
+	expenses: CategoryItem[];
+}
+
 /**
  * Filter rows to only THB currency transactions
  */
@@ -140,4 +145,33 @@ export function getDateRange(thbRows: Record<string, string>[]): { start: Date; 
 	const end = new Date(Math.max(...dates.map((d) => d.getTime())));
 
 	return { start, end };
+}
+
+/**
+ * Calculate category breakdown for income and expenses
+ */
+export function calculateCategoryBreakdown(thbRows: Record<string, string>[]): CategoryBreakdown {
+	const incomeSums: Record<string, number> = {};
+	const expenseSums: Record<string, number> = {};
+
+	for (const r of thbRows) {
+		const cat = r['Category'] || 'Uncategorized';
+		const amt = parseAmountTHB(r['Amount'] || '0');
+
+		if (amt >= 0) {
+			incomeSums[cat] = (incomeSums[cat] || 0) + amt;
+		} else {
+			expenseSums[cat] = (expenseSums[cat] || 0) + Math.abs(amt);
+		}
+	}
+
+	const income = Object.entries(incomeSums)
+		.sort((a, b) => b[1] - a[1])
+		.map(([name, value]) => ({ name, value }));
+
+	const expenses = Object.entries(expenseSums)
+		.sort((a, b) => b[1] - a[1])
+		.map(([name, value]) => ({ name, value }));
+
+	return { income, expenses };
 }

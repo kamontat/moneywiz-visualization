@@ -7,12 +7,14 @@
 		calculateTotals,
 		calculateTopCategories,
 		calculateDailyExpenses,
+		calculateCategoryBreakdown,
 		getDateRange
 	} from '$lib/analytics';
 	import SummaryCards from '$components/organisms/SummaryCards.svelte';
 	import TopCategoriesChart from '$components/organisms/TopCategoriesChart.svelte';
 	import DailyExpensesChart from '$components/organisms/DailyExpensesChart.svelte';
 	import IncomeExpenseRatioChart from '$components/organisms/IncomeExpenseRatioChart.svelte';
+	import CategoryBreakdown from '$components/organisms/CategoryBreakdown.svelte';
 	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte';
 
 	let csv: CsvState = $state({ fileName: null, data: null });
@@ -37,6 +39,7 @@
 	const totals = $derived(calculateTotals(thbRows));
 	const topCategories = $derived(calculateTopCategories(thbRows));
 	const dailyExpenses = $derived(calculateDailyExpenses(thbRows));
+	const breakdown = $derived(calculateCategoryBreakdown(thbRows));
 	const dateRange = $derived(getDateRange(thbRows));
 </script>
 
@@ -96,6 +99,7 @@
 					</section>
 					<TopCategoriesChart data={topCategories} />
 					<DailyExpensesChart data={dailyExpenses} />
+					<CategoryBreakdown {breakdown} {totals} />
 				</div>
 			</div>
 		{/if}
