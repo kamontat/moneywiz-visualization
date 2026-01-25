@@ -125,5 +125,8 @@ Example usage:
 - **openspec-apply** - Implement an approved OpenSpec change and keep tasks in sync
 - **openspec-archive** - Archive a deployed OpenSpec change and update specs
 - **openspec-proposal** - Guide the user through creating a new OpenSpec change proposal
+- **project.archive** - Archive work session—review, fix errors, update docs, archive OpenSpec changes, and commit
+- **project.implement** - Implement an approved OpenSpec change with full SvelteKit integration and testing
+- **project.proposal** - Guide the user through creating a new OpenSpec change proposal
 
 See `.github/instructions/`, `.github/skills/`, `.github/prompts/` for full details.

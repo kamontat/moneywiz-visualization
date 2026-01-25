@@ -2,6 +2,7 @@
 	import type { ParsedCsv } from '$lib/csv';
 	import CsvUploadButton from './CsvUploadButton.svelte';
 	import MoneyLogo from './MoneyLogo.svelte';
+	import TrashIcon from '@iconify-svelte/lucide/trash-2';
 
 	interface Props {
 		onparsed?: (detail: { file: File; data: ParsedCsv }) => void;
@@ -23,7 +24,8 @@
 
 	<div class="flex w-full sm:w-auto items-center justify-end gap-2">
 		{#if csvLoaded}
-			<button class="inline-flex items-center gap-1 px-3 py-[0.45rem] text-sm font-semibold text-mw-text-secondary bg-white border border-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out hover:bg-red-50 hover:border-red-300 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2" type="button" onclick={onclear} aria-label="Clear loaded CSV">
+			<button class="inline-flex items-center gap-1.5 px-3 py-[0.45rem] text-sm font-semibold text-mw-text-secondary bg-white border border-gray-300 rounded-lg cursor-pointer transition-all duration-150 ease-in-out hover:bg-red-50 hover:border-red-300 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2" type="button" onclick={onclear} aria-label="Clear loaded CSV">
+				<TrashIcon class="w-[1.125rem] h-[1.125rem]" aria-hidden="true" />
 				Clear
 			</button>
 		{/if}
