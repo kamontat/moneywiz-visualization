@@ -84,3 +84,12 @@ The application SHALL prioritize data visualizations and summaries with clear st
 - **Then** the CSV Preview table MUST remain below the dashboard visualizations
 - **And** the dashboard visualizations MUST be presented in a tabbed interface or clearly separated sections
 
+### Requirement: Dashboard Information Hierarchy
+The application SHALL provide clear and concise information about the loaded data.
+
+#### Scenario: Upload status presentation
+- **Given** a CSV file is successfully uploaded
+- **Then** the file name MUST be displayed above the "Upload successful" message in the status section
+- **And** the file name SHOULD be styled with a smaller, secondary prominence compared to the main status
+- **And** the "Upload successful" message SHOULD be clearly visible as a status indicator
+
