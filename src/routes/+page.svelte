@@ -42,9 +42,8 @@
 </svelte:head>
 
 <section aria-labelledby="dash-title" class="flex flex-col gap-4">
-	<h1 id="dash-title" class="m-0 mb-2 text-2xl font-normal text-mw-text-main">Dashboard</h1>
-
 	{#if csv.data}
+		<h1 id="dash-title" class="m-0 mb-2 text-2xl font-normal text-mw-text-main">Dashboard</h1>
 		<SummaryCards {totals} />
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">

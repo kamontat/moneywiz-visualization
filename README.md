@@ -114,16 +114,21 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
   - Income, Expenses, Net balance, and transaction count
   - Top spending categories bar chart
   - Daily expenses trend visualization
+  - Clean empty state: "Dashboard" heading hidden until data is loaded
   - Loads default data on startup, reacts to CSV uploads
-- �📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
+- 📤 **CSV Upload**: Drag-and-drop or click to upload MoneyWiz CSV exports
   - Automatic `sep=` delimiter detection for MoneyWiz exports
   - BOM handling for proper encoding
   - Error handling with descriptive messages
+  - Preview table with collapse toggle (collapsed by default to focus on visualizations)
 - 📊 **Data Parsing**: Robust CSV parser with quoted field support and validation
 - 🐛 **Debug Logging**: Comprehensive logging system with namespace filtering
   - Enable via `DEBUG=moneywiz:* bun run dev` (terminal)
   - Or `localStorage.debug = 'moneywiz:*'` (browser)
 - 🎨 **Professional UI**: Clean, accessible design with success/error feedback
+  - Modern glassmorphism header with sticky positioning
+  - GitHub repository link for easy access to source code
+  - Optimized layout: visualizations prioritized above raw data preview
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
 
 ## CSV Format

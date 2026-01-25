@@ -7,8 +7,8 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 
   test('uploads CSV file and updates dashboard', async ({ page }) => {
     await test.step('Verify empty state on fresh load', async () => {
-      // Dashboard shows empty state since no CSV is auto-loaded
-      await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+      // Dashboard heading should be hidden when no data
+      await expect(page.getByRole('heading', { name: 'Dashboard' })).not.toBeVisible();
       await expect(page.getByText('No data loaded yet')).toBeVisible();
     });
 

@@ -10,14 +10,14 @@ describe('Layout.svelte', () => {
     });
 
     it('renders header and blank canvas initially', async () => {
-        const { container } = render(Layout, { props: { children: () => {} } }); // children snippet
-        // We probably need to provide a snippet for children.
-        // In Svelte 5 snippets are passed as props.
-        // But vitest-browser-svelte render might handle slots/snippets differently.
-        // Assuming no children for now or just empty.
+        const { container } = render(Layout, { props: { children: () => {} } });
 
+        // header
         expect(container).toHaveTextContent('MoneyWiz Report');
+        // blank canvas (no error, no data)
         expect(container.querySelector('.blank-canvas')).toBeInTheDocument();
+        // preview section should not be visible
         expect(container).not.toHaveTextContent('Upload successful');
+        expect(container).not.toHaveTextContent('Show Preview');
     });
 });

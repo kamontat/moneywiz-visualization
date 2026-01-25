@@ -12,6 +12,9 @@ test.describe('CSV Preview Table Layout', () => {
     });
 
     await test.step('Verify preview table is visible', async () => {
+      // Expand preview section
+      await page.getByRole('button', { name: 'Show Preview' }).click();
+
       await expect(page.getByRole('heading', { name: /Preview/ })).toBeVisible();
       const table = page.locator('table').first();
       await expect(table).toBeVisible();

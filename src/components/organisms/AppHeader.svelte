@@ -2,6 +2,7 @@
 	import type { ParsedCsv } from '$lib/csv';
 	import CsvUploadButton from '../molecules/CsvUploadButton.svelte';
 	import TrashIcon from '@iconify-svelte/lucide/trash-2';
+	import GithubIcon from '@iconify-svelte/lucide/github';
 
 	interface Props {
 		onparsed?: (detail: { file: File; data: ParsedCsv }) => void;
@@ -21,6 +22,15 @@
 	</div>
 
 	<div class="flex items-center justify-end gap-2">
+		<a
+			href="https://github.com/kamontat/moneywiz-visualization"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="inline-flex items-center justify-center p-2 text-mw-text-muted hover:text-mw-text-main transition-colors rounded-full hover:bg-mw-surface-alt"
+			aria-label="GitHub Repository"
+		>
+			<GithubIcon class="w-5 h-5" />
+		</a>
 		{#if csvLoaded}
 			<button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-red-600 bg-red-50 border border-red-200/50 rounded-full cursor-pointer transition-all duration-150 ease-in-out hover:bg-red-100 hover:border-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-600 focus-visible:outline-offset-2" type="button" onclick={onclear} aria-label="Clear loaded CSV">
 				<TrashIcon class="w-4 h-4" aria-hidden="true" />

@@ -10,6 +10,14 @@ describe('AppHeader.svelte', () => {
         expect(link).toHaveAttribute('href', '/');
     });
 
+    it('renders github link', async () => {
+        const { container } = render(AppHeader);
+        const links = container.querySelectorAll('a');
+        const githubLink = Array.from(links).find(l => l.href.includes('github.com'));
+        expect(githubLink).toBeDefined();
+        expect(githubLink).toHaveAttribute('target', '_blank');
+    });
+
     it('renders upload button by default', async () => {
         const { container } = render(AppHeader);
         const uploadBtn = container.querySelector('button');
