@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { ParsedCsv } from '$lib/csv';
 	import CsvUploadButton from '../molecules/CsvUploadButton.svelte';
-	import MoneyLogo from '../atoms/MoneyLogo.svelte';
 	import TrashIcon from '@iconify-svelte/lucide/trash-2';
 
 	interface Props {
@@ -16,10 +15,9 @@
 
 <header class="sticky top-0 z-50 flex flex-row items-center justify-between gap-3 px-3 py-2 sm:px-4 sm:py-2 bg-white/70 dark:bg-mw-surface-alt/80 backdrop-blur-md border-b border-mw-border/50">
 	<div class="inline-flex items-center gap-2 min-w-0">
-		<MoneyLogo size={32} />
-		<div class="flex items-center gap-1 min-w-0">
+		<a href="/" class="flex items-center gap-1 min-w-0 hover:opacity-80 transition-opacity">
 			<span class="text-mw-text-main text-base sm:text-lg font-bold tracking-tight uppercase whitespace-nowrap">MoneyWiz Report</span>
-		</div>
+		</a>
 	</div>
 
 	<div class="flex items-center justify-end gap-2">
