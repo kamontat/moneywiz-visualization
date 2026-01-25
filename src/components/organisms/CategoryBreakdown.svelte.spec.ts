@@ -44,7 +44,7 @@ describe('CategoryBreakdown.svelte', () => {
 		// Since we don't have existing async utilities imported, we try direct assertion.
 		// If it fails, we know we need `await tick()` or `waitFor`.
 		// But `tick` comes from `svelte`.
-		
+
 		// In vitest-browser-svelte, render runs in browser environment (mostly).
         // Let's rely on standard expect. If list is not there immediately, we'll see.
         // Actually, without an `await` for the framework to update the DOM, this might fail.

@@ -20,8 +20,8 @@ describe('csvStore', () => {
         storeData.clear();
         csvStore.reset();
         vi.clearAllMocks();
-        
-        // We need to re-spy because mocks might be cleared? 
+
+        // We need to re-spy because mocks might be cleared?
         // Or just spy directly on the global object's methods if they were genuine methods.
         // Since we allow real implementation, we can spy on the methods of localStorageMock but we assigned it to global.
         vi.spyOn(localStorage, 'setItem');
@@ -76,7 +76,7 @@ describe('csvStore', () => {
 
         expect(localStorage.removeItem).toHaveBeenCalledWith('mw_csv_data');
         expect(localStorage.getItem('mw_csv_data')).toBeNull();
-        
+
         const state = get(csvStore);
         expect(state.fileName).toBeNull();
         expect(state.data).toBeNull();

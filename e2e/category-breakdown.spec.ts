@@ -23,12 +23,12 @@ test.describe('Dashboard - Category Breakdown', () => {
         await incomeBtn.click();
         await expect(page.locator('#income-breakdown')).toBeVisible();
         await expect(page.locator('#income-breakdown').getByText('Compensation > Salary')).toBeVisible();
-        
+
         // Expand expense
         await expenseBtn.click();
         await expect(page.locator('#expense-breakdown')).toBeVisible();
         await expect(page.locator('#expense-breakdown').getByText('Food and Beverage > Food')).toBeVisible();
-        
+
         // Collapse items again
         await incomeBtn.click();
         await expect(page.locator('#income-breakdown')).toHaveCount(0);

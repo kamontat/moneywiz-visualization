@@ -26,7 +26,7 @@ test.describe('CSV Persistence', () => {
 		await test.step('Clear data and reload', async () => {
 			await page.getByRole('button', { name: 'Clear loaded CSV' }).click();
 			await expect(page.getByText('Income (THB)')).not.toBeVisible();
-			
+
 			await page.reload();
 			// Data should remain cleared
 			await expect(page.getByText('Income (THB)')).not.toBeVisible();

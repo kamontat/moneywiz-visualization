@@ -175,7 +175,7 @@ describe('analytics', () => {
 
             expect(result.income).toHaveLength(1);
             expect(result.income[0]).toEqual({ name: 'Work', value: 1500 });
-            
+
             expect(result.expenses).toHaveLength(2);
             expect(result.expenses[0]).toEqual({ name: 'Food', value: 120 });
             expect(result.expenses[1]).toEqual({ name: 'Transport', value: 50 });
