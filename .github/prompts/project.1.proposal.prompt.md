@@ -1,6 +1,6 @@
 ---
 description: Guide the user through creating a new OpenSpec change proposal
-model: Gemini 3 Flash (Preview) (copilot)
+model: Claude Sonnet 4.5 (copilot)
 ---
 
 <!-- PROJECT WRAPPER: This prompt wraps the core OpenSpec proposal workflow -->

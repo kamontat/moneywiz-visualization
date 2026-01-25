@@ -8,8 +8,10 @@
 		calculateTopCategories,
 		calculateDailyExpenses,
 		calculateCategoryBreakdown,
-		getDateRange
+		getDateRange,
+		filterByDateRange
 	} from '$lib/analytics';
+	import FilterPanel from '$components/organisms/FilterPanel.svelte';
 	import SummaryCards from '$components/organisms/SummaryCards.svelte';
 	import TopCategoriesChart from '$components/organisms/TopCategoriesChart.svelte';
 	import DailyExpensesChart from '$components/organisms/DailyExpensesChart.svelte';
@@ -19,6 +21,10 @@
 
 	let csv: CsvState = $state({ fileName: null, data: null });
 	let activeTab = $state('overview');
+
+	// Filter State
+	let filterStart: Date | null = $state(null);
+	let filterEnd: Date | null = $state(null);
 
 	// Subscribe to global store
 	onMount(() => {
@@ -36,11 +42,13 @@
 
 	// Derived metrics using extracted business logic
 	const thbRows = $derived(getTHBRows(csv.data));
-	const totals = $derived(calculateTotals(thbRows));
-	const topCategories = $derived(calculateTopCategories(thbRows));
-	const dailyExpenses = $derived(calculateDailyExpenses(thbRows));
-	const breakdown = $derived(calculateCategoryBreakdown(thbRows));
-	const dateRange = $derived(getDateRange(thbRows));
+	const filteredRows = $derived(filterByDateRange(thbRows, filterStart, filterEnd));
+
+	const totals = $derived(calculateTotals(filteredRows));
+	const topCategories = $derived(calculateTopCategories(filteredRows));
+	const dailyExpenses = $derived(calculateDailyExpenses(filteredRows));
+	const breakdown = $derived(calculateCategoryBreakdown(filteredRows));
+	const dateRange = $derived(getDateRange(filteredRows));
 </script>
 
 <svelte:head>
@@ -48,29 +56,32 @@
 	<meta name="description" content="Visualize MoneyWiz CSV data: summaries and charts." />
 </svelte:head>
 
-<section aria-labelledby="dash-title" class="flex flex-col gap-6">
+<section aria-labelledby="dash-title" class="flex flex-col gap-4">
 	{#if csv.data}
 		<!-- Dashboard Header -->
-		<header class="flex flex-col gap-1 py-1 pb-6">
-			<!-- Title -->
-			<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-text-main tracking-tight">Dashboard</h1>
+		<header class="flex flex-col gap-1 py-1">
+			<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-text-main tracking-tight">{csv.fileName || 'Dashboard'}</h1>
 
-			<!-- Date (Subtitle) -->
-			{#if dateRange}
-				<div>
-					<DateRangeDisplay start={dateRange.start} end={dateRange.end} class="text-lg font-medium text-mw-text-secondary" />
-				</div>
-			{/if}
+			<!-- Meta Info -->
+			<div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-mw-text-muted mt-1 animate-in fade-in duration-300">
+				{#if dateRange}
+					<DateRangeDisplay start={dateRange.start} end={dateRange.end} class="" />
+					<span class="opacity-40">|</span>
+				{/if}
 
-			<!-- Meta Info (Small + Gray + Unimportant) -->
-			<div class="flex items-center gap-2 text-xs text-mw-text-muted/60 mt-1">
-				<span class="font-mono">{csv.fileName}</span>
-				<span class="opacity-40">|</span>
-				<span>{(csv.data?.rows?.length ?? 0)} rows</span>
-				<span class="opacity-40">|</span>
-				<span>{(csv.data?.headers?.length ?? 0)} columns</span>
+				<span>{(csv.data?.rows?.length ?? 0)} rows total</span>
+
+				{#if filteredRows.length !== thbRows.length}
+					<span class="opacity-40">|</span>
+					<span class="text-mw-primary font-medium">{filteredRows.length} shown</span>
+				{/if}
 			</div>
 		</header>
+
+		<!-- Filter Panel -->
+		<section aria-label="Filters" class="z-20">
+			<FilterPanel bind:start={filterStart} bind:end={filterEnd} />
+		</section>
 
 		<!-- Quick Summary Section -->
 		<section aria-label="Quick Summary" class="flex flex-col gap-2">
@@ -91,8 +102,8 @@
 
 		<!-- Tab Content -->
 		{#if activeTab === 'overview'}
-			<div class="flex flex-col gap-6 animate-in fade-in duration-300 slide-in-from-bottom-2 pt-4">
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div class="flex flex-col gap-4 animate-in fade-in duration-300 slide-in-from-bottom-2 pt-4">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<section aria-labelledby="ratio-title" class="bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
 						<h2 id="ratio-title" class="m-0 mb-4 text-lg font-semibold text-mw-text-main">Income vs Expenses</h2>
 						<IncomeExpenseRatioChart income={totals.income} expenses={totals.expenses} />

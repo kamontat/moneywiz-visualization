@@ -11,7 +11,8 @@ test.describe('Dashboard - Basic summaries', () => {
   });
 
   test('renders heading and summary cards', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    // Heading should now be the filename
+    await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 
     // Cards section should show Income, Expenses, Net, Transactions
     // Use .first() to avoid strict mode errors if labels appear in charts too

@@ -175,3 +175,36 @@ export function calculateCategoryBreakdown(thbRows: Record<string, string>[]): C
 
 	return { income, expenses };
 }
+
+/**
+ * Filter rows by date range (inclusive)
+ * @param rows The parsed CSV rows
+ * @param start Start date (null = no start limit)
+ * @param end End date (null = no end limit)
+ */
+export function filterByDateRange(
+	rows: Record<string, string>[],
+	start: Date | null,
+	end: Date | null
+): Record<string, string>[] {
+	if (!start && !end) return rows;
+
+	return rows.filter((row) => {
+		const dateStr = row['Date'];
+		if (!dateStr) return false;
+
+		const date = parseDateDDMMYYYY(dateStr);
+		if (!date) return false;
+
+		// Normalize times to start of day for accurate comparison
+		// Or keep time if desired, but typically filters are day-inclusive
+		// Let's assume input dates are already handled or we just compare timestamps naturally.
+		// Usually for "End Date" we want it to be end of that day.
+		// But for now let's just do simple comparison.
+
+		if (start && date < start) return false;
+		if (end && date > end) return false;
+
+		return true;
+	});
+}

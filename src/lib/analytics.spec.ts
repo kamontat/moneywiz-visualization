@@ -191,4 +191,69 @@ describe('analytics', () => {
              expect(result.expenses[0].value).toBe(100);
         });
     });
+
+    describe('filterByDateRange', () => {
+        beforeEach(() => {
+             (finance.parseDateDDMMYYYY as any).mockImplementation((val: any) => {
+                if (!val) return null;
+                const parts = val.split('/');
+                return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+            });
+        });
+
+        it('returns all rows if no date filter', () => {
+             const rows = [{ Date: '01/01/2023' }] as Record<string, string>[];
+             const result = analytics.filterByDateRange(rows, null, null);
+             expect(result).toHaveLength(1);
+        });
+
+        it('filters by start date', () => {
+             const rows = [
+                 { Date: '01/01/2023' },
+                 { Date: '15/01/2023' },
+                 { Date: '20/01/2023' }
+             ] as Record<string, string>[];
+             const start = new Date(2023, 0, 15); // Jan 15
+
+             const result = analytics.filterByDateRange(rows, start, null);
+             expect(result).toHaveLength(2);
+             expect(result[0].Date).toBe('15/01/2023');
+             expect(result[1].Date).toBe('20/01/2023');
+        });
+
+        it('filters by end date', () => {
+             const rows = [
+                 { Date: '01/01/2023' },
+                 { Date: '15/01/2023' },
+                 { Date: '20/01/2023' }
+             ] as Record<string, string>[];
+             const end = new Date(2023, 0, 15); // Jan 15
+
+             const result = analytics.filterByDateRange(rows, null, end);
+             expect(result).toHaveLength(2);
+             expect(result[0].Date).toBe('01/01/2023');
+             expect(result[1].Date).toBe('15/01/2023');
+        });
+
+        it('filters by range', () => {
+             const rows = [
+                 { Date: '01/01/2023' },
+                 { Date: '10/01/2023' },
+                 { Date: '20/01/2023' }
+             ] as Record<string, string>[];
+             const start = new Date(2023, 0, 5);
+             const end = new Date(2023, 0, 15);
+
+             const result = analytics.filterByDateRange(rows, start, end);
+             expect(result).toHaveLength(1);
+             expect(result[0].Date).toBe('10/01/2023');
+        });
+
+        it('excludes rows with invalid dates', () => {
+            (finance.parseDateDDMMYYYY as any).mockReturnValue(null);
+            const rows = [{ Date: 'invalid' }] as Record<string, string>[];
+            const result = analytics.filterByDateRange(rows, new Date(), null);
+            expect(result).toHaveLength(0);
+        });
+    });
 });
