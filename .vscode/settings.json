@@ -2,6 +2,11 @@
 	"chat.agent.maxRequests": 50,
 	"chat.agent.thinkingStyle": "collapsed",
 	"chat.agent.thinking.collapsedTools": "off",
+	"chat.useAgentSkills": true,
+	"chat.agentSkillsLocations": {
+		".github/skills": true,
+		"~/.github/skills": true,
+	},
 	"files.associations": {
 		"*.css": "tailwindcss"
 	},
