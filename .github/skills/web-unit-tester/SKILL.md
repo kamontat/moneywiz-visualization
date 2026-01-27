@@ -1,75 +1,41 @@
 ---
 name: web-unit-tester
-description: Expert-level guide for unit testing in the MoneyWiz Visualization project using Vitest. Covers logic validation, component testing, and debugging. Use when business logic, data parsing, or component internals change.
+description: Write and run unit tests for MoneyWiz. Use when testing business logic (src/lib/), verifying isolated Svelte component interactions, or debugging pure logic errors using Vitest.
 ---
 
-# MoneyWiz Web Unit Testing
+# Unit Testing with Vitest
 
-This skill provides comprehensive instructions for writing, updating, and debugging unit tests using **Vitest**.
+## Commands
 
-## When to Use This Skill
+- `bun run test`: Run all unit tests.
+- `bun vitest`: Run in watch mode.
 
-- **Logic Changes**: When modifying business logic in `src/lib/` (e.g., CSV parsing, financial calculations).
-- **Code Refactoring**: When restructuring core utilities or helper functions.
-- **Bug Fixes**: When a regression or logic error is found and requires a reproducing test case.
-- **Component Validation**: When testing Svelte component logic (not E2E behavior).
-- **Manual Trigger**: When specifically asked to "write unit tests" or "fix unit tests".
+## Writing Tests
 
-## Core Principles
+- **Location**: Co-located with source (`foo.ts` -> `foo.spec.ts`).
+- **Framework**: Vitest (Jest-like API).
 
-- **Framework**: Vitest (ESM based).
-- **Location**: Co-locate tests with source files (e.g., `src/lib/csv.ts` -> `src/lib/csv.spec.ts`).
-- **Standard**: Follow ES2022+ features and ESM modules.
-- **Simplicity**: Prefer plain functions over complex class structures for testable logic.
-- **Purity**: Never change the original code solely to make it easier to test; instead, use Vitest's mocking capabilities.
+### Logic Example
 
-## Execution
+```typescript
+import { add } from './math';
+import { describe, it, expect } from 'vitest';
 
-| Action              | Command                                                |
-| :------------------ | :----------------------------------------------------- |
-| **All unit tests**  | `bun run test` (often includes Vitest)                 |
-| **Vitest (Server)** | `bun vitest run --project=server` (logic in `src/lib`) |
-| **Vitest (Client)** | `bun vitest run --project=client` (Svelte components)  |
-| **Watch Mode**      | `bun vitest`                                           |
+describe('math', () => {
+  it('adds', () => {
+    expect(add(1, 1)).toBe(2);
+  });
+});
+```
 
-## Writing Quality Unit Tests
+### Component Example
 
-### 1. Test Organization
+```typescript
+import { render, screen } from '@testing-library/svelte';
+import Button from './Button.svelte';
 
-- Use `describe` blocks to group related functions or scenarios.
-- Use `it` or `test` for individual assertions.
-- Maintain descriptive names: `describe('parseCsv', () => { it('should handle CRLF line endings', () => { ... }) })`.
-
-### 2. Mocking & Environment
-
-- Use `vi.mock()` to isolate the module under test from its dependencies (e.g., mocking `debug` or stores).
-- For Svelte components, use `page.render()`.
-
-### 3. Assertions
-
-- Use Vitest's `expect` API.
-- Prefer specific matchers: `toEqual()`, `toBeDefined()`, `toThrow()`.
-
-## MoneyWiz Specific Unit Testing
-
-### CSV Parsing (`src/lib/csv.ts`)
-
-- Test variations in CSV exports: different delimiters, BOM presence, quoted fields, and the `sep=` preamble.
-- Validate that types are correctly inferred (dates as strings, amounts as numbers).
-
-### Financial Logic (`src/lib/finance.ts`)
-
-- Test mathematical edge cases: zero balances, all-income vs all-expense months.
-- Verify category aggregation and savings rate calculations.
-
-### Stores (`src/lib/stores/`)
-
-- Test store updates and reactivity in isolation.
-
-## Quality Checklist
-
-- [ ] Tests cover happy paths and edge cases (empty strings, undefined values).
-- [ ] No `null` usage; use `undefined`.
-- [ ] No unnecessary comments; code should be self-explanatory.
-- [ ] Async code uses `await/async`.
-- [ ] Mocking is used to prevent external side effects.
+it('renders', () => {
+  render(Button, { label: 'Click me' });
+  expect(screen.getByRole('button')).toHaveTextContent('Click me');
+});
+```

@@ -1,32 +1,15 @@
 ---
 name: mcp-time
-description: Get current date, time, and timezone information. Use when performing date/time calculations, timezone conversions, or handling scheduling and time-based logic.
+description: Get current time and timezone info. Use when retrieving current timestamps, converting timezones, or generating dated reports/files.
 ---
 
-# Time MCP Skill
+# Time Utilities
 
-Get current date, time, and timezone information.
+## Workflow
 
-## Overview
+- `get_current_time`: Returns ISO string.
+- `convert_time`: Handies timezone shifts.
 
-The Time MCP server provides tools to retrieve the current time in various formats and perform timezone conversions.
-
-## When to Use This Skill
-
-Trigger this skill when:
-
-- Date/time calculations are needed
-- Timezone conversions are required
-- Scheduling and time-based logic is being implemented
-- Verifying the current server or local time
-
-## Tools
-
-- `get_current_time`: Returns the current time in a specified timezone.
-- `convert_time`: Converts time between different timezones.
-
-## Best Practices
-
-- Always specify the timezone explicitly when possible.
-- Use IANA timezone names (e.g., `America/New_York`, `UTC`).
-- Be aware that the user's local timezone might differ from the server's.
+## Context
+- **Server**: Local machine (macOS).
+- **Timezone**: Usually relevant for logs or file metadata.

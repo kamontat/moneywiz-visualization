@@ -1,28 +1,22 @@
 ---
 name: mcp-playwright
-description: Guideline for using Playwright MCP tools for browser automation and testing. Use when asked to run tests in browser, debug UI issues using live browser, automate browser interactions, or perform E2E testing using MCP tools.
+description: Browser automation and testing using Playwright. Use when writing/running E2E tests (e2e/*.spec.ts), debugging test failures, or automating complex browser workflows.
 ---
 
-# Playwright MCP Skill
+# Playwright Automation
 
-Guideline for using Playwright MCP tools for browser automation and testing.
+## Workflow
 
-## Overview
-
-Playwright MCP tools allow for direct browser interaction and automation within the coding session.
-
-## Usage
-
-Trigger this skill when:
-
-- User asks to "run tests in browser"
-- "Debug UI issues using live browser"
-- "Automate browser interactions"
-- "Perform E2E testing using MCP tools"
+1.  **Locate Test**: Find the relevant `.spec.ts` file in `e2e/`.
+2.  **Run Test**: Use `run_in_terminal` with `bun run test:e2e`.
+3.  **Debug**: Use `bun run test:e2e --debug` or `--ui`.
 
 ## Best Practices
 
-- **Configuration:** Uses `configs/playwright/config.json` for settings.
-- **Locators:** Use role-based locators (`getByRole`, `getByLabel`, etc.) over CSS selectors.
-- **Assertions:** Use web-first assertions for stability.
-- **Waits:** Avoid hard-coded waits; use Playwright's built-in waiting mechanisms.
+- **Locators**: Use `getByRole`, `getByText`. Avoid CSS selectors.
+- **Assertions**: `await expect(locator).toBeVisible()`.
+- **Isolation**: Tests should be independent.
+
+## Application Context
+- **Base URL**: `http://localhost:5173`
+- **Config**: `playwright.config.ts`

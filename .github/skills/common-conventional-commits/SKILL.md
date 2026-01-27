@@ -1,16 +1,12 @@
 ---
 name: common-conventional-commits
-description: 'Execute git commit with conventional commit message analysis, intelligent staging, and message generation for MoneyWiz SvelteKit projects. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping'
+description: Create standardized git commits using the Conventional Commits specification. Use for analyzing diffs, staging files, generating semantic commit messages with correct types/scopes, or when user uses the /commit command.
 license: MIT
 ---
 
-# Git Commit with Conventional Commits
+# Conventional Commits
 
-## Overview
-
-Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.
-
-## Conventional Commit Format
+## Format Specification
 
 ```
 <type>[optional scope]: <description>
@@ -20,7 +16,7 @@ Create standardized, semantic git commits using the Conventional Commits specifi
 [optional footer(s)]
 ```
 
-## Commit Types
+### Commit Types
 
 | Type       | Purpose                        |
 | ---------- | ------------------------------ |
@@ -36,129 +32,56 @@ Create standardized, semantic git commits using the Conventional Commits specifi
 | `chore`    | Maintenance/misc               |
 | `revert`   | Revert commit                  |
 
-## MoneyWiz Project Scopes
-
-Common scopes for this SvelteKit project:
+### Project Scopes
 
 | Scope       | Files Affected                                              |
 | ----------- | ----------------------------------------------------------- |
-| `csv`       | CSV upload flow, CSV parser, `src/lib/csv.ts`, CSV handling |
+| `csv`       | CSV upload flow, CSV parser, `src/lib/csv.ts`               |
 | `charts`    | Chart components (`DailyExpensesChart`, etc.)               |
 | `dashboard` | Main dashboard (`src/routes/+page.svelte`)                  |
-| `header`    | `AppHeader.svelte`, navigation, clear button                |
-| `analytics` | Business logic, `src/lib/analytics.ts`, calculations        |
-| `store`     | State management, `src/lib/stores/csv.ts`                   |
+| `header`    | `AppHeader.svelte`, navigation                              |
+| `analytics` | Business logic, `src/lib/analytics.ts`                      |
+| `store`     | State management, `src/lib/stores/`                         |
 | `styling`   | Tailwind CSS, component styles                              |
-| `test`      | Unit tests (`.spec.ts` files)                               |
-| `e2e`       | Playwright tests in `e2e/` directory                        |
-| `config`    | All kinds of configuration                                  |
+| `test`      | Unit tests (`.spec.ts`)                                     |
+| `e2e`       | Playwright tests in `e2e/`                                  |
+| `config`    | Configuration files (`vite.config.ts`, etc.)                |
 
 ## Breaking Changes
 
-```
-# Exclamation mark after type/scope
-feat!: remove deprecated endpoint
-
-# BREAKING CHANGE footer
-feat: allow config to extend other configs
-
-BREAKING CHANGE: `extends` key behavior changed
-```
-
-## Workflow
-
-### 1. Analyze Diff
-
-```bash
-# If files are staged, use staged diff
-git diff --staged
-
-# If nothing staged, use working tree diff
-git diff
-
-# Also check status
-git status --porcelain
-```
-
-### 2. Stage Files (if needed)
-
-If nothing is staged or you want to group changes differently:
-
-```bash
-# Stage specific files
-git add path/to/file1 path/to/file2
-
-# Stage by pattern
-git add *.test.*
-git add src/components/*
-
-# Interactive staging
-git add -p
-```
-
-**Never commit secrets** (.env, credentials.json, private keys).
-
-### 3. Generate Commit Message
-
-Analyze the diff to determine:
-
-- **Type**: What kind of change is this?
-- **Scope**: What area/module is affected?
-- **Description**: One-line summary of what changed (present tense, imperative mood, <72 chars)
-
-### 4. Execute Commit
-
-```bash
-# Single line
-git commit -m "<type>[scope]: <description>"
-
-# Multi-line with body/footer
-git commit -m "$(cat <<'EOF'
-<type>[scope]: <description>
-
-<optional body>
-
-<optional footer>
-EOF
-)"
-```
-
-## MoneyWiz Commit Examples
+Add `!` after type/scope or `BREAKING CHANGE:` footer.
 
 ```
-# Add new chart component
-feat(charts): add income vs expense ratio visualization
-
-# Fix CSV parsing issue
-fix(csv): handle MoneyWiz sep= preamble correctly
-
-# Update analytics calculation
-feat(analytics): add savings rate calculation to summary
-
-# Add E2E test for CSV upload
-test(e2e): add test for CSV upload and dashboard update
-
-# Refactor component structure
-refactor(dashboard): extract chart rendering to separate components
-
-# Update Tailwind styling
-style(header): reduce padding for compact appearance
+feat!: drop support for Node 16
 ```
 
-## Best Practices
+## Workflow Requirements
 
-- One logical change per commit
-- Present tense: "add" not "added"
-- Imperative mood: "fix bug" not "fixes bug"
-- Use appropriate scope from the MoneyWiz scope list
-- Reference issues: `Closes #123`, `Refs #456`
-- Keep description under 72 characters
-- Always use `bun` for package operations (never `npm`)
+1.  **Analyze Changes**:
+    - Run `git diff --staged` (or `git diff` if nothing staged).
+    - Identify logical groups of changes.
 
-## Git Safety Protocol
+2.  **Stage Files**:
+    - If needed, stage files intelligently: `git add <path>`.
+    - **NEVER** commit secrets or `.env` files.
 
-- NEVER update git config
-- NEVER run destructive commands (--force, hard reset) without explicit request
-- NEVER skip hooks (--no-verify) unless user asks
-- NEVER force push to main/master
-- If commit fails due to hooks, fix and create NEW commit (don't amend)
+3.  **Generate Message**:
+    - Determine **Type** and **Scope**.
+    - Write a short **Description** (imperative mood, <72 chars).
+
+4.  **Commit**:
+    - Run `git commit -m "type(scope): description"`.
+
+## Examples
+
+- `feat(charts): add income vs expense ratio visualization`
+- `fix(csv): handle MoneyWiz sep= preamble correctly`
+- `style(header): reduce padding for compact appearance`
+- `test(e2e): add test for CSV upload`
+
+## Safety Directives
+
+- **NEVER** Use `--no-verify`.
+- **NEVER** Force push.
+- **NEVER** Update git config unless explicitly asked.
+- **ALWAYS** Use `bun` for package operations.
