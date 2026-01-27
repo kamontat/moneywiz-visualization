@@ -90,9 +90,21 @@ Required:
 
 Optional:
 - `modified_specs` (object[]) - Specs with `name`, `slug`, `change_type`, `description`
-- `new_specs` (object[]) - New specs with `name`, `purpose`
+- `new_specs` (object[]) - New specs with `name`, `slug`, `purpose`
 - `deprecated_specs` (object[]) - Specs with `name`, `reason`, `replacement`
 - `no_changes` (object[]) - Unaffected specs with `name`, `reason`
+
+**Spec Naming Convention:**
+
+All spec slugs must use a category prefix:
+- **`tech-`** for technical specs: database, API, infrastructure, techstack, caching, deployment, security implementation
+- **`biz-`** for business specs: UI design, business logic, user flows, features, domain rules, validation rules
+
+Examples:
+- Database schema → `tech-database-schema`
+- API endpoints → `tech-api-routes`
+- User authentication flow → `biz-user-auth`
+- Checkout process → `biz-checkout-flow`
 
 ## Output
 

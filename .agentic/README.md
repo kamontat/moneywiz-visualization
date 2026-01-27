@@ -466,7 +466,36 @@ Templates use Handlebars syntax (`.hbs` files). AI must render templates to plai
 | Type | Max Words | Format | Examples |
 |------|-----------|--------|----------|
 | Plan | 6 | lowercase, dash-separated | `add-user-auth`, `fix-login-bug`, `update-api-endpoints` |
-| Spec | 4 | lowercase, dash-separated | `user-auth`, `api-routes`, `data-models` |
+| Spec | 4 | lowercase, dash-separated, with category prefix | `tech-database`, `biz-user-auth` |
+
+### Spec Category Prefixes
+
+Specs must use a category prefix to indicate their domain:
+
+| Prefix | Category | Description | Examples |
+|--------|----------|-------------|----------|
+| `tech-` | Technical | Infrastructure, architecture, techstack, database, APIs, deployment | `tech-database`, `tech-api-routes`, `tech-infra`, `tech-caching` |
+| `biz-` | Business | UI/UX design, business logic, user flows, domain rules, features | `biz-user-auth`, `biz-checkout-flow`, `biz-pricing-rules` |
+
+**Guidelines for choosing the prefix:**
+
+- **Use `tech-`** for specs about:
+  - Database schemas, queries, migrations
+  - API endpoints, protocols, data formats
+  - Infrastructure (servers, containers, cloud services)
+  - Tech stack decisions (frameworks, libraries, tools)
+  - Performance, caching, optimization
+  - Security implementation details
+  - DevOps, CI/CD, deployment
+
+- **Use `biz-`** for specs about:
+  - User interface design and layouts
+  - Business rules and logic
+  - User workflows and journeys
+  - Feature requirements
+  - Domain models (conceptual, not database)
+  - Validation rules (business-level)
+  - Content and copy requirements
 
 ---
 

@@ -89,11 +89,20 @@ For each spec in `modified_specs`:
 
 For each spec in `new_specs`:
 
-1. Create directory `.agentic/specs/<slug>/`
-2. Process templates from `.agentic/templates/specs/`:
+1. Determine the spec category and apply the correct prefix:
+   - **`tech-`** for technical specs (database, API, infrastructure, techstack, caching, deployment)
+   - **`biz-`** for business specs (UI design, business logic, user flows, features, domain rules)
+2. Create directory `.agentic/specs/<prefix><slug>/`
+3. Process templates from `.agentic/templates/specs/`:
    - `spec.md.hbs` → `spec.md`
    - `changelog.md.hbs` → `changelog.md`
-3. Fill in content based on plan
+4. Fill in content based on plan
+
+**Spec Naming Examples:**
+- Database schema spec → `tech-database-schema`
+- User authentication flow → `biz-user-auth`
+- API endpoints → `tech-api-routes`
+- Checkout process → `biz-checkout-flow`
 
 ## Template Variables
 
