@@ -4,6 +4,7 @@
 		children?: import('svelte').Snippet;
 		class?: string;
 		// Generic HTML props can be expanded if needed, but keeping simple for now
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		[key: string]: any;
 	}
 	let { tag = 'div', children, class: className = '', ...rest }: Props = $props();

@@ -31,4 +31,4 @@ describe('IncomeByCategory', () => {
 
 		await expect.element(screen.getByText('No income data')).toBeVisible();
 	});
-};);
+});

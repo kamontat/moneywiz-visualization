@@ -3,7 +3,6 @@
 	import FilterIcon from '@iconify-svelte/lucide/filter';
 	import XIcon from '@iconify-svelte/lucide/x';
 	import CalendarIcon from '@iconify-svelte/lucide/calendar';
-	import CheckIcon from '@iconify-svelte/lucide/check';
 	import { parseAllTags, type TagFilter } from '$lib/analytics';
 
 	let {
@@ -105,10 +104,6 @@
 		isOpen = !isOpen;
 	}
 
-	function close() {
-		isOpen = false;
-	}
-
 	// Helpers for input binding
 	function toIso(d: Date | null): string {
 		if (!d) return '';
@@ -132,6 +127,7 @@
 		switch (preset) {
 			case 'month':
 				// Start of current month to today
+				// eslint-disable-next-line svelte/prefer-svelte-reactivity
 				start = new Date(now.getFullYear(), now.getMonth(), 1);
 				end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 				break;
@@ -322,7 +318,7 @@
 						</div>
 
 						<div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-							{#each sortedCategories as category}
+							{#each sortedCategories as category (category)}
 								<div
 									class="flex flex-col gap-2 rounded-lg border border-mw-border bg-gray-50/50 p-3"
 								>
@@ -362,7 +358,7 @@
 									<div
 										class="custom-scrollbar flex max-h-32 flex-wrap gap-1.5 overflow-y-auto pr-1"
 									>
-										{#each getTagOptions(category) as option}
+										{#each getTagOptions(category) as option (option)}
 											<button
 												onclick={() => updateFilter(category, option)}
 												class="inline-flex items-center gap-1 rounded border px-2 py-1 text-left text-xs break-all transition-all

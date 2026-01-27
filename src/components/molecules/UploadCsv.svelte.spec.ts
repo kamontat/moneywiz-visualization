@@ -4,16 +4,16 @@ import UploadCsv from './UploadCsv.svelte';
 import { parseCsvFile } from '$lib/csv';
 
 vi.mock('$lib/csv', () => {
-    return {
-			parseCsvFile: vi.fn(),
-			CsvParseError: class extends Error {},
-		};
+	return {
+		parseCsvFile: vi.fn(),
+		CsvParseError: class extends Error {},
+	};
 });
 
 describe('CsvUploadButton.svelte', () => {
-    beforeEach(() => {
-			vi.clearAllMocks();
-		});
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
 	it('renders with default label', async () => {
 		const { container } = page.render(UploadCsv);
@@ -40,7 +40,7 @@ describe('CsvUploadButton.svelte', () => {
 	it('handles file selection', async () => {
 		vi.mocked(parseCsvFile).mockResolvedValue({
 			headers: ['Date', 'Amount'],
-			rows: [{ Date: '2023-01-01', Amount: '100' }]
+			rows: [{ Date: '2023-01-01', Amount: '100' }],
 		});
 		const onParsedSpy = vi.fn();
 
@@ -53,7 +53,7 @@ describe('CsvUploadButton.svelte', () => {
 		// Simulate file selection
 		Object.defineProperty(input, 'files', {
 			value: [file],
-			writable: false
+			writable: false,
 		});
 
 		input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -66,33 +66,33 @@ describe('CsvUploadButton.svelte', () => {
 			file,
 			data: {
 				headers: ['Date', 'Amount'],
-				rows: [{ Date: '2023-01-01', Amount: '100' }]
-			}
+				rows: [{ Date: '2023-01-01', Amount: '100' }],
+			},
 		});
 	});
 
-    it('handles parse error', async () => {
-			const error = new Error('Invalid format');
-			vi.mocked(parseCsvFile).mockRejectedValue(error);
-			const onErrorSpy = vi.fn();
+	it('handles parse error', async () => {
+		const error = new Error('Invalid format');
+		vi.mocked(parseCsvFile).mockRejectedValue(error);
+		const onErrorSpy = vi.fn();
 
-			const { container } = page.render(UploadCsv, { onerror: onErrorSpy });
-			const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-			const file = new File(['bad content'], 'bad.csv', { type: 'text/csv' });
+		const { container } = page.render(UploadCsv, { onerror: onErrorSpy });
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		const file = new File(['bad content'], 'bad.csv', { type: 'text/csv' });
 
-			Object.defineProperty(input, 'files', {
-				value: [file],
-				writable: false,
-			});
-
-			input.dispatchEvent(new Event('change', { bubbles: true }));
-
-			await new Promise((resolve) => setTimeout(resolve, 0));
-
-			expect(parseCsvFile).toHaveBeenCalledWith(file);
-			expect(onErrorSpy).toHaveBeenCalledWith({
-				file,
-				message: 'Invalid format',
-			});
+		Object.defineProperty(input, 'files', {
+			value: [file],
+			writable: false,
 		});
+
+		input.dispatchEvent(new Event('change', { bubbles: true }));
+
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		expect(parseCsvFile).toHaveBeenCalledWith(file);
+		expect(onErrorSpy).toHaveBeenCalledWith({
+			file,
+			message: 'Invalid format',
+		});
+	});
 });

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard - Basic summaries', () => {
-  test.beforeEach(async ({ page }) => {
+	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 		// Upload CSV since it no longer auto-loads
 		const fileInput = page.locator('input[type="file"]').first();
@@ -10,7 +10,7 @@ test.describe('Dashboard - Basic summaries', () => {
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 	});
 
-  test('renders heading and summary cards', async ({ page }) => {
+	test('renders heading and summary cards', async ({ page }) => {
 		// Heading should now be the filename
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 
@@ -22,14 +22,14 @@ test.describe('Dashboard - Basic summaries', () => {
 		await expect(page.getByText('Saving Rate')).toBeVisible();
 	});
 
-  test('renders charts', async ({ page }) => {
+	test('renders charts', async ({ page }) => {
 		await expect(page.getByRole('heading', { name: 'Top Categories' })).toBeVisible();
 		await expect(page.getByRole('heading', { name: /Income & Expense Trend/i })).toBeVisible();
 	});
 });
 
 test.describe('Dashboard - Top Categories Chart', () => {
-  test.beforeEach(async ({ page }) => {
+	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 		// Upload CSV since it no longer auto-loads
 		const fileInput = page.locator('input[type="file"]').first();
@@ -37,7 +37,7 @@ test.describe('Dashboard - Top Categories Chart', () => {
 		await expect(page.getByText('Saving Rate')).toBeVisible();
 	});
 
-  test('displays category labels without truncation overlap', async ({ page }) => {
+	test('displays category labels without truncation overlap', async ({ page }) => {
 		// Verify Top Categories chart renders
 		const chart = page.getByRole('region', { name: 'Top Categories' });
 		await expect(chart).toBeVisible();

@@ -27,7 +27,7 @@
 							bind:value={maxPreviewRows}
 							class="cursor-pointer appearance-none rounded border border-mw-border bg-white bg-none py-1 pr-6 pl-2 text-xs text-mw-text-main outline-none focus:border-mw-primary focus:ring-1 focus:ring-mw-primary"
 						>
-							{#each limitOptions as option}
+							{#each limitOptions as option (option)}
 								<option value={option}>{option}</option>
 							{/each}
 						</select>
@@ -42,7 +42,7 @@
 					<table class="border-collapse" style="table-layout: auto; min-width: 100%;">
 						<thead class="bg-gray-50">
 							<tr class="border-b border-mw-border">
-								{#each data?.headers ?? [] as header}
+								{#each data?.headers ?? [] as header (header)}
 									<th
 										scope="col"
 										class="px-3 py-2 text-left text-sm font-bold whitespace-nowrap text-mw-text-main"
@@ -52,9 +52,9 @@
 							</tr>
 						</thead>
 						<tbody>
-							{#each (data?.rows ?? []).slice(0, maxPreviewRows) as row}
+							{#each (data?.rows ?? []).slice(0, maxPreviewRows) as row, i (i)}
 								<tr class="border-b border-mw-border last:border-0">
-									{#each data?.headers ?? [] as header}
+									{#each data?.headers ?? [] as header (header)}
 										<td
 											class="max-w-[200px] overflow-hidden px-3 py-2 text-left text-sm text-ellipsis whitespace-nowrap text-mw-text-secondary"
 											>{row[header]}</td

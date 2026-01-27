@@ -8,6 +8,14 @@
 	import DashboardContainer from '$components/molecules/DashboardContainer.svelte';
 	import NavigationBar from '$components/molecules/NavigationBar.svelte';
 	import NavigationItem from '$components/molecules/NavigationItem.svelte';
+	import type {
+		CategoryBreakdown,
+		IncomeExpenseTimeSeries,
+		TagFilter,
+		TopCategoriesData,
+		Totals,
+	} from '$lib/analytics';
+	import type { CsvRow, ParsedCsv } from '$lib/csv';
 
 	// Using explicit types would be better, but assuming current structure
 	interface Props {
@@ -18,13 +26,13 @@
 		thbCount: number;
 		filterStart: Date | null;
 		filterEnd: Date | null;
-		tagFilters: any[];
-		thbRows: any[];
-		totals: any;
-		breakdown: any;
-		tsData: any;
-		topCategories: any;
-		previewData: any;
+		tagFilters: TagFilter[];
+		thbRows: CsvRow[];
+		totals: Totals;
+		breakdown: CategoryBreakdown;
+		tsData: IncomeExpenseTimeSeries;
+		topCategories: TopCategoriesData;
+		previewData: ParsedCsv | null;
 	}
 
 	let {

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard - Currency Formatting', () => {
-  test.beforeEach(async ({ page }) => {
+	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 		// Upload CSV
 		const fileInput = page.locator('input[type="file"]').first();
@@ -10,7 +10,7 @@ test.describe('Dashboard - Currency Formatting', () => {
 		await expect(page.getByText('Saving Rate', { exact: true })).toBeVisible();
 	});
 
-  test('displays financial amounts with currency symbols', async ({ page }) => {
+	test('displays financial amounts with currency symbols', async ({ page }) => {
 		// Check Summary Cards
 		// The structure is: div[role="listitem"] > p (label) + p (value)
 
@@ -49,7 +49,7 @@ test.describe('Dashboard - Currency Formatting', () => {
 		expect(netText).toContain('฿');
 	});
 
-  test('uses symbols in Category Breakdown', async ({ page }) => {
+	test('uses symbols in Category Breakdown', async ({ page }) => {
 		// Income Breakdown Total
 		const incomeButton = page.getByRole('button', { name: /Income by Category/ });
 		await expect(incomeButton).toBeVisible();

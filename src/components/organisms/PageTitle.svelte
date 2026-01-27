@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { base } from '$app/paths';
+
 	interface Props {
 		title: string;
 	}
@@ -6,8 +8,9 @@
 </script>
 
 <div class="inline-flex min-w-0 items-center gap-2">
+	<!-- eslint-disable svelte/no-navigation-without-resolve -->
 	<a
-		href="/"
+		href="{base}/"
 		class="flex min-w-0 items-center gap-1 decoration-0 transition-opacity hover:opacity-80"
 	>
 		<span
@@ -16,4 +19,5 @@
 			{title}
 		</span>
 	</a>
+	<!-- eslint-enable svelte/no-navigation-without-resolve -->
 </div>

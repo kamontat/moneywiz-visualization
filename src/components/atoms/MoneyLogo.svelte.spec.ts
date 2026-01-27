@@ -1,5 +1,5 @@
 import MoneyLogo from './MoneyLogo.svelte';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { page } from 'vitest/browser';
 
 describe('MoneyLogo.svelte', () => {

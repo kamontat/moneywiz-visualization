@@ -40,7 +40,7 @@
 			class="animate-in slide-in-from-top-1 border-t border-emerald-100 p-4 duration-200"
 		>
 			<ul class="m-0 flex list-none flex-col gap-3 p-0">
-				{#each items as item}
+				{#each items as item (item.name)}
 					{@const percent = total > 0 ? (item.value / total) * 100 : 0}
 					<li class="flex items-center justify-between text-sm">
 						<span class="text-mw-text-std truncate pr-4">{item.name}</span>

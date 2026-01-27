@@ -6,12 +6,18 @@
 	import TopCategoriesChart from './TopCategoriesChart.svelte';
 	import DashboardPanel from '$components/molecules/DashboardPanel.svelte';
 	import Title from '$components/atoms/Title.svelte';
+	import type {
+		CategoryBreakdown,
+		IncomeExpenseTimeSeries,
+		TopCategoriesData,
+		Totals,
+	} from '$lib/analytics';
 
 	interface Props {
-		breakdown: any;
-		totals: any;
-		tsData: any;
-		topCategories: any;
+		breakdown: CategoryBreakdown;
+		totals: Totals;
+		tsData: IncomeExpenseTimeSeries;
+		topCategories: TopCategoriesData;
 	}
 	let { breakdown, totals, tsData, topCategories }: Props = $props();
 </script>

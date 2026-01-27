@@ -8,8 +8,8 @@ describe('DataPreviewPanel.svelte', () => {
 		headers: ['Name', 'Amount', 'Date'],
 		rows: [
 			{ Name: 'Item 1', Amount: '100', Date: '2023-01-01' },
-			{ Name: 'Item 2', Amount: '200', Date: '2023-01-02' }
-		]
+			{ Name: 'Item 2', Amount: '200', Date: '2023-01-02' },
+		],
 	};
 
 	it('renders table immediately when data is provided', async () => {
@@ -50,7 +50,7 @@ describe('DataPreviewPanel.svelte', () => {
 	it('shows row count message when more than 5 rows exist', async () => {
 		const manyRows = {
 			headers: ['Name'],
-			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` }))
+			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` })),
 		};
 		const { container } = page.render(DataPreviewPanel, { data: manyRows });
 
@@ -60,7 +60,7 @@ describe('DataPreviewPanel.svelte', () => {
 	it('displays correct number of rows (max 5 preview rows)', async () => {
 		const manyRows = {
 			headers: ['Name'],
-			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` }))
+			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` })),
 		};
 		const { container } = page.render(DataPreviewPanel, { data: manyRows });
 
@@ -87,7 +87,7 @@ describe('DataPreviewPanel.svelte', () => {
 	it('changes displayed rows when dropdown selection changes', async () => {
 		const manyRows = {
 			headers: ['Name'],
-			rows: Array.from({ length: 20 }, (_, i) => ({ Name: `Item ${i + 1}` }))
+			rows: Array.from({ length: 20 }, (_, i) => ({ Name: `Item ${i + 1}` })),
 		};
 		const { container } = page.render(DataPreviewPanel, { data: manyRows });
 

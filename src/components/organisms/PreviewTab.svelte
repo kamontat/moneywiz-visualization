@@ -1,8 +1,9 @@
 <script lang="ts">
 	import DataPreviewPanel from './DataPreviewPanel.svelte';
+	import type { ParsedCsv } from '$lib/csv';
 
 	interface Props {
-		data: any;
+		data: ParsedCsv | null;
 	}
 	let { data }: Props = $props();
 </script>

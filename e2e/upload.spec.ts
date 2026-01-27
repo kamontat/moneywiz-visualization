@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('CSV Upload - MoneyWiz file', () => {
-  test.beforeEach(async ({ page }) => {
+	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 	});
 
-  test('uploads CSV file and updates dashboard', async ({ page }) => {
+	test('uploads CSV file and updates dashboard', async ({ page }) => {
 		// Verify empty state on fresh load
 		// Dashboard heading should be hidden when no data
 		await expect(page.getByRole('heading', { name: 'Dashboard' })).not.toBeVisible();
@@ -28,7 +28,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		await expect(page.getByRole('heading', { name: /Income & Expense Trend/i })).toBeVisible();
 	});
 
-  test('clears uploaded CSV and resets to empty state', async ({ page }) => {
+	test('clears uploaded CSV and resets to empty state', async ({ page }) => {
 		// Upload CSV file first
 		const fileInput = page.locator('input[type="file"]').first();
 		await fileInput.setInputFiles('static/data/report.csv');
