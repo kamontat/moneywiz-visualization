@@ -1,13 +1,23 @@
 ---
-description: 'Guidelines for creating high-quality custom instruction files for GitHub Copilot'
-applyTo: '**/*.instructions.md'
+name: creating-instructions
+description: Expert guidelines for creating custom instruction files (.instructions.md) that guide GitHub Copilot in generating domain-specific code and following project conventions.
 ---
 
-# Custom Instructions File Guidelines
+# Instruction Creation Guide
+
+## When to Use This Skill
+
+Use this skill when:
+- Creating new custom instruction files (`.instructions.md`) for the project.
+- Defining project-specific coding standards, best practices, and architectural patterns.
+- Updating existing instructions to match new project conventions.
+- Debugging Copilot behavior by refining instructions.
+
+## Custom Instructions File Guidelines
 
 Instructions for creating effective and maintainable custom instruction files that guide GitHub Copilot in generating domain-specific code and following project conventions.
 
-## Project Context
+### Project Context
 
 - Target audience: Developers and GitHub Copilot working with domain-specific code
 - File format: Markdown with YAML frontmatter
@@ -15,7 +25,7 @@ Instructions for creating effective and maintainable custom instruction files th
 - Location: `.github/instructions/` directory
 - Purpose: Provide context-aware guidance for code generation, review, and documentation
 
-## Required Frontmatter
+### Required Frontmatter
 
 Every instruction file must include YAML frontmatter with the following fields:
 
@@ -26,7 +36,7 @@ applyTo: 'glob pattern for target files (e.g., **/*.ts, **/*.py)'
 ---
 ```
 
-### Frontmatter Guidelines
+#### Frontmatter Guidelines
 
 - **description**: Single-quoted string, 1-500 characters, clearly stating the purpose
 - **applyTo**: Glob pattern(s) specifying which files these instructions apply to
@@ -35,17 +45,17 @@ applyTo: 'glob pattern for target files (e.g., **/*.ts, **/*.py)'
   - Specific files: `'src/**/*.py'`
   - All files: `'**'`
 
-## File Structure
+### File Structure
 
 A well-structured instruction file should include the following sections:
 
-### 1. Title and Overview
+#### 1. Title and Overview
 
 - Clear, descriptive title using `#` heading
 - Brief introduction explaining the purpose and scope
 - Optional: Project context section with key technologies and versions
 
-### 2. Core Sections
+#### 2. Core Sections
 
 Organize content into logical sections based on the domain:
 
@@ -58,7 +68,7 @@ Organize content into logical sections based on the domain:
 - **Performance**: Optimization guidelines (if applicable)
 - **Testing**: Testing standards and approaches (if applicable)
 
-### 3. Examples and Code Snippets
+#### 3. Examples and Code Snippets
 
 Provide concrete examples with clear labels:
 
@@ -78,16 +88,16 @@ code example here
 \`\`\`
 ```
 
-### 4. Validation and Verification (Optional but Recommended)
+#### 4. Validation and Verification (Optional but Recommended)
 
 - Build commands to verify code
 - Linting and formatting tools
 - Testing requirements
 - Verification steps
 
-## Content Guidelines
+### Content Guidelines
 
-### Writing Style
+#### Writing Style
 
 - Use clear, concise language
 - Write in imperative mood ("Use", "Implement", "Avoid")
@@ -96,7 +106,7 @@ code example here
 - Use bullet points and lists for readability
 - Keep sections focused and scannable
 
-### Best Practices
+#### Best Practices
 
 - **Be Specific**: Provide concrete examples rather than abstract concepts
 - **Show Why**: Explain the reasoning behind recommendations when it adds value
@@ -105,7 +115,7 @@ code example here
 - **Stay Current**: Reference current versions and best practices
 - **Link Resources**: Include official documentation and authoritative sources
 
-### Common Patterns to Include
+#### Common Patterns to Include
 
 1. **Naming Conventions**: How to name variables, functions, classes, files
 2. **Code Organization**: File structure, module organization, import order
@@ -114,9 +124,9 @@ code example here
 5. **Comments and Documentation**: When and how to document code
 6. **Version Information**: Target language/framework versions
 
-## Patterns to Follow
+### Patterns to Follow
 
-### Bullet Points and Lists
+#### Bullet Points and Lists
 
 ```markdown
 ## Security Best Practices
@@ -128,7 +138,7 @@ code example here
 - Enable HTTPS for all production endpoints
 ```
 
-### Tables for Structured Information
+#### Tables for Structured Information
 
 ```markdown
 ## Common Issues
@@ -140,7 +150,7 @@ code example here
 | Hardcoded values | Use configuration   | Store API URLs in config      |
 ```
 
-### Code Comparison
+#### Code Comparison
 
 ```markdown
 ### Good Example - Using TypeScript interfaces
@@ -166,7 +176,7 @@ function getUser(id: any): any {
 \`\`\`
 ```
 
-### Conditional Guidance
+#### Conditional Guidance
 
 ```markdown
 ## Framework Selection
@@ -176,7 +186,7 @@ function getUser(id: any): any {
 - **For microservices**: Consider domain-driven design patterns
 ```
 
-## Patterns to Avoid
+### Patterns to Avoid
 
 - **Overly verbose explanations**: Keep it concise and scannable
 - **Outdated information**: Always reference current versions and practices
@@ -185,7 +195,7 @@ function getUser(id: any): any {
 - **Contradictory advice**: Ensure consistency throughout the file
 - **Copy-paste from documentation**: Add value by distilling and contextualizing
 
-## Testing Your Instructions
+### Testing Your Instructions
 
 Before finalizing instruction files:
 
@@ -193,7 +203,7 @@ Before finalizing instruction files:
 2. **Verify Examples**: Ensure code examples are correct and run without errors
 3. **Check Glob Patterns**: Confirm `applyTo` patterns match intended files
 
-## Example Structure
+### Example Structure
 
 Here's a minimal example structure for a new instruction file:
 
@@ -250,7 +260,7 @@ Description and example
 - Testing: `command to test`
 ```
 
-## Maintenance
+### Maintenance
 
 - Review instructions when dependencies or frameworks are updated
 - Update examples to reflect current best practices
@@ -258,7 +268,7 @@ Description and example
 - Add new patterns as they emerge in the community
 - Keep glob patterns accurate as project structure evolves
 
-## Additional Resources
+### Additional Resources
 
 - [Custom Instructions Documentation](https://code.visualstudio.com/docs/copilot/customization/custom-instructions)
 - [Awesome Copilot Instructions](https://github.com/github/awesome-copilot/tree/main/instructions)

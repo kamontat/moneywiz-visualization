@@ -1,13 +1,23 @@
 ---
-description: 'Guidelines for creating high-quality Agent Skills for GitHub Copilot'
-applyTo: '**/.github/skills/**/SKILL.md, **/.claude/skills/**/SKILL.md'
+name: creating-skills
+description: Expert guidelines for creating high-quality Agent Skills that enhance GitHub Copilot with specialized capabilities, workflows, and bundled resources.
 ---
 
-# Agent Skills File Guidelines
+# Skill Creation Guide
+
+## When to Use This Skill
+
+Use this skill when:
+- Creating new Agent Skills for project or personal use.
+- Structuring skill directories and `SKILL.md` files.
+- Bundling resources (scripts, templates, references) with skills.
+- Defining skill triggers and progressive loading behavior.
+
+## Agent Skills File Guidelines
 
 Instructions for creating effective and portable Agent Skills that enhance GitHub Copilot with specialized capabilities, workflows, and bundled resources.
 
-## What Are Agent Skills?
+### What Are Agent Skills?
 
 Agent Skills are self-contained folders with instructions and bundled resources that teach AI agents specialized capabilities. Unlike custom instructions (which define coding standards), skills enable task-specific workflows that can include scripts, examples, templates, and reference data.
 
@@ -18,7 +28,7 @@ Key characteristics:
 - **Resource-bundled**: Can include scripts, templates, examples alongside instructions
 - **On-demand**: Activated automatically based on prompt relevance
 
-## Directory Structure
+### Directory Structure
 
 Skills are stored in specific locations:
 
@@ -31,9 +41,9 @@ Skills are stored in specific locations:
 
 Each skill **must** have its own subdirectory containing at minimum a `SKILL.md` file.
 
-## Required SKILL.md Format
+### Required SKILL.md Format
 
-### Frontmatter (Required)
+#### Frontmatter (Required)
 
 ```yaml
 ---
@@ -49,7 +59,7 @@ license: Complete terms in LICENSE.txt
 | `description` | Yes      | Clear description of capabilities AND use cases, max 1024 characters                |
 | `license`     | No       | Reference to LICENSE.txt (e.g., `Complete terms in LICENSE.txt`) or SPDX identifier |
 
-### Description Best Practices
+#### Description Best Practices
 
 **CRITICAL**: The `description` field is the PRIMARY mechanism for automatic skill discovery. Copilot reads ONLY the `name` and `description` to decide whether to load a skill. If your description is vague, the skill will never be activated.
 
@@ -77,7 +87,7 @@ The poor description fails because:
 - No keywords (what user prompts would match?)
 - No capabilities (what can it actually do?)
 
-### Body Content
+#### Body Content
 
 The body contains detailed instructions that Copilot loads AFTER the skill is activated. Recommended sections:
 
@@ -90,11 +100,11 @@ The body contains detailed instructions that Copilot loads AFTER the skill is ac
 | `## Troubleshooting`        | Common issues and solutions table                   |
 | `## References`             | Links to bundled docs or external resources         |
 
-## Bundling Resources
+### Bundling Resources
 
 Skills can include additional files that Copilot accesses on-demand:
 
-### Supported Resource Types
+#### Supported Resource Types
 
 | Folder        | Purpose                                                               | Loaded into Context? | Example Files                                             |
 | ------------- | --------------------------------------------------------------------- | -------------------- | --------------------------------------------------------- |
@@ -103,7 +113,7 @@ Skills can include additional files that Copilot accesses on-demand:
 | `assets/`     | **Static files used AS-IS** in output (not modified by the AI agent)  | No                   | `logo.png`, `brand-template.pptx`, `custom-font.ttf`      |
 | `templates/`  | **Starter code/scaffolds that the AI agent MODIFIES** and builds upon | Yes, when referenced | `viewer.html` (insert algorithm), `hello-world/` (extend) |
 
-### Directory Structure Example
+#### Directory Structure Example
 
 ```
 .github/skills/my-skill/
@@ -126,7 +136,7 @@ Skills can include additional files that Copilot accesses on-demand:
 
 > **LICENSE.txt**: When creating a skill, download the Apache 2.0 license text from https://www.apache.org/licenses/LICENSE-2.0.txt and save as `LICENSE.txt`. Update the copyright year and owner in the appendix section.
 
-### Assets vs Templates: Key Distinction
+#### Assets vs Templates: Key Distinction
 
 **Assets** are static resources **consumed unchanged** in the output:
 
@@ -142,7 +152,7 @@ Skills can include additional files that Copilot accesses on-demand:
 
 **Rule of thumb**: If the AI agent reads and builds upon the file content → `templates/`. If the file is used as-is in output → `assets/`.
 
-### Referencing Resources in SKILL.md
+#### Referencing Resources in SKILL.md
 
 Use relative paths to reference files within the skill directory:
 
@@ -156,7 +166,7 @@ See [API reference](./references/api_reference.md) for detailed documentation.
 Use the [scaffold](./templates/scaffold.py) as a starting point.
 ```
 
-## Progressive Loading Architecture
+### Progressive Loading Architecture
 
 Skills use three-level loading for efficiency:
 
@@ -172,9 +182,9 @@ This means:
 - Only relevant content loads per task
 - Resources don't load until explicitly needed
 
-## Content Guidelines
+### Content Guidelines
 
-### Writing Style
+#### Writing Style
 
 - Use imperative mood: "Run", "Create", "Configure" (not "You should run")
 - Be specific and actionable
@@ -182,7 +192,7 @@ This means:
 - Show expected outputs where helpful
 - Keep sections focused and scannable
 
-### Script Requirements
+#### Script Requirements
 
 When including scripts, prefer cross-platform languages:
 
@@ -200,7 +210,7 @@ Best practices:
 - Avoid storing credentials or secrets
 - Use relative paths where possible
 
-### When to Bundle Scripts
+#### When to Bundle Scripts
 
 Include scripts in your skill when:
 
@@ -213,16 +223,16 @@ Include scripts in your skill when:
 
 Scripts enable evolution: even simple operations benefit from being implemented as scripts when they may grow in complexity, need consistent behavior across invocations, or require future extensibility.
 
-### Security Considerations
+#### Security Considerations
 
 - Scripts rely on existing credential helpers (no credential storage)
 - Include `--force` flags only for destructive operations
 - Warn users before irreversible actions
 - Document any network operations or external calls
 
-## Common Patterns
+### Common Patterns
 
-### Parameter Table Pattern
+#### Parameter Table Pattern
 
 Document parameters clearly:
 
@@ -234,7 +244,7 @@ Document parameters clearly:
 | `--verbose` | No       | `false` | Enable verbose output        |
 ```
 
-## Validation Checklist
+### Validation Checklist
 
 Before publishing a skill:
 
@@ -248,7 +258,7 @@ Before publishing a skill:
 - [ ] Relative paths used for all resource references
 - [ ] No hardcoded credentials or secrets
 
-## Workflow Execution Pattern
+### Workflow Execution Pattern
 
 When executing multi-step workflows, create a TODO list where each step references the relevant documentation:
 
@@ -264,7 +274,7 @@ When executing multi-step workflows, create a TODO list where each step referenc
 
 This ensures traceability and allows resuming workflows if interrupted.
 
-## Related Resources
+### Related Resources
 
 - [Agent Skills Specification](https://agentskills.io/)
 - [VS Code Agent Skills Documentation](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
