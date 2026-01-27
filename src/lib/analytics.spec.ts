@@ -405,5 +405,56 @@ describe('analytics', () => {
             expect(result).toHaveLength(5);
         });
     });
+
+    describe('calculateIncomeExpenseTimeSeries', () => {
+        beforeEach(() => {
+             (finance.parseDateDDMMYYYY as any).mockImplementation((val: any) => {
+                if (!val) return null;
+                const parts = val.split('/');
+                return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+            });
+            (finance.parseAmountTHB as any).mockImplementation((val: any) => Number(val));
+        });
+
+        it('groups by day for short ranges', () => {
+            const rows = [
+                { Date: '01/01/2023', Amount: '100' },
+                { Date: '01/01/2023', Amount: '-50' },
+                { Date: '02/01/2023', Amount: '200' }
+            ] as Record<string, string>[];
+            const start = new Date(2023, 0, 1);
+            const end = new Date(2023, 0, 3); // 3 days
+
+            const result = analytics.calculateIncomeExpenseTimeSeries(rows, start, end);
+
+            expect(result.mode).toBe('daily');
+            expect(result.labels).toEqual(['01/01', '02/01', '03/01']);
+            expect(result.income).toEqual([100, 200, 0]);
+            expect(result.expenses).toEqual([50, 0, 0]);
+            expect(result.net).toEqual([50, 200, 0]);
+        });
+
+        it('groups by month for long ranges', () => {
+            const rows = [
+                { Date: '15/01/2023', Amount: '1000' },
+                { Date: '20/02/2023', Amount: '-500' },
+                { Date: '10/03/2023', Amount: '2000' }
+            ] as Record<string, string>[];
+            const start = new Date(2023, 0, 1); // Jan 1
+            const end = new Date(2023, 3, 1);   // Apr 1 (> 3 months)
+
+            const result = analytics.calculateIncomeExpenseTimeSeries(rows, start, end);
+
+            expect(result.mode).toBe('monthly');
+            expect(result.labels).toHaveLength(4);
+            expect(result.labels[0]).toContain('Jan');
+
+            expect(result.income[0]).toBe(1000); // Jan
+            expect(result.income[1]).toBe(0);    // Feb
+            expect(result.income[2]).toBe(2000); // Mar
+
+            expect(result.expenses[1]).toBe(500); // Feb
+        });
+    });
 });
 

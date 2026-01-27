@@ -89,9 +89,10 @@ bun run preview
     - `SummaryCards.svelte` - Dashboard summary cards (Income, Expenses, Net, Transactions)
     - `FilterPanel.svelte` - Collapsible date range filter with quick presets
     - `TopCategoriesChart.svelte` - Bar chart for top spending categories
-    - `DailyExpensesChart.svelte` - Bar chart for daily expenses
+    - `IncomeExpenseBarChart.svelte` - Mixed bar/line chart for income, expenses, and net trend
     - `IncomeExpenseRatioChart.svelte` - Pie chart for income vs expenses ratio
-    - `CategoryBreakdown.svelte` - Collapsible income/expense breakdown by category
+    - `IncomeByCategory.svelte` - Collapsible income breakdown by category
+    - `ExpenseByCategory.svelte` - Collapsible expense breakdown by category
 - `src/lib/` - Shared utilities and libraries
   - `csv.ts` - CSV parsing with error handling
   - `analytics.ts` - Financial analytics calculations (totals, categories, daily expenses, date filtering)
@@ -115,9 +116,9 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
 - 📊 **Dashboard**: Financial overview with THB-only summary cards and charts
   - Income, Expenses, Net balance, and Saving Rate percentage
   - Top spending categories bar chart
-  - Daily expenses trend visualization
+  - Income vs Expenses trend visualization (Daily/Monthly)
   - **Date Filter**: Collapsible date range filter with quick presets (This Month, Last Month, Last 30 Days, This Year, Last Year, All Time)
-  - **Category Breakdown**: Collapsible panels for detailed income/expense categories with percentages
+  - **Income/Expense Split**: Separate collapsible panels for detailed category breakdowns
   - Clean empty state: "Dashboard" heading hidden until data is loaded
   - Loads default data on startup, reacts to CSV uploads
   - **Data Persistence**: Uploaded CSV data persists across page reloads via localStorage

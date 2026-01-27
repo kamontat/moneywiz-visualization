@@ -6,31 +6,46 @@ Defines the layout and component requirements for the Overview tab in the MoneyW
 
 ## Requirements
 
-### Requirement: Overview Tab Layout
+### Requirement: Overview Tab Grid Layout
 
-The Overview tab SHALL serve as the primary view for financial analysis, presenting key metrics and controls clearly.
+The Overview tab SHALL use a structured multi-row grid layout to organize financial insights hierarchically.
 
-#### Scenario: Header and Controls
-
-- **Given** a CSV file is successfully uploaded
-- **Then** the Dashboard header MUST display the transaction date range on the top left
-- **And** the "Dashboard" title MUST be centered at the top
-- **And** a navigation tab system MUST be provided below the header to switch between Overview and Preview views
-
-### Requirement: Collapsible Category Breakdown
-
-The application SHALL provide a detailed breakdown of income and expenses by category in collapsible panels.
-
-#### Scenario: Interactive Category Panels
+#### Scenario: Three-Row Dashboard Structure
 
 - **Given** the dashboard is rendered with data
-- **Then** two collapsible panels SHOULD be displayed: "Income by Category" and "Expense by Category"
-- **And** the panels MUST have rounded corners (`rounded-xl`)
-- **And** the entire header area of each panel MUST be clickable to toggle expansion
-- **And** the Income panel header SHOULD use a semantic green background
-- **And** the Expense panel header SHOULD use a semantic red background
-- **And** when expanded, each panel MUST list categories with their total amount and percentage of the group total
-- **And** expansion transitions SHOULD be smooth
+- **Then** the content MUST be organized into three distinct rows
+- **And** Row 1 MUST contain the Split Category Panels (Income on left, Expense on right)
+- **And** Row 2 MUST contain the Summary Pie Chart (left) and Income vs Expense Trend Chart (right)
+- **And** Row 3 MUST contain the Top Categories Chart (full width)
+- **And** on mobile devices, these components MUST stack vertically in the same logical order
+
+### Requirement: Split Category Panels
+
+The application SHALL provide distinct, side-by-side panels for detailed income and expense breakdowns.
+
+#### Scenario: Income and Expense separation
+
+- **Given** Row 1 of the dashboard is rendered
+- **Then** two separate components MUST be displayed: "Income by Category" and "Expense by Category"
+- **And** each panel MUST be collapsible
+- **And** the "Income by Category" panel MUST be on the left (or top on mobile)
+- **And** the "Expense by Category" panel MUST be on the right (or bottom on mobile)
+- **And** both panels SHOULD default to a collapsed state to save vertical space
+
+### Requirement: Income vs Expense Trend Chart
+
+The application SHALL visualize the relationship between income, expense, and net result over time.
+
+#### Scenario: Dual-Axis Trend Visualization
+
+- **Given** Row 2 of the dashboard is rendered
+- **Then** a mixed bar/line chart MUST be displayed
+- **And** it MUST show Income as green bars
+- **And** it MUST show Expense as red bars
+- **And** it MUST show Net Income as a blue line overlay
+- **And** the chart aggregation (Daily vs Monthly) MUST adapt automatically based on the selected date range duration (e.g., > 2 months switches to Monthly)
+
+### Requirement: Top Categories Analysis
 
 ## Constraints
 

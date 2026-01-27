@@ -40,7 +40,12 @@ describe('FilterPanel.svelte', () => {
             { Tags: 'Group: TestGroup; Type: Personal;' }
         ] as any[];
 
-        const screen = render(FilterPanel, { rows });
+        const screen = render(FilterPanel, { props: {
+            rows,
+            start: null,
+            end: null,
+            tagFilters: []
+        }});
         await screen.getByRole('button', { name: /filter/i }).click();
 
         // Use exact match or role
@@ -53,7 +58,12 @@ describe('FilterPanel.svelte', () => {
 
     it('toggles tag selection include/exclude', async () => {
         const rows = [{ Tags: 'Group: A;' }] as any[];
-        const screen = render(FilterPanel, { rows });
+        const screen = render(FilterPanel, { props: {
+            rows,
+            start: null,
+            end: null,
+            tagFilters: []
+        }});
         await screen.getByRole('button', { name: /filter/i }).click();
 
         // Default mode is include (Inc button active?)

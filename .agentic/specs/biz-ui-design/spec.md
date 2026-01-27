@@ -116,6 +116,17 @@ The application SHALL provide clear and concise information about the loaded dat
 - **And** the file name SHOULD be styled with a smaller, secondary prominence compared to the main status
 - **And** the "Upload successful" message SHOULD be clearly visible as a status indicator
 
+### Requirement: Responsive Grid System
+
+The application SHALL use a fluid grid system that adapts complex visualizations to different screen sizes.
+
+#### Scenario: Dashboard Stacking Order
+
+- **Given** the viewport is resized to mobile width (< 640px)
+- **Then** multi-column grid layouts MUST collapse into a single vertical column
+- **And** the stacking order MUST preserve logical flow: Category Splits -> Trend Charts -> Top Categories
+- **And** consistent vertical spacing (`gap-4` or similar) MUST be maintained between stacked components
+
 ### Requirement: Currency Symbol Representation
 
 The application SHALL represent financial values using currency symbols instead of ISO codes to maximize space and readability.

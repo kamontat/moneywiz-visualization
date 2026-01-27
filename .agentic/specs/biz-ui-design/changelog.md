@@ -2,6 +2,13 @@
 
 All notable changes to this specification.
 
+## reorganize-dashboard-layout
+
+### Added
+- Requirement for Responsive Grid System to handle complex dashboard layouts
+
+---
+
 ## add-preview-tab
 
 ### Changed

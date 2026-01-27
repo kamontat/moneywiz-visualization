@@ -64,7 +64,7 @@ function createCsvStore() {
   return {
     subscribe,
     set: customSet,
-    update: (updater) => {
+    update: (updater: (value: CsvState) => CsvState) => {
       update((value) => {
         const next = normalize(updater(value));
         saveToStorage(next);

@@ -2,6 +2,18 @@
 
 All notable changes to this specification.
 
+## reorganize-dashboard-layout
+
+### Changed
+- Replaced single collapsible category breakdown with split Income/Expense panels
+- Refined dashboard layout into a structured 3-row grid system
+
+### Added
+- Requirement for Income vs Expense Trend Chart (mixed bar/line)
+- Requirement for adaptive time-series aggregation (Daily/Monthly)
+
+---
+
 ## add-preview-tab
 
 ### Changed

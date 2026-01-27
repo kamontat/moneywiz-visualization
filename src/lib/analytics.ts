@@ -296,3 +296,131 @@ export function filterByTags(
 		return true;
 	});
 }
+
+export interface IncomeExpenseTimeSeries {
+	labels: string[];
+	income: number[];
+	expenses: number[];
+	net: number[];
+	mode: 'daily' | 'monthly';
+}
+
+/**
+ * Calculate income, expense, and net over time.
+ * Automatically switches between daily and monthly aggregation based on duration.
+ */
+export function calculateIncomeExpenseTimeSeries(
+	thbRows: Record<string, string>[],
+	start: Date | null,
+	end: Date | null
+): IncomeExpenseTimeSeries {
+	if (!start || !end) {
+		const range = getDateRange(thbRows);
+		if (!range) {
+			return { labels: [], income: [], expenses: [], net: [], mode: 'daily' };
+		}
+		start = start || range.start;
+		end = end || range.end;
+	}
+
+	// Calculate duration in days
+	const diffTime = Math.abs(end.getTime() - start.getTime());
+	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	// Threshold: > 62 days (approx 2 months) -> Monthly
+	const mode: 'daily' | 'monthly' = diffDays > 62 ? 'monthly' : 'daily';
+
+	const labels: string[] = [];
+	const incomeData: number[] = [];
+	const expensesData: number[] = [];
+	const netData: number[] = [];
+
+	// Pre-aggregate data
+	// Map key -> { income, expense }
+	const agg = new Map<string, { i: number; e: number }>();
+
+	for (const row of thbRows) {
+		const d = parseDateDDMMYYYY(row['Date'] || '');
+		if (!d) continue;
+		if (d < start || d > end) continue;
+
+		let key = '';
+		if (mode === 'daily') {
+			// Key: YYYY-MM-DD (ISOish but local)
+			// Actually let's use the display format or something comparable
+			// To ensure correct buckets, use d.getTime() for sorting?
+			// No, let's use a standard string key.
+			const y = d.getFullYear();
+			const m = String(d.getMonth() + 1).padStart(2, '0');
+			const day = String(d.getDate()).padStart(2, '0');
+			key = `${y}-${m}-${day}`;
+		} else {
+			// Key: YYYY-MM
+			const y = d.getFullYear();
+			const m = String(d.getMonth() + 1).padStart(2, '0');
+			key = `${y}-${m}`;
+		}
+
+		const amt = parseAmountTHB(row['Amount'] || '0');
+		const current = agg.get(key) || { i: 0, e: 0 };
+
+		if (amt >= 0) current.i += amt;
+		else current.e += Math.abs(amt); // Store expense as positive magnitude for now?
+		// Actually let's follow the standard: Expenses usually shown as positive bars in charts or negative?
+		// Proposal says: "Income (bar), expense (bar), and delta (line)"
+		// Usually Expense bars are positive height but colored differently.
+		// Let's store magnitude.
+
+		agg.set(key, current);
+	}
+
+	// Generate continuous timeline
+	const current = new Date(start);
+	// Reset to start of period just in case
+	if (mode === 'monthly') {
+		current.setDate(1); // Start of month
+	}
+
+	while (current <= end) {
+		let key = '';
+		let label = '';
+
+		if (mode === 'daily') {
+			const y = current.getFullYear();
+			const m = String(current.getMonth() + 1).padStart(2, '0');
+			const d = String(current.getDate()).padStart(2, '0');
+			key = `${y}-${m}-${d}`;
+			label = `${d}/${m}`; // DD/MM
+		} else {
+			const y = current.getFullYear();
+			const m = String(current.getMonth() + 1).padStart(2, '0');
+			key = `${y}-${m}`;
+			label = current.toLocaleString('default', { month: 'short', year: '2-digit' }); // Jan 23
+		}
+
+		const data = agg.get(key) || { i: 0, e: 0 };
+		labels.push(label);
+		incomeData.push(data.i);
+		expensesData.push(data.e);
+
+		// Net = Income - Expense (since expense is magnitude)
+		// Or Net = Income + (actual expense).
+		// Since I stored expense as magnitude (Math.abs), Net = i - e.
+		netData.push(data.i - data.e);
+
+		// Advance time
+		if (mode === 'daily') {
+			current.setDate(current.getDate() + 1);
+		} else {
+			current.setMonth(current.getMonth() + 1);
+			current.setDate(1); // Keep at start of month to avoid overflow issues (Jan 31 -> Feb 28/Mar 3)
+		}
+	}
+
+	return {
+		labels,
+		income: incomeData,
+		expenses: expensesData,
+		net: netData,
+		mode
+	};
+}

@@ -1,3 +1,4 @@
+import { createRawSnippet } from 'svelte';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import Layout from './+layout.svelte';
@@ -10,7 +11,7 @@ describe('Layout.svelte', () => {
     });
 
     it('renders header and blank canvas initially', async () => {
-        const { container } = render(Layout, { props: { children: () => {} } });
+        const { container } = render(Layout, { props: { children: createRawSnippet(() => { return { render: () => '' }}) } });
 
         // header
         expect(container).toHaveTextContent('MoneyWiz Report');

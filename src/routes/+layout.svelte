@@ -19,14 +19,14 @@
 		errorMessage = null;
 
 		// Publish to global store for the dashboard
-		csvStore.set({ fileName: detail.file.name, data: detail.data });
+		csvStore.set({ fileName: detail.file.name, data: detail.data, tagFilters: [] });
 	}
 
 	function handleError(detail: { file: File | null; message: string }) {
 		errorMessage = detail.message;
 
 		// Clear store on error
-		csvStore.set({ fileName: null, data: null });
+		csvStore.set({ fileName: null, data: null, tagFilters: [] });
 	}
 
 	function handleClear() {

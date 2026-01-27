@@ -6,8 +6,8 @@
 		getTHBRows,
 		calculateTotals,
 		calculateTopCategories,
-		calculateDailyExpenses,
 		calculateCategoryBreakdown,
+		calculateIncomeExpenseTimeSeries,
 		getDateRange,
 		filterByDateRange,
 		filterByTags,
@@ -16,9 +16,10 @@
 	import FilterPanel from '$components/organisms/FilterPanel.svelte';
 	import SummaryCards from '$components/organisms/SummaryCards.svelte';
 	import TopCategoriesChart from '$components/organisms/TopCategoriesChart.svelte';
-	import DailyExpensesChart from '$components/organisms/DailyExpensesChart.svelte';
 	import IncomeExpenseRatioChart from '$components/organisms/IncomeExpenseRatioChart.svelte';
-	import CategoryBreakdown from '$components/organisms/CategoryBreakdown.svelte';
+	import IncomeByCategory from '$components/organisms/IncomeByCategory.svelte';
+	import ExpenseByCategory from '$components/organisms/ExpenseByCategory.svelte';
+	import IncomeExpenseBarChart from '$components/organisms/IncomeExpenseBarChart.svelte';
 	import DataPreviewPanel from '$components/organisms/DataPreviewPanel.svelte';
 	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte';
 
@@ -69,7 +70,7 @@
 
 	const totals = $derived(calculateTotals(filteredRows));
 	const topCategories = $derived(calculateTopCategories(filteredRows));
-	const dailyExpenses = $derived(calculateDailyExpenses(filteredRows));
+	const tsData = $derived(calculateIncomeExpenseTimeSeries(filteredRows, filterStart, filterEnd));
 	const breakdown = $derived(calculateCategoryBreakdown(filteredRows));
 	const dateRange = $derived(getDateRange(filteredRows));
 </script>
@@ -139,14 +140,27 @@
 		<!-- Tab Content -->
 		{#if activeTab === 'overview'}
 			<div class="flex flex-col gap-4 animate-in fade-in duration-300 slide-in-from-bottom-2 pt-4">
+				<!-- Row 1: Split Category Breakdown -->
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<section aria-labelledby="ratio-title" class="bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+					<IncomeByCategory items={breakdown.income} total={totals.income} />
+					<ExpenseByCategory items={breakdown.expenses} total={totals.expenses} />
+				</div>
+
+				<!-- Row 2: Pies & Bar Chart -->
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+					<section aria-labelledby="ratio-title" class="lg:col-span-1 bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
 						<h2 id="ratio-title" class="m-0 mb-4 text-lg font-semibold text-mw-text-main">Income vs Expenses</h2>
 						<IncomeExpenseRatioChart income={totals.income} expenses={totals.expenses} />
 					</section>
+					<section aria-labelledby="trend-title" class="lg:col-span-2 bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+						<h2 id="trend-title" class="m-0 mb-4 text-lg font-semibold text-mw-text-main">Income & Expense Trend ({tsData.mode})</h2>
+						<IncomeExpenseBarChart data={tsData} />
+					</section>
+				</div>
+
+				<!-- Row 3: Top Categories -->
+				<div class="grid grid-cols-1 gap-4">
 					<TopCategoriesChart data={topCategories} />
-					<DailyExpensesChart data={dailyExpenses} />
-					<CategoryBreakdown {breakdown} {totals} />
 				</div>
 			</div>
 		{:else if activeTab === 'preview'}
