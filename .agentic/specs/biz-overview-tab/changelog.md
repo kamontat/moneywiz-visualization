@@ -1,0 +1,14 @@
+# Changelog: biz-overview-tab
+
+All notable changes to this specification.
+
+## 2026-01-27 - Initial Migration
+
+### Added
+
+- Migrated from openspec/specs/overview-tab-design
+- Overview tab layout requirements
+- Collapsible category breakdown requirements
+- Interactive category panel specifications
+
+---
