@@ -27,7 +27,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 
       // Charts should be visible
       await expect(page.getByRole('heading', { name: 'Top Categories' })).toBeVisible();
-      await expect(page.getByRole('heading', { name: /Daily Expenses/i })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /Income & Expense Trend/i })).toBeVisible();
     });
   });
 

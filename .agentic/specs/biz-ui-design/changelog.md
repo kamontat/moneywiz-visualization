@@ -2,6 +2,14 @@
 
 All notable changes to this specification.
 
+## refactor-component-hierarchy
+
+### Changed
+- Updated Component Organization requirement with specific component examples
+- Added strict Atomic Design hierarchy enforcement referencing tech-component-architecture spec
+
+---
+
 ## reorganize-dashboard-layout
 
 ### Added

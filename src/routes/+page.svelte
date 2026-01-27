@@ -13,22 +13,14 @@
 		filterByTags,
 		type TagFilter
 	} from '$lib/analytics';
-	import FilterPanel from '$components/organisms/FilterPanel.svelte';
-	import SummaryCards from '$components/organisms/SummaryCards.svelte';
-	import TopCategoriesChart from '$components/organisms/TopCategoriesChart.svelte';
-	import IncomeExpenseRatioChart from '$components/organisms/IncomeExpenseRatioChart.svelte';
-	import IncomeByCategory from '$components/organisms/IncomeByCategory.svelte';
-	import ExpenseByCategory from '$components/organisms/ExpenseByCategory.svelte';
-	import IncomeExpenseBarChart from '$components/organisms/IncomeExpenseBarChart.svelte';
-	import DataPreviewPanel from '$components/organisms/DataPreviewPanel.svelte';
-	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte';
+
+    import Dashboard from '$components/organisms/Dashboard.svelte';
 
 	let csv = $state<CsvState>({
 		data: null,
 		fileName: null,
 		tagFilters: []
 	});
-	let activeTab = $state('overview');
 
 	// Filter State
 	let filterStart: Date | null = $state(null);
@@ -80,101 +72,36 @@
 	<meta name="description" content="Visualize MoneyWiz CSV data: summaries and charts." />
 </svelte:head>
 
-<section aria-labelledby="dash-title" class="flex flex-col gap-4">
-	{#if csv.data}
-		<!-- Dashboard Header -->
-		<header class="flex flex-col gap-1 py-1">
-			<h1 id="dash-title" class="m-0 text-3xl font-bold text-mw-text-main tracking-tight">{csv.fileName || 'Dashboard'}</h1>
+<!-- We use the Dashboard Organism to handle layout when data is present -->
+<!-- Note: Error states are handled in layout or via toasts, here we handle empty vs loaded -->
+{#if csv.data}
+    <Dashboard
+        csvFileName={csv.fileName}
+        dateRange={dateRange}
+        rowCount={csv.data.rows?.length ?? 0}
+        filteredCount={filteredRows.length}
+        thbCount={thbRows.length}
 
-			<!-- Meta Info -->
-			<div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-mw-text-muted mt-1 animate-in fade-in duration-300">
-				{#if dateRange}
-					<DateRangeDisplay start={dateRange.start} end={dateRange.end} class="" />
-					<span class="opacity-40">|</span>
-				{/if}
+        bind:filterStart
+        bind:filterEnd
+        bind:tagFilters
 
-				<span>{(csv.data?.rows?.length ?? 0)} rows total</span>
+        thbRows={thbRows}
+        totals={totals}
+        breakdown={breakdown}
+        tsData={tsData}
+        topCategories={topCategories}
+        previewData={{ headers: csv.data.headers, rows: filteredRows }}
+    />
+{:else}
+    <div class="flex flex-col items-center justify-center p-12 text-center bg-mw-surface border border-mw-border border-dashed rounded-xl">
+        <h1 class="text-2xl font-bold text-mw-text-main mb-2">Welcome to MoneyWiz Report</h1>
+        <p class="text-mw-text-muted max-w-md">Upload a CSV export from MoneyWiz to visualize your financial data instantly. Your data stays on your device.</p>
+    </div>
+{/if}
 
-				{#if filteredRows.length !== thbRows.length}
-					<span class="opacity-40">|</span>
-					<span class="text-mw-primary font-medium">{filteredRows.length} shown</span>
-				{/if}
-			</div>
-		</header>
-
-		<!-- Filter Panel -->
-		<section aria-label="Filters" class="z-20">
-			<FilterPanel
-				bind:start={filterStart}
-				bind:end={filterEnd}
-				bind:tagFilters={tagFilters}
-				rows={thbRows}
-			/>
-		</section>
-
-		<!-- Quick Summary Section -->
-		<section aria-label="Quick Summary" class="flex flex-col gap-2">
-			<SummaryCards {totals} />
-		</section>
-
-		<!-- Tabs -->
-		<nav class="flex border-b border-mw-border mt-4" aria-label="Dashboard views">
-			<button
-				type="button"
-				class="px-4 py-2 text-sm font-medium border-b-2 transition-colors {activeTab === 'overview' ? 'border-mw-primary text-mw-primary' : 'border-transparent text-mw-text-muted hover:text-mw-text-secondary hover:border-gray-300'}"
-				onclick={() => activeTab = 'overview'}
-				aria-current={activeTab === 'overview' ? 'page' : undefined}
-			>
-				Overview
-			</button>
-			<button
-				type="button"
-				class="px-4 py-2 text-sm font-medium border-b-2 transition-colors {activeTab === 'preview' ? 'border-mw-primary text-mw-primary' : 'border-transparent text-mw-text-muted hover:text-mw-text-secondary hover:border-gray-300'}"
-				onclick={() => activeTab = 'preview'}
-				aria-current={activeTab === 'preview' ? 'page' : undefined}
-			>
-				Preview
-			</button>
-		</nav>
-
-		<!-- Tab Content -->
-		{#if activeTab === 'overview'}
-			<div class="flex flex-col gap-4 animate-in fade-in duration-300 slide-in-from-bottom-2 pt-4">
-				<!-- Row 1: Split Category Breakdown -->
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<IncomeByCategory items={breakdown.income} total={totals.income} />
-					<ExpenseByCategory items={breakdown.expenses} total={totals.expenses} />
-				</div>
-
-				<!-- Row 2: Pies & Bar Chart -->
-				<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-					<section aria-labelledby="ratio-title" class="lg:col-span-1 bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
-						<h2 id="ratio-title" class="m-0 mb-4 text-lg font-semibold text-mw-text-main">Income vs Expenses</h2>
-						<IncomeExpenseRatioChart income={totals.income} expenses={totals.expenses} />
-					</section>
-					<section aria-labelledby="trend-title" class="lg:col-span-2 bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
-						<h2 id="trend-title" class="m-0 mb-4 text-lg font-semibold text-mw-text-main">Income & Expense Trend ({tsData.mode})</h2>
-						<IncomeExpenseBarChart data={tsData} />
-					</section>
-				</div>
-
-				<!-- Row 3: Top Categories -->
-				<div class="grid grid-cols-1 gap-4">
-					<TopCategoriesChart data={topCategories} />
-				</div>
-			</div>
-		{:else if activeTab === 'preview'}
-			<div class="flex flex-col gap-4 animate-in fade-in duration-300 slide-in-from-bottom-2 pt-4">
-				<DataPreviewPanel data={{ headers: csv.data.headers, rows: filteredRows }} />
-			</div>
-		{/if}
-	{:else}
-		<div class="flex flex-col items-center justify-center p-12 text-center bg-mw-surface border border-mw-border border-dashed rounded-xl">
-			<h1 class="text-2xl font-bold text-mw-text-main mb-2">Welcome to MoneyWiz Report</h1>
-			<p class="text-mw-text-muted max-w-md">Upload a CSV export from MoneyWiz to visualize your financial data instantly. Your data stays on your device.</p>
-		</div>
-	{/if}
-</section>
+<!-- Keep a small blank canvas to satisfy existing tests and layout spacing -->
+<section class="blank-canvas flex-none min-h-6" aria-hidden="true"></section>
 
 <!-- Keep a small blank canvas to satisfy existing tests and layout spacing -->
 <section class="blank-canvas flex-none min-h-6" aria-hidden="true"></section>

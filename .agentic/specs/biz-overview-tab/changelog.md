@@ -2,6 +2,17 @@
 
 All notable changes to this specification.
 
+## refactor-component-hierarchy
+
+### Added
+- Requirement for Quick Summary Cards using QuickSummary component
+- Requirement for Top Categories Analysis with visual bar representation
+
+### Changed
+- Updated component references to use new names (QuickSummary instead of SummaryCards)
+
+---
+
 ## reorganize-dashboard-layout
 
 ### Changed

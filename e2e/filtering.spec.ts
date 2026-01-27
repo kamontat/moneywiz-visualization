@@ -61,8 +61,8 @@ test.describe('Dashboard - Filtering', () => {
 
         // Set range to a specific day logic if possible, or just set start date.
         // Let's filter to 2025 where there is known data
-        await page.getByLabel('Start').fill('2025-12-01');
-        await page.getByLabel('End').fill('2025-12-31');
+        await page.locator('#start-date').fill('2025-12-01');
+        await page.locator('#end-date').fill('2025-12-31');
 
         // Should show data for Dec 2025
         await expect(page.getByText('shown')).toBeVisible();

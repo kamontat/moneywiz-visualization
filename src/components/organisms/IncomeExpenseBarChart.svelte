@@ -1,6 +1,29 @@
 <script lang="ts">
-	import Chart from 'chart.js/auto';
+	import {
+		Chart,
+		BarController,
+		BarElement,
+		CategoryScale,
+		LinearScale,
+		Tooltip,
+		Legend,
+		LineController,
+		LineElement,
+		PointElement
+	} from 'chart.js';
 	import type { IncomeExpenseTimeSeries } from '$lib/analytics';
+
+	Chart.register(
+		BarController,
+		BarElement,
+		CategoryScale,
+		LinearScale,
+		Tooltip,
+		Legend,
+		LineController,
+		LineElement,
+		PointElement
+	);
 
 	interface Props {
 		data: IncomeExpenseTimeSeries;

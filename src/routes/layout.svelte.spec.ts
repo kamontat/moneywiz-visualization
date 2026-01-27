@@ -1,7 +1,6 @@
-import { createRawSnippet } from 'svelte';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from 'vitest-browser-svelte';
-import Layout from './+layout.svelte';
+import { render, cleanup } from '@testing-library/svelte';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import LayoutTestWrapper from './LayoutTestWrapper.svelte';
 import { csvStore } from '$lib/stores/csv';
 
 describe('Layout.svelte', () => {
@@ -10,15 +9,20 @@ describe('Layout.svelte', () => {
         vi.clearAllMocks();
     });
 
-    it('renders header and blank canvas initially', async () => {
-        const { container } = render(Layout, { props: { children: createRawSnippet(() => { return { render: () => '' }}) } });
+    afterEach(() => cleanup());
+
+    it('renders header and children content', async () => {
+        const { getByText } = render(LayoutTestWrapper);
 
         // header
-        expect(container).toHaveTextContent('MoneyWiz Report');
-        // blank canvas (no error, no data)
-        expect(container.querySelector('.blank-canvas')).toBeInTheDocument();
-        // preview section should not be visible
-        expect(container).not.toHaveTextContent('Upload successful');
-        expect(container).not.toHaveTextContent('Show Preview');
+        expect(getByText('MoneyWiz Report')).toBeInTheDocument();
+
+        // child content injected by wrapper
+        expect(getByText('Test Content')).toBeInTheDocument();
+
+        // Ensure AppHeader components are present (like Upload button)
+        // Upload button default text might be "Upload CSV" or similar.
+        // Let's verify presence of Upload button
+        expect(getByText('Upload CSV', { exact: false })).toBeInTheDocument();
     });
 });

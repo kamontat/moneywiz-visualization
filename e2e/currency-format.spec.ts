@@ -7,25 +7,25 @@ test.describe('Dashboard - Currency Formatting', () => {
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
     // Wait for dashboard to load by checking for Saving Rate label which is unique
-    await expect(page.getByText('Saving Rate')).toBeVisible();
+    await expect(page.getByText('Saving Rate', { exact: true })).toBeVisible();
   });
 
   test('displays financial amounts with currency symbols', async ({ page }) => {
     // Check Summary Cards
     // The structure is: div[role="listitem"] > p (label) + p (value)
-    
+
     const summaryList = page.getByRole('list').first();
-    
+
     // Check Income Value
     // We select the list item that has text "Income"
     const incomeCard = summaryList.locator('div[role="listitem"]').filter({ hasText: 'Income' });
     const incomeValue = incomeCard.locator('p.text-lg');
-    
+
     await expect(incomeValue).toBeVisible();
     const incomeText = await incomeValue.textContent();
     // Verify it starts with ฿ and contains numbers
     expect(incomeText).toMatch(/^฿[\d,]+\.\d{2}$/);
-    
+
     // Check Expenses Value
     const expensesCard = summaryList.locator('div[role="listitem"]').filter({ hasText: 'Expenses' });
     const expensesValue = expensesCard.locator('p.text-lg');
@@ -40,7 +40,7 @@ test.describe('Dashboard - Currency Formatting', () => {
     const netText = await netValue.textContent();
     // Net could be negative or positive, but handled by formatTHB
     // If negative, it might be "-฿..." or "฿-..." depending on locale implementation in Node vs Browser?
-    // In Thai locale, it's usually -฿100.00 or ฿-100.00. 
+    // In Thai locale, it's usually -฿100.00 or ฿-100.00.
     // Let's simply check it contains ฿
     expect(netText).toContain('฿');
   });
@@ -57,7 +57,7 @@ test.describe('Dashboard - Currency Formatting', () => {
      await incomeButton.click();
      const incomeList = page.locator('#income-breakdown');
      await expect(incomeList).toBeVisible();
-     
+
      // Check list items
      const firstItemAmount = incomeList.locator('li').first().locator('span.font-medium');
      await expect(firstItemAmount).toBeVisible();

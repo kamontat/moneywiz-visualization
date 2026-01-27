@@ -26,10 +26,11 @@ The application SHALL follow the Atomic Design methodology for organizing UI com
 #### Scenario: Categorize components into atoms, molecules, and organisms
 
 - **Given** the `src/components/` directory
-- **Then** foundational blocks like logos and basic elements should be in `atoms/`
-- **And** simple combinations like specialized buttons should be in `molecules/`
-- **And** complex sections like headers and charts should be in `organisms/`
-- **And** all components must include their test files in the same subdirectory
+- **Then** foundational blocks (Button, Title, Text, Container) MUST be in `atoms/`
+- **And** composition components (UploadCsv, ClearCsv, Header, NavigationBar, DashboardPanel) MUST be in `molecules/`
+- **And** complex sections (Dashboard, PageTitle, QuickSummary, OverviewTab, PreviewTab, FilterPanel, CategoryBreakdown) MUST be in `organisms/`
+- **And** all components MUST include their test files co-located in the same subdirectory
+- **And** component hierarchy MUST follow strict Atomic Design principles as defined in tech-component-architecture spec
 
 ### Requirement: Modern Header Aesthetics
 

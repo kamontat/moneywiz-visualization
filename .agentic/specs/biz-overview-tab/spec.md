@@ -47,6 +47,26 @@ The application SHALL visualize the relationship between income, expense, and ne
 
 ### Requirement: Top Categories Analysis
 
+The application SHALL provide visual insights into spending and income patterns by category.
+
+#### Scenario: Display top categories by total amount
+
+- **Given** Row 3 of the dashboard is rendered
+- **Then** a TopCategoriesChart component MUST be displayed full-width
+- **And** it MUST show the top 5 categories by absolute total amount
+- **And** each category MUST display its name, total amount, and visual bar representation
+
+### Requirement: Quick Summary Cards
+
+The application SHALL display key financial metrics in a prominentgrid layout.
+
+#### Scenario: Display summary metrics
+
+- **Given** data is loaded into the dashboard
+- **Then** a QuickSummary component MUST display above the tab navigation
+- **And** it MUST show Income, Expenses, Net/Cash Flow, and Saving Rate
+- **And** metrics MUST be displayed in a responsive grid (2 columns on mobile, 4 on desktop)
+
 ## Constraints
 
 - Overview tab must be the default view when data is loaded

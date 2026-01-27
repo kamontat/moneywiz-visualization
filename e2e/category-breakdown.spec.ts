@@ -5,7 +5,8 @@ test.describe('Dashboard - Category Breakdown', () => {
         await page.goto('/');
         const fileInput = page.locator('input[type="file"]').first();
         await fileInput.setInputFiles('static/data/report.csv');
-        await expect(page.getByText('Saving Rate')).toBeVisible();
+        // Wait for dashboard to load by checking for the filename heading
+        await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
     });
 
     test('collapsible panels are visible and interactive', async ({ page }) => {

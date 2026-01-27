@@ -7,6 +7,10 @@ import { sveltekit } from '@sveltejs/kit/vite';
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 
+	optimizeDeps: {
+		include: ['chart.js']
+	},
+
 	test: {
 		exclude: ['e2e/**', 'node_modules/**'],
 		expect: { requireAssertions: true },

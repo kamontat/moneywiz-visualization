@@ -6,8 +6,8 @@ test.describe('Dashboard - Basic summaries', () => {
     // Upload CSV since it no longer auto-loads
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
-    // Wait for the "Saving Rate" card which is unique to summary cards
-    await expect(page.getByText('Saving Rate')).toBeVisible();
+    // Wait for the filename heading to appear, indicating upload is complete
+    await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
   });
 
   test('renders heading and summary cards', async ({ page }) => {
@@ -24,7 +24,7 @@ test.describe('Dashboard - Basic summaries', () => {
 
   test('renders charts', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Top Categories' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Daily Expenses/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Income & Expense Trend/i })).toBeVisible();
   });
 });
 
