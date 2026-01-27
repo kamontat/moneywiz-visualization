@@ -1,0 +1,50 @@
+# Changelog: {{name}}
+
+All notable changes to this specification.
+
+{{#each versions}}
+## {{version}}
+
+{{#if added}}
+### Added
+
+{{#each added}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{#if changed}}
+### Changed
+
+{{#each changed}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{#if deprecated}}
+### Deprecated
+
+{{#each deprecated}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{#if removed}}
+### Removed
+
+{{#each removed}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+{{#if fixed}}
+### Fixed
+
+{{#each fixed}}
+- {{this}}
+{{/each}}
+{{/if}}
+
+---
+
+{{/each}}
