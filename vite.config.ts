@@ -28,27 +28,14 @@ export default defineConfig({
 				extends: true,
 				test: {
 					name: 'client',
+					setupFiles: ['vitest-browser-svelte'],
 					browser: {
 						enabled: true,
 						provider: playwright(),
-						instances: [{ browser: 'chromium', headless: true }]
+						instances: [{ browser: 'chromium', headless: true }],
 					},
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
 					exclude: ['src/lib/server/**']
-				}
-			}, {
-				extends: true,
-				test: {
-					name: 'e2e',
-					testTimeout: 30000,
-					hookTimeout: 60000,
-					browser: {
-						enabled: true,
-						provider: playwright(),
-						instances: [{ browser: 'chromium', headless: true }]
-					},
-					include: ['e2e/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**']
 				}
 			}
 		]

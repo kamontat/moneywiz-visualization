@@ -10,9 +10,9 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test:unit": "vitest run --project=server --project=client",
-		"test:e2e": "vitest run --project=e2e",
-		"test": "vitest run"
+		"test:unit": "vitest run",
+		"test:e2e": "playwright test",
+		"test": "bun run test:unit && bun run test:e2e"
 	},
 	"dependencies": {
 		"chart.js": "4.5.1",
@@ -31,6 +31,7 @@
 		"@tailwindcss/vite": "4.1.18",
 		"@types/debug": "4.1.12",
 		"@vitest/browser-playwright": "4.0.18",
+		"@vitest/ui": "4.0.18",
 		"playwright": "1.58.0",
 		"svelte": "5.48.3",
 		"svelte-check": "4.3.5",
