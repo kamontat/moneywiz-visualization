@@ -7,6 +7,7 @@ Iterate on plan documents until they meet expectations.
 The user will provide: `<text>` describing what needs to change in the plan.
 
 Examples:
+
 - Scope changes: "Remove the email notification feature from scope"
 - Clarifications: "Be more specific about the API endpoints needed"
 - Task adjustments: "Break down step 2 into smaller tasks"
@@ -58,6 +59,7 @@ Before proceeding, verify the following:
 ### Revising proposal.md
 
 Common changes:
+
 - Adjust objective statement
 - Add/remove/modify acceptance criteria
 - Update scope boundaries (out_of_scope)
@@ -66,6 +68,7 @@ Common changes:
 ### Revising tasks.md
 
 Common changes:
+
 - Add/remove implementation steps
 - Break large steps into smaller ones
 - Reorder steps based on dependencies
@@ -75,6 +78,7 @@ Common changes:
 ### Revising tests.md
 
 Common changes:
+
 - Add/remove test cases
 - Add edge cases
 - Clarify test expectations
@@ -84,6 +88,7 @@ Common changes:
 ### Revising specs.md
 
 Common changes:
+
 - Add/remove affected specs
 - Change modification type (update/extend/revise)
 - Add new specs to create

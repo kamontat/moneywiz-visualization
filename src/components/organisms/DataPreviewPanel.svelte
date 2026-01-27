@@ -16,36 +16,36 @@
 </script>
 
 {#if hasStructure}
-	<div
-		class="bg-mw-surface border border-mw-border rounded-xl overflow-hidden shadow-sm"
-	>
+	<div class="overflow-hidden rounded-xl border border-mw-border bg-mw-surface shadow-sm">
 		<div class="flex flex-col gap-2 p-4">
 			{#if (data?.rows?.length ?? 0) > 0}
-				<div class="flex justify-end items-center mb-1 gap-2">
+				<div class="mb-1 flex items-center justify-end gap-2">
 					<label for="row-limit-select" class="text-xs text-mw-text-muted">Show rows:</label>
 					<div class="relative">
 						<select
 							id="row-limit-select"
 							bind:value={maxPreviewRows}
-							class="text-xs border border-mw-border rounded bg-white text-mw-text-main pl-2 pr-6 py-1 appearance-none bg-none focus:ring-1 focus:ring-mw-primary focus:border-mw-primary outline-none cursor-pointer"
+							class="cursor-pointer appearance-none rounded border border-mw-border bg-white bg-none py-1 pr-6 pl-2 text-xs text-mw-text-main outline-none focus:border-mw-primary focus:ring-1 focus:ring-mw-primary"
 						>
 							{#each limitOptions as option}
 								<option value={option}>{option}</option>
 							{/each}
 						</select>
-						<div class="absolute inset-y-0 right-0 flex items-center px-1 pointer-events-none text-mw-text-muted">
-							<ChevronDownIcon class="w-3 h-3" />
+						<div
+							class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-mw-text-muted"
+						>
+							<ChevronDownIcon class="h-3 w-3" />
 						</div>
 					</div>
 				</div>
-				<div class="overflow-x-auto border border-mw-border rounded-lg">
+				<div class="overflow-x-auto rounded-lg border border-mw-border">
 					<table class="border-collapse" style="table-layout: auto; min-width: 100%;">
 						<thead class="bg-gray-50">
 							<tr class="border-b border-mw-border">
-								{#each (data?.headers ?? []) as header}
+								{#each data?.headers ?? [] as header}
 									<th
 										scope="col"
-										class="px-3 py-2 text-left text-sm font-bold text-mw-text-main whitespace-nowrap"
+										class="px-3 py-2 text-left text-sm font-bold whitespace-nowrap text-mw-text-main"
 										>{header}</th
 									>
 								{/each}
@@ -54,9 +54,9 @@
 						<tbody>
 							{#each (data?.rows ?? []).slice(0, maxPreviewRows) as row}
 								<tr class="border-b border-mw-border last:border-0">
-									{#each (data?.headers ?? []) as header}
+									{#each data?.headers ?? [] as header}
 										<td
-											class="px-3 py-2 text-left text-sm text-mw-text-secondary overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]"
+											class="max-w-[200px] overflow-hidden px-3 py-2 text-left text-sm text-ellipsis whitespace-nowrap text-mw-text-secondary"
 											>{row[header]}</td
 										>
 									{/each}
@@ -66,13 +66,13 @@
 					</table>
 				</div>
 				{#if (data?.rows?.length ?? 0) > maxPreviewRows}
-					<div class="text-xs text-mw-text-muted text-center pt-1">
+					<div class="pt-1 text-center text-xs text-mw-text-muted">
 						Showing first {maxPreviewRows} rows of {data?.rows.length}
 					</div>
 				{/if}
 			{:else}
 				<p
-					class="m-0 p-4 border border-dashed border-amber-500 rounded-lg bg-amber-50 text-amber-800 text-sm"
+					class="m-0 rounded-lg border border-dashed border-amber-500 bg-amber-50 p-4 text-sm text-amber-800"
 				>
 					No data rows found in this file.
 				</p>

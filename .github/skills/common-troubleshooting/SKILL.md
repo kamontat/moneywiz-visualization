@@ -18,18 +18,18 @@ This skill provides a structured approach to identifying and resolving common is
 
 ### 1. Development Environment
 
-| Issue | Symptom | Solution |
-| :--- | :--- | :--- |
+| Issue             | Symptom                               | Solution                                                                                                       |
+| :---------------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------- |
 | **Port Conflict** | `EADDRINUSE` or `Port 5173 is in use` | Check `http://localhost:5173/` first. If running, reuse it. Do not start a new `bun run dev` instance blindly. |
-| **Bun Version** | Script errors | Ensure you are using `bun` (not npm/node) for all scripts. |
+| **Bun Version**   | Script errors                         | Ensure you are using `bun` (not npm/node) for all scripts.                                                     |
 
 ### 2. CSV Parsing & Data
 
-| Issue | Symptom | Solution |
-| :--- | :--- | :--- |
+| Issue             | Symptom                     | Solution                                                                                                                                                                    |
+| :---------------- | :-------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Header Errors** | Parsing fails on first line | MoneyWiz exports usually start with `sep=,` or similar. The custom parser in `src/lib/csv.ts` handles this. Ensure files are raw exports and support double-quote escaping. |
-| **Empty File** | `File is empty` error | Check if the file has 0 bytes or only contains whitespace. |
-| **Delimiter** | Parsing incorrectly | The parser auto-detects delimiter from the `sep=` line. If missing, it defaults to comma (`,`). |
+| **Empty File**    | `File is empty` error       | Check if the file has 0 bytes or only contains whitespace.                                                                                                                  |
+| **Delimiter**     | Parsing incorrectly         | The parser auto-detects delimiter from the `sep=` line. If missing, it defaults to comma (`,`).                                                                             |
 
 ## Debugging Workflow
 
@@ -48,6 +48,7 @@ The project uses the `debug` library for namespaced logging.
     ```
 
 **Available Namespaces:**
+
 - `moneywiz:csv` - CSV parsing logic
 - `moneywiz:store:*` - All store updates
 - `moneywiz:component:*` - Component lifecycle

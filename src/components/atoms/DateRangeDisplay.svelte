@@ -17,5 +17,6 @@
 </script>
 
 <span class="font-medium whitespace-nowrap {className}">
-	{formatDate(start)} <span class="opacity-50 mx-1">—</span> {formatDate(end)}
+	{formatDate(start)} <span class="mx-1 opacity-50">—</span>
+	{formatDate(end)}
 </span>

@@ -69,11 +69,14 @@ Mark tasks as complete in `tasks.md`:
 
 ```markdown
 ## Prerequisites
+
 - [x] Database connection is configured
 - [ ] Environment variables set
 
 ## Implementation Steps
+
 ### Step 0: Create User Model
+
 - [x] Completed
 ```
 

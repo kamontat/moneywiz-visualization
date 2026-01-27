@@ -79,9 +79,11 @@ For each spec in `modified_specs`:
 ## <plan-name>
 
 ### Changed
+
 - Description of what changed
 
 ### Added
+
 - Description of what was added
 ```
 
@@ -99,6 +101,7 @@ For each spec in `new_specs`:
 4. Fill in content based on plan
 
 **Spec Naming Examples:**
+
 - Database schema spec → `tech-database-schema`
 - User authentication flow → `biz-user-auth`
 - API endpoints → `tech-api-routes`
@@ -109,10 +112,12 @@ For each spec in `new_specs`:
 ### spec.md.hbs
 
 Required:
+
 - `name` (string) - Spec name
 - `purpose` (string) - One-sentence purpose
 
 Optional:
+
 - `constraints` (string[]) - Constraints or limitations
 - `examples` (object[]) - Examples with `language` and `code`
 - `notes` (string) - Additional notes
@@ -120,9 +125,11 @@ Optional:
 ### changelog.md.hbs
 
 Required:
+
 - `name` (string) - Spec name
 
 Optional:
+
 - `versions` (object[]) - Entries with `version`, `added`, `changed`, `deprecated`, `removed`, `fixed`
 
 ## Output

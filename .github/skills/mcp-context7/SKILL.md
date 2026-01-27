@@ -17,16 +17,21 @@ This skill enables you to access real-time, accurate documentation for external 
 ## Workflow
 
 ### 1. Resolve Library ID
+
 First, find the correct ID for the library you want to query.
+
 - Use `resolve-library-id` with the library name (e.g., "tailwindcss", "sveltekit", "vitest").
 - This ensures you are using the precise ID recognized by the Context7 index.
 
 ### 2. Query Documentation
+
 Once you have the ID, use `query-docs` to retrieve information.
+
 - Provide the `libraryId`.
 - Ask a specific question or request an API reference.
 
 **Example Process:**
+
 1. Call `resolve-library-id(query: "tailwindcss")` -> Returns `"tailwindcss"`.
 2. Call `query-docs(libraryId: "tailwindcss", query: "How to configure dark mode in v4?")`.
 

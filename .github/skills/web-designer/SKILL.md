@@ -32,6 +32,7 @@ Follow these guidelines for all visual updates to ensure accessible, professiona
 ### 1. Color Palette & Balance (60-30-10 Rule)
 
 Balance colors across graphic elements like backgrounds, buttons, and cards:
+
 - **Primary Color (60%)**: Use a **Cool** or **Light** color (Blues, Greens, Purples).
 - **Secondary Color (30%)**: Use a **Cool** or **Light** color.
 - **Accent Color (10%)**: Use a complementary **Hot** color (Oranges, Reds, Yellows) to draw attention.
@@ -46,21 +47,25 @@ Balance colors across graphic elements like backgrounds, buttons, and cards:
 ### 3. Usage Guidelines
 
 #### Background Colors
+
 - **Recommended**: White, off-white, light cool colors (light blues/greens), subtle neutrals, or light gradients.
 - **Forbidden**: Purple, magenta, red, orange, yellow, pink, or any saturated hot colors.
 
 #### Text Colors
+
 - **Recommended (Light BG)**: Dark neutrals (#1f2328, #24292f), near-blacks (#000000 to #333333), dark grays (#4d4d4d, #6c757d).
 - **Recommended (Dark BG)**: Near-whites (#ffffff to #f0f2f3).
 - **Forbidden**: Yellow (poor legibility), pink, pure white on light backgrounds, pure black on dark backgrounds.
 
 #### Colors to Use Sparingly (Hot Colors)
+
 - Reserve **Red, Orange, Yellow** for critical alerts, warnings, or error messages.
 - Limit to small accent areas; consider icons or bold text as alternatives first.
 
 ### 4. Gradients
 
 Apply subtle transitions for professional aesthetics:
+
 - Keep color shifts minimal (e.g., #E6F2FF to #F5F7FA).
 - Stay within the same color family; **never** combine hot and cool colors in one gradient.
 - Prefer linear gradients over radial for backgrounds.
@@ -136,18 +141,19 @@ Detection targets:
 
 **MoneyWiz uses Tailwind CSS v4** exclusively:
 
-| Item                    | Value                                  |
-| ----------------------- | -------------------------------------- |
-| Styling System          | Tailwind CSS v4                        |
-| Config File             | `tailwind.config.js` (or TypeScript)   |
-| Component Styling       | `class` attributes in `.svelte` files |
-| Global Styles           | `src/routes/layout.css` (Tailwind)    |
-| Build Integration       | @tailwindcss/vite plugin               |
-| Responsive Prefixes     | `sm:`, `md:`, `lg:`, `xl:` (standard) |
-| Hover/Focus States      | `hover:`, `focus:`, etc.               |
-| Dark Mode               | Configured in tailwind.config.js       |
+| Item                | Value                                 |
+| ------------------- | ------------------------------------- |
+| Styling System      | Tailwind CSS v4                       |
+| Config File         | `tailwind.config.js` (or TypeScript)  |
+| Component Styling   | `class` attributes in `.svelte` files |
+| Global Styles       | `src/routes/layout.css` (Tailwind)    |
+| Build Integration   | @tailwindcss/vite plugin              |
+| Responsive Prefixes | `sm:`, `md:`, `lg:`, `xl:` (standard) |
+| Hover/Focus States  | `hover:`, `focus:`, etc.              |
+| Dark Mode           | Configured in tailwind.config.js      |
 
 **Editing Targets:**
+
 - Svelte components: `src/components/*.svelte` - update `class=` attributes
 - Route pages: `src/routes/*.svelte` - update styling classes
 - Global styles: `src/routes/layout.css` - Tailwind directives
@@ -166,6 +172,7 @@ Detection targets:
 6. **Responsive Test:** Verify layout at all breakpoints
 
 **Elements to Check:**
+
 - AppHeader component layout
 - CSV upload input and button
 - Chart containers and legends
@@ -176,6 +183,7 @@ Detection targets:
 ### 2.2 MoneyWiz Component Inspection Items
 
 **Key Components to Verify:**
+
 - **AppHeader.svelte** - Title link, glassmorphism effect, clear button layout
 - **CsvUploadButton.svelte** - Upload input accessibility and styling
 - **SummaryCards.svelte** - Card grid layout, value alignment, currency display
@@ -270,22 +278,26 @@ Identify source files from problematic elements:
 #### Framework-specific Fix Guidelines for SvelteKit
 
 **Svelte Component Styling (`.svelte` files):**
+
 ```svelte
 <script lang="ts">
-  let className = 'text-lg font-bold';
+	let className = 'text-lg font-bold';
 </script>
 
-<div class="{className}">
-  <!-- content -->
+<div class={className}>
+	<!-- content -->
 </div>
 
 <style>
-  /* Scoped CSS (optional - usually use Tailwind instead) */
-  :global(.custom-class) { /* ... */ }
+	/* Scoped CSS (optional - usually use Tailwind instead) */
+	:global(.custom-class) {
+		/* ... */
+	}
 </style>
 ```
 
 **Tailwind CSS Classes:**
+
 - Use responsive prefixes: `md:flex`, `lg:grid-cols-3`
 - Hover/focus: `hover:bg-blue-600`, `focus:ring-2`
 - Use `@apply` in `layout.css` for common patterns
@@ -417,12 +429,12 @@ flowchart TD
 
 ```json
 {
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--caps=vision"]
-    }
-  }
+	"mcpServers": {
+		"playwright": {
+			"command": "npx",
+			"args": ["-y", "@playwright/mcp@latest", "--caps=vision"]
+		}
+	}
 }
 ```
 

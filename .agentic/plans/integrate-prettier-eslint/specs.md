@@ -4,14 +4,14 @@ List of specifications affected by this change.
 
 ## Modified Specs
 
-| Spec | Change Type | Description |
-|------|-------------|-------------|
-| [Tech Component Architecture](../../specs/tech-component-architecture/spec.md) | Update | Add linting rules for component structure and naming |
+| Spec                                                                           | Change Type | Description                                          |
+| ------------------------------------------------------------------------------ | ----------- | ---------------------------------------------------- |
+| [Tech Component Architecture](../../specs/tech-component-architecture/spec.md) | Update      | Add linting rules for component structure and naming |
 
 ## New Specs
 
-| Spec | Purpose |
-|------|---------|
+| Spec              | Purpose                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------- |
 | tech-code-quality | Define linting rules, formatting standards, and code quality tools (ESLint, Prettier) |
 
 ## Deprecated Specs

@@ -25,42 +25,49 @@ This skill provides comprehensive instructions for writing, updating, and debugg
 
 ## Execution
 
-| Action | Command |
-| :--- | :--- |
-| **All unit tests** | `bun run test` (often includes Vitest) |
+| Action              | Command                                                |
+| :------------------ | :----------------------------------------------------- |
+| **All unit tests**  | `bun run test` (often includes Vitest)                 |
 | **Vitest (Server)** | `bun vitest run --project=server` (logic in `src/lib`) |
-| **Vitest (Client)** | `bun vitest run --project=client` (Svelte components) |
-| **Watch Mode** | `bun vitest` |
+| **Vitest (Client)** | `bun vitest run --project=client` (Svelte components)  |
+| **Watch Mode**      | `bun vitest`                                           |
 
 ## Writing Quality Unit Tests
 
 ### 1. Test Organization
+
 - Use `describe` blocks to group related functions or scenarios.
 - Use `it` or `test` for individual assertions.
 - Maintain descriptive names: `describe('parseCsv', () => { it('should handle CRLF line endings', () => { ... }) })`.
 
 ### 2. Mocking & Environment
+
 - Use `vi.mock()` to isolate the module under test from its dependencies (e.g., mocking `debug` or stores).
 - For Svelte components, use `page.render()`.
 
 ### 3. Assertions
+
 - Use Vitest's `expect` API.
 - Prefer specific matchers: `toEqual()`, `toBeDefined()`, `toThrow()`.
 
 ## MoneyWiz Specific Unit Testing
 
 ### CSV Parsing (`src/lib/csv.ts`)
+
 - Test variations in CSV exports: different delimiters, BOM presence, quoted fields, and the `sep=` preamble.
 - Validate that types are correctly inferred (dates as strings, amounts as numbers).
 
 ### Financial Logic (`src/lib/finance.ts`)
+
 - Test mathematical edge cases: zero balances, all-income vs all-expense months.
 - Verify category aggregation and savings rate calculations.
 
 ### Stores (`src/lib/stores/`)
+
 - Test store updates and reactivity in isolation.
 
 ## Quality Checklist
+
 - [ ] Tests cover happy paths and edge cases (empty strings, undefined values).
 - [ ] No `null` usage; use `undefined`.
 - [ ] No unnecessary comments; code should be self-explanatory.

@@ -10,6 +10,7 @@ Expert-level problem solving using the Sequential Thinking MCP server. This skil
 ## When to Use This Skill
 
 Trigger this skill for:
+
 - **Complex Problem Solving**: Breaking down multi-step technical challenges.
 - **Architectural Planning**: Designing new features or refactoring existing ones.
 - **Systematic Debugging**: Narrowing down root causes of non-obvious bugs.

@@ -5,6 +5,7 @@ All notable changes to this specification.
 ## refactor-component-hierarchy
 
 ### Added
+
 - Initial specification defining strict Atomic Design hierarchy
 - Requirements for Atoms (Button, Title, Text, Container)
 - Requirements for Molecules (UploadCsv, ClearCsv, Header, NavigationBar, DashboardPanel)

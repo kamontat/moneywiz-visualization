@@ -1,6 +1,6 @@
 ---
-description: "Guidelines for creating high-quality custom instruction files for GitHub Copilot"
-applyTo: "**/*.instructions.md"
+description: 'Guidelines for creating high-quality custom instruction files for GitHub Copilot'
+applyTo: '**/*.instructions.md'
 ---
 
 # Custom Instructions File Guidelines
@@ -21,8 +21,8 @@ Every instruction file must include YAML frontmatter with the following fields:
 
 ```yaml
 ---
-description: "Brief description of the instruction purpose and scope"
-applyTo: "glob pattern for target files (e.g., **/*.ts, **/*.py)"
+description: 'Brief description of the instruction purpose and scope'
+applyTo: 'glob pattern for target files (e.g., **/*.ts, **/*.py)'
 ---
 ```
 
@@ -199,8 +199,8 @@ Here's a minimal example structure for a new instruction file:
 
 ```markdown
 ---
-description: "Brief description of purpose"
-applyTo: "**/*.ext"
+description: 'Brief description of purpose'
+applyTo: '**/*.ext'
 ---
 
 # Technology Name Development

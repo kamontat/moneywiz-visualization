@@ -1,42 +1,46 @@
-# Tests: {{name}}
+# Tests:
+{{name}}
 
-Test plan for validating the implementation.
-
-## Unit Tests
+Test plan for validating the implementation. ## Unit Tests
 
 {{#each unit_tests}}
-- [ ] {{this}}
+	- [ ]
+	{{this}}
 {{/each}}
 
 ## Integration Tests
 
 {{#each integration_tests}}
-- [ ] {{this}}
+	- [ ]
+	{{this}}
 {{/each}}
 
 ## E2E Tests
 
 {{#each e2e_tests}}
-- [ ] {{this}}
+	- [ ]
+	{{this}}
 {{/each}}
 
 ## Manual Testing
 
 {{#each manual_tests}}
-{{@index}}. {{this}}
+	{{@index}}.
+	{{this}}
 {{/each}}
 
 ## Edge Cases
 
 {{#each edge_cases}}
-- [ ] {{this}}
+	- [ ]
+	{{this}}
 {{/each}}
 
 ## Test Commands
 
 {{#each commands}}
-```bash
-# {{description}}
-{{command}}
-```
+	```bash #
+	{{description}}
+	{{command}}
+	```
 {{/each}}

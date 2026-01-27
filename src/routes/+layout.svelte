@@ -35,21 +35,26 @@
 	}
 </script>
 
-<div class="flex flex-col min-h-screen">
-	<AppHeader onparsed={handleParsed} onerror={handleError} onclear={handleClear} csvLoaded={!!parsedUpload} />
-	<main class="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-5 sm:px-6 sm:py-6 box-border">
+<div class="flex min-h-screen flex-col">
+	<AppHeader
+		onparsed={handleParsed}
+		onerror={handleError}
+		onclear={handleClear}
+		csvLoaded={!!parsedUpload}
+	/>
+	<main class="mx-auto box-border flex w-full max-w-6xl flex-1 flex-col px-4 py-5 sm:px-6 sm:py-6">
 		{@render children()}
 
 		{#if errorMessage}
 			<section
-				class="m-0 p-4 border border-dashed border-orange-500 rounded-lg bg-orange-50 text-orange-800"
+				class="m-0 rounded-lg border border-dashed border-orange-500 bg-orange-50 p-4 text-orange-800"
 				role="alert"
 			>
-				<h2 class="text-lg font-bold mb-1">Upload failed</h2>
+				<h2 class="mb-1 text-lg font-bold">Upload failed</h2>
 				<p>{errorMessage}</p>
 			</section>
 		{:else}
-			<section class="blank-canvas flex-none min-h-6" aria-hidden="true"></section>
+			<section class="blank-canvas min-h-6 flex-none" aria-hidden="true"></section>
 		{/if}
 	</main>
 </div>

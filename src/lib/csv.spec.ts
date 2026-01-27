@@ -7,9 +7,7 @@ describe('parseCsv', () => {
 		const result = parseCsv(sample);
 
 		expect(result.headers).toEqual(['Account', 'Amount']);
-		expect(result.rows).toEqual([
-			{ Account: 'Wallet', Amount: '10.5' }
-		]);
+		expect(result.rows).toEqual([{ Account: 'Wallet', Amount: '10.5' }]);
 	});
 
 	it('throws CsvParseError for empty input', () => {

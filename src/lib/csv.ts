@@ -65,7 +65,9 @@ export function parseCsv(text: string): ParsedCsv {
 		throw new CsvParseError('CSV contains no data');
 	}
 
-	const headers = tokenize(lines[0], delimiter).map((header, index) => header || `field${index + 1}`);
+	const headers = tokenize(lines[0], delimiter).map(
+		(header, index) => header || `field${index + 1}`
+	);
 
 	if (headers.length === 0) {
 		log.csv('error: no headers found');

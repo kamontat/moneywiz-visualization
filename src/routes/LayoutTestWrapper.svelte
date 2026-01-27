@@ -1,7 +1,7 @@
 <script>
-    import Layout from './+layout.svelte';
+	import Layout from './+layout.svelte';
 </script>
 
 <Layout>
-    <div data-testid="test-child">Test Content</div>
+	<div data-testid="test-child">Test Content</div>
 </Layout>

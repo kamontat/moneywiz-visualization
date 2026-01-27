@@ -13,12 +13,7 @@
 		"modelcontextprotocol/time": {
 			"type": "stdio",
 			"command": "mise",
-			"args": [
-				"exec",
-				"pipx:mcp-server-time@latest",
-				"--",
-				"mcp-server-time"
-			]
+			"args": ["exec", "pipx:mcp-server-time@latest", "--", "mcp-server-time"]
 		},
 		"spences10/sequentialthinking": {
 			"type": "stdio",
@@ -45,12 +40,7 @@
 		"chromedevtools/chrome-devtools": {
 			"type": "stdio",
 			"command": "mise",
-			"args": [
-				"exec",
-				"npm:chrome-devtools-mcp@latest",
-				"--",
-				"chrome-devtools-mcp"
-			]
+			"args": ["exec", "npm:chrome-devtools-mcp@latest", "--", "chrome-devtools-mcp"]
 		}
 	},
 	"inputs": [
@@ -59,6 +49,6 @@
 			"type": "promptString",
 			"description": "Context7 API key (optional; increases rate limits). Get one at https://context7.com/dashboard",
 			"password": true
-		},
+		}
 	]
 }

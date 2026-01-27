@@ -8,6 +8,7 @@ description: Comprehensive guide for building robust, secure, and efficient CI/C
 ## When to Use This Skill
 
 Use this skill when:
+
 - Designing or optimizing CI/CD pipelines using GitHub Actions.
 - Creating automated workflows for building, testing, and deploying applications.
 - Implementing security best practices for GitHub Actions (secrets, OIDC, permissions).
@@ -18,16 +19,17 @@ Use this skill when:
 
 This project (MoneyWiz Visualization) uses the following stack:
 
-| Component | Technology |
-|-----------|------------|
-| Framework | SvelteKit (Svelte 5) with @sveltejs/adapter-static |
-| Package Manager | Bun |
-| Unit Testing | Vitest (server + client projects) |
-| E2E Testing | Playwright |
-| Styling | TailwindCSS 4 |
-| Deployment | Static site to https://moneywiz.kamontat.net/ |
+| Component       | Technology                                         |
+| --------------- | -------------------------------------------------- |
+| Framework       | SvelteKit (Svelte 5) with @sveltejs/adapter-static |
+| Package Manager | Bun                                                |
+| Unit Testing    | Vitest (server + client projects)                  |
+| E2E Testing     | Playwright                                         |
+| Styling         | TailwindCSS 4                                      |
+| Deployment      | Static site to https://moneywiz.kamontat.net/      |
 
 **Key Commands:**
+
 - `bun install` - Install dependencies
 - `bun run build` - Build static site
 - `bun run check` - TypeScript and Svelte checks
@@ -124,12 +126,12 @@ This project (MoneyWiz Visualization) uses the following stack:
 
 See [Troubleshooting Common GitHub Actions Issues](./references/troubleshooting.md) for detailed guidance.
 
-| Issue | Resolution |
-|-------|------------|
-| Workflow not triggering | Check `on` triggers, `branches`/`paths` filters, and `if` conditions. |
-| Permissions errors | Verify `permissions` block and `GITHUB_TOKEN` scope. |
-| Cache misses | Validate cache `key` logic and ensure `path` existence. |
-| Flaky tests | Ensure isolation, eliminate race conditions with explicit waits, and use retries. |
+| Issue                   | Resolution                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| Workflow not triggering | Check `on` triggers, `branches`/`paths` filters, and `if` conditions.             |
+| Permissions errors      | Verify `permissions` block and `GITHUB_TOKEN` scope.                              |
+| Cache misses            | Validate cache `key` logic and ensure `path` existence.                           |
+| Flaky tests             | Ensure isolation, eliminate race conditions with explicit waits, and use retries. |
 
 ## References
 

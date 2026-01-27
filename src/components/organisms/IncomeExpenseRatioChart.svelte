@@ -33,14 +33,15 @@
 	const savingsRate = $derived(income > 0 ? ((income - absExpenses) / income) * 100 : 0);
 </script>
 
-<div class="flex items-center gap-6 p-2" role="img" aria-label="Income vs Expense ratio: {incomePercent.toFixed(0)}% income, {expensePercent.toFixed(0)}% expenses">
+<div
+	class="flex items-center gap-6 p-2"
+	role="img"
+	aria-label="Income vs Expense ratio: {incomePercent.toFixed(0)}% income, {expensePercent.toFixed(
+		0
+	)}% expenses"
+>
 	<div class="relative flex-shrink-0">
-		<svg
-			width={size}
-			height={size}
-			viewBox="0 0 {size} {size}"
-			aria-hidden="true"
-		>
+		<svg width={size} height={size} viewBox="0 0 {size} {size}" aria-hidden="true">
 			<!-- Background circle -->
 			<circle
 				cx={center}
@@ -93,17 +94,21 @@
 			</defs>
 		</svg>
 		<!-- Center label -->
-		<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center flex flex-col gap-0.5">
+		<div
+			class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-0.5 text-center"
+		>
 			<span class="text-xl font-bold {savingsRate >= 0 ? 'text-emerald-500' : 'text-red-600'}">
 				{savingsRate >= 0 ? '+' : ''}{savingsRate.toFixed(0)}%
 			</span>
-			<span class="text-[0.7rem] text-gray-400 uppercase tracking-widest">Savings</span>
+			<span class="text-[0.7rem] tracking-widest text-gray-400 uppercase">Savings</span>
 		</div>
 	</div>
 
 	<div class="flex flex-col gap-4">
 		<div class="flex items-start gap-3">
-			<span class="w-3 h-3 rounded-full mt-1 flex-shrink-0 bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-[0_2px_4px_rgba(16,185,129,0.3)]"></span>
+			<span
+				class="mt-1 h-3 w-3 flex-shrink-0 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-[0_2px_4px_rgba(16,185,129,0.3)]"
+			></span>
 			<div class="flex flex-col gap-0.5">
 				<span class="text-xs font-semibold text-mw-text-main">Income</span>
 				<span class="text-sm font-bold text-gray-900">{formatTHB(income)}</span>
@@ -111,7 +116,9 @@
 			</div>
 		</div>
 		<div class="flex items-start gap-3">
-			<span class="w-3 h-3 rounded-full mt-1 flex-shrink-0 bg-gradient-to-br from-red-400 to-red-500 shadow-[0_2px_4px_rgba(239,68,68,0.3)]"></span>
+			<span
+				class="mt-1 h-3 w-3 flex-shrink-0 rounded-full bg-gradient-to-br from-red-400 to-red-500 shadow-[0_2px_4px_rgba(239,68,68,0.3)]"
+			></span>
 			<div class="flex flex-col gap-0.5">
 				<span class="text-xs font-semibold text-mw-text-main">Expenses</span>
 				<span class="text-sm font-bold text-gray-900">{formatTHB(absExpenses)}</span>

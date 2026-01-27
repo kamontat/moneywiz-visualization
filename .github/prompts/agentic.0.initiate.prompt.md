@@ -44,9 +44,9 @@ The file must include:
 - **Available Prompts** - List all prompts with when to use each:
   - `0.initiate` - Initialize framework
   - `1-a.create-plan` - Create new plan
-  - `1-b.refine-plan` - Refine plan until approved *(optional)*
+  - `1-b.refine-plan` - Refine plan until approved _(optional)_
   - `2-a.build-app` - Implement code
-  - `2-b.iterate-app` - Iterate on implementation *(optional)*
+  - `2-b.iterate-app` - Iterate on implementation _(optional)_
   - `3.archive` - Archive and update specs
   - `4.deploy` - Commit changes
 - **File Structure** - Purpose of `.agentic/` directory:
@@ -57,9 +57,9 @@ The file must include:
 - **Workflow** - Standard lifecycle:
   1. Initiate - Initialize context
   2. Create Plan - Define a change
-  3. Refine Plan - Iterate until approved *(optional, skip if 1a meets expectations)*
+  3. Refine Plan - Iterate until approved _(optional, skip if 1a meets expectations)_
   4. Build App - Implement code
-  5. Iterate App - Iterate on implementation *(optional, skip if 2a meets expectations)*
+  5. Iterate App - Iterate on implementation _(optional, skip if 2a meets expectations)_
   6. Archive - Update specs and cleanup
   7. Deploy - Commit changes
 

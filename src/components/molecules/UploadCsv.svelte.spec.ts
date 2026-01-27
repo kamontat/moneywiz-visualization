@@ -4,16 +4,16 @@ import UploadCsv from './UploadCsv.svelte';
 import { parseCsvFile } from '$lib/csv';
 
 vi.mock('$lib/csv', () => {
-    return {
-        parseCsvFile: vi.fn(),
-        CsvParseError: class extends Error {}
-    };
+	return {
+		parseCsvFile: vi.fn(),
+		CsvParseError: class extends Error {}
+	};
 });
 
 describe('CsvUploadButton.svelte', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
 	it('renders with default label', async () => {
 		const { container } = page.render(UploadCsv);
@@ -59,7 +59,7 @@ describe('CsvUploadButton.svelte', () => {
 		input.dispatchEvent(new Event('change', { bubbles: true }));
 
 		// Wait for async operation (microtask)
-		await new Promise(resolve => setTimeout(resolve, 0));
+		await new Promise((resolve) => setTimeout(resolve, 0));
 
 		expect(parseCsvFile).toHaveBeenCalledWith(file);
 		expect(onParsedSpy).toHaveBeenCalledWith({
@@ -71,8 +71,8 @@ describe('CsvUploadButton.svelte', () => {
 		});
 	});
 
-    it('handles parse error', async () => {
-        const error = new Error('Invalid format');
+	it('handles parse error', async () => {
+		const error = new Error('Invalid format');
 		vi.mocked(parseCsvFile).mockRejectedValue(error);
 		const onErrorSpy = vi.fn();
 
@@ -87,12 +87,12 @@ describe('CsvUploadButton.svelte', () => {
 
 		input.dispatchEvent(new Event('change', { bubbles: true }));
 
-		await new Promise(resolve => setTimeout(resolve, 0));
+		await new Promise((resolve) => setTimeout(resolve, 0));
 
 		expect(parseCsvFile).toHaveBeenCalledWith(file);
 		expect(onErrorSpy).toHaveBeenCalledWith({
 			file,
 			message: 'Invalid format'
 		});
-    });
+	});
 });

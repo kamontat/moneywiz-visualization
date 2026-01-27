@@ -13,63 +13,63 @@ Always use Svelte 5 runes. Never use Svelte 4 patterns.
 
 ### Svelte 4 → Svelte 5
 
-| Svelte 4 ❌ | Svelte 5 ✅ |
-| --- | --- |
-| `export let foo` | `let { foo } = $props()` |
-| `export let foo = 'default'` | `let { foo = 'default' } = $props()` |
-| `$: doubled = x * 2` | `let doubled = $derived(x * 2)` |
-| `$: { sideEffect() }` | `$effect(() => { sideEffect() })` |
-| `on:click={handler}` | `onclick={handler}` |
-| `on:input={handler}` | `oninput={handler}` |
-| `on:click\|preventDefault={h}` | `onclick={e => { e.preventDefault(); h(e) }}` |
-| `<slot />` | `{@render children()}` |
-| `<slot name="x" />` | `{@render x?.()}` |
-| `$$props` | Use `$props()` with rest: `let { ...rest } = $props()` |
-| `$$restProps` | `let { known, ...rest } = $props()` |
-| `createEventDispatcher()` | Pass callback props: `let { onchange } = $props()` |
+| Svelte 4 ❌                    | Svelte 5 ✅                                            |
+| ------------------------------ | ------------------------------------------------------ |
+| `export let foo`               | `let { foo } = $props()`                               |
+| `export let foo = 'default'`   | `let { foo = 'default' } = $props()`                   |
+| `$: doubled = x * 2`           | `let doubled = $derived(x * 2)`                        |
+| `$: { sideEffect() }`          | `$effect(() => { sideEffect() })`                      |
+| `on:click={handler}`           | `onclick={handler}`                                    |
+| `on:input={handler}`           | `oninput={handler}`                                    |
+| `on:click\|preventDefault={h}` | `onclick={e => { e.preventDefault(); h(e) }}`          |
+| `<slot />`                     | `{@render children()}`                                 |
+| `<slot name="x" />`            | `{@render x?.()}`                                      |
+| `$$props`                      | Use `$props()` with rest: `let { ...rest } = $props()` |
+| `$$restProps`                  | `let { known, ...rest } = $props()`                    |
+| `createEventDispatcher()`      | Pass callback props: `let { onchange } = $props()`     |
 
 ### Stores → Runes
 
-| Svelte 4 ❌ | Svelte 5 ✅ |
-| --- | --- |
-| `import { writable } from 'svelte/store'` | Remove import |
-| `const count = writable(0)` | `let count = $state(0)` |
-| `$count` (auto-subscribe) | `count` (direct access) |
-| `count.set(1)` | `count = 1` |
-| `count.update(n => n + 1)` | `count += 1` |
+| Svelte 4 ❌                               | Svelte 5 ✅             |
+| ----------------------------------------- | ----------------------- |
+| `import { writable } from 'svelte/store'` | Remove import           |
+| `const count = writable(0)`               | `let count = $state(0)` |
+| `$count` (auto-subscribe)                 | `count` (direct access) |
+| `count.set(1)`                            | `count = 1`             |
+| `count.update(n => n + 1)`                | `count += 1`            |
 
 ### Quick Reference
 
 ```svelte
 <script>
-  // Props (with defaults and rest)
-  let { required, optional = 'default', ...rest } = $props();
+	// Props (with defaults and rest)
+	let { required, optional = 'default', ...rest } = $props();
 
-  // Two-way bindable prop
-  let { value = $bindable() } = $props();
+	// Two-way bindable prop
+	let { value = $bindable() } = $props();
 
-  // Reactive state
-  let count = $state(0);
-  let items = $state([]);      // arrays are deeply reactive
-  let user = $state({ name: '' }); // objects too
+	// Reactive state
+	let count = $state(0);
+	let items = $state([]); // arrays are deeply reactive
+	let user = $state({ name: '' }); // objects too
 
-  // Derived values
-  let doubled = $derived(count * 2);
-  let complex = $derived.by(() => {
-    // multi-line logic here
-    return expensiveCalc(count);
-  });
+	// Derived values
+	let doubled = $derived(count * 2);
+	let complex = $derived.by(() => {
+		// multi-line logic here
+		return expensiveCalc(count);
+	});
 
-  // Side effects
-  $effect(() => {
-    console.log(count);
-    return () => cleanup(); // optional cleanup
-  });
+	// Side effects
+	$effect(() => {
+		console.log(count);
+		return () => cleanup(); // optional cleanup
+	});
 </script>
 
 <!-- Events: native names, no colon -->
 <button onclick={() => count++}>Click</button>
-<input oninput={e => value = e.target.value} />
+<input oninput={(e) => (value = e.target.value)} />
 
 <!-- Render snippets (replaces slots) -->
 {@render children?.()}
@@ -78,29 +78,30 @@ Always use Svelte 5 runes. Never use Svelte 4 patterns.
 ### Snippets (Replace Slots)
 
 ```svelte
-<!-- Parent passes snippets -->
-<Dialog>
-  {#snippet header()}
-    <h1>Title</h1>
-  {/snippet}
-
-  {#snippet footer(close)}
-    <button onclick={close}>Done</button>
-  {/snippet}
-</Dialog>
-
 <!-- Child renders them -->
 <script>
-  let { header, footer, children } = $props();
+	let { header, footer, children } = $props();
 </script>
+
+<!-- Parent passes snippets -->
+<Dialog>
+	{#snippet header()}
+		<h1>Title</h1>
+	{/snippet}
+
+	{#snippet footer(close)}
+		<button onclick={close}>Done</button>
+	{/snippet}
+</Dialog>
 {@render header?.()}
 {@render children?.()}
-{@render footer?.(() => open = false)}
+{@render footer?.(() => (open = false))}
 ```
 
 ## Core Concepts & Architecture
 
 ### Architecture
+
 - Use Svelte 5 runes system for all reactivity instead of legacy stores
 - Organize components by feature or domain for scalability
 - Separate presentation components from logic-heavy components
@@ -109,6 +110,7 @@ Always use Svelte 5 runes. Never use Svelte 4 patterns.
 - Use SvelteKit's file-based routing with proper load functions
 
 ### Component Design
+
 - Follow single responsibility principle for components
 - Use `<script lang="ts">` with runes syntax as default
 - Keep components small and focused on one concern
@@ -123,12 +125,16 @@ Always use Svelte 5 runes. Never use Svelte 4 patterns.
 Utilize the configured Svelte MCP server to ensure code quality and bridge knowledge gaps.
 
 ### 1. Documentation Lookup
+
 When uncertain about Svelte 5 syntax or SvelteKit patterns:
+
 1.  Run `list-sections` to see available topics.
 2.  Run `get-documentation` for the relevant sections (e.g., "$state, $derived, $effect").
 
 ### 2. Code Analysis & Validation
+
 Before finalizing any component or when debugging:
+
 1.  Run `svelte-autofixer` on the file path or current code.
 2.  Review and apply suggested fixes for reactivity issues or deprecated patterns.
 
@@ -137,6 +143,7 @@ Before finalizing any component or when debugging:
 ## Reactivity and State Management
 
 ### Svelte 5 Runes System
+
 - Use `$state()` for reactive local state management
 - Implement `$derived()` for computed values and expensive calculations
 - Use `$derived.by()` for complex computations beyond simple expressions
@@ -149,6 +156,7 @@ Before finalizing any component or when debugging:
 - Override derived values directly for optimistic UI patterns (Svelte 5.25+)
 
 ### State Management
+
 - Use `$state()` for local component state
 - Implement type-safe context with `createContext()` helper over raw `setContext`/`getContext`
 - Use context API for sharing reactive state down component trees
@@ -159,6 +167,7 @@ Before finalizing any component or when debugging:
 - Implement proper state persistence for client-side data
 
 ### Effect Best Practices
+
 - **Avoid** using `$effect()` to synchronize state - use `$derived()` instead
 - **Do** use `$effect()` for side effects: analytics, logging, DOM manipulation
 - **Do** return cleanup functions from effects for proper teardown
@@ -170,11 +179,13 @@ Before finalizing any component or when debugging:
 ## SvelteKit Patterns
 
 ### Routing and Layouts
+
 - Use `+page.svelte` for page components with proper SEO
 - Implement `+layout.svelte` for shared layouts and navigation
 - Handle routing with SvelteKit's file-based system
 
 ### Data Loading and Mutations
+
 - Use `+page.server.ts` for server-side data loading and API calls
 - Implement form actions in `+page.server.ts` for data mutations
 - Use `+server.ts` for API endpoints and server-side logic
@@ -186,6 +197,7 @@ Before finalizing any component or when debugging:
 - Handle offline scenarios and network errors gracefully
 
 ### Forms and Validation
+
 - Use SvelteKit's form actions for server-side form handling
 - Implement progressive enhancement with `use:enhance`
 - Use `bind:value` for controlled form inputs
@@ -196,6 +208,7 @@ Before finalizing any component or when debugging:
 ## UI and Styling
 
 ### Styling
+
 - Use component-scoped styles with `<style>` blocks
 - Implement CSS custom properties for theming and design systems
 - Use `class:` directive for conditional styling
@@ -204,6 +217,7 @@ Before finalizing any component or when debugging:
 - Use `:global()` sparingly for truly global styles
 
 ### Transitions and Animations
+
 - Use `transition:` directive for enter/exit animations (fade, slide, scale, fly)
 - Use `in:` and `out:` for separate enter/exit transitions
 - Implement `animate:` directive with `flip` for smooth list reordering
@@ -214,6 +228,7 @@ Before finalizing any component or when debugging:
 ## TypeScript and Tooling
 
 ### TypeScript Integration
+
 - Enable strict mode in `tsconfig.json` for maximum type safety
 - Annotate props with TypeScript: `let { name }: { name: string } = $props()`
 - Type event handlers, refs, and SvelteKit's generated types
@@ -223,6 +238,7 @@ Before finalizing any component or when debugging:
 - Use type inference where possible to reduce boilerplate
 
 ### Development Tools
+
 - Use ESLint with eslint-plugin-svelte and Prettier for code consistency
 - Use Svelte DevTools for debugging and performance analysis
 - Keep dependencies up to date and audit for security vulnerabilities
@@ -232,6 +248,7 @@ Before finalizing any component or when debugging:
 ## Production Readiness
 
 ### Performance Optimization
+
 - Use keyed `{#each}` blocks for efficient list rendering
 - Implement lazy loading with dynamic imports and `<svelte:component>`
 - Use `$derived()` for expensive computations to avoid unnecessary recalculations
@@ -243,6 +260,7 @@ Before finalizing any component or when debugging:
 - Use `$effect.tracking()` in abstractions to conditionally create reactive listeners
 
 ### Error Handling
+
 - Implement `+error.svelte` pages for route-level error boundaries
 - Use try/catch blocks in load functions and form actions
 - Provide meaningful error messages and fallback UI
@@ -252,6 +270,7 @@ Before finalizing any component or when debugging:
 - Track pending promises with `$effect.pending()` for loading states
 
 ### Testing
+
 - Write unit tests for components using Vitest and Testing Library
 - Test component behavior, not implementation details
 - Use Playwright for end-to-end testing of user workflows
@@ -260,6 +279,7 @@ Before finalizing any component or when debugging:
 - Implement accessibility testing with axe-core
 
 ### Security
+
 - Sanitize user inputs to prevent XSS attacks
 - Use `@html` directive carefully and validate HTML content
 - Implement proper CSRF protection with SvelteKit
@@ -268,6 +288,7 @@ Before finalizing any component or when debugging:
 - Store sensitive data securely with proper session management
 
 ### Accessibility
+
 - Use semantic HTML elements and proper heading hierarchy
 - Implement keyboard navigation for all interactive elements
 - Provide proper ARIA labels and descriptions
@@ -276,6 +297,7 @@ Before finalizing any component or when debugging:
 - Implement focus management for dynamic content
 
 ## Common Patterns
+
 - Renderless components with slots for flexible UI composition
 - Custom actions (`use:` directives) for cross-cutting concerns and DOM manipulation
 - `{#snippet}` blocks for reusable template logic within components

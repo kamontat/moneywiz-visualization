@@ -55,7 +55,11 @@ export function getTHBRows(data: ParsedCsv | null): Record<string, string>[] {
 		return [];
 	}
 	const rows = data.rows.filter((r) => (r['Currency'] || '').toUpperCase() === 'THB');
-	log.pageDashboard('getTHBRows: filtered %d THB rows from %d total', rows.length, data.rows.length);
+	log.pageDashboard(
+		'getTHBRows: filtered %d THB rows from %d total',
+		rows.length,
+		data.rows.length
+	);
 	return rows;
 }
 
@@ -223,7 +227,10 @@ export function parseTagsFromField(tagsField: string): Record<string, string> {
 	if (!tagsField) return {};
 
 	const tags: Record<string, string> = {};
-	const parts = tagsField.split(';').map((p) => p.trim()).filter((p) => p.length > 0);
+	const parts = tagsField
+		.split(';')
+		.map((p) => p.trim())
+		.filter((p) => p.length > 0);
 
 	for (const part of parts) {
 		const [category, ...valueParts] = part.split(':');

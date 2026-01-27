@@ -36,11 +36,55 @@ bun vitest run --project=client
 
 **Note:** Always use `bun` as the package manager and command runner (not `npm`, `npx`, or `bunx`).
 
+### Linting & Formatting
+
+The project uses ESLint for code linting and Prettier for code formatting.
+
+**Check all (formatting, linting, types):**
+
+```sh
+bun run check
+```
+
+**Fix all (formatting and linting):**
+
+```sh
+bun run fix
+```
+
+**Formatting:**
+
+```sh
+bun run format        # Fix formatting
+bun run format:check  # Check formatting only
+```
+
+**Linting:**
+
+```sh
+bun run lint        # Fix linting issues
+bun run lint:check  # Check linting only
+```
+
+**Type checking:**
+
+```sh
+bun run svelte:check  # Type check Svelte/TypeScript files
+```
+
+**VS Code Integration:**
+
+- Install the [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- Install the [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- Install the [Svelte extension](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+- The workspace settings automatically enable format-on-save and ESLint auto-fix
+
 ### Debugging
 
 Enable debug logs to troubleshoot issues:
 
 **Terminal:**
+
 ```sh
 DEBUG=moneywiz:* bun run dev       # All MoneyWiz logs
 DEBUG=moneywiz:csv bun run dev     # CSV parser only
@@ -48,13 +92,15 @@ DEBUG=moneywiz:store:* bun run dev # Store operations
 ```
 
 **Browser Console:**
+
 ```javascript
-localStorage.debug = 'moneywiz:*'   // All MoneyWiz logs
-localStorage.debug = 'moneywiz:csv' // CSV parser only
-localStorage.debug = '*'            // All debug logs (includes 3rd-party)
+localStorage.debug = 'moneywiz:*'; // All MoneyWiz logs
+localStorage.debug = 'moneywiz:csv'; // CSV parser only
+localStorage.debug = '*'; // All debug logs (includes 3rd-party)
 ```
 
 **Available Namespaces:**
+
 - `moneywiz:csv` - CSV parsing operations
 - `moneywiz:store:csv` - CSV store updates
 - `moneywiz:component:upload` - Upload button interactions
@@ -158,5 +204,7 @@ sep=,
 - **Framework**: SvelteKit 5
 - **Language**: TypeScript
 - **Testing**: Playwright (e2e), Vitest (unit)
+- **Linting**: ESLint with eslint-plugin-svelte
+- **Formatting**: Prettier with prettier-plugin-svelte
 - **Package Manager**: Bun
 - **Build Tool**: Vite

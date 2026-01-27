@@ -18,6 +18,11 @@ Rules that AI agents **must always respect** when working in this repository.
 - **File naming** — Use PascalCase for Svelte components, camelCase for utilities
 - **Imports** — Use `$lib/` alias for library imports
 
+## Validation
+
+- **Run `bun run check`** — After modifying any code, run this to validate formatting, linting, and types
+- **Fix issues** — Use `bun run fix` to auto-fix formatting and linting problems
+
 ## Testing
 
 - **Co-located tests** — Unit tests live next to source files as `.spec.ts`

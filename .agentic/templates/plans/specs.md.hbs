@@ -1,33 +1,40 @@
-# Affected Specs: {{name}}
+# Affected Specs:
+{{name}}
 
-List of specifications affected by this change.
-
-## Modified Specs
-
-| Spec | Change Type | Description |
-|------|-------------|-------------|
+List of specifications affected by this change. ## Modified Specs | Spec | Change Type | Description
+| |------|-------------|-------------|
 {{#each modified_specs}}
-| [{{name}}](../../specs/{{slug}}/spec.md) | {{change_type}} | {{description}} |
+	| [{{name}}](../../specs/{{slug}}/spec.md) |
+	{{change_type}}
+	|
+	{{description}}
+	|
 {{/each}}
 
-## New Specs
-
-| Spec | Purpose |
-|------|---------|
+## New Specs | Spec | Purpose | |------|---------|
 {{#each new_specs}}
-| {{name}} | {{purpose}} |
+	|
+	{{name}}
+	|
+	{{purpose}}
+	|
 {{/each}}
 
-## Deprecated Specs
-
-| Spec | Reason | Replacement |
-|------|--------|-------------|
+## Deprecated Specs | Spec | Reason | Replacement | |------|--------|-------------|
 {{#each deprecated_specs}}
-| {{name}} | {{reason}} | {{replacement}} |
+	|
+	{{name}}
+	|
+	{{reason}}
+	|
+	{{replacement}}
+	|
 {{/each}}
 
 ## No Changes
 
 {{#each no_changes}}
-- {{name}}: {{reason}}
+	-
+	{{name}}:
+	{{reason}}
 {{/each}}

@@ -18,15 +18,15 @@ Use prompts in `.github/prompts/` to guide the workflow:
 
 ## Available Prompts
 
-| Prompt | When to Use |
-|--------|-------------|
-| `0.initiate` | Initialize framework in a new repository |
-| `1-a.create-plan` | Start a new feature, fix, or change |
-| `1-b.refine-plan` | Iterate on plan until approved *(optional)* |
-| `2-a.build-app` | Implement code for an approved plan |
-| `2-b.iterate-app` | Fix bugs or adjust implementation *(optional)* |
-| `3.archive` | Complete work, update specs, delete plan |
-| `4.deploy` | Update docs and create git commit |
+| Prompt            | When to Use                                    |
+| ----------------- | ---------------------------------------------- |
+| `0.initiate`      | Initialize framework in a new repository       |
+| `1-a.create-plan` | Start a new feature, fix, or change            |
+| `1-b.refine-plan` | Iterate on plan until approved _(optional)_    |
+| `2-a.build-app`   | Implement code for an approved plan            |
+| `2-b.iterate-app` | Fix bugs or adjust implementation _(optional)_ |
+| `3.archive`       | Complete work, update specs, delete plan       |
+| `4.deploy`        | Update docs and create git commit              |
 
 ## Directory Structure
 

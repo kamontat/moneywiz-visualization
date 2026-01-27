@@ -7,6 +7,7 @@ Iterate on the implementation based on feedback.
 The user will provide: `<text>` describing what needs to change or improve.
 
 Examples:
+
 - Bug reports: "The login doesn't work when email has uppercase letters"
 - Feature adjustments: "Also add a 'remember me' checkbox"
 - Performance issues: "The query is too slow, needs optimization"
@@ -62,6 +63,7 @@ Before proceeding, verify the following:
 ### Dependency Check
 
 Consider:
+
 - Related functions or components
 - Existing tests that may break
 - Documentation that references changed behavior
@@ -69,12 +71,14 @@ Consider:
 ## When to Suggest New Plan
 
 Suggest creating a new plan when feedback:
+
 - Introduces entirely new features not in original scope
 - Requires architectural changes beyond the plan
 - Would significantly delay current plan completion
 - Conflicts with original acceptance criteria
 
 Example:
+
 > This feedback suggests adding OAuth support, which is beyond the current plan scope (email/password auth only). I recommend completing this plan first, then creating a new plan for OAuth integration.
 
 ## Output

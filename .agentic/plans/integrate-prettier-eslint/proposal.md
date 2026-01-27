@@ -22,6 +22,7 @@ This proposal adds ESLint for code linting and Prettier for code formatting to t
 ## Out of Scope
 
 This plan does not include:
+
 - Automatic pre-commit hooks (can be added in a future plan)
 - CI/CD pipeline integration (will be addressed separately)
 - Reformatting the entire codebase in one commit (formatting will be applied incrementally)

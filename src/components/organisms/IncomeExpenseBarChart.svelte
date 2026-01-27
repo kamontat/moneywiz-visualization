@@ -131,6 +131,8 @@
 	});
 </script>
 
-<div class="bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm w-full h-[300px] relative">
+<div
+	class="relative h-[300px] w-full rounded-xl border border-mw-border bg-mw-surface p-4 shadow-sm"
+>
 	<canvas bind:this={canvas}></canvas>
 </div>

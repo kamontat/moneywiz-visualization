@@ -18,29 +18,33 @@ This skill is the definitive guide for generating, updating, and debugging **Pla
 ## Test Writing Guidelines
 
 ### 1. Code Quality Standards
+
 - **Locators**: Prioritize user-facing, role-based locators (`getByRole`, `getByLabel`, `getByText`). Use `test.step()` to group interactions.
 - **Assertions**: Use auto-retrying web-first assertions: `await expect(locator).toHaveText()`.
 - **Timeouts**: Trust auto-waiting. **NEVER** use `waitForTimeout`.
-- **Titles**: Describe the *user scenario* (e.g., "Feature - User can clear uploaded CSV data").
+- **Titles**: Describe the _user scenario_ (e.g., "Feature - User can clear uploaded CSV data").
 
 ### 2. File Organization
+
 - **Location**: `e2e/` directory.
 - **Naming**: `<feature>.spec.ts`.
 - **Hooks**: Use `test.beforeEach` to navigate to the app or set up initial state.
 
 ### 3. Assertion Best Practices
+
 - **UI Structure**: Use `toMatchAriaSnapshot` for accessibility tree verification.
 - **Navigation**: `await expect(page).toHaveURL(...)`.
 
 ## Execution & Debugging
 
-| Action | Command |
-| :--- | :--- |
-| **Run E2E Tests** | `bun run test:e2e` |
-| **Interactive UI** | `bun run test:e2e --ui` |
-| **Debug Mode** | `bun run test:e2e --debug` |
+| Action             | Command                    |
+| :----------------- | :------------------------- |
+| **Run E2E Tests**  | `bun run test:e2e`         |
+| **Interactive UI** | `bun run test:e2e --ui`    |
+| **Debug Mode**     | `bun run test:e2e --debug` |
 
 ### Debugging Steps
+
 - **Server**: Ensure `bun run dev` is active (check `http://localhost:5173`).
 - **Traces**: Use Playwright's trace viewer for analysis.
 - **Console**: Monitor logs using `page.on('console', msg => ...)`.
@@ -53,6 +57,7 @@ This skill is the definitive guide for generating, updating, and debugging **Pla
 - **Reset Logic**: Test the "Clear" button resets all charts and data stores.
 
 ## Quality Checklist
+
 - [ ] Role-based locators are used exclusively if possible.
 - [ ] `test.step` groups logical parts of the scenario.
 - [ ] No hard-coded waits.

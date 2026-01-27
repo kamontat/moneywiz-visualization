@@ -14,6 +14,7 @@ Playwright MCP tools allow for direct browser interaction and automation within 
 ## Usage
 
 Trigger this skill when:
+
 - User asks to "run tests in browser"
 - "Debug UI issues using live browser"
 - "Automate browser interactions"

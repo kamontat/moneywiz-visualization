@@ -51,31 +51,37 @@ Write fully rendered markdown. No raw Handlebars syntax in output files.
 ### proposal.md.hbs
 
 Required:
+
 - `name` (string) - Plan name, dash-separated
 - `objective` (string) - One-sentence goal statement
 - `description` (string) - User-focused explanation (non-technical)
 - `criteria` (string[]) - Measurable acceptance criteria
 
 Optional:
+
 - `out_of_scope` (string) - What this plan will NOT do
 - `references` (object[]) - Links with `title` and `url`
 
 ### tasks.md.hbs
 
 Required:
+
 - `name` (string) - Same as proposal.md
 - `steps` (object[]) - Steps with `title`, `description`, `files`, `changes`
 - `verification` (string[]) - Final checks
 
 Optional:
+
 - `prerequisites` (string[]) - Pre-conditions to verify
 
 ### tests.md.hbs
 
 Required:
+
 - `name` (string) - Same as proposal.md
 
 Optional:
+
 - `unit_tests` (string[]) - Function/component tests
 - `integration_tests` (string[]) - Component interaction tests
 - `e2e_tests` (string[]) - Full flow tests
@@ -86,9 +92,11 @@ Optional:
 ### specs.md.hbs
 
 Required:
+
 - `name` (string) - Same as proposal.md
 
 Optional:
+
 - `modified_specs` (object[]) - Specs with `name`, `slug`, `change_type`, `description`
 - `new_specs` (object[]) - New specs with `name`, `slug`, `purpose`
 - `deprecated_specs` (object[]) - Specs with `name`, `reason`, `replacement`
@@ -97,10 +105,12 @@ Optional:
 **Spec Naming Convention:**
 
 All spec slugs must use a category prefix:
+
 - **`tech-`** for technical specs: database, API, infrastructure, techstack, caching, deployment, security implementation
 - **`biz-`** for business specs: UI design, business logic, user flows, features, domain rules, validation rules
 
 Examples:
+
 - Database schema → `tech-database-schema`
 - API endpoints → `tech-api-routes`
 - User authentication flow → `biz-user-auth`

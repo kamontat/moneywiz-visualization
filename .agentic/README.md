@@ -109,27 +109,27 @@ flowchart TD
 
 ### Workflow Summary
 
-| Step | Action | Output |
-|------|--------|--------|
-| 0 → 1a | Initialize framework | `AGENTS.md`, `CONSTITUTION.md` |
-| 1a → 1b/2a | Create plan | `proposal.md`, `tasks.md`, `tests.md`, `specs.md` |
-| 1b → 1a | Refine (loop) | Updated plan files |
-| 2a → 2b/3 | Build code | Working implementation |
-| 2b → 2a | Iterate (loop) | Fixed/improved code |
-| 3 → 4 | Archive | Updated specs, deleted plan |
-| 4 → Done | Deploy | Git commit |
+| Step       | Action               | Output                                            |
+| ---------- | -------------------- | ------------------------------------------------- |
+| 0 → 1a     | Initialize framework | `AGENTS.md`, `CONSTITUTION.md`                    |
+| 1a → 1b/2a | Create plan          | `proposal.md`, `tasks.md`, `tests.md`, `specs.md` |
+| 1b → 1a    | Refine (loop)        | Updated plan files                                |
+| 2a → 2b/3  | Build code           | Working implementation                            |
+| 2b → 2a    | Iterate (loop)       | Fixed/improved code                               |
+| 3 → 4      | Archive              | Updated specs, deleted plan                       |
+| 4 → Done   | Deploy               | Git commit                                        |
 
 ### Commands
 
-| Phase | Command | Required | Description |
-|-------|---------|----------|-------------|
-| 0 | `/agentic.0.initiate <text>` | Yes | Initialize the framework |
-| 1a | `/agentic.1-a.create-plan <text>` | Yes | Create a new plan |
-| 1b | `/agentic.1-b.refine-plan <text>` | No | Refine plan until approved |
-| 2a | `/agentic.2-a.build-app [plan]` | Yes | Implement the plan |
-| 2b | `/agentic.2-b.iterate-app <text>` | No | Iterate on implementation |
-| 3 | `/agentic.3.archive [plan]` | Yes | Archive plan and update specs |
-| 4 | `/agentic.4.deploy` | Yes | Update docs and commit |
+| Phase | Command                           | Required | Description                   |
+| ----- | --------------------------------- | -------- | ----------------------------- |
+| 0     | `/agentic.0.initiate <text>`      | Yes      | Initialize the framework      |
+| 1a    | `/agentic.1-a.create-plan <text>` | Yes      | Create a new plan             |
+| 1b    | `/agentic.1-b.refine-plan <text>` | No       | Refine plan until approved    |
+| 2a    | `/agentic.2-a.build-app [plan]`   | Yes      | Implement the plan            |
+| 2b    | `/agentic.2-b.iterate-app <text>` | No       | Iterate on implementation     |
+| 3     | `/agentic.3.archive [plan]`       | Yes      | Archive plan and update specs |
+| 4     | `/agentic.4.deploy`               | Yes      | Update docs and commit        |
 
 ---
 
@@ -140,19 +140,23 @@ flowchart TD
 **Purpose:** Initialize the agentic framework in a repository.
 
 **Prerequisites:**
+
 - Git must be initialized (`.git/` exists)
 - If `AGENTS.md` or `CONSTITUTION.md` exist, confirm before overwriting
 
 **Actions:**
+
 1. Analyze repository (read README, config files)
 2. Create/update `CONSTITUTION.md` with project rules
 3. Create `AGENTS.md` in repository root
 
 **Outputs:**
+
 - `.agentic/memories/CONSTITUTION.md`
 - `AGENTS.md`
 
 **Rules:**
+
 - Do NOT write any code in this phase
 - Ask questions if project context is unclear
 
@@ -163,10 +167,12 @@ flowchart TD
 **Purpose:** Create a structured plan for a change request.
 
 **Prerequisites:**
+
 - `.agentic/memories/` and `.agentic/templates/plans/` must exist
 - User input must be clear enough to understand scope
 
 **Actions:**
+
 1. Read all files in `.agentic/memories/`
 2. Read all templates in `.agentic/templates/plans/`
 3. Generate plan name (max 6 words, dash-separated)
@@ -174,12 +180,14 @@ flowchart TD
 5. Render templates to create plan files
 
 **Outputs:**
+
 - `.agentic/plans/<name>/proposal.md`
 - `.agentic/plans/<name>/tasks.md`
 - `.agentic/plans/<name>/tests.md`
 - `.agentic/plans/<name>/specs.md`
 
 **Rules:**
+
 - `proposal.md` is NON-TECHNICAL (what, not how)
 - `tasks.md` is TECHNICAL (how to implement)
 - All four files must use the same `name` value
@@ -196,10 +204,12 @@ flowchart TD
 **When to skip:** When the plan from 1a already meets expectations.
 
 **Prerequisites:**
+
 - Plan must exist in `.agentic/plans/`
 - User feedback must be clear
 
 **Actions:**
+
 1. Read all files in `.agentic/memories/`
 2. Read current plan files
 3. Analyze user feedback
@@ -208,6 +218,7 @@ flowchart TD
 6. Repeat until user approves
 
 **Revision Checklist:**
+
 - [ ] All files use the same plan name
 - [ ] No placeholder text or TODOs remain
 - [ ] Requirements are specific and measurable
@@ -215,6 +226,7 @@ flowchart TD
 - [ ] Each criterion has a corresponding test
 
 **Rules:**
+
 - Do NOT write any implementation code
 - Do NOT modify files outside the plan directory
 - Keep all four plan files in sync
@@ -227,10 +239,12 @@ flowchart TD
 **Purpose:** Implement minimum viable code for a plan.
 
 **Prerequisites:**
+
 - Valid plan must exist in `.agentic/plans/`
 - If multiple plans exist, user must specify which one
 
 **Actions:**
+
 1. Read all files in `.agentic/memories/`
 2. Read the complete plan
 3. Implement code following `tasks.md`
@@ -239,17 +253,22 @@ flowchart TD
 6. Verify all acceptance criteria are met
 
 **Progress Tracking Format:**
+
 ```markdown
 ## Prerequisites
+
 - [x] Database connection is configured
 - [ ] Environment variables set
 
 ## Implementation Steps
+
 ### Step 0: Create User Model
+
 - [x] Completed
 ```
 
 **Rules:**
+
 - Follow existing code patterns
 - Write MINIMAL code - only what's needed
 - Do NOT modify specs (that happens in archive phase)
@@ -267,20 +286,24 @@ flowchart TD
 **When to skip:** When implementation from 2a already works correctly.
 
 **Prerequisites:**
+
 - Active plan with in-progress tasks
 - Clear feedback from user
 
 **Scope Check:**
+
 - **Within original plan** → Proceed with changes
 - **Beyond original scope** → Suggest creating a new plan
 
 **When to Suggest New Plan:**
+
 - Feedback introduces entirely new features
 - Requires architectural changes beyond the plan
 - Would significantly delay current plan
 - Conflicts with original acceptance criteria
 
 **Rules:**
+
 - Keep changes focused on the feedback
 - Do NOT scope-creep beyond the original plan
 - Run tests after changes to verify no regressions
@@ -292,16 +315,19 @@ flowchart TD
 **Purpose:** Archive completed plan and update specifications.
 
 **Prerequisites:**
+
 - Plan must be COMPLETE (all criteria met, all tests pass, all tasks done)
 - Plan must contain all four files
 
 **Completion Verification:**
+
 - [ ] All acceptance criteria in `proposal.md` are checked
 - [ ] All tests in `tests.md` pass
 - [ ] All steps in `tasks.md` are marked `[x]`
 - [ ] Code has been reviewed (if applicable)
 
 **Actions:**
+
 1. Read all files in `.agentic/memories/`
 2. Read all templates in `.agentic/templates/specs/`
 3. Verify plan completion
@@ -313,22 +339,27 @@ flowchart TD
 9. Delete plan directory
 
 **Spec Update Types:**
+
 - **Update** - Modify existing content
 - **Extend** - Add new sections or items
 - **Revise** - Rewrite sections significantly
 
 **Changelog Entry Format:**
+
 ```markdown
 ## <plan-name>
 
 ### Changed
+
 - Description of what changed
 
 ### Added
+
 - Description of what was added
 ```
 
 **Rules:**
+
 - NEVER archive incomplete plans
 - Preserve spec history in `changelog.md`
 - Ask for confirmation before deleting plan directory
@@ -340,10 +371,12 @@ flowchart TD
 **Purpose:** Update documentation and create git commit.
 
 **Prerequisites:**
+
 - All tests must pass
 - No sensitive data in staged files
 
 **Actions:**
+
 1. Read all files in `.agentic/memories/`
 2. Review git status and diff
 3. Identify documentation that needs updates
@@ -359,12 +392,14 @@ flowchart TD
 | CHANGELOG.md | If project maintains a changelog |
 
 **Documentation Should NOT be Updated:**
+
 - Internal refactoring with no external impact
 - Bug fixes that don't change expected behavior
 - Test-only changes
 - Code style or formatting changes
 
 **Commit Message Format:**
+
 ```
 <type>: <short summary>
 
@@ -378,6 +413,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 
 **Rules:**
+
 - Do NOT push to remote unless explicitly requested
 - Stage files selectively (avoid `git add .`)
 - Always include "Co-Authored-By" attribution
@@ -390,92 +426,92 @@ Templates use Handlebars syntax (`.hbs` files). AI must render templates to plai
 
 ### Handlebars Syntax
 
-| Syntax | Description |
-|--------|-------------|
-| `{{variable}}` | Replace with value |
-| `{{#each array}}...{{/each}}` | Loop over items |
-| `{{this}}` | Current item in loop |
-| `{{@index}}` | Current index (0-based) |
-| `{{#if condition}}...{{/if}}` | Conditional block |
+| Syntax                        | Description             |
+| ----------------------------- | ----------------------- |
+| `{{variable}}`                | Replace with value      |
+| `{{#each array}}...{{/each}}` | Loop over items         |
+| `{{this}}`                    | Current item in loop    |
+| `{{@index}}`                  | Current index (0-based) |
+| `{{#if condition}}...{{/if}}` | Conditional block       |
 
 ### Template Variables
 
 #### proposal.md.hbs
 
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Plan name, dash-separated |
-| `objective` | string | Yes | One-sentence goal |
-| `description` | string | Yes | User-focused explanation (non-technical) |
-| `criteria` | string[] | Yes | Measurable acceptance criteria |
-| `out_of_scope` | string | No | What this plan will NOT do |
-| `references` | object[] | No | Links with `title` and `url` |
+| Variable       | Type     | Required | Description                              |
+| -------------- | -------- | -------- | ---------------------------------------- |
+| `name`         | string   | Yes      | Plan name, dash-separated                |
+| `objective`    | string   | Yes      | One-sentence goal                        |
+| `description`  | string   | Yes      | User-focused explanation (non-technical) |
+| `criteria`     | string[] | Yes      | Measurable acceptance criteria           |
+| `out_of_scope` | string   | No       | What this plan will NOT do               |
+| `references`   | object[] | No       | Links with `title` and `url`             |
 
 #### tasks.md.hbs
 
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Same as proposal |
-| `prerequisites` | string[] | No | Pre-conditions to verify |
-| `steps` | object[] | Yes | Steps with `title`, `description`, `files`, `changes` |
-| `verification` | string[] | Yes | Final checks |
+| Variable        | Type     | Required | Description                                           |
+| --------------- | -------- | -------- | ----------------------------------------------------- |
+| `name`          | string   | Yes      | Same as proposal                                      |
+| `prerequisites` | string[] | No       | Pre-conditions to verify                              |
+| `steps`         | object[] | Yes      | Steps with `title`, `description`, `files`, `changes` |
+| `verification`  | string[] | Yes      | Final checks                                          |
 
 #### tests.md.hbs
 
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Same as proposal |
-| `unit_tests` | string[] | No | Function/component tests |
-| `integration_tests` | string[] | No | Component interaction tests |
-| `e2e_tests` | string[] | No | Full flow tests |
-| `manual_tests` | string[] | No | Manual verification steps |
-| `edge_cases` | string[] | No | Boundary conditions |
-| `commands` | object[] | No | Commands with `description` and `command` |
+| Variable            | Type     | Required | Description                               |
+| ------------------- | -------- | -------- | ----------------------------------------- |
+| `name`              | string   | Yes      | Same as proposal                          |
+| `unit_tests`        | string[] | No       | Function/component tests                  |
+| `integration_tests` | string[] | No       | Component interaction tests               |
+| `e2e_tests`         | string[] | No       | Full flow tests                           |
+| `manual_tests`      | string[] | No       | Manual verification steps                 |
+| `edge_cases`        | string[] | No       | Boundary conditions                       |
+| `commands`          | object[] | No       | Commands with `description` and `command` |
 
 #### specs.md.hbs
 
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Same as proposal |
-| `modified_specs` | object[] | No | Specs with `name`, `slug`, `change_type`, `description` |
-| `new_specs` | object[] | No | New specs with `name`, `purpose` |
-| `deprecated_specs` | object[] | No | Specs with `name`, `reason`, `replacement` |
-| `no_changes` | object[] | No | Unaffected specs with `name`, `reason` |
+| Variable           | Type     | Required | Description                                             |
+| ------------------ | -------- | -------- | ------------------------------------------------------- |
+| `name`             | string   | Yes      | Same as proposal                                        |
+| `modified_specs`   | object[] | No       | Specs with `name`, `slug`, `change_type`, `description` |
+| `new_specs`        | object[] | No       | New specs with `name`, `purpose`                        |
+| `deprecated_specs` | object[] | No       | Specs with `name`, `reason`, `replacement`              |
+| `no_changes`       | object[] | No       | Unaffected specs with `name`, `reason`                  |
 
 #### spec.md.hbs
 
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Spec name |
-| `purpose` | string | Yes | One-sentence purpose |
-| `constraints` | string[] | No | Constraints or limitations |
-| `examples` | object[] | No | Examples with `language` and `code` |
-| `notes` | string | No | Additional notes |
+| Variable      | Type     | Required | Description                         |
+| ------------- | -------- | -------- | ----------------------------------- |
+| `name`        | string   | Yes      | Spec name                           |
+| `purpose`     | string   | Yes      | One-sentence purpose                |
+| `constraints` | string[] | No       | Constraints or limitations          |
+| `examples`    | object[] | No       | Examples with `language` and `code` |
+| `notes`       | string   | No       | Additional notes                    |
 
 #### changelog.md.hbs
 
-| Variable | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Spec name |
-| `versions` | object[] | No | Entries with `version`, `added`, `changed`, `deprecated`, `removed`, `fixed` |
+| Variable   | Type     | Required | Description                                                                  |
+| ---------- | -------- | -------- | ---------------------------------------------------------------------------- |
+| `name`     | string   | Yes      | Spec name                                                                    |
+| `versions` | object[] | No       | Entries with `version`, `added`, `changed`, `deprecated`, `removed`, `fixed` |
 
 ---
 
 ## Naming Conventions
 
-| Type | Max Words | Format | Examples |
-|------|-----------|--------|----------|
-| Plan | 6 | lowercase, dash-separated | `add-user-auth`, `fix-login-bug`, `update-api-endpoints` |
-| Spec | 4 | lowercase, dash-separated, with category prefix | `tech-database`, `biz-user-auth` |
+| Type | Max Words | Format                                          | Examples                                                 |
+| ---- | --------- | ----------------------------------------------- | -------------------------------------------------------- |
+| Plan | 6         | lowercase, dash-separated                       | `add-user-auth`, `fix-login-bug`, `update-api-endpoints` |
+| Spec | 4         | lowercase, dash-separated, with category prefix | `tech-database`, `biz-user-auth`                         |
 
 ### Spec Category Prefixes
 
 Specs must use a category prefix to indicate their domain:
 
-| Prefix | Category | Description | Examples |
-|--------|----------|-------------|----------|
+| Prefix  | Category  | Description                                                         | Examples                                                         |
+| ------- | --------- | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `tech-` | Technical | Infrastructure, architecture, techstack, database, APIs, deployment | `tech-database`, `tech-api-routes`, `tech-infra`, `tech-caching` |
-| `biz-` | Business | UI/UX design, business logic, user flows, domain rules, features | `biz-user-auth`, `biz-checkout-flow`, `biz-pricing-rules` |
+| `biz-`  | Business  | UI/UX design, business logic, user flows, domain rules, features    | `biz-user-auth`, `biz-checkout-flow`, `biz-pricing-rules`        |
 
 **Guidelines for choosing the prefix:**
 
@@ -503,26 +539,26 @@ Specs must use a category prefix to indicate their domain:
 
 ### Plan Files (in `plans/<name>/`)
 
-| File | Purpose | Technical? |
-|------|---------|------------|
-| `proposal.md` | WHAT to build - objective, criteria, scope | No |
-| `tasks.md` | HOW to build - implementation steps, files | Yes |
-| `tests.md` | HOW to verify - test plan, edge cases | Yes |
-| `specs.md` | WHAT affects - list of affected specifications | No |
+| File          | Purpose                                        | Technical? |
+| ------------- | ---------------------------------------------- | ---------- |
+| `proposal.md` | WHAT to build - objective, criteria, scope     | No         |
+| `tasks.md`    | HOW to build - implementation steps, files     | Yes        |
+| `tests.md`    | HOW to verify - test plan, edge cases          | Yes        |
+| `specs.md`    | WHAT affects - list of affected specifications | No         |
 
 ### Spec Files (in `specs/<name>/`)
 
-| File | Purpose |
-|------|---------|
-| `spec.md` | Canonical definition - purpose, requirements, constraints |
-| `changelog.md` | History - all changes to this spec |
+| File           | Purpose                                                   |
+| -------------- | --------------------------------------------------------- |
+| `spec.md`      | Canonical definition - purpose, requirements, constraints |
+| `changelog.md` | History - all changes to this spec                        |
 
 ### Memory Files (in `memories/`)
 
-| File | Purpose |
-|------|---------|
+| File              | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
 | `CONSTITUTION.md` | Rules AI must ALWAYS follow (code style, testing, security) |
-| `<name>.md` | Additional context (domain knowledge, decisions) |
+| `<name>.md`       | Additional context (domain knowledge, decisions)            |
 
 ---
 
@@ -577,29 +613,34 @@ User wants to commit?
 ### Checklist for AI
 
 Before each phase:
+
 - [ ] Read all files in `.agentic/memories/`
 - [ ] Verify prerequisites for the phase
 - [ ] Confirm user intent if ambiguous
 
 During planning (1a, 1b):
+
 - [ ] Keep `proposal.md` non-technical
 - [ ] Keep `tasks.md` technical
 - [ ] Ensure all files use same plan name
 - [ ] Link to existing specs in `specs.md`
 
 During building (2a, 2b):
+
 - [ ] Follow existing code patterns
 - [ ] Write minimal code
 - [ ] Update `tasks.md` checkboxes
 - [ ] Run tests frequently
 
 During archive (3):
+
 - [ ] Verify ALL completion criteria
 - [ ] Update affected specs
 - [ ] Add changelog entries
 - [ ] Confirm before deleting plan
 
 During deploy (4):
+
 - [ ] Update only necessary documentation
 - [ ] Stage files selectively
 - [ ] Include proper commit message format

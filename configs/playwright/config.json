@@ -1,10 +1,10 @@
 {
-  "browser": {
-    "browserName": "chromium",
-    "isolated": true
-  },
-  "server": {
-    "allowedHosts": [ "localhost" ]
-  },
-  "codegen": "typescript"
+	"browser": {
+		"browserName": "chromium",
+		"isolated": true
+	},
+	"server": {
+		"allowedHosts": ["localhost"]
+	},
+	"codegen": "typescript"
 }

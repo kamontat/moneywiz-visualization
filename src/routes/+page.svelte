@@ -14,7 +14,7 @@
 		type TagFilter
 	} from '$lib/analytics';
 
-    import Dashboard from '$components/organisms/Dashboard.svelte';
+	import Dashboard from '$components/organisms/Dashboard.svelte';
 
 	let csv = $state<CsvState>({
 		data: null,
@@ -75,33 +75,36 @@
 <!-- We use the Dashboard Organism to handle layout when data is present -->
 <!-- Note: Error states are handled in layout or via toasts, here we handle empty vs loaded -->
 {#if csv.data}
-    <Dashboard
-        csvFileName={csv.fileName}
-        dateRange={dateRange}
-        rowCount={csv.data.rows?.length ?? 0}
-        filteredCount={filteredRows.length}
-        thbCount={thbRows.length}
-
-        bind:filterStart
-        bind:filterEnd
-        bind:tagFilters
-
-        thbRows={thbRows}
-        totals={totals}
-        breakdown={breakdown}
-        tsData={tsData}
-        topCategories={topCategories}
-        previewData={{ headers: csv.data.headers, rows: filteredRows }}
-    />
+	<Dashboard
+		csvFileName={csv.fileName}
+		{dateRange}
+		rowCount={csv.data.rows?.length ?? 0}
+		filteredCount={filteredRows.length}
+		thbCount={thbRows.length}
+		bind:filterStart
+		bind:filterEnd
+		bind:tagFilters
+		{thbRows}
+		{totals}
+		{breakdown}
+		{tsData}
+		{topCategories}
+		previewData={{ headers: csv.data.headers, rows: filteredRows }}
+	/>
 {:else}
-    <div class="flex flex-col items-center justify-center p-12 text-center bg-mw-surface border border-mw-border border-dashed rounded-xl">
-        <h1 class="text-2xl font-bold text-mw-text-main mb-2">Welcome to MoneyWiz Report</h1>
-        <p class="text-mw-text-muted max-w-md">Upload a CSV export from MoneyWiz to visualize your financial data instantly. Your data stays on your device.</p>
-    </div>
+	<div
+		class="flex flex-col items-center justify-center rounded-xl border border-dashed border-mw-border bg-mw-surface p-12 text-center"
+	>
+		<h1 class="mb-2 text-2xl font-bold text-mw-text-main">Welcome to MoneyWiz Report</h1>
+		<p class="max-w-md text-mw-text-muted">
+			Upload a CSV export from MoneyWiz to visualize your financial data instantly. Your data stays
+			on your device.
+		</p>
+	</div>
 {/if}
 
 <!-- Keep a small blank canvas to satisfy existing tests and layout spacing -->
-<section class="blank-canvas flex-none min-h-6" aria-hidden="true"></section>
+<section class="blank-canvas min-h-6 flex-none" aria-hidden="true"></section>
 
 <!-- Keep a small blank canvas to satisfy existing tests and layout spacing -->
-<section class="blank-canvas flex-none min-h-6" aria-hidden="true"></section>
+<section class="blank-canvas min-h-6 flex-none" aria-hidden="true"></section>

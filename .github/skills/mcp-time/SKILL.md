@@ -14,6 +14,7 @@ The Time MCP server provides tools to retrieve the current time in various forma
 ## When to Use This Skill
 
 Trigger this skill when:
+
 - Date/time calculations are needed
 - Timezone conversions are required
 - Scheduling and time-based logic is being implemented

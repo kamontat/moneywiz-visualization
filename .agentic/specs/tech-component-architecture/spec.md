@@ -20,6 +20,7 @@ The application SHALL organize all UI components into three strict categories fo
 - **And** atoms MAY include: MoneyLogo
 
 **Examples of Atoms:**
+
 - `Button`: Generic button with variants (primary, danger, ghost, tab, icon)
 - `Title`: Heading component with configurable levels (h1-h6)
 - `Text`: Text component with variants (body, small, caption)
@@ -35,6 +36,7 @@ The application SHALL organize all UI components into three strict categories fo
 - **And** molecules MUST include: UploadCsv, ClearCsv, Header, NavigationBar, NavigationItem, DashboardPanel, DashboardContainer
 
 **Examples of Molecules:**
+
 - `UploadCsv`: File upload button using Button atom
 - `ClearCsv`: Clear data button using Button atom
 - `Header`: Application header wrapper with glassmorphism
@@ -52,6 +54,7 @@ The application SHALL organize all UI components into three strict categories fo
 - **And** organisms MUST include: Dashboard, AppHeader, PageTitle, QuickSummary, OverviewTab, PreviewTab, FilterPanel, CategoryBreakdown, TopCategoriesChart
 
 **Examples of Organisms:**
+
 - `Dashboard`: Main dashboard orchestrator
 - `AppHeader`: Application header with actions and branding
 - `PageTitle`: Page title with filename display
@@ -135,27 +138,27 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
 
 ```svelte
 <script lang="ts">
-    import type { Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 
-    interface Props {
-        type?: 'button' | 'submit' | 'reset';
-        variant?: 'primary' | 'danger' | 'ghost';
-        disabled?: boolean;
-        onclick?: (e: MouseEvent) => void;
-        children?: Snippet;
-    }
+	interface Props {
+		type?: 'button' | 'submit' | 'reset';
+		variant?: 'primary' | 'danger' | 'ghost';
+		disabled?: boolean;
+		onclick?: (e: MouseEvent) => void;
+		children?: Snippet;
+	}
 
-    let {
-        type = 'button',
-        variant = 'primary',
-        disabled = false,
-        onclick,
-        children
-    }: Props = $props();
+	let {
+		type = 'button',
+		variant = 'primary',
+		disabled = false,
+		onclick,
+		children
+	}: Props = $props();
 </script>
 
 <button {type} {disabled} {onclick}>
-    {@render children?.()}
+	{@render children?.()}
 </button>
 ```
 
@@ -163,21 +166,21 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
 
 ```svelte
 <script lang="ts">
-    import Button from '$components/atoms/Button.svelte';
-    import UploadIcon from '@iconify-svelte/lucide/upload';
+	import Button from '$components/atoms/Button.svelte';
+	import UploadIcon from '@iconify-svelte/lucide/upload';
 
-    interface Props {
-        onparsed?: (detail: { file: File; data: any }) => void;
-    }
+	interface Props {
+		onparsed?: (detail: { file: File; data: any }) => void;
+	}
 
-    let { onparsed }: Props = $props();
+	let { onparsed }: Props = $props();
 
-    // ... upload logic
+	// ... upload logic
 </script>
 
 <Button variant="primary" onclick={openPicker}>
-    <UploadIcon />
-    <span>Upload CSV</span>
+	<UploadIcon />
+	<span>Upload CSV</span>
 </Button>
 ```
 
@@ -185,35 +188,37 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
 
 ```svelte
 <script lang="ts">
-    import QuickSummary from './QuickSummary.svelte';
-    import NavigationBar from '$components/molecules/NavigationBar.svelte';
-    import OverviewTab from './OverviewTab.svelte';
-    import PreviewTab from './PreviewTab.svelte';
+	import QuickSummary from './QuickSummary.svelte';
+	import NavigationBar from '$components/molecules/NavigationBar.svelte';
+	import OverviewTab from './OverviewTab.svelte';
+	import PreviewTab from './PreviewTab.svelte';
 
-    // Complex orchestration logic
-    let activeTab = $state('overview');
+	// Complex orchestration logic
+	let activeTab = $state('overview');
 </script>
 
 <div>
-    <QuickSummary {totals} />
-    <NavigationBar bind:activeTab />
-    {#if activeTab === 'overview'}
-        <OverviewTab {...data} />
-    {:else}
-        <PreviewTab {...data} />
-    {/if}
+	<QuickSummary {totals} />
+	<NavigationBar bind:activeTab />
+	{#if activeTab === 'overview'}
+		<OverviewTab {...data} />
+	{:else}
+		<PreviewTab {...data} />
+	{/if}
 </div>
 ```
 
 ## Notes
 
 This architecture ensures:
+
 - **Reusability**: Atoms and molecules can be used throughout the app
 - **Maintainability**: Clear boundaries prevent spaghetti code
 - **Testability**: Co-located tests encourage test coverage
 - **Scalability**: Well-defined hierarchy supports growth
 
 When in doubt about component placement:
+
 1. If it's generic and self-contained → Atom
 2. If it combines atoms for a specific purpose → Molecule
 3. If it handles complex logic or orchestrates multiple components → Organism

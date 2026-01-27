@@ -87,7 +87,7 @@ export const log = {
 	pageDashboard: createLogger('page').sub('dashboard').build(),
 
 	/** Data fetching */
-	fetch: createLogger('fetch').build(),
+	fetch: createLogger('fetch').build()
 };
 
 export default log;

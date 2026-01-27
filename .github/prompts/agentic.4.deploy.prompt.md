@@ -7,6 +7,7 @@ Update documentation and create git commit.
 None required by default. This phase uses context from the conversation and git state.
 
 The user may optionally provide:
+
 - Custom commit message
 - Specific files to include/exclude
 - Request to skip documentation updates
@@ -74,6 +75,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 
 Example:
+
 ```
 feat: add user authentication system
 

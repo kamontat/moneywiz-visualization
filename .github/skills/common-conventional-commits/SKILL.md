@@ -40,18 +40,18 @@ Create standardized, semantic git commits using the Conventional Commits specifi
 
 Common scopes for this SvelteKit project:
 
-| Scope                | Files Affected                                              |
-| -------------------- | ----------------------------------------------------------- |
-| `csv`                | CSV upload flow, CSV parser, `src/lib/csv.ts`, CSV handling |
-| `charts`             | Chart components (`DailyExpensesChart`, etc.)               |
-| `dashboard`          | Main dashboard (`src/routes/+page.svelte`)                  |
-| `header`             | `AppHeader.svelte`, navigation, clear button                |
-| `analytics`          | Business logic, `src/lib/analytics.ts`, calculations        |
-| `store`              | State management, `src/lib/stores/csv.ts`                   |
-| `styling`            | Tailwind CSS, component styles                              |
-| `test`               | Unit tests (`.spec.ts` files)                               |
-| `e2e`                | Playwright tests in `e2e/` directory                        |
-| `config`             | All kinds of configuration                                  |
+| Scope       | Files Affected                                              |
+| ----------- | ----------------------------------------------------------- |
+| `csv`       | CSV upload flow, CSV parser, `src/lib/csv.ts`, CSV handling |
+| `charts`    | Chart components (`DailyExpensesChart`, etc.)               |
+| `dashboard` | Main dashboard (`src/routes/+page.svelte`)                  |
+| `header`    | `AppHeader.svelte`, navigation, clear button                |
+| `analytics` | Business logic, `src/lib/analytics.ts`, calculations        |
+| `store`     | State management, `src/lib/stores/csv.ts`                   |
+| `styling`   | Tailwind CSS, component styles                              |
+| `test`      | Unit tests (`.spec.ts` files)                               |
+| `e2e`       | Playwright tests in `e2e/` directory                        |
+| `config`    | All kinds of configuration                                  |
 
 ## Breaking Changes
 

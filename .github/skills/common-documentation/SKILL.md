@@ -17,22 +17,25 @@ This skill provides guidelines for writing, formatting, and validating Markdown 
 ## Markdown Content Rules
 
 ### 1. Structure & Headings
+
 - **No H1 in Body**: Do not use `# Heading`. The title is typically generated from metadata or the filename.
 - **Hierarchy**: Use `##` (H2) for main sections and `###` (H3) for subsections.
 - **Nested Levels**: Avoid going deeper than H4. If you need H5, consider restructuring the document or splitting it into multiple files.
 
 ### 2. Formatting
+
 - **Lists**:
   - Use `-` for bullet points.
   - Use `1.` for numbered lists.
   - Indent nested lists with exactly two spaces.
-- **Code Blocks**: Always use fenced code blocks (```) with a language identifier (e.g., ```typescript).
+- **Code Blocks**: Always use fenced code blocks (`) with a language identifier (e.g., `typescript).
 - **Line Length**:
   - Keep lines under **80 characters** for better readability in simple editors.
   - Hard limit of **400 characters** for validators.
 - **Whitespace**: Use single blank lines to separate paragraphs and sections. Avoid excessive vertical whitespace.
 
 ### 3. Media & Links
+
 - **Links**: Use descriptive link text: `[Download the report](url)` instead of `[click here](url)`.
 - **Images**: Always include meaningful alt text for accessibility: `![Dashboard overview showing revenue charts](url)`.
 - **Tables**: Use standard Markdown table syntax. Ensure columns are aligned in the source for maintainability.
@@ -43,16 +46,16 @@ When a file requires metadata (e.g., blog posts, skill definitions, instructions
 
 ```yaml
 ---
-post_title: "Title Here"
-author1: "Author Name"
-post_slug: "url-friendly-slug"
-microsoft_alias: "alias"
-featured_image: "url"
-categories: ["Category"]
-tags: ["Tag1", "Tag2"]
-ai_note: "AI was/was not used"
-summary: "Brief description"
-post_date: "YYYY-MM-DD"
+post_title: 'Title Here'
+author1: 'Author Name'
+post_slug: 'url-friendly-slug'
+microsoft_alias: 'alias'
+featured_image: 'url'
+categories: ['Category']
+tags: ['Tag1', 'Tag2']
+ai_note: 'AI was/was not used'
+summary: 'Brief description'
+post_date: 'YYYY-MM-DD'
 ---
 ```
 
