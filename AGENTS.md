@@ -66,15 +66,6 @@ Use prompts in `.github/prompts/` to guide the workflow:
 - **Minimal implementation** — Only what's needed for acceptance criteria
 - **No scope creep** — Stay within plan boundaries
 
-## Related Systems
-
-This repository also uses **OpenSpec** (`openspec/`) for spec-driven development. The two systems serve different purposes:
-
-- **Agentic Framework** (`.agentic/`) — AI workflow management
-- **OpenSpec** (`openspec/`) — Specification and change tracking
-
-See [openspec/AGENTS.md](openspec/AGENTS.md) for OpenSpec documentation.
-
 ## Commands
 
 ```bash

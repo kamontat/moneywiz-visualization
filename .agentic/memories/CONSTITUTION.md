@@ -29,7 +29,7 @@ Rules that AI agents **must always respect** when working in this repository.
 
 - **README.md** — Keep updated with features and usage
 - **Inline comments** — Use JSDoc for public functions
-- **Specs** — Document requirements in `openspec/specs/` or `.agentic/specs/`
+- **Specs** — Document requirements in `.agentic/specs/`
 
 ## Git & Commits
 
