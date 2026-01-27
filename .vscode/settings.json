@@ -14,8 +14,7 @@
 		"bun": true,
 		"git add": true,
 		"git commit": true,
-		"mkdir": true,
-		"openspec": true
+		"mkdir": true
 	},
 	"git.branchProtectionPrompt": "alwaysCommit"
 }
