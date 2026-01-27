@@ -14,6 +14,9 @@
 		"test": "bun run test:unit -- --run && bun run test:e2e",
 		"test:e2e": "playwright test"
 	},
+	"dependencies": {
+		"debug": "^4.4.3"
+	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.2.7",
 		"@iconify-svelte/lucide": "^1.0.17",
@@ -36,8 +39,5 @@
 		"vite-plugin-devtools-json": "^1.0.0",
 		"vitest": "^4.0.15",
 		"vitest-browser-svelte": "^2.0.1"
-	},
-	"dependencies": {
-		"debug": "^4.4.3"
 	}
 }
