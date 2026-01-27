@@ -428,6 +428,6 @@ export function calculateIncomeExpenseTimeSeries(
 		income: incomeData,
 		expenses: expensesData,
 		net: netData,
-		mode
+		mode,
 	};
 }

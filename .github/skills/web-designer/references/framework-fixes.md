@@ -143,10 +143,10 @@ module.exports = {
 		extend: {
 			spacing: {
 				18: '4.5rem',
-				22: '5.5rem'
-			}
-		}
-	}
+				22: '5.5rem',
+			},
+		},
+	},
 };
 ```
 
@@ -257,13 +257,13 @@ export const theme = {
 	colors: {
 		primary: '#2563eb',
 		text: '#1f2937',
-		textLight: '#4b5563' // Improved contrast
+		textLight: '#4b5563', // Improved contrast
 	},
 	spacing: {
 		sm: '0.5rem',
 		md: '1rem',
-		lg: '1.5rem'
-	}
+		lg: '1.5rem',
+	},
 };
 
 // Usage

@@ -29,17 +29,17 @@ export default defineConfig(
 				'warn',
 				{
 					argsIgnorePattern: '^_',
-					varsIgnorePattern: '^_'
-				}
-			]
-		}
+					varsIgnorePattern: '^_',
+				},
+			],
+		},
 	},
 	{
 		files: ['**/*.spec.ts'],
 		rules: {
 			// Allow using any in test files
-			'@typescript-eslint/no-explicit-any': 'off'
-		}
+			'@typescript-eslint/no-explicit-any': 'off',
+		},
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
@@ -48,14 +48,14 @@ export default defineConfig(
 				projectService: true,
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser,
-				svelteConfig
-			}
+				svelteConfig,
+			},
 		},
 		rules: {
 			// Downgrade Svelte-specific rules to warnings for existing code
 			'svelte/require-each-key': 'warn',
 			'svelte/prefer-svelte-reactivity': 'warn',
-			'svelte/no-navigation-without-resolve': 'warn'
-		}
+			'svelte/no-navigation-without-resolve': 'warn',
+		},
 	}
 );

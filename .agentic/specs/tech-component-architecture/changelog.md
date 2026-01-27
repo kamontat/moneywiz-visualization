@@ -2,6 +2,16 @@
 
 All notable changes to this specification.
 
+## integrate-prettier-eslint
+
+### Added
+
+- ESLint validation requirement for all components
+- Prettier formatting requirement for all components
+- Reference to tech-code-quality spec for linting rules
+
+---
+
 ## refactor-component-hierarchy
 
 ### Added

@@ -3,7 +3,7 @@
 
 	let {
 		children,
-		class: className = ''
+		class: className = '',
 	}: {
 		children?: Snippet;
 		class?: string;

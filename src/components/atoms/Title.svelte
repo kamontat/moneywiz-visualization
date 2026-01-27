@@ -13,7 +13,7 @@
 		3: 'text-lg font-semibold',
 		4: 'text-base font-semibold',
 		5: 'text-sm font-semibold',
-		6: 'text-xs font-semibold'
+		6: 'text-xs font-semibold',
 	};
 	const baseClass = 'text-mw-text-main m-0';
 </script>

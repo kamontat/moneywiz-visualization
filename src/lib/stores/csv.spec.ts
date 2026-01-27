@@ -7,7 +7,7 @@ const localStorageMock = {
 	getItem: (key: string) => storeData.get(key) || null,
 	setItem: (key: string, value: string) => storeData.set(key, value),
 	removeItem: (key: string) => storeData.delete(key),
-	clear: () => storeData.clear()
+	clear: () => storeData.clear(),
 };
 
 vi.stubGlobal('localStorage', localStorageMock);
@@ -40,9 +40,9 @@ describe('csvStore', () => {
 			fileName: 'test.csv',
 			data: {
 				headers: ['Col1'],
-				rows: [{ Col1: 'Val1' }]
+				rows: [{ Col1: 'Val1' }],
 			},
-			tagFilters: []
+			tagFilters: [],
 		};
 
 		csvStore.set(newData);
@@ -56,9 +56,9 @@ describe('csvStore', () => {
 			fileName: 'persist.csv',
 			data: {
 				headers: ['A'],
-				rows: [{ A: '1' }]
+				rows: [{ A: '1' }],
 			},
-			tagFilters: [{ category: 'G', values: ['V'], mode: 'include' }]
+			tagFilters: [{ category: 'G', values: ['V'], mode: 'include' }],
 		};
 
 		csvStore.set(newData);
@@ -71,7 +71,7 @@ describe('csvStore', () => {
 		csvStore.set({
 			fileName: 'test.csv',
 			data: { headers: [], rows: [] },
-			tagFilters: []
+			tagFilters: [],
 		});
 
 		expect(localStorage.getItem('mw_csv_data')).not.toBeNull();
@@ -91,7 +91,7 @@ describe('csvStore', () => {
 		csvStore.set({
 			fileName: 'test.csv',
 			data: { headers: [], rows: [] },
-			tagFilters: []
+			tagFilters: [],
 		});
 
 		const filters = [{ category: 'Group', values: ['A'], mode: 'include' }] as any;
@@ -106,7 +106,7 @@ describe('csvStore', () => {
 		csvStore.set({
 			fileName: 'test.csv',
 			data: { headers: [], rows: [] },
-			tagFilters: [{ category: 'Group', values: ['A'], mode: 'include' }]
+			tagFilters: [{ category: 'Group', values: ['A'], mode: 'include' }],
 		});
 
 		csvStore.clearTagFilters();

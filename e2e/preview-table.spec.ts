@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('CSV Preview Table Layout', () => {
-	test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 	});
 
-	test('preview table displays all columns without wrapping headers', async ({ page }) => {
+  test('preview table displays all columns without wrapping headers', async ({ page }) => {
 		// Upload CSV file to show preview table
 		const fileInput = page.locator('input[type="file"]').first();
 		await fileInput.setInputFiles('static/data/report.csv');
@@ -69,7 +69,7 @@ test.describe('CSV Preview Table Layout', () => {
 		}
 	});
 
-	test('tab switching between Overview and Preview works', async ({ page }) => {
+  test('tab switching between Overview and Preview works', async ({ page }) => {
 		// Upload CSV file
 		const fileInput = page.locator('input[type="file"]').first();
 		await fileInput.setInputFiles('static/data/report.csv');
@@ -96,7 +96,7 @@ test.describe('CSV Preview Table Layout', () => {
 		await expect(previewTab).not.toHaveAttribute('aria-current', 'page');
 	});
 
-	test('dropdown changes displayed row count', async ({ page }) => {
+  test('dropdown changes displayed row count', async ({ page }) => {
 		// Upload CSV file
 		const fileInput = page.locator('input[type="file"]').first();
 		await fileInput.setInputFiles('static/data/report.csv');

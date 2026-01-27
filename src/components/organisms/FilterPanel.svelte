@@ -10,7 +10,7 @@
 		start = $bindable(null),
 		end = $bindable(null),
 		tagFilters = $bindable([]),
-		rows = []
+		rows = [],
 	}: {
 		start: Date | null;
 		end: Date | null;

@@ -31,6 +31,6 @@ export function formatTHB(n: number): string {
 		style: 'currency',
 		currency: 'THB',
 		currencyDisplay: 'symbol',
-		maximumFractionDigits: 2
+		maximumFractionDigits: 2,
 	}).format(n);
 }

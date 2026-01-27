@@ -5,7 +5,7 @@ import { page } from 'vitest/browser';
 describe('Button Atom', () => {
 	it('renders with correct classes for primary variant', async () => {
 		const { getByRole } = page.render(Button, {
-			props: { variant: 'primary', label: 'Test Button' }
+			props: { variant: 'primary', label: 'Test Button' },
 		});
 		const btn = getByRole('button', { name: 'Test Button' });
 		await expect.element(btn).toHaveClass('bg-gradient-to-br');

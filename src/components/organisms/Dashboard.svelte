@@ -41,7 +41,7 @@
 		breakdown,
 		tsData,
 		topCategories,
-		previewData
+		previewData,
 	}: Props = $props();
 
 	let activeTab = $state('overview');

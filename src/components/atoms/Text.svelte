@@ -12,7 +12,7 @@
 		body: 'text-mw-text-main',
 		muted: 'text-mw-text-muted',
 		small: 'text-xs text-secondary',
-		error: 'text-red-500 text-sm'
+		error: 'text-red-500 text-sm',
 	};
 </script>
 

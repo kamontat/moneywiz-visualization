@@ -15,7 +15,7 @@ function createCsvStore() {
 	const normalize = (value: CsvState): CsvState => ({
 		fileName: value.fileName ?? null,
 		data: value.data ?? null,
-		tagFilters: value.tagFilters ?? []
+		tagFilters: value.tagFilters ?? [],
 	});
 
 	// Hydrate from localStorage if available
@@ -28,7 +28,7 @@ function createCsvStore() {
 				// Ensure legacy data gets empty filters
 				initialState = {
 					...parsed,
-					tagFilters: parsed.tagFilters || []
+					tagFilters: parsed.tagFilters || [],
 				};
 				log.storeCsv('hydrated from localStorage: fileName=%s', initialState.fileName);
 			}
@@ -89,7 +89,7 @@ function createCsvStore() {
 				saveToStorage(next);
 				return next;
 			});
-		}
+		},
 	};
 }
 

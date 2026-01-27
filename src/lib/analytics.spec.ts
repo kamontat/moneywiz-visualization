@@ -5,7 +5,7 @@ import type { ParsedCsv } from './csv';
 
 vi.mock('./finance', () => ({
 	parseAmountTHB: vi.fn(),
-	parseDateDDMMYYYY: vi.fn()
+	parseDateDDMMYYYY: vi.fn(),
 }));
 
 describe('analytics', () => {
@@ -20,8 +20,8 @@ describe('analytics', () => {
 				rows: [
 					{ Currency: 'THB', Amount: '100' },
 					{ Currency: 'USD', Amount: '50' },
-					{ Currency: 'thb', Amount: '20' }
-				]
+					{ Currency: 'thb', Amount: '20' },
+				],
 			};
 
 			const result = analytics.getTHBRows(data);
@@ -66,14 +66,14 @@ describe('analytics', () => {
 			const rows = [
 				{ Category: 'A', Amount: '-100' },
 				{ Category: 'B', Amount: '50' },
-				{ Category: 'A', Amount: '20' }
+				{ Category: 'A', Amount: '20' },
 			];
 
 			const result = analytics.calculateTopCategories(rows);
 
 			expect(result.items).toEqual([
 				{ name: 'A', value: 120 },
-				{ name: 'B', value: 50 }
+				{ name: 'B', value: 50 },
 			]);
 			expect(result.max).toBe(120);
 		});
@@ -86,7 +86,7 @@ describe('analytics', () => {
 				{ Category: '3', Amount: '30' },
 				{ Category: '4', Amount: '40' },
 				{ Category: '5', Amount: '50' },
-				{ Category: '6', Amount: '5' }
+				{ Category: '6', Amount: '5' },
 			];
 
 			const result = analytics.calculateTopCategories(rows);
@@ -108,7 +108,7 @@ describe('analytics', () => {
 				{ Date: '15/01/2023', Amount: '-100' },
 				{ Date: '15/01/2023', Amount: '500' },
 				{ Date: '01/01/2023', Amount: '-50' },
-				{ Date: '31/12/2022', Amount: '-200' }
+				{ Date: '31/12/2022', Amount: '-200' },
 			];
 
 			const result = analytics.calculateDailyExpenses(rows);
@@ -138,7 +138,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Date: '15/01/2023' },
 				{ Date: '01/01/2023' },
-				{ Date: '20/02/2023' }
+				{ Date: '20/02/2023' },
 			] as Record<string, string>[];
 
 			const result = analytics.getDateRange(rows);
@@ -164,7 +164,7 @@ describe('analytics', () => {
 				{ Category: 'Work', Amount: '500' },
 				{ Category: 'Food', Amount: '-100' },
 				{ Category: 'Transport', Amount: '-50' },
-				{ Category: 'Food', Amount: '-20' }
+				{ Category: 'Food', Amount: '-20' },
 			];
 
 			const result = analytics.calculateCategoryBreakdown(rows);
@@ -205,7 +205,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Date: '01/01/2023' },
 				{ Date: '15/01/2023' },
-				{ Date: '20/01/2023' }
+				{ Date: '20/01/2023' },
 			] as Record<string, string>[];
 			const start = new Date(2023, 0, 15); // Jan 15
 
@@ -219,7 +219,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Date: '01/01/2023' },
 				{ Date: '15/01/2023' },
-				{ Date: '20/01/2023' }
+				{ Date: '20/01/2023' },
 			] as Record<string, string>[];
 			const end = new Date(2023, 0, 15); // Jan 15
 
@@ -233,7 +233,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Date: '01/01/2023' },
 				{ Date: '10/01/2023' },
-				{ Date: '20/01/2023' }
+				{ Date: '20/01/2023' },
 			] as Record<string, string>[];
 			const start = new Date(2023, 0, 5);
 			const end = new Date(2023, 0, 15);
@@ -287,7 +287,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Tags: 'Group: A; Type: X;' },
 				{ Tags: 'Group: B; Type: X;' },
-				{ Tags: 'Group: A; Status: Active;' }
+				{ Tags: 'Group: A; Status: Active;' },
 			] as Record<string, string>[];
 
 			const result = analytics.parseAllTags(rows);
@@ -302,7 +302,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Tags: '' },
 				{ Tags: 'Group: A;' },
-				{ foo: 'bar' } // No Tags field
+				{ foo: 'bar' }, // No Tags field
 			] as Record<string, string>[];
 
 			const result = analytics.parseAllTags(rows);
@@ -317,7 +317,7 @@ describe('analytics', () => {
 			{ id: '2', Tags: 'Group: B; Type: Y;' },
 			{ id: '3', Tags: 'Group: C; Type: X;' },
 			{ id: '4', Tags: 'Group: A; Type: Y;' },
-			{ id: '5', Tags: '' }
+			{ id: '5', Tags: '' },
 		] as Record<string, string>[];
 
 		it('returns all rows if no filters', () => {
@@ -327,7 +327,7 @@ describe('analytics', () => {
 
 		it('filters by include mode', () => {
 			const filters: analytics.TagFilter[] = [
-				{ category: 'Group', values: ['A'], mode: 'include' }
+				{ category: 'Group', values: ['A'], mode: 'include' },
 			];
 			const result = analytics.filterByTags(rows, filters);
 			expect(result).toHaveLength(2);
@@ -336,7 +336,7 @@ describe('analytics', () => {
 
 		it('filters by include mode with multiple values (OR logic)', () => {
 			const filters: analytics.TagFilter[] = [
-				{ category: 'Group', values: ['A', 'B'], mode: 'include' }
+				{ category: 'Group', values: ['A', 'B'], mode: 'include' },
 			];
 			const result = analytics.filterByTags(rows, filters);
 			expect(result).toHaveLength(3);
@@ -345,7 +345,7 @@ describe('analytics', () => {
 
 		it('filters by exclude mode', () => {
 			const filters: analytics.TagFilter[] = [
-				{ category: 'Group', values: ['A'], mode: 'exclude' }
+				{ category: 'Group', values: ['A'], mode: 'exclude' },
 			];
 			const result = analytics.filterByTags(rows, filters);
 			expect(result).toHaveLength(3);
@@ -354,7 +354,7 @@ describe('analytics', () => {
 
 		it('filters by exclude mode with multiple values', () => {
 			const filters: analytics.TagFilter[] = [
-				{ category: 'Group', values: ['A', 'B'], mode: 'exclude' }
+				{ category: 'Group', values: ['A', 'B'], mode: 'exclude' },
 			];
 			const result = analytics.filterByTags(rows, filters);
 			expect(result).toHaveLength(2); // C and empty
@@ -364,7 +364,7 @@ describe('analytics', () => {
 		it('combines multiple filters with AND logic', () => {
 			const filters: analytics.TagFilter[] = [
 				{ category: 'Group', values: ['A', 'B'], mode: 'include' }, // Keeps 1, 2, 4
-				{ category: 'Type', values: ['X'], mode: 'include' } // Keeps 1, 3
+				{ category: 'Type', values: ['X'], mode: 'include' }, // Keeps 1, 3
 			];
 			// Intersection of (1,2,4) and (1,3) is (1)
 			const result = analytics.filterByTags(rows, filters);
@@ -375,7 +375,7 @@ describe('analytics', () => {
 		it('handles exclude logic combined with include', () => {
 			const filters: analytics.TagFilter[] = [
 				{ category: 'Type', values: ['X', 'Y'], mode: 'include' }, // Keeps 1, 2, 3, 4
-				{ category: 'Group', values: ['A'], mode: 'exclude' } // Excludes 1, 4
+				{ category: 'Group', values: ['A'], mode: 'exclude' }, // Excludes 1, 4
 			];
 			// Result should be 2, 3
 			const result = analytics.filterByTags(rows, filters);
@@ -385,7 +385,7 @@ describe('analytics', () => {
 
 		it('returns empty if include filter matches nothing', () => {
 			const filters: analytics.TagFilter[] = [
-				{ category: 'Group', values: ['Z'], mode: 'include' }
+				{ category: 'Group', values: ['Z'], mode: 'include' },
 			];
 			const result = analytics.filterByTags(rows, filters);
 			expect(result).toHaveLength(0);
@@ -393,7 +393,7 @@ describe('analytics', () => {
 
 		it('returns all if exclude filter matches nothing', () => {
 			const filters: analytics.TagFilter[] = [
-				{ category: 'Group', values: ['Z'], mode: 'exclude' }
+				{ category: 'Group', values: ['Z'], mode: 'exclude' },
 			];
 			const result = analytics.filterByTags(rows, filters);
 			expect(result).toHaveLength(5);
@@ -414,7 +414,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Date: '01/01/2023', Amount: '100' },
 				{ Date: '01/01/2023', Amount: '-50' },
-				{ Date: '02/01/2023', Amount: '200' }
+				{ Date: '02/01/2023', Amount: '200' },
 			] as Record<string, string>[];
 			const start = new Date(2023, 0, 1);
 			const end = new Date(2023, 0, 3); // 3 days
@@ -432,7 +432,7 @@ describe('analytics', () => {
 			const rows = [
 				{ Date: '15/01/2023', Amount: '1000' },
 				{ Date: '20/02/2023', Amount: '-500' },
-				{ Date: '10/03/2023', Amount: '2000' }
+				{ Date: '10/03/2023', Amount: '2000' },
 			] as Record<string, string>[];
 			const start = new Date(2023, 0, 1); // Jan 1
 			const end = new Date(2023, 3, 1); // Apr 1 (> 3 months)

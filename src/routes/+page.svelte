@@ -11,7 +11,7 @@
 		getDateRange,
 		filterByDateRange,
 		filterByTags,
-		type TagFilter
+		type TagFilter,
 	} from '$lib/analytics';
 
 	import Dashboard from '$components/organisms/Dashboard.svelte';
@@ -19,7 +19,7 @@
 	let csv = $state<CsvState>({
 		data: null,
 		fileName: null,
-		tagFilters: []
+		tagFilters: [],
 	});
 
 	// Filter State

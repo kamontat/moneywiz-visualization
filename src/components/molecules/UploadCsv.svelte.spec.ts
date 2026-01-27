@@ -4,16 +4,16 @@ import UploadCsv from './UploadCsv.svelte';
 import { parseCsvFile } from '$lib/csv';
 
 vi.mock('$lib/csv', () => {
-	return {
-		parseCsvFile: vi.fn(),
-		CsvParseError: class extends Error {}
-	};
+    return {
+			parseCsvFile: vi.fn(),
+			CsvParseError: class extends Error {},
+		};
 });
 
 describe('CsvUploadButton.svelte', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
+    beforeEach(() => {
+			vi.clearAllMocks();
+		});
 
 	it('renders with default label', async () => {
 		const { container } = page.render(UploadCsv);
@@ -71,28 +71,28 @@ describe('CsvUploadButton.svelte', () => {
 		});
 	});
 
-	it('handles parse error', async () => {
-		const error = new Error('Invalid format');
-		vi.mocked(parseCsvFile).mockRejectedValue(error);
-		const onErrorSpy = vi.fn();
+    it('handles parse error', async () => {
+			const error = new Error('Invalid format');
+			vi.mocked(parseCsvFile).mockRejectedValue(error);
+			const onErrorSpy = vi.fn();
 
-		const { container } = page.render(UploadCsv, { onerror: onErrorSpy });
-		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		const file = new File(['bad content'], 'bad.csv', { type: 'text/csv' });
+			const { container } = page.render(UploadCsv, { onerror: onErrorSpy });
+			const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+			const file = new File(['bad content'], 'bad.csv', { type: 'text/csv' });
 
-		Object.defineProperty(input, 'files', {
-			value: [file],
-			writable: false
+			Object.defineProperty(input, 'files', {
+				value: [file],
+				writable: false,
+			});
+
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+
+			await new Promise((resolve) => setTimeout(resolve, 0));
+
+			expect(parseCsvFile).toHaveBeenCalledWith(file);
+			expect(onErrorSpy).toHaveBeenCalledWith({
+				file,
+				message: 'Invalid format',
+			});
 		});
-
-		input.dispatchEvent(new Event('change', { bubbles: true }));
-
-		await new Promise((resolve) => setTimeout(resolve, 0));
-
-		expect(parseCsvFile).toHaveBeenCalledWith(file);
-		expect(onErrorSpy).toHaveBeenCalledWith({
-			file,
-			message: 'Invalid format'
-		});
-	});
 });

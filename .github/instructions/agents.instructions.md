@@ -757,7 +757,7 @@ const variables = {
 	basePath, // Where project files are located
 	outputDirectory, // Where to save results
 	processingMode, // How to process (detail level)
-	configurationPath // Where config files are
+	configurationPath, // Where config files are
 };
 
 // Avoid: Ambiguous or inconsistent
@@ -765,7 +765,7 @@ const bad_variables = {
 	name, // Too generic
 	path, // Unclear which path
 	mode, // Too short
-	config // Too vague
+	config, // Too vague
 };
 ```
 

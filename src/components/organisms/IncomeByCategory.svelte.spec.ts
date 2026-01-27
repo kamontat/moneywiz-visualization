@@ -7,7 +7,7 @@ describe('IncomeByCategory', () => {
 	it('renders income items correctly', async () => {
 		const items = [
 			{ name: 'Salary', value: 50000 },
-			{ name: 'Bonus', value: 10000 }
+			{ name: 'Bonus', value: 10000 },
 		];
 		const total = 60000;
 
@@ -31,4 +31,4 @@ describe('IncomeByCategory', () => {
 
 		await expect.element(screen.getByText('No income data')).toBeVisible();
 	});
-});
+};);

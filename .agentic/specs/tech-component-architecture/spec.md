@@ -131,6 +131,8 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
 - All components must have co-located test files
 - Test files must use Vitest and vitest-browser-svelte
 - Component naming must be PascalCase
+- All components must pass ESLint validation (see [tech-code-quality](../tech-code-quality/spec.md))
+- All components must be formatted with Prettier
 
 ## Examples
 
@@ -153,7 +155,7 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
 		variant = 'primary',
 		disabled = false,
 		onclick,
-		children
+		children,
 	}: Props = $props();
 </script>
 

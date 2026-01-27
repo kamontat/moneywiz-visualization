@@ -11,7 +11,7 @@
 		class: className = '',
 		'aria-labelledby': ariaLabelledBy,
 		'aria-label': ariaLabel,
-		tag = 'section'
+		tag = 'section',
 	}: Props = $props();
 
 	const baseClass =

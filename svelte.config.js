@@ -6,12 +6,12 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: '404.html'
+			fallback: '404.html',
 		}),
 		alias: {
-			$components: 'src/components'
-		}
-	}
+			$components: 'src/components',
+		},
+	},
 };
 
 export default config;

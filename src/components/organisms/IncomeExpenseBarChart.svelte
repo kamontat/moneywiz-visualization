@@ -9,7 +9,7 @@
 		Legend,
 		LineController,
 		LineElement,
-		PointElement
+		PointElement,
 	} from 'chart.js';
 	import type { IncomeExpenseTimeSeries } from '$lib/analytics';
 
@@ -46,14 +46,14 @@
 						data: data.income,
 						backgroundColor: '#10b981', // emerald-500
 						borderRadius: 4,
-						order: 2
+						order: 2,
 					},
 					{
 						label: 'Expense',
 						data: data.expenses,
 						backgroundColor: '#f43f5e', // rose-500
 						borderRadius: 4,
-						order: 3
+						order: 3,
 					},
 					{
 						type: 'line',
@@ -65,29 +65,29 @@
 						tension: 0.1,
 						pointRadius: 3,
 						pointHoverRadius: 5,
-						order: 1
-					}
-				]
+						order: 1,
+					},
+				],
 			},
 			options: {
 				responsive: true,
 				maintainAspectRatio: false,
 				interaction: {
 					mode: 'index',
-					intersect: false
+					intersect: false,
 				},
 				scales: {
 					x: {
 						grid: {
-							display: false
-						}
+							display: false,
+						},
 					},
 					y: {
 						beginAtZero: true,
 						grid: {
-							color: '#f1f5f9' // slate-100
-						}
-					}
+							color: '#f1f5f9', // slate-100
+						},
+					},
 				},
 				plugins: {
 					legend: {
@@ -95,8 +95,8 @@
 						align: 'end',
 						labels: {
 							usePointStyle: true,
-							boxWidth: 8
-						}
+							boxWidth: 8,
+						},
 					},
 					tooltip: {
 						backgroundColor: '#ffffff',
@@ -115,14 +115,14 @@
 									': ' +
 									new Intl.NumberFormat('th-TH', {
 										style: 'currency',
-										currency: 'THB'
+										currency: 'THB',
 									}).format(val)
 								);
-							}
-						}
-					}
-				}
-			}
+							},
+						},
+					},
+				},
+			},
 		});
 
 		return () => {

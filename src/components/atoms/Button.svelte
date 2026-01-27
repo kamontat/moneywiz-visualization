@@ -18,7 +18,7 @@
 		onclick,
 		class: className = '',
 		children,
-		active = false
+		active = false,
 	}: Props = $props();
 
 	const baseClass =
@@ -32,7 +32,7 @@
 		ghost:
 			'p-2 text-mw-text-muted hover:text-mw-text-main hover:bg-mw-surface-alt rounded-full hover:bg-mw-surface-alt',
 		tab: 'px-4 py-2 text-sm font-medium border-b-2 bg-transparent rounded-none focus-visible:outline-mw-primary text-mw-text-muted hover:text-mw-text-secondary hover:border-gray-300 border-transparent',
-		icon: 'p-2 rounded-full hover:bg-black/5'
+		icon: 'p-2 rounded-full hover:bg-black/5',
 	};
 
 	const activeTab = 'border-mw-primary text-mw-primary !text-mw-primary';
