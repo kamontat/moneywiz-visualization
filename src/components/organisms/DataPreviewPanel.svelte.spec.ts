@@ -11,45 +11,20 @@ describe('DataPreviewPanel.svelte', () => {
 		]
 	};
 
-	it('renders correctly but collapsed by default', async () => {
+	it('renders table immediately when data is provided', async () => {
 		const { container } = render(DataPreviewPanel, { data: mockData });
-		expect(container).toHaveTextContent('Data Preview');
 
-		// Button should be visible
-		const button = container.querySelector('button');
-		expect(button).not.toBeNull();
-		expect(button).toHaveAttribute('aria-expanded', 'false');
+		// Table should be visible immediately without clicking
+		const table = container.querySelector('table');
+		expect(table).not.toBeNull();
 
-		// Content should be hidden
-		const content = container.querySelector('#preview-content');
-		expect(content).toBeNull();
-	});
-
-	it('expands table on click', async () => {
-		const { container } = render(DataPreviewPanel, { data: mockData });
-		const button = container.querySelector('button');
-
-		if (button instanceof HTMLElement) {
-			button.click();
-		}
-
-		// Wait for DOM update
-		await new Promise(resolve => setTimeout(resolve, 10));
-
-		const content = container.querySelector('#preview-content');
-		expect(content).not.toBeNull();
-		expect(content).toHaveTextContent('Item 1');
-		expect(content).toHaveTextContent('Item 2');
+		// Content should show data
+		expect(container).toHaveTextContent('Item 1');
+		expect(container).toHaveTextContent('Item 2');
 	});
 
 	it('renders table headers correctly', async () => {
 		const { container } = render(DataPreviewPanel, { data: mockData });
-		const button = container.querySelector('button');
-
-		if (button instanceof HTMLElement) {
-			button.click();
-		}
-		await new Promise(resolve => setTimeout(resolve, 10));
 
 		const ths = container.querySelectorAll('th');
 		expect(ths).toHaveLength(3);
@@ -61,14 +36,7 @@ describe('DataPreviewPanel.svelte', () => {
 		const emptyData = { headers: ['Col1'], rows: [] };
 		const { container } = render(DataPreviewPanel, { data: emptyData });
 
-		const button = container.querySelector('button');
-		if (button instanceof HTMLElement) {
-			button.click();
-		}
-		await new Promise(resolve => setTimeout(resolve, 10));
-
-		const content = container.querySelector('#preview-content');
-		expect(content).toHaveTextContent('No data rows found');
+		expect(container).toHaveTextContent('No data rows found');
 	});
 
 	it('renders nothing if data is null', async () => {
@@ -76,5 +44,26 @@ describe('DataPreviewPanel.svelte', () => {
 		// Svelte may leave comment nodes, but there should be no elements
 		expect(container.childElementCount).toBe(0);
 		expect(container).toHaveTextContent('');
+	});
+
+	it('shows row count message when more than 5 rows exist', async () => {
+		const manyRows = {
+			headers: ['Name'],
+			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` }))
+		};
+		const { container } = render(DataPreviewPanel, { data: manyRows });
+
+		expect(container).toHaveTextContent('Showing first 5 rows of 10');
+	});
+
+	it('displays correct number of rows (max 5 preview rows)', async () => {
+		const manyRows = {
+			headers: ['Name'],
+			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` }))
+		};
+		const { container } = render(DataPreviewPanel, { data: manyRows });
+
+		const trs = container.querySelectorAll('tbody tr');
+		expect(trs).toHaveLength(5);
 	});
 });

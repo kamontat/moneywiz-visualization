@@ -82,17 +82,18 @@ The application SHALL use a consistent professional color palette focused on fin
 - **And** these colors MUST be used consistently across branding elements (logo, buttons)
 - **And** data visualizations SHOULD use the theme colors, except where semantic colors provide better clarity (e.g., green for income, red for expenses)
 
-### Requirement: Interactive Data Preview Panel
+### Requirement: Dashboard Tab Navigation
 
-The application SHALL utilize a dedicated component for the data preview table that aligns with the dashboard's interactive patterns.
+The application SHALL provide a tabbed interface for organizing dashboard content into distinct views.
 
-#### Scenario: Consistent Interactive Header
+#### Scenario: Tab-based content organization
 
-- **Given** the data preview panel is visible
-- **Then** the panel header MUST have rounded corners (`rounded-xl` when collapsed)
-- **And** the entire header area MUST be clickable to toggle expansion
-- **And** the background color SHOULD be neutral (`gray-50` family) to differentiate from income/expense panels
-- **And** the panel state SHOULD default to collapsed
+- **Given** a CSV file is successfully uploaded
+- **Then** a tab navigation bar MUST be displayed with "Overview" and "Preview" tabs
+- **And** the "Overview" tab MUST be selected by default
+- **And** clicking a tab MUST switch the visible content below
+- **And** tab switching MUST preserve filter state
+- **And** the active tab MUST be visually distinguished with the primary color
 
 ### Requirement: General Dashboard Layout
 
@@ -137,4 +138,4 @@ The application SHALL represent financial values using currency symbols instead 
 
 ## Notes
 
-This spec covers general UI/UX patterns applied across the application. Component-specific layouts are covered in their respective specs (biz-overview-tab, biz-quick-summary).
+This spec covers general UI/UX patterns applied across the application. Component-specific layouts are covered in their respective specs (biz-overview-tab, biz-preview-tab, biz-quick-summary).

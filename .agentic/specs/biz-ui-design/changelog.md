@@ -2,6 +2,15 @@
 
 All notable changes to this specification.
 
+## add-preview-tab
+
+### Changed
+
+- Replaced "Interactive Data Preview Panel" collapsible requirement with "Dashboard Tab Navigation" for tab-based content organization
+- Updated notes to reference new biz-preview-tab spec
+
+---
+
 ## 2026-01-27 - Initial Migration
 
 ### Added

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import AppHeader from '../components/organisms/AppHeader.svelte';
-	import DataPreviewPanel from '$components/organisms/DataPreviewPanel.svelte';
 	import type { ParsedCsv } from '$lib/csv';
 	import { csvStore } from '$lib/stores/csv';
 	import './layout.css';
@@ -41,11 +40,7 @@
 	<main class="flex-1 flex flex-col w-full max-w-6xl mx-auto px-4 py-5 sm:px-6 sm:py-6 box-border">
 		{@render children()}
 
-		{#if parsedUpload}
-			<div class="mt-8">
-				<DataPreviewPanel data={parsedUpload.data} />
-			</div>
-		{:else if errorMessage}
+		{#if errorMessage}
 			<section
 				class="m-0 p-4 border border-dashed border-orange-500 rounded-lg bg-orange-50 text-orange-800"
 				role="alert"

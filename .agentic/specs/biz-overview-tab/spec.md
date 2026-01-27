@@ -15,7 +15,7 @@ The Overview tab SHALL serve as the primary view for financial analysis, present
 - **Given** a CSV file is successfully uploaded
 - **Then** the Dashboard header MUST display the transaction date range on the top left
 - **And** the "Dashboard" title MUST be centered at the top
-- **And** a navigation tab system MUST be provided below the header to switch between different views (e.g., Overview, Trends)
+- **And** a navigation tab system MUST be provided below the header to switch between Overview and Preview views
 
 ### Requirement: Collapsible Category Breakdown
 

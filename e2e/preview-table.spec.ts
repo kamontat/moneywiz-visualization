@@ -11,21 +11,25 @@ test.describe('CSV Preview Table Layout', () => {
       await fileInput.setInputFiles('static/data/report.csv');
     });
 
-    await test.step('Verify preview table is visible', async () => {
-      // Expand preview section
-      // In the new design, the entire header is a button containing "Data Preview"
-      await page.getByRole('button', { name: 'Data Preview' }).click();
+    await test.step('Navigate to Preview tab and verify table is visible', async () => {
+      // Click the Preview tab to view the data table
+      await page.getByRole('button', { name: 'Preview' }).click();
+
+      // Wait for the Preview tab to be active
+      await expect(page.getByRole('button', { name: 'Preview' })).toHaveAttribute('aria-current', 'page');
 
       const table = page.locator('table').first();
       await expect(table).toBeVisible();
     });
 
     await test.step('Verify all column headers are visible and not wrapped', async () => {
-      const headers = page.locator('thead th');
+      // Scope to table in the visible preview panel
+      const table = page.locator('table').first();
+      const headers = table.locator('thead th');
       const headerCount = await headers.count();
       expect(headerCount).toBe(12);
 
-      const checkHeader = page.locator('thead th:has-text("Check #")');
+      const checkHeader = table.locator('thead th:has-text("Check #")');
       await expect(checkHeader).toBeVisible();
 
       const box = await checkHeader.boundingBox();
@@ -54,7 +58,8 @@ test.describe('CSV Preview Table Layout', () => {
     });
 
     await test.step('Verify all column data is visible without horizontal scroll cutoff', async () => {
-      const lastColumn = page.locator('thead th:last-child');
+      const table = page.locator('table').first();
+      const lastColumn = table.locator('thead th:last-child');
       await expect(lastColumn).toBeVisible();
 
       const box = await lastColumn.boundingBox();
@@ -63,6 +68,39 @@ test.describe('CSV Preview Table Layout', () => {
       if (box) {
         expect(box.x + box.width).toBeGreaterThan(0);
       }
+    });
+  });
+
+  test('tab switching between Overview and Preview works', async ({ page }) => {
+    await test.step('Upload CSV file', async () => {
+      const fileInput = page.locator('input[type="file"]').first();
+      await fileInput.setInputFiles('static/data/report.csv');
+    });
+
+    await test.step('Verify Overview tab is default', async () => {
+      const overviewTab = page.getByRole('button', { name: 'Overview' });
+      await expect(overviewTab).toHaveAttribute('aria-current', 'page');
+    });
+
+    await test.step('Switch to Preview tab', async () => {
+      await page.getByRole('button', { name: 'Preview' }).click();
+
+      const previewTab = page.getByRole('button', { name: 'Preview' });
+      await expect(previewTab).toHaveAttribute('aria-current', 'page');
+
+      const table = page.locator('table').first();
+      await expect(table).toBeVisible();
+    });
+
+    await test.step('Switch back to Overview tab', async () => {
+      await page.getByRole('button', { name: 'Overview' }).click();
+
+      const overviewTab = page.getByRole('button', { name: 'Overview' });
+      await expect(overviewTab).toHaveAttribute('aria-current', 'page');
+
+      // Preview tab should no longer be active
+      const previewTab = page.getByRole('button', { name: 'Preview' });
+      await expect(previewTab).not.toHaveAttribute('aria-current', 'page');
     });
   });
 });

@@ -19,6 +19,7 @@
 	import DailyExpensesChart from '$components/organisms/DailyExpensesChart.svelte';
 	import IncomeExpenseRatioChart from '$components/organisms/IncomeExpenseRatioChart.svelte';
 	import CategoryBreakdown from '$components/organisms/CategoryBreakdown.svelte';
+	import DataPreviewPanel from '$components/organisms/DataPreviewPanel.svelte';
 	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte';
 
 	let csv = $state<CsvState>({
@@ -125,6 +126,14 @@
 			>
 				Overview
 			</button>
+			<button
+				type="button"
+				class="px-4 py-2 text-sm font-medium border-b-2 transition-colors {activeTab === 'preview' ? 'border-mw-primary text-mw-primary' : 'border-transparent text-mw-text-muted hover:text-mw-text-secondary hover:border-gray-300'}"
+				onclick={() => activeTab = 'preview'}
+				aria-current={activeTab === 'preview' ? 'page' : undefined}
+			>
+				Preview
+			</button>
 		</nav>
 
 		<!-- Tab Content -->
@@ -139,6 +148,10 @@
 					<DailyExpensesChart data={dailyExpenses} />
 					<CategoryBreakdown {breakdown} {totals} />
 				</div>
+			</div>
+		{:else if activeTab === 'preview'}
+			<div class="flex flex-col gap-4 animate-in fade-in duration-300 slide-in-from-bottom-2 pt-4">
+				<DataPreviewPanel data={csv.data} />
 			</div>
 		{/if}
 	{:else}
