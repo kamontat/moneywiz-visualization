@@ -103,4 +103,49 @@ test.describe('CSV Preview Table Layout', () => {
       await expect(previewTab).not.toHaveAttribute('aria-current', 'page');
     });
   });
+
+  test('dropdown changes displayed row count', async ({ page }) => {
+    await test.step('Upload CSV file', async () => {
+      const fileInput = page.locator('input[type="file"]').first();
+      await fileInput.setInputFiles('static/data/report.csv');
+    });
+
+    await test.step('Navigate to Preview tab', async () => {
+      // It might need time to upload/process
+      await page.waitForTimeout(500);
+      
+      await page.getByRole('button', { name: 'Preview' }).click();
+      await expect(page.locator('table').first()).toBeVisible();
+    });
+
+    await test.step('Verify default row count is 5', async () => {
+      const rows = page.locator('tbody tr');
+      await expect(rows).toHaveCount(5);
+
+      const dropdown = page.locator('#row-limit-select');
+      await expect(dropdown).toHaveValue('5');
+
+      await expect(page.getByText(/Showing first 5 rows/)).toBeVisible();
+    });
+
+    await test.step('Change row count to 10', async () => {
+      const dropdown = page.locator('#row-limit-select');
+      await dropdown.selectOption('10');
+
+      const rows = page.locator('tbody tr');
+      await expect(rows).toHaveCount(10);
+      
+      await expect(page.getByText(/Showing first 10 rows/)).toBeVisible();
+    });
+
+    await test.step('Change row count to 100', async () => {
+      const dropdown = page.locator('#row-limit-select');
+      await dropdown.selectOption('100');
+      
+      const rows = page.locator('tbody tr');
+      await expect(rows).toHaveCount(100);
+      
+      await expect(page.getByText(/Showing first 100 rows/)).toBeVisible();
+    });
+  });
 });

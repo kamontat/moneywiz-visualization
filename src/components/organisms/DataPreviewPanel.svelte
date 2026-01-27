@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ParsedCsv } from '$lib/csv';
+	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down';
 
 	interface Props {
 		data: ParsedCsv | null;
@@ -7,7 +8,8 @@
 
 	let { data }: Props = $props();
 
-	const maxPreviewRows = 5;
+	let maxPreviewRows = $state(5);
+	const limitOptions = [5, 10, 20, 50, 100];
 
 	// Only show panel if we have data structure, even if rows are empty (to show "no rows" message)
 	const hasStructure = $derived(!!data);
@@ -19,6 +21,23 @@
 	>
 		<div class="flex flex-col gap-2 p-4">
 			{#if (data?.rows?.length ?? 0) > 0}
+				<div class="flex justify-end items-center mb-1 gap-2">
+					<label for="row-limit-select" class="text-xs text-mw-text-muted">Show rows:</label>
+					<div class="relative">
+						<select
+							id="row-limit-select"
+							bind:value={maxPreviewRows}
+							class="text-xs border border-mw-border rounded bg-white text-mw-text-main pl-2 pr-6 py-1 appearance-none bg-none focus:ring-1 focus:ring-mw-primary focus:border-mw-primary outline-none cursor-pointer"
+						>
+							{#each limitOptions as option}
+								<option value={option}>{option}</option>
+							{/each}
+						</select>
+						<div class="absolute inset-y-0 right-0 flex items-center px-1 pointer-events-none text-mw-text-muted">
+							<ChevronDownIcon class="w-3 h-3" />
+						</div>
+					</div>
+				</div>
 				<div class="overflow-x-auto border border-mw-border rounded-lg">
 					<table class="border-collapse" style="table-layout: auto; min-width: 100%;">
 						<thead class="bg-gray-50">

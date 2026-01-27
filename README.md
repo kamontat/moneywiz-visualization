@@ -125,7 +125,7 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
   - Automatic `sep=` delimiter detection for MoneyWiz exports
   - BOM handling for proper encoding
   - Error handling with descriptive messages
-  - Preview table with collapse toggle (collapsed by default to focus on visualizations)
+  - **Data Preview Tab**: Inspect raw CSV data with configurable row limit (5-100 rows) and full filter support
   - **Persistent Storage**: Data survives page refreshes and browser restarts
   - **Clear Data**: One-click button to remove persisted data and return to empty state
 - 📊 **Data Parsing**: Robust CSV parser with quoted field support and validation

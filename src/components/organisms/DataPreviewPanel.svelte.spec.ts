@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render } from 'vitest-browser-svelte';
+import { userEvent } from 'vitest/browser';
 import DataPreviewPanel from './DataPreviewPanel.svelte';
 
 describe('DataPreviewPanel.svelte', () => {
@@ -65,5 +66,39 @@ describe('DataPreviewPanel.svelte', () => {
 
 		const trs = container.querySelectorAll('tbody tr');
 		expect(trs).toHaveLength(5);
+	});
+
+	it('renders dropdown with correct options', async () => {
+		const { container } = render(DataPreviewPanel, { data: mockData });
+
+		const select = container.querySelector('select');
+		expect(select).not.toBeNull();
+
+		const options = select!.querySelectorAll('option');
+		expect(options).toHaveLength(5);
+		// Check that options are 5, 10, 20, 50, 100
+		expect(options[0].value).toBe('5');
+		expect(options[1].value).toBe('10');
+		expect(options[2].value).toBe('20');
+		expect(options[3].value).toBe('50');
+		expect(options[4].value).toBe('100');
+	});
+
+	it('changes displayed rows when dropdown selection changes', async () => {
+		const manyRows = {
+			headers: ['Name'],
+			rows: Array.from({ length: 20 }, (_, i) => ({ Name: `Item ${i + 1}` }))
+		};
+		const { container } = render(DataPreviewPanel, { data: manyRows });
+
+		// Initially 5
+		expect(container.querySelectorAll('tbody tr')).toHaveLength(5);
+
+		const select = container.querySelector('select');
+		await userEvent.selectOptions(select!, '10');
+
+		// Updated to 10
+		expect(container.querySelectorAll('tbody tr')).toHaveLength(10);
+		expect(container).toHaveTextContent('Showing first 10 rows of 20');
 	});
 });
