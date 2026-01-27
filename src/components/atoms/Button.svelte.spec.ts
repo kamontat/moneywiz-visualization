@@ -1,16 +1,12 @@
-import { render, fireEvent, cleanup } from '@testing-library/svelte';
 import Button from './Button.svelte';
+import { render } from 'vitest-browser-svelte'
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
 describe('Button Atom', () => {
-    afterEach(() => {
-        cleanup();
-    });
-
     it('renders with correct classes for primary variant', () => {
         const { getByRole } = render(Button, { props: { variant: 'primary', label: 'Test Button' } });
         const btn = getByRole('button', { name: "Test Button" });
-        expect(btn.className).toContain('bg-gradient-to-br');
+        expect.element(btn).toHaveClass('bg-gradient-to-br');
     });
 
     it('handles clicks', async () => {

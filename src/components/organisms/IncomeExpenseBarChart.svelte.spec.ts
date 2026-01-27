@@ -1,4 +1,4 @@
-import { render } from '@testing-library/svelte';
+import { render } from 'vitest-browser-svelte';
 import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte';
 import { describe, it, expect, vi } from 'vitest';
 

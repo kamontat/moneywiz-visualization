@@ -1,28 +1,31 @@
-import { test, expect } from '@playwright/test';
+import { describe, test, expect, beforeEach } from 'vitest';
+import { page } from '@vitest/browser/context';
 
-test.describe('Dashboard - Filtering', () => {
-    test.beforeEach(async ({ page }) => {
-        await page.goto('/');
+const BASE_URL = 'http://localhost:4173';
+
+describe('Dashboard - Filtering', () => {
+    beforeEach(async () => {
+        await page.goto(BASE_URL);
         const fileInput = page.locator('input[type="file"]').first();
         await fileInput.setInputFiles('static/data/report.csv');
-        await expect(page.getByText('Saving Rate')).toBeVisible();
+        await expect.element(page.getByText('Saving Rate')).toBeVisible();
     });
 
-    test('collapsible panel interaction', async ({ page }) => {
+    test('collapsible panel interaction', async () => {
         const toggleBtn = page.getByRole('button', { name: /^Filter$/i });
         // Initially collapsed
-        await expect(page.getByLabel('Start')).not.toBeVisible();
+        await expect.element(page.getByLabel('Start')).not.toBeVisible();
 
         // Expand
         await toggleBtn.click();
-        await expect(page.getByLabel('Start')).toBeVisible();
+        await expect.element(page.getByLabel('Start')).toBeVisible();
 
         // Collapse via toggle button
         await toggleBtn.click();
-        await expect(page.getByLabel('Start')).not.toBeVisible();
+        await expect.element(page.getByLabel('Start')).not.toBeVisible();
     });
 
-    test('filters data by quick preset', async ({ page }) => {
+    test('filters data by quick preset', async () => {
         // Expand filter
         await page.getByRole('button', { name: /^Filter$/i }).click();
 
@@ -35,28 +38,28 @@ test.describe('Dashboard - Filtering', () => {
         await page.getByRole('button', { name: 'This Month' }).click();
 
         // "Clear Filter" should be visible immediately
-        await expect(page.getByRole('button', { name: 'Clear Filter' })).toBeVisible();
+        await expect.element(page.getByRole('button', { name: 'Clear Filter' })).toBeVisible();
 
         // Collapse panel to see "Active" badge
         await page.getByRole('button', { name: /^Filter$/i }).click();
-        await expect(page.getByText('Active', { exact: true })).toBeVisible();
+        await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
 
         // Verify "rows shown" count in header is less than total rows
         // "31 rows total" -> "X shown"
         // Target the specific container for meta info or search by text pattern directly
         const metaInfo = page.getByText(/rows total/);
-        await expect(metaInfo).toBeVisible();
+        await expect.element(metaInfo).toBeVisible();
 
         // We expect some rows to be filtered out (data has 2025 entries)
-        await expect(page.getByText('shown', { exact: false })).toBeVisible();
+        await expect.element(page.getByText('shown', { exact: false })).toBeVisible();
 
         // Clear filter
         await page.getByRole('button', { name: 'Clear Filter' }).click();
-        await expect(page.getByText('Active')).not.toBeVisible();
-        await expect(page.getByText('shown')).not.toBeVisible(); // Should hide the "X shown" part since all are shown
+        await expect.element(page.getByText('Active')).not.toBeVisible();
+        await expect.element(page.getByText('shown')).not.toBeVisible(); // Should hide the "X shown" part since all are shown
     });
 
-    test('filters by manual date range', async ({ page }) => {
+    test('filters by manual date range', async () => {
         await page.getByRole('button', { name: 'Filter' }).click();
 
         // Set range to a specific day logic if possible, or just set start date.
@@ -65,7 +68,7 @@ test.describe('Dashboard - Filtering', () => {
         await page.locator('#end-date').fill('2025-12-31');
 
         // Should show data for Dec 2025
-        await expect(page.getByText('shown')).toBeVisible();
+        await expect.element(page.getByText('shown')).toBeVisible();
 
         // Check if Date Range Display updates to localized format
         // The display might show "01/12/2025 - 31/12/2025" or similar tailored to content
@@ -81,6 +84,6 @@ test.describe('Dashboard - Filtering', () => {
 
         // So Dec 2025 has data.
         const rowCount = page.getByText('shown', { exact: false }).first();
-        await expect(rowCount).toBeVisible();
+        await expect.element(rowCount).toBeVisible();
     });
 });

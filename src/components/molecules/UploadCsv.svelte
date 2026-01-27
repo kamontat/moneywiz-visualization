@@ -44,7 +44,6 @@
             const message = error instanceof Error ? error.message : 'Failed to parse CSV';
             log.componentUpload('parse error: %s', message);
             onerror?.({ file, message });
-            console.error(message, error);
         } finally {
             if (target) {
                 target.value = '';

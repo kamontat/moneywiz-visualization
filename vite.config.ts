@@ -8,39 +8,47 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
 
 	optimizeDeps: {
-		include: ['chart.js']
+		include: ['chart.js/auto']
 	},
 
 	test: {
-		exclude: ['e2e/**', 'node_modules/**'],
+		exclude: ['node_modules/**'],
 		expect: { requireAssertions: true },
 
 		projects: [
 			{
-				extends: './vite.config.ts',
-
-				test: {
-					name: 'client',
-
-					browser: {
-						enabled: true,
-						provider: playwright(),
-						instances: [{ browser: 'chromium', headless: true }]
-					},
-
-					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**']
-				}
-			},
-
-			{
-				extends: './vite.config.ts',
-
+				extends: true,
 				test: {
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}'],
 					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
+				}
+			}, {
+				extends: true,
+				test: {
+					name: 'client',
+					browser: {
+						enabled: true,
+						provider: playwright(),
+						instances: [{ browser: 'chromium', headless: true }]
+					},
+					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+					exclude: ['src/lib/server/**']
+				}
+			}, {
+				extends: true,
+				test: {
+					name: 'e2e',
+					testTimeout: 30000,
+					hookTimeout: 60000,
+					browser: {
+						enabled: true,
+						provider: playwright(),
+						instances: [{ browser: 'chromium', headless: true }]
+					},
+					include: ['e2e/**/*.{test,spec}.{js,ts}'],
+					exclude: ['src/**']
 				}
 			}
 		]

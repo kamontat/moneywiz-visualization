@@ -1,4 +1,4 @@
-import { render, cleanup } from '@testing-library/svelte';
+import { render } from 'vitest-browser-svelte';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import LayoutTestWrapper from './LayoutTestWrapper.svelte';
 import { csvStore } from '$lib/stores/csv';
@@ -6,10 +6,8 @@ import { csvStore } from '$lib/stores/csv';
 describe('Layout.svelte', () => {
     beforeEach(() => {
         csvStore.reset();
-        vi.clearAllMocks();
+        vi.clearAllMocks()
     });
-
-    afterEach(() => cleanup());
 
     it('renders header and children content', async () => {
         const { getByText } = render(LayoutTestWrapper);
