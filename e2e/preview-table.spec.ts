@@ -1,14 +1,11 @@
-import { describe, test, expect, beforeEach } from 'vitest';
-import { page } from '@vitest/browser/context';
+import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:4173';
-
-describe('CSV Preview Table Layout', () => {
-  beforeEach(async () => {
-    await page.goto(BASE_URL);
+test.describe('CSV Preview Table Layout', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
   });
 
-  test('preview table displays all columns without wrapping headers', async () => {
+  test('preview table displays all columns without wrapping headers', async ({ page }) => {
     // Upload CSV file to show preview table
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
@@ -18,10 +15,10 @@ describe('CSV Preview Table Layout', () => {
     await page.getByRole('button', { name: 'Preview' }).click();
 
     // Wait for the Preview tab to be active
-    await expect.element(page.getByRole('button', { name: 'Preview' })).toHaveAttribute('aria-current', 'page');
+    await expect(page.getByRole('button', { name: 'Preview' })).toHaveAttribute('aria-current', 'page');
 
     const table = page.locator('table').first();
-    await expect.element(table).toBeVisible();
+    await expect(table).toBeVisible();
 
     // Verify all column headers are visible and not wrapped
     // Scope to table in the visible preview panel
@@ -30,7 +27,7 @@ describe('CSV Preview Table Layout', () => {
     expect(headerCount).toBe(12);
 
     const checkHeader = table.locator('thead th:has-text("Check #")');
-    await expect.element(checkHeader).toBeVisible();
+    await expect(checkHeader).toBeVisible();
 
     const box = await checkHeader.boundingBox();
     expect(box).toBeTruthy();
@@ -56,7 +53,7 @@ describe('CSV Preview Table Layout', () => {
 
     // Verify all column data is visible without horizontal scroll cutoff
     const lastColumn = table.locator('thead th:last-child');
-    await expect.element(lastColumn).toBeVisible();
+    await expect(lastColumn).toBeVisible();
 
     const lastColumnBox = await lastColumn.boundingBox();
     expect(lastColumnBox).toBeTruthy();
@@ -66,34 +63,34 @@ describe('CSV Preview Table Layout', () => {
     }
   });
 
-  test('tab switching between Overview and Preview works', async () => {
+  test('tab switching between Overview and Preview works', async ({ page }) => {
     // Upload CSV file
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
 
     // Verify Overview tab is default
     const overviewTab = page.getByRole('button', { name: 'Overview' });
-    await expect.element(overviewTab).toHaveAttribute('aria-current', 'page');
+    await expect(overviewTab).toHaveAttribute('aria-current', 'page');
 
     // Switch to Preview tab
     await page.getByRole('button', { name: 'Preview' }).click();
 
     const previewTab = page.getByRole('button', { name: 'Preview' });
-    await expect.element(previewTab).toHaveAttribute('aria-current', 'page');
+    await expect(previewTab).toHaveAttribute('aria-current', 'page');
 
     const table = page.locator('table').first();
-    await expect.element(table).toBeVisible();
+    await expect(table).toBeVisible();
 
     // Switch back to Overview tab
     await page.getByRole('button', { name: 'Overview' }).click();
 
-    await expect.element(overviewTab).toHaveAttribute('aria-current', 'page');
+    await expect(overviewTab).toHaveAttribute('aria-current', 'page');
 
     // Preview tab should no longer be active
-    await expect.element(previewTab).not.toHaveAttribute('aria-current', 'page');
+    await expect(previewTab).not.toHaveAttribute('aria-current', 'page');
   });
 
-  test('dropdown changes displayed row count', async () => {
+  test('dropdown changes displayed row count', async ({ page }) => {
     // Upload CSV file
     const fileInput = page.locator('input[type="file"]').first();
     await fileInput.setInputFiles('static/data/report.csv');
@@ -103,29 +100,29 @@ describe('CSV Preview Table Layout', () => {
     await page.waitForTimeout(500);
 
     await page.getByRole('button', { name: 'Preview' }).click();
-    await expect.element(page.locator('table').first()).toBeVisible();
+    await expect(page.locator('table').first()).toBeVisible();
 
     // Verify default row count is 5
     const rows = page.locator('tbody tr');
-    await expect.element(rows).toHaveCount(5);
+    await expect(rows).toHaveCount(5);
 
     const dropdown = page.locator('#row-limit-select');
-    await expect.element(dropdown).toHaveValue('5');
+    await expect(dropdown).toHaveValue('5');
 
-    await expect.element(page.getByText(/Showing first 5 rows/)).toBeVisible();
+    await expect(page.getByText(/Showing first 5 rows/)).toBeVisible();
 
     // Change row count to 10
     await dropdown.selectOption('10');
 
-    await expect.element(rows).toHaveCount(10);
+    await expect(rows).toHaveCount(10);
 
-    await expect.element(page.getByText(/Showing first 10 rows/)).toBeVisible();
+    await expect(page.getByText(/Showing first 10 rows/)).toBeVisible();
 
     // Change row count to 100
     await dropdown.selectOption('100');
 
-    await expect.element(rows).toHaveCount(100);
+    await expect(rows).toHaveCount(100);
 
-    await expect.element(page.getByText(/Showing first 100 rows/)).toBeVisible();
+    await expect(page.getByText(/Showing first 100 rows/)).toBeVisible();
   });
 });

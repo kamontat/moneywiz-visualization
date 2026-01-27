@@ -1,4 +1,4 @@
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import ExpenseByCategory from './ExpenseByCategory.svelte';
 import { describe, it, expect } from 'vitest';
 
@@ -10,7 +10,7 @@ describe('ExpenseByCategory', () => {
         ];
         const total = -300; // Passed as total logic from analytics (expenses are negative sum)
 
-        const screen = render(ExpenseByCategory, { props: { items, total } });
+        const screen = page.render(ExpenseByCategory, { props: { items, total } });
 
         await expect.element(screen.getByText('Expenses by Category')).toBeVisible();
 
@@ -23,7 +23,7 @@ describe('ExpenseByCategory', () => {
     });
 
     it('renders empty state', async () => {
-         const screen = render(ExpenseByCategory, { props: { items: [], total: 0 } });
+         const screen = page.render(ExpenseByCategory, { props: { items: [], total: 0 } });
 
          // Expand
          await screen.getByRole('button').click();

@@ -126,7 +126,7 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
 - Import hierarchy must be strictly enforced (atoms → molecules → organisms → routes)
 - No circular dependencies allowed
 - All components must have co-located test files
-- Test files must use Vitest and @testing-library/svelte
+- Test files must use Vitest and vitest-browser-svelte
 - Component naming must be PascalCase
 
 ## Examples
@@ -171,7 +171,7 @@ The application SHALL use Svelte 5 Runes syntax for component props and snippets
     }
 
     let { onparsed }: Props = $props();
-    
+
     // ... upload logic
 </script>
 

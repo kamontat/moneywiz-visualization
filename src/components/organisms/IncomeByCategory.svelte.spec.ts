@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import IncomeByCategory from './IncomeByCategory.svelte';
 
 describe('IncomeByCategory', () => {
@@ -11,7 +11,7 @@ describe('IncomeByCategory', () => {
         ];
         const total = 60000;
 
-        const screen = render(IncomeByCategory, { props: { items, total } });
+        const screen = page.render(IncomeByCategory, { props: { items, total } });
 
         await expect.element(screen.getByText('Income by Category')).toBeVisible();
 
@@ -24,7 +24,7 @@ describe('IncomeByCategory', () => {
     });
 
     it('renders empty state', async () => {
-         const screen = render(IncomeByCategory, { props: { items: [], total: 0 } });
+         const screen = page.render(IncomeByCategory, { props: { items: [], total: 0 } });
 
          // Expand
          await screen.getByRole('button').click();

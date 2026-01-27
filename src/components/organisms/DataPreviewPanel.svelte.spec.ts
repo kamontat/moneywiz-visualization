@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import { userEvent } from 'vitest/browser';
 import DataPreviewPanel from './DataPreviewPanel.svelte';
 
@@ -13,7 +13,7 @@ describe('DataPreviewPanel.svelte', () => {
 	};
 
 	it('renders table immediately when data is provided', async () => {
-		const { container } = render(DataPreviewPanel, { data: mockData });
+		const { container } = page.render(DataPreviewPanel, { data: mockData });
 
 		// Table should be visible immediately without clicking
 		const table = container.querySelector('table');
@@ -25,7 +25,7 @@ describe('DataPreviewPanel.svelte', () => {
 	});
 
 	it('renders table headers correctly', async () => {
-		const { container } = render(DataPreviewPanel, { data: mockData });
+		const { container } = page.render(DataPreviewPanel, { data: mockData });
 
 		const ths = container.querySelectorAll('th');
 		expect(ths).toHaveLength(3);
@@ -35,13 +35,13 @@ describe('DataPreviewPanel.svelte', () => {
 
 	it('shows "no rows" message if data has no rows', async () => {
 		const emptyData = { headers: ['Col1'], rows: [] };
-		const { container } = render(DataPreviewPanel, { data: emptyData });
+		const { container } = page.render(DataPreviewPanel, { data: emptyData });
 
 		expect(container).toHaveTextContent('No data rows found');
 	});
 
 	it('renders nothing if data is null', async () => {
-		const { container } = render(DataPreviewPanel, { data: null });
+		const { container } = page.render(DataPreviewPanel, { data: null });
 		// Svelte may leave comment nodes, but there should be no elements
 		expect(container.childElementCount).toBe(0);
 		expect(container).toHaveTextContent('');
@@ -52,7 +52,7 @@ describe('DataPreviewPanel.svelte', () => {
 			headers: ['Name'],
 			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` }))
 		};
-		const { container } = render(DataPreviewPanel, { data: manyRows });
+		const { container } = page.render(DataPreviewPanel, { data: manyRows });
 
 		expect(container).toHaveTextContent('Showing first 5 rows of 10');
 	});
@@ -62,14 +62,14 @@ describe('DataPreviewPanel.svelte', () => {
 			headers: ['Name'],
 			rows: Array.from({ length: 10 }, (_, i) => ({ Name: `Item ${i + 1}` }))
 		};
-		const { container } = render(DataPreviewPanel, { data: manyRows });
+		const { container } = page.render(DataPreviewPanel, { data: manyRows });
 
 		const trs = container.querySelectorAll('tbody tr');
 		expect(trs).toHaveLength(5);
 	});
 
 	it('renders dropdown with correct options', async () => {
-		const { container } = render(DataPreviewPanel, { data: mockData });
+		const { container } = page.render(DataPreviewPanel, { data: mockData });
 
 		const select = container.querySelector('select');
 		expect(select).not.toBeNull();
@@ -89,7 +89,7 @@ describe('DataPreviewPanel.svelte', () => {
 			headers: ['Name'],
 			rows: Array.from({ length: 20 }, (_, i) => ({ Name: `Item ${i + 1}` }))
 		};
-		const { container } = render(DataPreviewPanel, { data: manyRows });
+		const { container } = page.render(DataPreviewPanel, { data: manyRows });
 
 		// Initially 5
 		expect(container.querySelectorAll('tbody tr')).toHaveLength(5);

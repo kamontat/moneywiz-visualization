@@ -1,4 +1,4 @@
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte';
 import { describe, it, expect, vi } from 'vitest';
 
@@ -22,7 +22,7 @@ describe('IncomeExpenseBarChart', () => {
             mode: 'monthly' as const
         };
 
-        const { container } = render(IncomeExpenseBarChart, { props: { data } });
+        const { container } = page.render(IncomeExpenseBarChart, { props: { data } });
         const canvas = container.querySelector('canvas');
         expect(canvas).toBeTruthy();
     });

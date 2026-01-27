@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import UploadCsv from './UploadCsv.svelte';
 import { parseCsvFile } from '$lib/csv';
 
@@ -16,7 +16,7 @@ describe('CsvUploadButton.svelte', () => {
     });
 
 	it('renders with default label', async () => {
-		const { container } = render(UploadCsv);
+		const { container } = page.render(UploadCsv);
 		const button = container.querySelector('button');
 		expect(button).toHaveTextContent('Upload CSV');
 		// Check for icon
@@ -25,13 +25,13 @@ describe('CsvUploadButton.svelte', () => {
 	});
 
 	it('renders with custom label', async () => {
-		const { container } = render(UploadCsv, { label: 'Import Data' });
+		const { container } = page.render(UploadCsv, { label: 'Import Data' });
 		const button = container.querySelector('button');
 		expect(button).toHaveTextContent('Import Data');
 	});
 
 	it('has a hidden file input', async () => {
-		const { container } = render(UploadCsv);
+		const { container } = page.render(UploadCsv);
 		const input = container.querySelector('input[type="file"]');
 		expect(input).toBeInTheDocument();
 		expect(input).toHaveClass('sr-only');
@@ -44,7 +44,7 @@ describe('CsvUploadButton.svelte', () => {
 		});
 		const onParsedSpy = vi.fn();
 
-		const { container } = render(UploadCsv, { onparsed: onParsedSpy });
+		const { container } = page.render(UploadCsv, { onparsed: onParsedSpy });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
 		// Create a fake file
@@ -76,7 +76,7 @@ describe('CsvUploadButton.svelte', () => {
 		vi.mocked(parseCsvFile).mockRejectedValue(error);
 		const onErrorSpy = vi.fn();
 
-		const { container } = render(UploadCsv, { onerror: onErrorSpy });
+		const { container } = page.render(UploadCsv, { onerror: onErrorSpy });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 		const file = new File(['bad content'], 'bad.csv', { type: 'text/csv' });
 

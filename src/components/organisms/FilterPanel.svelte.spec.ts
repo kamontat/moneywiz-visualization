@@ -1,23 +1,23 @@
 import { describe, it, expect } from 'vitest';
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import FilterPanel from './FilterPanel.svelte';
 
 describe('FilterPanel.svelte', () => {
 	it('is initially collapsed', async () => {
-		const screen = render(FilterPanel);
+		const screen = page.render(FilterPanel);
 		await expect.element(screen.getByRole('button', { name: /filter/i })).toBeVisible();
 		// Content should not be visible
 		await expect.element(screen.getByLabelText('Start')).not.toBeInTheDocument();
 	});
 
 	it('expands when clicked', async () => {
-		const screen = render(FilterPanel);
+		const screen = page.render(FilterPanel);
 		await screen.getByRole('button', { name: /filter/i }).click();
 		await expect.element(screen.getByLabelText('Start')).toBeVisible();
 	});
 
     it('updates inputs when presets are clicked', async () => {
-        const screen = render(FilterPanel);
+        const screen = page.render(FilterPanel);
         await screen.getByRole('button', { name: /filter/i }).click();
 
         // Click a preset
@@ -40,7 +40,7 @@ describe('FilterPanel.svelte', () => {
             { Tags: 'Group: TestGroup; Type: Personal;' }
         ] as any[];
 
-        const screen = render(FilterPanel, { props: {
+        const screen = page.render(FilterPanel, { props: {
             rows,
             start: null,
             end: null,
@@ -58,7 +58,7 @@ describe('FilterPanel.svelte', () => {
 
     it('toggles tag selection include/exclude', async () => {
         const rows = [{ Tags: 'Group: A;' }] as any[];
-        const screen = render(FilterPanel, { props: {
+        const screen = page.render(FilterPanel, { props: {
             rows,
             start: null,
             end: null,

@@ -41,7 +41,7 @@ This skill provides comprehensive instructions for writing, updating, and debugg
 
 ### 2. Mocking & Environment
 - Use `vi.mock()` to isolate the module under test from its dependencies (e.g., mocking `debug` or stores).
-- For Svelte components, use `@testing-library/svelte` or equivalent if configured.
+- For Svelte components, use `page.render()`.
 
 ### 3. Assertions
 - Use Vitest's `expect` API.

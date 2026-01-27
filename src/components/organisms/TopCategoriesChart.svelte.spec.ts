@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render } from 'vitest-browser-svelte';
+import { page } from 'vitest/browser';
 import TopCategoriesChart from './TopCategoriesChart.svelte';
 
 describe('TopCategoriesChart.svelte', () => {
@@ -12,12 +12,12 @@ describe('TopCategoriesChart.svelte', () => {
     };
 
     it('renders heading', async () => {
-        const { container } = render(TopCategoriesChart, { data: mockData });
+        const { container } = page.render(TopCategoriesChart, { data: mockData });
         expect(container).toHaveTextContent('Top Categories');
     });
 
     it('renders list items for categories', async () => {
-        const { container } = render(TopCategoriesChart, { data: mockData });
+        const { container } = page.render(TopCategoriesChart, { data: mockData });
         const listItems = container.querySelectorAll('li');
         expect(listItems).toHaveLength(2);
         expect(container).toHaveTextContent('Food');
@@ -25,7 +25,7 @@ describe('TopCategoriesChart.svelte', () => {
     });
 
     it('renders empty message when no items', async () => {
-        const { container } = render(TopCategoriesChart, { data: { items: [], max: 0 } });
+        const { container } = page.render(TopCategoriesChart, { data: { items: [], max: 0 } });
         expect(container).toHaveTextContent('No category data');
         expect(container.querySelector('ul')).toBeNull();
     });
