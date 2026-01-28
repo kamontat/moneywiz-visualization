@@ -84,6 +84,23 @@ The application SHALL enforce a validation workflow after code changes.
 - **And** developers MUST run `bun run check` to validate
 - **And** if problems remain, developers MUST manually fix them
 
+### Requirement: E2E Testing Location
+
+Application flow tests SHALL be located in the `e2e/` directory.
+
+#### Scenario: Route Logic Testing
+
+- **Given** a new route or page logic is created
+- **Then** tests MUST be implemented as E2E tests in `e2e/`
+- **And** tests MUST NOT be co-located as `.spec.ts` in `src/routes/`
+- **And** co-located tests in `src/routes/` SHOULD be reserved for unit testing utility functions or complex Svelte components only (excluding page flows)
+
+#### Scenario: Test Data Isolation
+
+- **Given** an E2E test runs
+- **Then** it MUST generate its own isolated CSV data
+- **And** it MUST NOT rely on shared static files like `static/data/report.csv`
+
 ## Constraints
 
 - ESLint must use flat config format (eslint.config.js)

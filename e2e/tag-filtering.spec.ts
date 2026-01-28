@@ -1,10 +1,24 @@
 import { test, expect } from '@playwright/test';
+import { generateCsv, defaultRecord } from './utils/csv-generator';
 
 test.describe('Dashboard - Tag Filtering', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
+		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible();
 		const fileInput = page.locator('input[type="file"]').first();
-		await fileInput.setInputFiles('static/data/report.csv');
+		
+		const csvContent = generateCsv([
+			{ ...defaultRecord, Tags: 'Group: KcNt; ', Amount: '-100.00' },
+			{ ...defaultRecord, Description: 'No tags', Tags: '', Amount: '-50.00' }
+		]);
+
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
+		
+		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 		await expect(page.getByText('Saving Rate')).toBeVisible();
 	});
 

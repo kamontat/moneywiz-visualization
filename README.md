@@ -22,13 +22,25 @@ Run the full test suite:
 bun run test
 ```
 
-Run server-side tests only (includes CSV parser):
+Run E2E tests:
+
+```sh
+bun run test:e2e
+```
+
+Run unit tests:
+
+```sh
+bun run test:unit
+```
+
+Run server-side unit tests only (includes CSV parser):
 
 ```sh
 bun vitest run --project=server
 ```
 
-Run client-side tests only (Svelte components):
+Run client-side unit tests only (Svelte components):
 
 ```sh
 bun vitest run --project=client

@@ -1,10 +1,23 @@
 import { test, expect } from '@playwright/test';
+import { generateCsv } from './utils/csv-generator';
 
 test.describe('Dashboard - Category Breakdown', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
+		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible();
 		const fileInput = page.locator('input[type="file"]').first();
-		await fileInput.setInputFiles('static/data/report.csv');
+		
+		const csvContent = generateCsv([
+			{ Category: 'Compensation > Salary', Amount: '50000.00', Description: 'Salary' },
+			{ Category: 'Food and Beverage > Food', Amount: '-500.00', Description: 'Lunch' }
+		]);
+
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
+		
 		// Wait for dashboard to load by checking for the filename heading
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 	});

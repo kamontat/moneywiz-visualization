@@ -3,12 +3,9 @@ name: web-e2e-tester
 description: Write and run E2E tests for MoneyWiz. Use when validating full user flows (e.g., CSV upload), verifying chart rendering, ensuring data persistence, or running regression tests with Playwright.
 ---
 
-# E2E Testing with Playwright
-
 ## Commands
 
 - `bun run test:e2e`: Run all tests.
-- `bun run test:e2e --ui`: Open interactive UI.
 
 ## Writing Tests
 

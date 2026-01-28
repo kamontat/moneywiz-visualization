@@ -2,6 +2,12 @@
 
 All notable changes to this specification.
 
+## improve-test-structure
+
+### Changed
+
+- Updated `tech-code-quality` spec to mandate E2E tests for routes and data isolation in tests.
+
 ## integrate-prettier-eslint
 
 ### Added

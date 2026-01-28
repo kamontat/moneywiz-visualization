@@ -3,12 +3,9 @@ name: web-unit-tester
 description: Write and run unit tests for MoneyWiz. Use when testing business logic (src/lib/), verifying isolated Svelte component interactions, or debugging pure logic errors using Vitest.
 ---
 
-# Unit Testing with Vitest
-
 ## Commands
 
 - `bun run test`: Run all unit tests.
-- `bun vitest`: Run in watch mode.
 
 ## Writing Tests
 

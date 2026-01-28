@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { generateCsv, defaultRecord } from './utils/csv-generator';
 
 test.describe('Header Icons', () => {
 	test.beforeEach(async ({ page }) => {
@@ -19,8 +20,15 @@ test.describe('Header Icons', () => {
 	test('clear button has visible icon when loaded', async ({ page }) => {
 		// Upload a file to make Clear button appear
 		const fileInput = page.locator('input[type="file"]').first();
-		// Assuming test data exists at static/data/report.csv as per other tests
-		await fileInput.setInputFiles('static/data/report.csv');
+		
+		const csvContent = generateCsv([defaultRecord]);
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
+
+		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 
 		const clearBtn = page.getByRole('button', { name: 'Clear loaded CSV' });
 		await expect(clearBtn).toBeVisible();

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { generateCsv, defaultRecord } from './utils/csv-generator';
 
 test.describe('CSV Preview Table Layout', () => {
 	test.beforeEach(async ({ page }) => {
@@ -8,7 +9,12 @@ test.describe('CSV Preview Table Layout', () => {
 	test('preview table displays all columns without wrapping headers', async ({ page }) => {
 		// Upload CSV file to show preview table
 		const fileInput = page.locator('input[type="file"]').first();
-		await fileInput.setInputFiles('static/data/report.csv');
+		const csvContent = generateCsv([defaultRecord]);
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
 
 		// Navigate to Preview tab and verify table is visible
 		// Click the Preview tab to view the data table
@@ -72,7 +78,12 @@ test.describe('CSV Preview Table Layout', () => {
 	test('tab switching between Overview and Preview works', async ({ page }) => {
 		// Upload CSV file
 		const fileInput = page.locator('input[type="file"]').first();
-		await fileInput.setInputFiles('static/data/report.csv');
+		const csvContent = generateCsv([defaultRecord]);
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
 
 		// Verify Overview tab is default
 		const overviewTab = page.getByRole('button', { name: 'Overview' });
@@ -91,15 +102,25 @@ test.describe('CSV Preview Table Layout', () => {
 		await page.getByRole('button', { name: 'Overview' }).click();
 
 		await expect(overviewTab).toHaveAttribute('aria-current', 'page');
-
 		// Preview tab should no longer be active
 		await expect(previewTab).not.toHaveAttribute('aria-current', 'page');
 	});
 
 	test('dropdown changes displayed row count', async ({ page }) => {
+		// Generate large dataset
+		const largeData = Array.from({ length: 110 }, (_, i) => ({
+			...defaultRecord,
+			Description: `Item ${i}`
+		}));
+		const csvContent = generateCsv(largeData);
+
 		// Upload CSV file
 		const fileInput = page.locator('input[type="file"]').first();
-		await fileInput.setInputFiles('static/data/report.csv');
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
 
 		// Navigate to Preview tab
 		// It might need time to upload/process

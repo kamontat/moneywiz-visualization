@@ -1,12 +1,26 @@
 import { test, expect } from '@playwright/test';
+import { generateCsv } from './utils/csv-generator';
 
 test.describe('Dashboard - Currency Formatting', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
+		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible();
 		// Upload CSV
 		const fileInput = page.locator('input[type="file"]').first();
-		await fileInput.setInputFiles('static/data/report.csv');
+		
+		const csvContent = generateCsv([
+			{ Category: 'Income', Amount: '1000.00', Description: 'Income' },
+			{ Category: 'Expense', Amount: '-500.00', Description: 'Expense' }
+		]);
+
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent)
+		});
+
 		// Wait for dashboard to load by checking for Saving Rate label which is unique
+		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 		await expect(page.getByText('Saving Rate', { exact: true })).toBeVisible();
 	});
 
