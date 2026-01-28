@@ -54,8 +54,10 @@ description: Helper for SQL query generation and optimization. Use when working 
 # Database Helper
 
 ## When to Use
+
 (Note: Merged into description for new skills)
 
 ## Instructions
+
 ...
 ```

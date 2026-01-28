@@ -19,9 +19,9 @@ import { add } from './math';
 import { describe, it, expect } from 'vitest';
 
 describe('math', () => {
-  it('adds', () => {
-    expect(add(1, 1)).toBe(2);
-  });
+	it('adds', () => {
+		expect(add(1, 1)).toBe(2);
+	});
 });
 ```
 
@@ -32,7 +32,7 @@ import { render, screen } from '@testing-library/svelte';
 import Button from './Button.svelte';
 
 it('renders', () => {
-  render(Button, { label: 'Click me' });
-  expect(screen.getByRole('button')).toHaveTextContent('Click me');
+	render(Button, { label: 'Click me' });
+	expect(screen.getByRole('button')).toHaveTextContent('Click me');
 });
 ```

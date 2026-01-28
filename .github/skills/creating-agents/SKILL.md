@@ -8,6 +8,7 @@ description: Create and configure new Agents for GitHub Copilot. Use when creati
 ## Specification
 
 ### 1. File Location
+
 - Agents live in `.github/copilot/`.
 - Filename format: `agent-name.agent.md` (or `.json` if using that format, but `.md` is preferred for readability).
 
@@ -25,6 +26,7 @@ tools:
 ```
 
 ### 3. System Prompt
+
 The body of the markdown file acts as the system prompt.
 
 - **Role**: Define who the agent is.
@@ -34,7 +36,7 @@ The body of the markdown file acts as the system prompt.
 ## Best Practices
 
 - **Minimal Tools**: Only give the agent tools it strictly needs.
-- **Clear Goals**: The description should be specific about *what* the agent solves.
+- **Clear Goals**: The description should be specific about _what_ the agent solves.
 - **Example Prompts**: Include examples of how users should interact with it.
 
 ## Example
@@ -52,6 +54,7 @@ You are an expert technical writer.
 Your goal is to help users write clear, concise documentation.
 
 Rules:
+
 1. Use US English.
 2. Follow the Microsoft Style Guide.
 ```

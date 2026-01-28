@@ -12,7 +12,7 @@ test.describe('Dashboard - Filtering', () => {
 		const records = [
 			{ ...defaultRecord, Date: currentMonthStr, Amount: '-100.00', Description: 'Current Month' },
 			{ ...defaultRecord, Date: '15/12/2025', Amount: '-200.00', Description: 'Dec 2025' },
-			{ ...defaultRecord, Date: '15/11/2025', Amount: '-300.00', Description: 'Nov 2025' }
+			{ ...defaultRecord, Date: '15/11/2025', Amount: '-300.00', Description: 'Nov 2025' },
 		];
 
 		const fileInput = page.locator('input[type="file"]').first();
@@ -21,7 +21,7 @@ test.describe('Dashboard - Filtering', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		await expect(page.getByText('Saving Rate')).toBeVisible();

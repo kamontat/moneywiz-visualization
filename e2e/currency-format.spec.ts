@@ -10,13 +10,13 @@ test.describe('Dashboard - Currency Formatting', () => {
 
 		const csvContent = generateCsv([
 			{ Category: 'Income', Amount: '1000.00', Description: 'Income' },
-			{ Category: 'Expense', Amount: '-500.00', Description: 'Expense' }
+			{ Category: 'Expense', Amount: '-500.00', Description: 'Expense' },
 		]);
 
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Wait for dashboard to load by checking for Saving Rate label which is unique

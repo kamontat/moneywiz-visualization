@@ -17,6 +17,7 @@ description: Query external library documentation (Tailwind, SvelteKit, etc.) us
 - **Synthesize**: Combine the docs with the project's existing code style.
 
 ## Supported Libraries (Examples)
+
 - `tailwindcss`
 - `svelte` / `sveltekit`
 - `vitest`

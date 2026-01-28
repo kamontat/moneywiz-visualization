@@ -13,24 +13,25 @@ Always use Runes. **Do not use legacy stores** (`svelte/store`) or Svelte 4 synt
 
 ```svelte
 <script>
-  let { title, count = 0, ...rest } = $props(); // Props
-  let internalCount = $state(count);            // State
-  let double = $derived(internalCount * 2);     // Derived
+	let { title, count = 0, ...rest } = $props(); // Props
+	let internalCount = $state(count); // State
+	let double = $derived(internalCount * 2); // Derived
 
-  function increment() {
-    internalCount += 1;
-  }
+	function increment() {
+		internalCount += 1;
+	}
 
-  $effect(() => {
-    console.log(internalCount);
-    return () => console.log('cleanup');
-  });
+	$effect(() => {
+		console.log(internalCount);
+		return () => console.log('cleanup');
+	});
 </script>
 
 <button onclick={increment}>{double}</button>
 ```
 
 ### Key Variations
+
 - **Props**: `let { prop } = $props()`
 - **Bindings**: `let { value = $bindable() } = $props()`
 - **Ref**: `bind:this={element}`
@@ -40,7 +41,7 @@ Always use Runes. **Do not use legacy stores** (`svelte/store`) or Svelte 4 synt
 
 ```svelte
 {#snippet header(text)}
-  <h1>{text}</h1>
+	<h1>{text}</h1>
 {/snippet}
 
 {@render header('Hello')}
@@ -49,37 +50,42 @@ Always use Runes. **Do not use legacy stores** (`svelte/store`) or Svelte 4 synt
 ## SvelteKit Patterns
 
 ### Data Loading
+
 - **Server Load**: `+page.server.ts`
   ```typescript
   export const load = async ({ locals }) => {
-    return { user: locals.user };
+  	return { user: locals.user };
   };
   ```
 - **Page Data**:
   ```svelte
   <script>
-    let { data } = $props();
+  	let { data } = $props();
   </script>
   ```
 
 ### Form Actions (`+page.server.ts`)
+
 ```typescript
 export const actions = {
-  default: async ({ request }) => {
-    const data = await request.formData();
-    // process
-  }
+	default: async ({ request }) => {
+		const data = await request.formData();
+		// process
+	},
 };
 ```
 
 ## Styling
+
 - Use **Tailwind CSS**.
 - Scoped styles in `<style>` are allowed but Tailwind is preferred for this project.
 
 ## Common Pitfalls
+
 - **Async in Effects**: Dependencies aren't tracked after `await`.
 - **State in Modules**: Avoid global `$state` on the server (cross-request leaks). Use Context.
 - **Updates**: `$state` arrays/objects are deeply reactive. Just mutate them (`arr.push(1)`).
 
 ## MCP Tools Integration
+
 - Use **Svelte MCP** (`get-documentation`, `svelte-autofixer`) to validate Runes syntax if unsure.

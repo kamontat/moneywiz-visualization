@@ -5,7 +5,7 @@
 	let {
 		category,
 		availableValues = [],
-		tagFilters = $bindable()
+		tagFilters = $bindable(),
 	}: {
 		category: string;
 		availableValues: string[];

@@ -15,7 +15,7 @@ description: Create custom instruction files (.instructions.md) to guide Copilot
 ```yaml
 ---
 description: Brief description of what this instruction covers.
-applyTo: "**/*.ts" # Glob pattern
+applyTo: '**/*.ts' # Glob pattern
 ---
 ```
 
@@ -25,6 +25,7 @@ The body contains the instructions.
 
 - **Be Specific**: "Use `const`" is better than "Use modern JS".
 - **Show Examples**:
+
   ```typescript
   // Bad
   var x = 1;
@@ -44,7 +45,7 @@ The body contains the instructions.
 ```markdown
 ---
 description: Ensure all components use Svelte 5 runes.
-applyTo: "src/components/**/*.svelte"
+applyTo: 'src/components/**/*.svelte'
 ---
 
 # Svelte 5 Rules

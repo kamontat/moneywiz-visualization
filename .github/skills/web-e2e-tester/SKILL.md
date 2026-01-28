@@ -18,13 +18,14 @@ description: Write and run E2E tests for MoneyWiz. Use when validating full user
 import { test, expect } from '@playwright/test';
 
 test('uploads csv', async ({ page }) => {
-  await page.goto('/');
-  await page.getByLabel('Upload CSV').setInputFiles('test-data.csv');
-  await expect(page.getByText('Total Income')).toBeVisible();
+	await page.goto('/');
+	await page.getByLabel('Upload CSV').setInputFiles('test-data.csv');
+	await expect(page.getByText('Total Income')).toBeVisible();
 });
 ```
 
 ## Checklist
+
 - [ ] Use `getByRole` or `getByLabel`.
 - [ ] Wait for UI stability (auto-waiting).
 - [ ] Clean up test data if needed (though usually ephemeral).

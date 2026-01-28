@@ -22,7 +22,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Verify dashboard updates with data
@@ -51,7 +51,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Verify upload was successful - preview should appear

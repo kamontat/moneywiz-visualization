@@ -25,7 +25,7 @@ test.describe('Header Icons', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();

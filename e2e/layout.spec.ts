@@ -14,7 +14,10 @@ test.describe('Layout', () => {
 		// Assuming the aria-label is accessible as 'GitHub Repository'
 		const githubLink = page.getByRole('link', { name: 'GitHub Repository' });
 		await expect(githubLink).toBeVisible();
-		await expect(githubLink).toHaveAttribute('href', 'https://github.com/kamontat/moneywiz-visualization');
+		await expect(githubLink).toHaveAttribute(
+			'href',
+			'https://github.com/kamontat/moneywiz-visualization'
+		);
 
 		// Main content (from +page.svelte)
 		await expect(page.getByText('Welcome to MoneyWiz Report')).toBeVisible();

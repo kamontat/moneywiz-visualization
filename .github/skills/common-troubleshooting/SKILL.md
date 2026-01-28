@@ -28,16 +28,19 @@ description: Identify and resolve common issues. Use when debugging dev server c
 The project uses the `debug` library.
 
 **Enable in Browser Console:**
+
 ```javascript
 localStorage.debug = 'moneywiz:*'; // Then refresh
 ```
 
 **Enable in Terminal:**
+
 ```bash
 DEBUG=moneywiz:* bun run dev
 ```
 
 **Namespaces:**
+
 - `moneywiz:csv`
 - `moneywiz:store`
 - `moneywiz:component`
@@ -51,5 +54,6 @@ DEBUG=moneywiz:* bun run dev
 4.  **Check Store**: Is the Svelte store updating? (`$state` reactivity).
 
 ## References
+
 - `src/lib/debug.ts` (Logger implementation)
 - [MoneyWiz Help](https://help.moneywiz.com) (Export formats)

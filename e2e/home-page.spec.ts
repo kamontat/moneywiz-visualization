@@ -25,7 +25,7 @@ test.describe('Home Page', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Check for dashboard

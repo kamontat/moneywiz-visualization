@@ -16,7 +16,7 @@ description: Create reusable prompt files (.prompt.md) for Copilot. Use when aut
 ---
 name: refactor-component
 description: Refactor a component to use the new design system.
-tools: ["read_file"]
+tools: ['read_file']
 ---
 ```
 

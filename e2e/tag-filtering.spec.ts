@@ -9,13 +9,13 @@ test.describe('Dashboard - Tag Filtering', () => {
 
 		const csvContent = generateCsv([
 			{ ...defaultRecord, Tags: 'Group: KcNt; ', Amount: '-100.00' },
-			{ ...defaultRecord, Description: 'No tags', Tags: '', Amount: '-50.00' }
+			{ ...defaultRecord, Description: 'No tags', Tags: '', Amount: '-50.00' },
 		]);
 
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();

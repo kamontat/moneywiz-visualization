@@ -9,13 +9,13 @@ test.describe('Dashboard - Category Breakdown', () => {
 
 		const csvContent = generateCsv([
 			{ Category: 'Compensation > Salary', Amount: '50000.00', Description: 'Salary' },
-			{ Category: 'Food and Beverage > Food', Amount: '-500.00', Description: 'Lunch' }
+			{ Category: 'Food and Beverage > Food', Amount: '-500.00', Description: 'Lunch' },
 		]);
 
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Wait for dashboard to load by checking for the filename heading

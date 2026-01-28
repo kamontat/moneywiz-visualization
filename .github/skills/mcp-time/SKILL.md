@@ -11,5 +11,6 @@ description: Get current time and timezone info. Use when retrieving current tim
 - `convert_time`: Handies timezone shifts.
 
 ## Context
+
 - **Server**: Local machine (macOS).
 - **Timezone**: Usually relevant for logs or file metadata.

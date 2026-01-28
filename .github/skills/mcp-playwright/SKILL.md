@@ -18,5 +18,6 @@ description: Browser automation and testing using Playwright. Use when writing/r
 - **Isolation**: Tests should be independent.
 
 ## Application Context
+
 - **Base URL**: `http://localhost:5173`
 - **Config**: `playwright.config.ts`

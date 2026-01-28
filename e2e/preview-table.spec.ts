@@ -13,7 +13,7 @@ test.describe('CSV Preview Table Layout', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Navigate to Preview tab and verify table is visible
@@ -82,7 +82,7 @@ test.describe('CSV Preview Table Layout', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Verify Overview tab is default
@@ -110,7 +110,7 @@ test.describe('CSV Preview Table Layout', () => {
 		// Generate large dataset
 		const largeData = Array.from({ length: 110 }, (_, i) => ({
 			...defaultRecord,
-			Description: `Item ${i}`
+			Description: `Item ${i}`,
 		}));
 		const csvContent = generateCsv(largeData);
 
@@ -119,7 +119,7 @@ test.describe('CSV Preview Table Layout', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Navigate to Preview tab

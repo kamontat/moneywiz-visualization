@@ -3,7 +3,7 @@
 
 	let {
 		start = $bindable(null),
-		end = $bindable(null)
+		end = $bindable(null),
 	}: {
 		start: Date | null;
 		end: Date | null;

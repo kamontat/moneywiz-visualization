@@ -15,7 +15,7 @@ test.describe('CSV Persistence', () => {
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent)
+			buffer: Buffer.from(csvContent),
 		});
 
 		// Check for elements that only appear when data is loaded

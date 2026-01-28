@@ -8,8 +8,8 @@ describe('TagCategoryContent', () => {
 			props: {
 				category: 'Bank',
 				availableValues: ['KBank', 'SCB'],
-				tagFilters: []
-			}
+				tagFilters: [],
+			},
 		});
 
 		await expect.element(getByText('KBank')).toBeVisible();

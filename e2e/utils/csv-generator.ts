@@ -26,7 +26,7 @@ export const generateCsv = (records: MoneyWizRecord[]): string => {
 		'Amount',
 		'Currency',
 		'Check #',
-		'Tags'
+		'Tags',
 	];
 
 	const headerLine = headers.map((h) => `"${h}"`).join(',');
@@ -43,7 +43,7 @@ export const generateCsv = (records: MoneyWizRecord[]): string => {
 			r.Amount ?? '100.00',
 			r.Currency ?? 'THB',
 			r.CheckBy ?? '',
-			r.Tags ?? ''
+			r.Tags ?? '',
 		]
 			.map((v) => `"${v}"`)
 			.join(',');
@@ -60,5 +60,5 @@ export const defaultRecord: MoneyWizRecord = {
 	Date: '01/01/2026',
 	Time: '12:00',
 	Amount: '-100.00',
-	Currency: 'THB'
+	Currency: 'THB',
 };

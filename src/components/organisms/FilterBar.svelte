@@ -10,12 +10,12 @@
 		start = $bindable(null),
 		end = $bindable(null),
 		tagFilters = $bindable([]),
-		rows = []
+		rows = [],
 	}: {
-		start: Date | null;
-		end: Date | null;
-		tagFilters: TagFilter[];
-		rows: Record<string, string>[];
+		start?: Date | null;
+		end?: Date | null;
+		tagFilters?: TagFilter[];
+		rows?: Record<string, string>[];
 	} = $props();
 
 	// Parse available tags
@@ -62,7 +62,7 @@
 		<!-- Date Trigger -->
 		<button
 			onclick={() => toggleFilter('date')}
-			class="group flex items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-medium transition-all
+			class="group flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all
             {activeFilter === 'date'
 				? 'border-mw-primary bg-mw-primary/10 text-mw-primary'
 				: isDateActive
@@ -92,7 +92,7 @@
 			{@const isActive = count > 0}
 			<button
 				onclick={() => toggleFilter(category)}
-				class="group flex items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-medium transition-all
+				class="group flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all
                 {activeFilter === category
 					? 'border-mw-primary bg-mw-primary/10 text-mw-primary'
 					: isActive
@@ -120,7 +120,7 @@
 			<div class="ml-auto pl-2">
 				<button
 					onclick={clearAll}
-					class="whitespace-nowrap text-xs text-mw-text-muted hover:text-red-500 hover:underline"
+					class="text-xs whitespace-nowrap text-mw-text-muted hover:text-red-500 hover:underline"
 				>
 					Clear All
 				</button>

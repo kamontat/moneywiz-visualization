@@ -34,18 +34,18 @@ license: MIT
 
 ### Project Scopes
 
-| Scope       | Files Affected                                              |
-| ----------- | ----------------------------------------------------------- |
-| `csv`       | CSV upload flow, CSV parser, `src/lib/csv.ts`               |
-| `charts`    | Chart components (`DailyExpensesChart`, etc.)               |
-| `dashboard` | Main dashboard (`src/routes/+page.svelte`)                  |
-| `header`    | `AppHeader.svelte`, navigation                              |
-| `analytics` | Business logic, `src/lib/analytics.ts`                      |
-| `store`     | State management, `src/lib/stores/`                         |
-| `styling`   | Tailwind CSS, component styles                              |
-| `test`      | Unit tests (`.spec.ts`)                                     |
-| `e2e`       | Playwright tests in `e2e/`                                  |
-| `config`    | Configuration files (`vite.config.ts`, etc.)                |
+| Scope       | Files Affected                                |
+| ----------- | --------------------------------------------- |
+| `csv`       | CSV upload flow, CSV parser, `src/lib/csv.ts` |
+| `charts`    | Chart components (`DailyExpensesChart`, etc.) |
+| `dashboard` | Main dashboard (`src/routes/+page.svelte`)    |
+| `header`    | `AppHeader.svelte`, navigation                |
+| `analytics` | Business logic, `src/lib/analytics.ts`        |
+| `store`     | State management, `src/lib/stores/`           |
+| `styling`   | Tailwind CSS, component styles                |
+| `test`      | Unit tests (`.spec.ts`)                       |
+| `e2e`       | Playwright tests in `e2e/`                    |
+| `config`    | Configuration files (`vite.config.ts`, etc.)  |
 
 ## Breaking Changes
 
