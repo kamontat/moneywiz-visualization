@@ -20,7 +20,7 @@ test.describe('Header Icons', () => {
 	test('clear button has visible icon when loaded', async ({ page }) => {
 		// Upload a file to make Clear button appear
 		const fileInput = page.locator('input[type="file"]').first();
-		
+
 		const csvContent = generateCsv([defaultRecord]);
 		await fileInput.setInputFiles({
 			name: 'report.csv',

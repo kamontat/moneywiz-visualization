@@ -18,7 +18,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		// Upload CSV via hidden input
 		const fileInput = page.locator('input[type="file"]').first();
 		await fileInput.waitFor({ state: 'attached' });
-		
+
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
@@ -28,7 +28,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		// Verify dashboard updates with data
 		// After upload, dashboard should show summary cards
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
-		
+
 		// Use first() to avoid ambiguity if labels appear elsewhere
 		await expect(page.getByText('Income', { exact: true }).first()).toBeVisible();
 		await expect(page.getByText('Expenses', { exact: true }).first()).toBeVisible();
@@ -43,11 +43,11 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 	test('clears uploaded CSV and resets to empty state', async ({ page }) => {
 		// Generate CSV
 		const csvContent = generateCsv([defaultRecord]);
-		
+
 		// Upload CSV file first
 		const fileInput = page.locator('input[type="file"]').first();
 		await fileInput.waitFor({ state: 'attached' });
-		
+
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',

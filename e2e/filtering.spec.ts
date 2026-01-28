@@ -5,7 +5,7 @@ test.describe('Dashboard - Filtering', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/');
 		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible();
-		
+
 		const now = new Date();
 		const currentMonthStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
 
@@ -78,7 +78,7 @@ test.describe('Dashboard - Filtering', () => {
 
 		// Should show data for Dec 2025
 		await expect(page.getByText('shown')).toBeVisible();
-		
+
 		// Verify expected data is visible (amount matches generated data)
 		// Or just visibility of "shown" implies filter applied
 	});

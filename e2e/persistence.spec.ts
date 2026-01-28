@@ -11,13 +11,13 @@ test.describe('CSV Persistence', () => {
 		// Upload CSV
 		const fileInput = page.locator('input[type="file"]').first();
 		const csvContent = generateCsv([defaultRecord]);
-		
+
 		await fileInput.setInputFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
 			buffer: Buffer.from(csvContent)
 		});
-		
+
 		// Check for elements that only appear when data is loaded
 		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible();
 		await expect(page.getByText('Saving Rate')).toBeVisible();

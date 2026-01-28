@@ -7,7 +7,7 @@ test.describe('Dashboard - Currency Formatting', () => {
 		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible();
 		// Upload CSV
 		const fileInput = page.locator('input[type="file"]').first();
-		
+
 		const csvContent = generateCsv([
 			{ Category: 'Income', Amount: '1000.00', Description: 'Income' },
 			{ Category: 'Expense', Amount: '-500.00', Description: 'Expense' }
