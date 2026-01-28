@@ -11,12 +11,14 @@ Define the global testing strategy, distinguishing between Unit (components) and
 Tests SHALL be strictly categorized by their location and scope.
 
 #### Scenario: Component Testing (Unit)
+
 - **Given** a reusable Svelte component in `src/components/`
 - **Then** unit tests MUST be valid
 - **And** tests SHOULD be co-located (e.g., `Component.svelte.spec.ts`)
 - **And** tests SHOULD verify rendering, props, and internal state logic
 
 #### Scenario: Route/App Flow Testing (E2E)
+
 - **Given** a full page route or critical user flow (like Upload)
 - **Then** tests MUST be implemented using Playwright in `e2e/`
 - **And** tests MUST NOT be implemented as co-located unit tests in `src/routes/`
@@ -26,12 +28,14 @@ Tests SHALL be strictly categorized by their location and scope.
 Tests SHALL manage their own data needs explicitly and independently.
 
 #### Scenario: E2E Data Generation
+
 - **Given** an E2E test requires CSV data input
 - **Then** the test MUST programmatically generate a unique CSV string or buffer
 - **And** the test MUST NOT use shared static files (e.g., `static/data/report.csv`)
 - **And** generated data MUST contain only the minimal records needed for the specific test case
 
 #### Scenario: Data Cleanup
+
 - **Given** a test creates temporary state (browser upload)
 - **Then** the state usually clears on pagereload or new context, but specific cleanup steps SHOULD be added if side effects persist (e.g. LocalStorage)
 
@@ -49,17 +53,17 @@ import { test, expect } from '@playwright/test';
 import { generateCsv } from './utils/csv-generator';
 
 test('uploads custom data', async ({ page }) => {
-    // Generate isolated data
-    const csvData = generateCsv([{ Account: 'Test Bank', Amount: '500.00' }]);
+	// Generate isolated data
+	const csvData = generateCsv([{ Account: 'Test Bank', Amount: '500.00' }]);
 
-    // Convert to buffer for upload
-    await page.locator('input[type="file"]').setInputFiles({
-        name: 'test.csv',
-        mimeType: 'text/csv',
-        buffer: Buffer.from(csvData)
-    });
+	// Convert to buffer for upload
+	await page.locator('input[type="file"]').setInputFiles({
+		name: 'test.csv',
+		mimeType: 'text/csv',
+		buffer: Buffer.from(csvData),
+	});
 
-    await expect(page.getByText('500.00')).toBeVisible();
+	await expect(page.getByText('500.00')).toBeVisible();
 });
 ```
 

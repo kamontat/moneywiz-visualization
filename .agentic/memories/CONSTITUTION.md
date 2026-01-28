@@ -20,11 +20,11 @@ Rules that AI agents **must always respect** when working in this repository.
 
 ## Validation
 
-After modifying any code, follow this workflow:
+**MANDATORY:** After modifying ANY code, you MUST:
 
 1. **Run `bun run fix`** — Auto-fix formatting and linting issues
 2. **Run `bun run check`** — Validate formatting, linting, and types
-3. **Manual fixes** — If problems remain after step 2, manually modify the code to resolve them
+3. If `bun run check` reports errors, you MUST fix them before finishing. Do not ignore type errors or lint warnings.
 
 ## Testing
 
