@@ -51,7 +51,7 @@ import { generateCsv } from './utils/csv-generator';
 test('uploads custom data', async ({ page }) => {
     // Generate isolated data
     const csvData = generateCsv([{ Account: 'Test Bank', Amount: '500.00' }]);
-    
+
     // Convert to buffer for upload
     await page.locator('input[type="file"]').setInputFiles({
         name: 'test.csv',
