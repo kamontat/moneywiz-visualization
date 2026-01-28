@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FilterPanel from '$components/organisms/FilterPanel.svelte';
+	import FilterBar from '$components/organisms/FilterBar.svelte';
 	import QuickSummary from './QuickSummary.svelte';
 	import OverviewTab from './OverviewTab.svelte';
 	import PreviewTab from './PreviewTab.svelte';
@@ -79,7 +79,7 @@
 
 	<!-- Filter Panel -->
 	<section aria-label="Filters" class="z-20">
-		<FilterPanel bind:start={filterStart} bind:end={filterEnd} bind:tagFilters rows={thbRows} />
+		<FilterBar bind:start={filterStart} bind:end={filterEnd} bind:tagFilters rows={thbRows} />
 	</section>
 
 	<!-- Quick Summary Section -->

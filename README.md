@@ -145,7 +145,7 @@ bun run preview
   - `organisms/` - Complex UI sections
     - `AppHeader.svelte` - Main header with logo and CSV upload
     - `SummaryCards.svelte` - Dashboard summary cards (Income, Expenses, Net, Transactions)
-    - `FilterPanel.svelte` - Collapsible date range filter with quick presets
+    - `FilterBar.svelte` - Horizontal scrolling filter bar with expandable popovers for Date and Tag Categories
     - `TopCategoriesChart.svelte` - Bar chart for top spending categories
     - `IncomeExpenseBarChart.svelte` - Mixed bar/line chart for income, expenses, and net trend
     - `IncomeExpenseRatioChart.svelte` - Pie chart for income vs expenses ratio
