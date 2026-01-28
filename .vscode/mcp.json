@@ -36,11 +36,6 @@
 				"--config",
 				"${workspaceFolder}/configs/playwright/config.json"
 			]
-		},
-		"chromedevtools/chrome-devtools": {
-			"type": "stdio",
-			"command": "mise",
-			"args": ["exec", "npm:chrome-devtools-mcp@latest", "--", "chrome-devtools-mcp"]
 		}
 	},
 	"inputs": [
