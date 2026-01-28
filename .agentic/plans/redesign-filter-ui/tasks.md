@@ -2,20 +2,24 @@
 
 ## Steps
 
--   title: Create DateFilter Component
-    description: Create `src/components/molecules/filters/DateFilter.svelte`. This button + popover/dropdown handles start/end date inputs and quick presets.
-    files: [src/components/molecules/filters/DateFilter.svelte]
-    changes: Move date logic and presets from FilterPanel to here. Implementation as a standalone dropdown.
+-   title: Create DateFilterContent Component
+    description: Create `src/components/molecules/filters/DateFilterContent.svelte`. This contains the inputs and presets for date filtering.
+    files: [src/components/molecules/filters/DateFilterContent.svelte]
+    changes: Extract date logic and presets from FilterPanel. This is the *content* of the date panel.
 
--   title: Create TagCategoryFilter Component
-    description: Create `src/components/molecules/filters/TagCategoryFilter.svelte`. This handles filtering for a single tag category.
-    files: [src/components/molecules/filters/TagCategoryFilter.svelte]
+-   title: Create TagCategoryContent Component
+    description: Create `src/components/molecules/filters/TagCategoryContent.svelte`. This contains the checkbox list and toggles for a single category.
+    files: [src/components/molecules/filters/TagCategoryContent.svelte]
     changes: Accepts category name, values, and current TagFilter state. Implements the list of checkboxes/buttons and the Include/Exclude toggle.
 
 -   title: Create FilterBar Component
-    description: Create a new container component `src/components/organisms/FilterBar.svelte` to replace `FilterPanel`. It should orchestrate the state of individual filters.
+    description: Create `src/components/organisms/FilterBar.svelte`. This manages the row of buttons and the expandable panel area.
     files: [src/components/organisms/FilterBar.svelte]
-    changes: Scaffold component, accept same props as FilterPanel. Render the horizontal list of DateFilter and TagCategoryFilters.
+    changes:
+        -   Render row of buttons (Date, Cat 1, Cat 2...).
+        -   Manage `activeFilter` state (which filter is open).
+        -   Render the "Expansion Area" below the buttons.
+        -   Conditionally render `DateFilterContent` or `TagCategoryContent` inside the expansion area.
 
 -   title: Integrate FilterBar into Dashboard
     description: Replace the usage of `FilterPanel` in `Dashboard.svelte` with `FilterBar`.
@@ -28,8 +32,7 @@
     changes: Delete file.
 
 ## Verification
--   [ ] Verify "Date" button opens date picker.
--   [ ] Verify presets work.
--   [ ] Verify each Tag Category appears as a button.
+-   [ ] Verify clicking "Date" expands the panel with date controls.
+-   [ ] Verify clicking a Category expands the panel with category controls.
+-   [ ] Verify clicking the active button again (or a close button) collapses the panel.
 -   [ ] Verify Include/Exclude toggle updates the logic correctly.
--   [ ] Check responsiveness (does the bar wrap or scroll?).
