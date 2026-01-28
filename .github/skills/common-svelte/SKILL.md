@@ -1,6 +1,6 @@
 ---
 name: common-svelte
-description: Develop Svelte 5 and SvelteKit applications using Runes and modern patterns. Use for migrations, state management ($state, $derived, $effect), component design, and SvelteKit features like loading/forms.
+description: Develop Svelte 5 and SvelteKit applications using Runes and modern patterns. Use whenever need to modify any Svelte code including Sveltekit.
 ---
 
 # Svelte 5 and SvelteKit Development
