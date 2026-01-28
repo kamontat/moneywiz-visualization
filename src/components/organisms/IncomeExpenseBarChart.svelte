@@ -10,8 +10,8 @@
 		LineController,
 		LineElement,
 		PointElement,
-	} from 'chart.js';
-	import type { IncomeExpenseTimeSeries } from '$lib/analytics';
+	} from 'chart.js'
+	import type { IncomeExpenseTimeSeries } from '$lib/analytics'
 
 	Chart.register(
 		BarController,
@@ -23,18 +23,18 @@
 		LineController,
 		LineElement,
 		PointElement
-	);
+	)
 
 	interface Props {
-		data: IncomeExpenseTimeSeries;
+		data: IncomeExpenseTimeSeries
 	}
 
-	let { data }: Props = $props();
-	let canvas: HTMLCanvasElement | undefined = $state();
+	let { data }: Props = $props()
+	let canvas: HTMLCanvasElement | undefined = $state()
 	// chart instance is not needed as state, tracked locally in effect
 
 	$effect(() => {
-		if (!canvas) return;
+		if (!canvas) return
 
 		const chartInstance = new Chart(canvas, {
 			type: 'bar',
@@ -108,8 +108,8 @@
 						boxPadding: 4,
 						callbacks: {
 							label: (ctx) => {
-								let val = ctx.parsed.y;
-								if (val === null) return '';
+								let val = ctx.parsed.y
+								if (val === null) return ''
 								return (
 									ctx.dataset.label +
 									': ' +
@@ -117,18 +117,18 @@
 										style: 'currency',
 										currency: 'THB',
 									}).format(val)
-								);
+								)
 							},
 						},
 					},
 				},
 			},
-		});
+		})
 
 		return () => {
-			chartInstance.destroy();
-		};
-	});
+			chartInstance.destroy()
+		}
+	})
 </script>
 
 <div

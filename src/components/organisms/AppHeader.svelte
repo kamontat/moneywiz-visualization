@@ -1,19 +1,19 @@
 <script lang="ts">
-	import type { ParsedCsv } from '$lib/csv';
-	import Header from '$components/molecules/Header.svelte';
-	import PageTitle from '$components/organisms/PageTitle.svelte';
-	import UploadCsv from '$components/molecules/UploadCsv.svelte';
-	import ClearCsv from '$components/molecules/ClearCsv.svelte';
-	import GithubIcon from '@iconify-svelte/lucide/github';
+	import type { ParsedCsv } from '$lib/csv'
+	import Header from '$components/molecules/Header.svelte'
+	import PageTitle from '$components/organisms/PageTitle.svelte'
+	import UploadCsv from '$components/molecules/UploadCsv.svelte'
+	import ClearCsv from '$components/molecules/ClearCsv.svelte'
+	import GithubIcon from '@iconify-svelte/lucide/github'
 
 	interface Props {
-		onparsed?: (detail: { file: File; data: ParsedCsv }) => void;
-		onerror?: (detail: { file: File | null; message: string }) => void;
-		onclear?: () => void;
-		csvLoaded?: boolean;
+		onparsed?: (detail: { file: File; data: ParsedCsv }) => void
+		onerror?: (detail: { file: File | null; message: string }) => void
+		onclear?: () => void
+		csvLoaded?: boolean
 	}
 
-	let { onparsed, onerror, onclear, csvLoaded = false }: Props = $props();
+	let { onparsed, onerror, onclear, csvLoaded = false }: Props = $props()
 </script>
 
 <Header>

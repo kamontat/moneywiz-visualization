@@ -7,20 +7,20 @@
  */
 export function parseAmountTHB(value: string): number {
 	// Remove thousands separators and spaces
-	const cleaned = value.replace(/[,\s]/g, '');
-	const num = Number(cleaned);
-	return isNaN(num) ? 0 : num;
+	const cleaned = value.replace(/[,\s]/g, '')
+	const num = Number(cleaned)
+	return isNaN(num) ? 0 : num
 }
 
 /**
  * Parse a date string in DD/MM/YYYY format
  */
 export function parseDateDDMMYYYY(value: string): Date | null {
-	const m = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-	if (!m) return null;
-	const [_, dd, mm, yyyy] = m;
+	const m = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+	if (!m) return null
+	const [_, dd, mm, yyyy] = m
 	// Construct date at local midnight
-	return new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+	return new Date(Number(yyyy), Number(mm) - 1, Number(dd))
 }
 
 /**
@@ -32,5 +32,5 @@ export function formatTHB(n: number): string {
 		currency: 'THB',
 		currencyDisplay: 'symbol',
 		maximumFractionDigits: 2,
-	}).format(n);
+	}).format(n)
 }

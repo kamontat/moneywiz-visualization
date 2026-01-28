@@ -28,10 +28,10 @@ The body contains the instructions.
 
   ```typescript
   // Bad
-  var x = 1;
+  var x = 1
 
   // Good
-  const x = 1;
+  const x = 1
   ```
 
 ## Best Practices

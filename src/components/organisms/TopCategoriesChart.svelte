@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { TopCategoriesData } from '$lib/analytics';
+	import type { TopCategoriesData } from '$lib/analytics'
 
-	let { data }: { data: TopCategoriesData } = $props();
+	let { data }: { data: TopCategoriesData } = $props()
 </script>
 
 <section

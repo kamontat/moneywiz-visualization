@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type { ParsedCsv } from '$lib/csv';
-	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down';
+	import type { ParsedCsv } from '$lib/csv'
+	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down'
 
 	interface Props {
-		data: ParsedCsv | null;
+		data: ParsedCsv | null
 	}
 
-	let { data }: Props = $props();
+	let { data }: Props = $props()
 
-	let maxPreviewRows = $state(5);
-	const limitOptions = [5, 10, 20, 50, 100];
+	let maxPreviewRows = $state(5)
+	const limitOptions = [5, 10, 20, 50, 100]
 
 	// Only show panel if we have data structure, even if rows are empty (to show "no rows" message)
-	const hasStructure = $derived(!!data);
+	const hasStructure = $derived(!!data)
 </script>
 
 {#if hasStructure}

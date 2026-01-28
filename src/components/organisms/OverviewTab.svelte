@@ -1,25 +1,25 @@
 <script lang="ts">
-	import IncomeByCategory from './IncomeByCategory.svelte';
-	import ExpenseByCategory from './ExpenseByCategory.svelte';
-	import IncomeExpenseRatioChart from './IncomeExpenseRatioChart.svelte';
-	import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte';
-	import TopCategoriesChart from './TopCategoriesChart.svelte';
-	import DashboardPanel from '$components/molecules/DashboardPanel.svelte';
-	import Title from '$components/atoms/Title.svelte';
+	import IncomeByCategory from './IncomeByCategory.svelte'
+	import ExpenseByCategory from './ExpenseByCategory.svelte'
+	import IncomeExpenseRatioChart from './IncomeExpenseRatioChart.svelte'
+	import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte'
+	import TopCategoriesChart from './TopCategoriesChart.svelte'
+	import DashboardPanel from '$components/molecules/DashboardPanel.svelte'
+	import Title from '$components/atoms/Title.svelte'
 	import type {
 		CategoryBreakdown,
 		IncomeExpenseTimeSeries,
 		TopCategoriesData,
 		Totals,
-	} from '$lib/analytics';
+	} from '$lib/analytics'
 
 	interface Props {
-		breakdown: CategoryBreakdown;
-		totals: Totals;
-		tsData: IncomeExpenseTimeSeries;
-		topCategories: TopCategoriesData;
+		breakdown: CategoryBreakdown
+		totals: Totals
+		tsData: IncomeExpenseTimeSeries
+		topCategories: TopCategoriesData
 	}
-	let { breakdown, totals, tsData, topCategories }: Props = $props();
+	let { breakdown, totals, tsData, topCategories }: Props = $props()
 </script>
 
 <div class="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-4 pt-4 duration-300">

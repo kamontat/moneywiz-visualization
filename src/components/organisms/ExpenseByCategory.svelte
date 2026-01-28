@@ -1,19 +1,19 @@
 <script lang="ts">
-	import type { CategoryItem } from '$lib/analytics';
-	import { formatTHB } from '$lib/finance';
-	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down';
-	import ChevronUpIcon from '@iconify-svelte/lucide/chevron-up';
+	import type { CategoryItem } from '$lib/analytics'
+	import { formatTHB } from '$lib/finance'
+	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down'
+	import ChevronUpIcon from '@iconify-svelte/lucide/chevron-up'
 
 	interface Props {
-		items: CategoryItem[];
-		total: number;
+		items: CategoryItem[]
+		total: number
 	}
 
-	let { items, total }: Props = $props();
+	let { items, total }: Props = $props()
 
-	let isOpen = $state(false);
+	let isOpen = $state(false)
 
-	const absTotal = $derived(Math.abs(total));
+	const absTotal = $derived(Math.abs(total))
 </script>
 
 <div

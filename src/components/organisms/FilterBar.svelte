@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
-	import CalendarIcon from '@iconify-svelte/lucide/calendar';
-	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down';
-	import { parseAllTags, type TagFilter } from '$lib/analytics';
-	import DateFilterContent from '$components/molecules/filters/DateFilterContent.svelte';
-	import TagCategoryContent from '$components/molecules/filters/TagCategoryContent.svelte';
+	import { slide } from 'svelte/transition'
+	import CalendarIcon from '@iconify-svelte/lucide/calendar'
+	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down'
+	import { parseAllTags, type TagFilter } from '$lib/analytics'
+	import DateFilterContent from '$components/molecules/filters/DateFilterContent.svelte'
+	import TagCategoryContent from '$components/molecules/filters/TagCategoryContent.svelte'
 
 	let {
 		start = $bindable(null),
@@ -12,47 +12,47 @@
 		tagFilters = $bindable([]),
 		rows = [],
 	}: {
-		start?: Date | null;
-		end?: Date | null;
-		tagFilters?: TagFilter[];
-		rows?: Record<string, string>[];
-	} = $props();
+		start?: Date | null
+		end?: Date | null
+		tagFilters?: TagFilter[]
+		rows?: Record<string, string>[]
+	} = $props()
 
 	// Parse available tags
-	const availableTags = $derived(parseAllTags(rows));
-	const sortedCategories = $derived(Array.from(availableTags.keys()).sort());
+	const availableTags = $derived(parseAllTags(rows))
+	const sortedCategories = $derived(Array.from(availableTags.keys()).sort())
 
 	function getTagOptions(category: string): string[] {
-		return Array.from(availableTags.get(category) || []).sort();
+		return Array.from(availableTags.get(category) || []).sort()
 	}
 
 	// State
-	let activeFilter = $state<string | null>(null); // 'date' or category name
+	let activeFilter = $state<string | null>(null) // 'date' or category name
 
 	function toggleFilter(filterName: string) {
 		if (activeFilter === filterName) {
-			activeFilter = null;
+			activeFilter = null
 		} else {
-			activeFilter = filterName;
+			activeFilter = filterName
 		}
 	}
 
 	// Helpers to check active state for styling
-	let isDateActive = $derived(start !== null || end !== null);
+	let isDateActive = $derived(start !== null || end !== null)
 
 	function getActiveCount(cat: string) {
-		const f = tagFilters.find((f) => f.category === cat);
-		return f ? f.values.length : 0;
+		const f = tagFilters.find((f) => f.category === cat)
+		return f ? f.values.length : 0
 	}
 
 	// Clear all
-	let hasAnyFilter = $derived(isDateActive || tagFilters.some((f) => f.values.length > 0));
+	let hasAnyFilter = $derived(isDateActive || tagFilters.some((f) => f.values.length > 0))
 
 	function clearAll() {
-		start = null;
-		end = null;
-		tagFilters = [];
-		activeFilter = null;
+		start = null
+		end = null
+		tagFilters = []
+		activeFilter = null
 	}
 </script>
 

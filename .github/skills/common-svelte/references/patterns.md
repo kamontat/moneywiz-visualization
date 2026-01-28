@@ -5,7 +5,7 @@
 ```svelte
 <!-- Button.svelte -->
 <script>
-	let { children, variant = 'default', ...rest } = $props();
+	let { children, variant = 'default', ...rest } = $props()
 </script>
 
 <button class="btn btn-{variant}" {...rest}>
@@ -18,13 +18,13 @@
 ```svelte
 <!-- TextInput.svelte -->
 <script>
-	let { value = $bindable(''), oninput, ...rest } = $props();
+	let { value = $bindable(''), oninput, ...rest } = $props()
 </script>
 
 <input
 	bind:value
 	oninput={(e) => {
-		oninput?.(e);
+		oninput?.(e)
 	}}
 	{...rest}
 />
@@ -87,14 +87,14 @@
 
 ```svelte
 <script>
-	let { children, onmount } = $props();
-	let element;
+	let { children, onmount } = $props()
+	let element
 
 	$effect(() => {
 		if (element && onmount) {
-			return onmount(element); // return cleanup function
+			return onmount(element) // return cleanup function
 		}
-	});
+	})
 </script>
 
 <div bind:this={element}>
@@ -107,7 +107,7 @@
 ```svelte
 <!-- Modal.svelte -->
 <script>
-	let { open, onclose, title, children, footer } = $props();
+	let { open, onclose, title, children, footer } = $props()
 </script>
 
 {#if open}
@@ -133,11 +133,11 @@
 
 ```svelte
 <script>
-	let { items, selected = $bindable(null), onselect } = $props();
+	let { items, selected = $bindable(null), onselect } = $props()
 
 	function select(item) {
-		selected = item;
-		onselect?.(item);
+		selected = item
+		onselect?.(item)
 	}
 </script>
 
@@ -156,21 +156,21 @@
 
 ```svelte
 <script>
-	let { load } = $props();
+	let { load } = $props()
 
-	let data = $state(null);
-	let error = $state(null);
-	let loading = $state(true);
+	let data = $state(null)
+	let error = $state(null)
+	let loading = $state(true)
 
 	$effect(() => {
-		loading = true;
-		error = null;
+		loading = true
+		error = null
 
 		load()
 			.then((result) => (data = result))
 			.catch((e) => (error = e))
-			.finally(() => (loading = false));
-	});
+			.finally(() => (loading = false))
+	})
 </script>
 
 {#if loading}
@@ -186,21 +186,21 @@
 
 ```svelte
 <script>
-	let { value = $bindable(''), delay = 300, onchange } = $props();
-	let internal = $state(value);
-	let timeout;
+	let { value = $bindable(''), delay = 300, onchange } = $props()
+	let internal = $state(value)
+	let timeout
 
 	$effect(() => {
-		internal = value; // sync from parent
-	});
+		internal = value // sync from parent
+	})
 
 	function handleInput(e) {
-		internal = e.target.value;
-		clearTimeout(timeout);
+		internal = e.target.value
+		clearTimeout(timeout)
 		timeout = setTimeout(() => {
-			value = internal;
-			onchange?.(internal);
-		}, delay);
+			value = internal
+			onchange?.(internal)
+		}, delay)
 	}
 </script>
 

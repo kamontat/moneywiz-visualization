@@ -1,4 +1,4 @@
-import createDebug from 'debug';
+import createDebug from 'debug'
 
 /**
  * Debug namespace hierarchy for MoneyWiz Visualization.
@@ -24,9 +24,9 @@ import createDebug from 'debug';
  *   moneywiz:fetch          - Data fetching
  */
 
-const APP_NAMESPACE = 'moneywiz';
+const APP_NAMESPACE = 'moneywiz'
 
-type DebugFn = ReturnType<typeof createDebug>;
+type DebugFn = ReturnType<typeof createDebug>
 
 /**
  * Logger builder with fluent API for creating namespaced debug loggers.
@@ -40,30 +40,30 @@ type DebugFn = ReturnType<typeof createDebug>;
  * log('store updated'); // moneywiz:store:csv
  */
 class LoggerBuilder {
-	private segments: string[] = [];
+	private segments: string[] = []
 
 	constructor(initial?: string) {
 		if (initial) {
-			this.segments.push(initial);
+			this.segments.push(initial)
 		}
 	}
 
 	/** Add a sub-namespace segment */
 	sub(namespace: string): this {
-		this.segments.push(namespace);
-		return this;
+		this.segments.push(namespace)
+		return this
 	}
 
 	/** Build the final debug function */
 	build(): DebugFn {
-		const fullNamespace = [APP_NAMESPACE, ...this.segments].join(':');
-		return createDebug(fullNamespace);
+		const fullNamespace = [APP_NAMESPACE, ...this.segments].join(':')
+		return createDebug(fullNamespace)
 	}
 }
 
 /** Create a namespaced logger builder */
 export function createLogger(namespace: string): LoggerBuilder {
-	return new LoggerBuilder(namespace);
+	return new LoggerBuilder(namespace)
 }
 
 // Pre-built loggers for common modules
@@ -88,6 +88,6 @@ export const log = {
 
 	/** Data fetching */
 	fetch: createLogger('fetch').build(),
-};
+}
 
-export default log;
+export default log

@@ -106,9 +106,9 @@ DEBUG=moneywiz:store:* bun run dev # Store operations
 **Browser Console:**
 
 ```javascript
-localStorage.debug = 'moneywiz:*'; // All MoneyWiz logs
-localStorage.debug = 'moneywiz:csv'; // CSV parser only
-localStorage.debug = '*'; // All debug logs (includes 3rd-party)
+localStorage.debug = 'moneywiz:*' // All MoneyWiz logs
+localStorage.debug = 'moneywiz:csv' // CSV parser only
+localStorage.debug = '*' // All debug logs (includes 3rd-party)
 ```
 
 **Available Namespaces:**

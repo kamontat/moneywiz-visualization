@@ -1,37 +1,37 @@
 <script lang="ts">
-	import AppHeader from '../components/organisms/AppHeader.svelte';
-	import type { ParsedCsv } from '$lib/csv';
-	import { csvStore } from '$lib/stores/csv';
-	import './layout.css';
+	import AppHeader from '../components/organisms/AppHeader.svelte'
+	import type { ParsedCsv } from '$lib/csv'
+	import { csvStore } from '$lib/stores/csv'
+	import './layout.css'
 
-	let { children } = $props();
+	let { children } = $props()
 
 	// Use store as source of truth (automatically handles hydration)
 	let parsedUpload = $derived(
 		$csvStore.data && $csvStore.fileName
 			? { fileName: $csvStore.fileName, data: $csvStore.data }
 			: null
-	);
+	)
 
-	let errorMessage: string | null = $state(null);
+	let errorMessage: string | null = $state(null)
 
 	function handleParsed(detail: { file: File; data: ParsedCsv }) {
-		errorMessage = null;
+		errorMessage = null
 
 		// Publish to global store for the dashboard
-		csvStore.set({ fileName: detail.file.name, data: detail.data, tagFilters: [] });
+		csvStore.set({ fileName: detail.file.name, data: detail.data, tagFilters: [] })
 	}
 
 	function handleError(detail: { file: File | null; message: string }) {
-		errorMessage = detail.message;
+		errorMessage = detail.message
 
 		// Clear store on error
-		csvStore.set({ fileName: null, data: null, tagFilters: [] });
+		csvStore.set({ fileName: null, data: null, tagFilters: [] })
 	}
 
 	function handleClear() {
-		errorMessage = null;
-		csvStore.reset();
+		errorMessage = null
+		csvStore.reset()
 	}
 </script>
 

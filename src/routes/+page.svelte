@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { csvStore, type CsvState } from '$lib/stores/csv';
-	import { log } from '$lib/debug';
+	import { onMount } from 'svelte'
+	import { csvStore, type CsvState } from '$lib/stores/csv'
+	import { log } from '$lib/debug'
 	import {
 		getTHBRows,
 		calculateTotals,
@@ -12,59 +12,59 @@
 		filterByDateRange,
 		filterByTags,
 		type TagFilter,
-	} from '$lib/analytics';
+	} from '$lib/analytics'
 
-	import Dashboard from '$components/organisms/Dashboard.svelte';
+	import Dashboard from '$components/organisms/Dashboard.svelte'
 
 	let csv = $state<CsvState>({
 		data: null,
 		fileName: null,
 		tagFilters: [],
-	});
+	})
 
 	// Filter State
-	let filterStart: Date | null = $state(null);
-	let filterEnd: Date | null = $state(null);
-	let tagFilters = $state<TagFilter[]>([]);
+	let filterStart: Date | null = $state(null)
+	let filterEnd: Date | null = $state(null)
+	let tagFilters = $state<TagFilter[]>([])
 
 	// Subscribe to global store
 	onMount(() => {
-		log.pageDashboard('mounting dashboard');
+		log.pageDashboard('mounting dashboard')
 		const unsub = csvStore.subscribe((value) => {
-			const next = { ...value, tagFilters: value.tagFilters ?? [] };
-			log.pageDashboard('store updated: fileName=%s', next.fileName);
-			csv = next;
+			const next = { ...value, tagFilters: value.tagFilters ?? [] }
+			log.pageDashboard('store updated: fileName=%s', next.fileName)
+			csv = next
 
 			// Store -> Local Sync (keep tag filters defined)
 			if (JSON.stringify(tagFilters) !== JSON.stringify(next.tagFilters)) {
-				tagFilters = next.tagFilters;
+				tagFilters = next.tagFilters
 			}
-		});
+		})
 
 		return () => {
-			log.pageDashboard('unmounting dashboard');
-			unsub();
-		};
-	});
+			log.pageDashboard('unmounting dashboard')
+			unsub()
+		}
+	})
 
 	// Local -> Store Sync
 	$effect(() => {
 		// Only push to store if local state differs from derived store state
 		if (JSON.stringify(tagFilters) !== JSON.stringify(csv.tagFilters ?? [])) {
-			csvStore.setTagFilters(tagFilters);
+			csvStore.setTagFilters(tagFilters)
 		}
-	});
+	})
 
 	// Derived metrics using extracted business logic
-	const thbRows = $derived(getTHBRows(csv.data));
-	const dateFilteredRows = $derived(filterByDateRange(thbRows, filterStart, filterEnd));
-	const filteredRows = $derived(filterByTags(dateFilteredRows, tagFilters));
+	const thbRows = $derived(getTHBRows(csv.data))
+	const dateFilteredRows = $derived(filterByDateRange(thbRows, filterStart, filterEnd))
+	const filteredRows = $derived(filterByTags(dateFilteredRows, tagFilters))
 
-	const totals = $derived(calculateTotals(filteredRows));
-	const topCategories = $derived(calculateTopCategories(filteredRows));
-	const tsData = $derived(calculateIncomeExpenseTimeSeries(filteredRows, filterStart, filterEnd));
-	const breakdown = $derived(calculateCategoryBreakdown(filteredRows));
-	const dateRange = $derived(getDateRange(filteredRows));
+	const totals = $derived(calculateTotals(filteredRows))
+	const topCategories = $derived(calculateTopCategories(filteredRows))
+	const tsData = $derived(calculateIncomeExpenseTimeSeries(filteredRows, filterStart, filterEnd))
+	const breakdown = $derived(calculateCategoryBreakdown(filteredRows))
+	const dateRange = $derived(getDateRange(filteredRows))
 </script>
 
 <svelte:head>

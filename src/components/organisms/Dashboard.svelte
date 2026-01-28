@@ -1,38 +1,38 @@
 <script lang="ts">
-	import FilterBar from '$components/organisms/FilterBar.svelte';
-	import QuickSummary from './QuickSummary.svelte';
-	import OverviewTab from './OverviewTab.svelte';
-	import PreviewTab from './PreviewTab.svelte';
-	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte';
-	import Title from '$components/atoms/Title.svelte';
-	import DashboardContainer from '$components/molecules/DashboardContainer.svelte';
-	import NavigationBar from '$components/molecules/NavigationBar.svelte';
-	import NavigationItem from '$components/molecules/NavigationItem.svelte';
+	import FilterBar from '$components/organisms/FilterBar.svelte'
+	import QuickSummary from './QuickSummary.svelte'
+	import OverviewTab from './OverviewTab.svelte'
+	import PreviewTab from './PreviewTab.svelte'
+	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte'
+	import Title from '$components/atoms/Title.svelte'
+	import DashboardContainer from '$components/molecules/DashboardContainer.svelte'
+	import NavigationBar from '$components/molecules/NavigationBar.svelte'
+	import NavigationItem from '$components/molecules/NavigationItem.svelte'
 	import type {
 		CategoryBreakdown,
 		IncomeExpenseTimeSeries,
 		TagFilter,
 		TopCategoriesData,
 		Totals,
-	} from '$lib/analytics';
-	import type { CsvRow, ParsedCsv } from '$lib/csv';
+	} from '$lib/analytics'
+	import type { CsvRow, ParsedCsv } from '$lib/csv'
 
 	// Using explicit types would be better, but assuming current structure
 	interface Props {
-		csvFileName: string | null;
-		dateRange: { start: Date; end: Date } | null;
-		rowCount: number;
-		filteredCount: number;
-		thbCount: number;
-		filterStart: Date | null;
-		filterEnd: Date | null;
-		tagFilters: TagFilter[];
-		thbRows: CsvRow[];
-		totals: Totals;
-		breakdown: CategoryBreakdown;
-		tsData: IncomeExpenseTimeSeries;
-		topCategories: TopCategoriesData;
-		previewData: ParsedCsv | null;
+		csvFileName: string | null
+		dateRange: { start: Date; end: Date } | null
+		rowCount: number
+		filteredCount: number
+		thbCount: number
+		filterStart: Date | null
+		filterEnd: Date | null
+		tagFilters: TagFilter[]
+		thbRows: CsvRow[]
+		totals: Totals
+		breakdown: CategoryBreakdown
+		tsData: IncomeExpenseTimeSeries
+		topCategories: TopCategoriesData
+		previewData: ParsedCsv | null
 	}
 
 	let {
@@ -50,9 +50,9 @@
 		tsData,
 		topCategories,
 		previewData,
-	}: Props = $props();
+	}: Props = $props()
 
-	let activeTab = $state('overview');
+	let activeTab = $state('overview')
 </script>
 
 <DashboardContainer aria-labelledby="dash-title">

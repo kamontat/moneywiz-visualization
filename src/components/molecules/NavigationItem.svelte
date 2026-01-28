@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Button from '$components/atoms/Button.svelte';
+	import Button from '$components/atoms/Button.svelte'
 
 	interface Props {
-		label: string;
-		active: boolean;
-		onclick: () => void;
+		label: string
+		active: boolean
+		onclick: () => void
 	}
-	let { label, active, onclick }: Props = $props();
+	let { label, active, onclick }: Props = $props()
 </script>
 
 <Button variant="tab" {active} {onclick} {label}>

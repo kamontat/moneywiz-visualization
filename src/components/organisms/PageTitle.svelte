@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { base } from '$app/paths';
+	import { base } from '$app/paths'
 
 	interface Props {
-		title: string;
+		title: string
 	}
-	let { title }: Props = $props();
+	let { title }: Props = $props()
 </script>
 
 <div class="inline-flex min-w-0 items-center gap-2">

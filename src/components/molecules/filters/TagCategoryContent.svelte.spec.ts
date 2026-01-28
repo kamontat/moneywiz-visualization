@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { page } from 'vitest/browser';
-import TagCategoryContent from './TagCategoryContent.svelte';
+import { describe, it, expect } from 'vitest'
+import { page } from 'vitest/browser'
+import TagCategoryContent from './TagCategoryContent.svelte'
 
 describe('TagCategoryContent', () => {
 	it('renders options', async () => {
@@ -10,9 +10,9 @@ describe('TagCategoryContent', () => {
 				availableValues: ['KBank', 'SCB'],
 				tagFilters: [],
 			},
-		});
+		})
 
-		await expect.element(getByText('KBank')).toBeVisible();
-		await expect.element(getByText('SCB')).toBeVisible();
-	});
-});
+		await expect.element(getByText('KBank')).toBeVisible()
+		await expect.element(getByText('SCB')).toBeVisible()
+	})
+})

@@ -1,13 +1,13 @@
 <script lang="ts">
 	interface Props {
-		type?: 'button' | 'submit' | 'reset';
-		variant?: 'primary' | 'danger' | 'ghost' | 'tab' | 'icon';
-		disabled?: boolean;
-		label?: string;
-		onclick?: (event: MouseEvent) => void;
-		class?: string;
-		children?: import('svelte').Snippet;
-		active?: boolean;
+		type?: 'button' | 'submit' | 'reset'
+		variant?: 'primary' | 'danger' | 'ghost' | 'tab' | 'icon'
+		disabled?: boolean
+		label?: string
+		onclick?: (event: MouseEvent) => void
+		class?: string
+		children?: import('svelte').Snippet
+		active?: boolean
 	}
 
 	let {
@@ -19,10 +19,10 @@
 		class: className = '',
 		children,
 		active = false,
-	}: Props = $props();
+	}: Props = $props()
 
 	const baseClass =
-		'inline-flex items-center justify-center gap-2 cursor-pointer transition-all duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-75 disabled:shadow-none disabled:cursor-not-allowed';
+		'inline-flex items-center justify-center gap-2 cursor-pointer transition-all duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-75 disabled:shadow-none disabled:cursor-not-allowed'
 
 	const variants = {
 		primary:
@@ -33,9 +33,9 @@
 			'p-2 text-mw-text-muted hover:text-mw-text-main hover:bg-mw-surface-alt rounded-full hover:bg-mw-surface-alt',
 		tab: 'px-4 py-2 text-sm font-medium border-b-2 bg-transparent rounded-none focus-visible:outline-mw-primary text-mw-text-muted hover:text-mw-text-secondary hover:border-gray-300 border-transparent',
 		icon: 'p-2 rounded-full hover:bg-black/5',
-	};
+	}
 
-	const activeTab = 'border-mw-primary text-mw-primary !text-mw-primary';
+	const activeTab = 'border-mw-primary text-mw-primary !text-mw-primary'
 </script>
 
 <button

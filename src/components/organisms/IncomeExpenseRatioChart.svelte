@@ -3,34 +3,34 @@
 	 * Donut chart showing income vs expense ratio
 	 * Uses SVG for rendering without external dependencies
 	 */
-	import { formatTHB } from '$lib/finance';
+	import { formatTHB } from '$lib/finance'
 
 	interface Props {
-		income: number;
-		expenses: number;
+		income: number
+		expenses: number
 	}
 
-	let { income, expenses }: Props = $props();
+	let { income, expenses }: Props = $props()
 
 	// Calculate percentages (expenses stored as negative, so use absolute value)
-	const absExpenses = $derived(Math.abs(expenses));
-	const total = $derived(income + absExpenses);
-	const incomePercent = $derived(total > 0 ? (income / total) * 100 : 50);
-	const expensePercent = $derived(total > 0 ? (absExpenses / total) * 100 : 50);
+	const absExpenses = $derived(Math.abs(expenses))
+	const total = $derived(income + absExpenses)
+	const incomePercent = $derived(total > 0 ? (income / total) * 100 : 50)
+	const expensePercent = $derived(total > 0 ? (absExpenses / total) * 100 : 50)
 
 	// SVG donut chart calculations
-	const size = 140;
-	const center = size / 2;
-	const radius = 54;
-	const strokeWidth = 20;
+	const size = 140
+	const center = size / 2
+	const radius = 54
+	const strokeWidth = 20
 
 	// Calculate stroke dasharray for donut segments
-	const circumference = 2 * Math.PI * radius;
-	const incomeStroke = $derived((incomePercent / 100) * circumference);
-	const expenseStroke = $derived((expensePercent / 100) * circumference);
+	const circumference = 2 * Math.PI * radius
+	const incomeStroke = $derived((incomePercent / 100) * circumference)
+	const expenseStroke = $derived((expensePercent / 100) * circumference)
 
 	// Savings rate (income - expenses) / income
-	const savingsRate = $derived(income > 0 ? ((income - absExpenses) / income) * 100 : 0);
+	const savingsRate = $derived(income > 0 ? ((income - absExpenses) / income) * 100 : 0)
 </script>
 
 <div

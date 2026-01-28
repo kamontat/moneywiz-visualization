@@ -1,6 +1,6 @@
 <script lang="ts">
-	const props = $props();
-	let { size = 40 }: { size?: number } = props;
+	const props = $props()
+	let { size = 40 }: { size?: number } = props
 </script>
 
 <div

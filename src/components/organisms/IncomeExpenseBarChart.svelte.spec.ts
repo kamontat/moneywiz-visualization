@@ -1,16 +1,16 @@
-import { page } from 'vitest/browser';
-import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte';
-import { describe, it, expect, vi } from 'vitest';
+import { page } from 'vitest/browser'
+import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte'
+import { describe, it, expect, vi } from 'vitest'
 
 // Mock Chart.js
 vi.mock('chart.js/auto', () => {
 	return {
 		default: class {
-			destroy = vi.fn();
+			destroy = vi.fn()
 			constructor() {}
 		},
-	};
-});
+	}
+})
 
 describe('IncomeExpenseBarChart', () => {
 	it('initializes without crashing', () => {
@@ -20,10 +20,10 @@ describe('IncomeExpenseBarChart', () => {
 			expenses: [50, 60],
 			net: [50, 140],
 			mode: 'monthly' as const,
-		};
+		}
 
-		const { container } = page.render(IncomeExpenseBarChart, { props: { data } });
-		const canvas = container.querySelector('canvas');
-		expect(canvas).toBeTruthy();
-	});
-});
+		const { container } = page.render(IncomeExpenseBarChart, { props: { data } })
+		const canvas = container.querySelector('canvas')
+		expect(canvas).toBeTruthy()
+	})
+})

@@ -1,10 +1,10 @@
 <script lang="ts">
 	interface Props {
-		children: import('svelte').Snippet;
-		class?: string;
-		'aria-labelledby'?: string;
-		'aria-label'?: string;
-		tag?: string;
+		children: import('svelte').Snippet
+		class?: string
+		'aria-labelledby'?: string
+		'aria-label'?: string
+		tag?: string
 	}
 	let {
 		children,
@@ -12,10 +12,10 @@
 		'aria-labelledby': ariaLabelledBy,
 		'aria-label': ariaLabel,
 		tag = 'section',
-	}: Props = $props();
+	}: Props = $props()
 
 	const baseClass =
-		'bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow';
+		'bg-mw-surface border border-mw-border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow'
 </script>
 
 <svelte:element

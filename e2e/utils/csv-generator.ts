@@ -1,16 +1,16 @@
 export interface MoneyWizRecord {
-	Account?: string;
-	Transfers?: string;
-	Description?: string;
-	Payee?: string;
-	Category?: string;
-	Date?: string;
-	Time?: string;
-	Memo?: string;
-	Amount?: string;
-	Currency?: string;
-	CheckBy?: string; // Check #
-	Tags?: string;
+	Account?: string
+	Transfers?: string
+	Description?: string
+	Payee?: string
+	Category?: string
+	Date?: string
+	Time?: string
+	Memo?: string
+	Amount?: string
+	Currency?: string
+	CheckBy?: string // Check #
+	Tags?: string
 }
 
 export const generateCsv = (records: MoneyWizRecord[]): string => {
@@ -27,9 +27,9 @@ export const generateCsv = (records: MoneyWizRecord[]): string => {
 		'Currency',
 		'Check #',
 		'Tags',
-	];
+	]
 
-	const headerLine = headers.map((h) => `"${h}"`).join(',');
+	const headerLine = headers.map((h) => `"${h}"`).join(',')
 	const rows = records.map((r) => {
 		return [
 			r.Account ?? 'Test Account',
@@ -46,11 +46,11 @@ export const generateCsv = (records: MoneyWizRecord[]): string => {
 			r.Tags ?? '',
 		]
 			.map((v) => `"${v}"`)
-			.join(',');
-	});
+			.join(',')
+	})
 
-	return `sep=,\n${headerLine}\n${rows.join('\n')}`;
-};
+	return `sep=,\n${headerLine}\n${rows.join('\n')}`
+}
 
 export const defaultRecord: MoneyWizRecord = {
 	Account: 'Test Account',
@@ -61,4 +61,4 @@ export const defaultRecord: MoneyWizRecord = {
 	Time: '12:00',
 	Amount: '-100.00',
 	Currency: 'THB',
-};
+}

@@ -1,64 +1,64 @@
 <script lang="ts">
-	import CalendarIcon from '@iconify-svelte/lucide/calendar';
+	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 
 	let {
 		start = $bindable(null),
 		end = $bindable(null),
 	}: {
-		start: Date | null;
-		end: Date | null;
-	} = $props();
+		start: Date | null
+		end: Date | null
+	} = $props()
 
 	function toIso(d: Date | null): string {
-		if (!d) return '';
-		const year = d.getFullYear();
-		const month = String(d.getMonth() + 1).padStart(2, '0');
-		const day = String(d.getDate()).padStart(2, '0');
-		return `${year}-${month}-${day}`;
+		if (!d) return ''
+		const year = d.getFullYear()
+		const month = String(d.getMonth() + 1).padStart(2, '0')
+		const day = String(d.getDate()).padStart(2, '0')
+		return `${year}-${month}-${day}`
 	}
 
 	function fromIso(s: string): Date | null {
-		if (!s) return null;
-		const [y, m, d] = s.split('-').map(Number);
-		return new Date(y, m - 1, d);
+		if (!s) return null
+		const [y, m, d] = s.split('-').map(Number)
+		return new Date(y, m - 1, d)
 	}
 
 	const applyPreset = (
 		preset: 'month' | 'last_month' | '30days' | 'year' | 'last_year' | 'all'
 	) => {
-		const now = new Date();
+		const now = new Date()
 		switch (preset) {
 			case 'month':
 				// eslint-disable-next-line svelte/prefer-svelte-reactivity
-				start = new Date(now.getFullYear(), now.getMonth(), 1);
-				end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-				break;
+				start = new Date(now.getFullYear(), now.getMonth(), 1)
+				end = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+				break
 			case 'last_month':
-				start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-				end = new Date(now.getFullYear(), now.getMonth(), 0);
-				break;
+				start = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+				end = new Date(now.getFullYear(), now.getMonth(), 0)
+				break
 			case '30days':
-				start = new Date(now);
-				start.setDate(now.getDate() - 30);
-				end = new Date(now);
-				break;
+				start = new Date(now)
+				start.setDate(now.getDate() - 30)
+				end = new Date(now)
+				break
 			case 'year':
-				start = new Date(now.getFullYear(), 0, 1);
-				end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-				break;
+				start = new Date(now.getFullYear(), 0, 1)
+				end = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+				break
 			case 'last_year':
-				start = new Date(now.getFullYear() - 1, 0, 1);
-				end = new Date(now.getFullYear() - 1, 11, 31);
-				break;
+				start = new Date(now.getFullYear() - 1, 0, 1)
+				end = new Date(now.getFullYear() - 1, 11, 31)
+				break
 			case 'all':
-				start = null;
-				end = null;
-				break;
+				start = null
+				end = null
+				break
 		}
-	};
+	}
 
-	let startInput = $derived(toIso(start));
-	let endInput = $derived(toIso(end));
+	let startInput = $derived(toIso(start))
+	let endInput = $derived(toIso(end))
 </script>
 
 <div class="flex flex-col gap-6 p-4">

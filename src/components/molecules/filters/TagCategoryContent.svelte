@@ -1,61 +1,61 @@
 <script lang="ts">
-	import XIcon from '@iconify-svelte/lucide/x';
-	import type { TagFilter } from '$lib/analytics';
+	import XIcon from '@iconify-svelte/lucide/x'
+	import type { TagFilter } from '$lib/analytics'
 
 	let {
 		category,
 		availableValues = [],
 		tagFilters = $bindable(),
 	}: {
-		category: string;
-		availableValues: string[];
-		tagFilters: TagFilter[];
-	} = $props();
+		category: string
+		availableValues: string[]
+		tagFilters: TagFilter[]
+	} = $props()
 
 	// Derived current filter state
-	let activeFilter = $derived(tagFilters.find((f) => f.category === category));
+	let activeFilter = $derived(tagFilters.find((f) => f.category === category))
 
 	// Explicitly derive mode and values to ensure reactivity
-	let mode = $derived(activeFilter?.mode || 'include');
-	let selectedValues = $derived(activeFilter?.values || []);
+	let mode = $derived(activeFilter?.mode || 'include')
+	let selectedValues = $derived(activeFilter?.values || [])
 
 	function updateMode(newMode: 'include' | 'exclude') {
-		const index = tagFilters.findIndex((f) => f.category === category);
+		const index = tagFilters.findIndex((f) => f.category === category)
 		if (index >= 0) {
-			const newFilters = [...tagFilters];
-			newFilters[index] = { ...newFilters[index], mode: newMode };
-			tagFilters = newFilters;
+			const newFilters = [...tagFilters]
+			newFilters[index] = { ...newFilters[index], mode: newMode }
+			tagFilters = newFilters
 		} else {
 			// Initiate filter if it doesn't exist
-			tagFilters = [...tagFilters, { category, values: [], mode: newMode }];
+			tagFilters = [...tagFilters, { category, values: [], mode: newMode }]
 		}
 	}
 
 	function toggleValue(value: string) {
-		const index = tagFilters.findIndex((f) => f.category === category);
-		let currentValues = index >= 0 ? tagFilters[index].values : [];
-		let currentMode = index >= 0 ? tagFilters[index].mode : 'include';
+		const index = tagFilters.findIndex((f) => f.category === category)
+		let currentValues = index >= 0 ? tagFilters[index].values : []
+		let currentMode = index >= 0 ? tagFilters[index].mode : 'include'
 
 		if (currentValues.includes(value)) {
-			currentValues = currentValues.filter((v) => v !== value);
+			currentValues = currentValues.filter((v) => v !== value)
 		} else {
-			currentValues = [...currentValues, value];
+			currentValues = [...currentValues, value]
 		}
 
-		const newFilters = [...tagFilters];
+		const newFilters = [...tagFilters]
 		if (currentValues.length === 0) {
 			// Remove filter if empty values
 			if (index >= 0) {
-				newFilters.splice(index, 1);
+				newFilters.splice(index, 1)
 			}
 		} else {
 			if (index >= 0) {
-				newFilters[index] = { ...newFilters[index], values: currentValues };
+				newFilters[index] = { ...newFilters[index], values: currentValues }
 			} else {
-				newFilters.push({ category, values: currentValues, mode: currentMode });
+				newFilters.push({ category, values: currentValues, mode: currentMode })
 			}
 		}
-		tagFilters = newFilters;
+		tagFilters = newFilters
 	}
 </script>
 
@@ -114,11 +114,11 @@
 		<div class="mt-4 flex justify-end">
 			<button
 				onclick={() => {
-					const idx = tagFilters.findIndex((f) => f.category === category);
+					const idx = tagFilters.findIndex((f) => f.category === category)
 					if (idx >= 0) {
-						const newFilters = [...tagFilters];
-						newFilters.splice(idx, 1);
-						tagFilters = newFilters;
+						const newFilters = [...tagFilters]
+						newFilters.splice(idx, 1)
+						tagFilters = newFilters
 					}
 				}}
 				class="text-xs text-mw-text-muted hover:text-red-500 hover:underline"
