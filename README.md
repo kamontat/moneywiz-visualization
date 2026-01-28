@@ -37,13 +37,13 @@ bun run test:unit
 Run server-side unit tests only (includes CSV parser):
 
 ```sh
-bun vitest run --project=server
+bun run test:unit --project=server
 ```
 
 Run client-side unit tests only (Svelte components):
 
 ```sh
-bun vitest run --project=client
+bun run test:unit --project=client
 ```
 
 **Note:** Always use `bun` as the package manager and command runner (not `npm`, `npx`, or `bunx`).
