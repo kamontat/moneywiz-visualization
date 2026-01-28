@@ -16,6 +16,9 @@ test.describe('CSV Preview Table Layout', () => {
 			buffer: Buffer.from(csvContent),
 		});
 
+		// Wait for dashboard to load
+		await expect(page.getByText('Saving Rate')).toBeVisible();
+
 		// Navigate to Preview tab and verify table is visible
 		// Click the Preview tab to view the data table
 		await page.getByRole('button', { name: 'Preview' }).click();
@@ -84,6 +87,9 @@ test.describe('CSV Preview Table Layout', () => {
 			mimeType: 'text/csv',
 			buffer: Buffer.from(csvContent),
 		});
+
+		// Wait for dashboard to load
+		await expect(page.getByText('Saving Rate')).toBeVisible();
 
 		// Verify Overview tab is default
 		const overviewTab = page.getByRole('button', { name: 'Overview' });
