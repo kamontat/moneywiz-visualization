@@ -19,7 +19,7 @@
 >
 	<button
 		type="button"
-		class="flex w-full cursor-pointer items-center justify-between bg-emerald-50/50 p-4 text-left transition-colors outline-none select-none hover:bg-emerald-50 active:bg-emerald-100"
+		class="flex w-full cursor-pointer items-center justify-between p-4 text-left transition-colors outline-none select-none hover:bg-emerald-50 active:bg-emerald-100"
 		onclick={() => (isOpen = !isOpen)}
 		aria-expanded={isOpen}
 		aria-controls="income-breakdown"

@@ -21,7 +21,7 @@
 >
 	<button
 		type="button"
-		class="flex w-full cursor-pointer items-center justify-between bg-rose-50/50 p-4 text-left transition-colors outline-none select-none hover:bg-rose-50 active:bg-rose-100"
+		class="flex w-full cursor-pointer items-center justify-between p-4 text-left transition-colors outline-none select-none hover:bg-rose-50 active:bg-rose-100"
 		onclick={() => (isOpen = !isOpen)}
 		aria-expanded={isOpen}
 		aria-controls="expense-breakdown"
