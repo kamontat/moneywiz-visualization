@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import * as analytics from './analytics';
-import * as finance from './finance';
-import type { ParsedCsv } from './csv';
+import * as analytics from './index';
+import * as finance from '../finance';
+import type { ParsedCsv } from '../csv';
 
-vi.mock('./finance', () => ({
+vi.mock('../finance', () => ({
 	parseAmountTHB: vi.fn(),
 	parseDateDDMMYYYY: vi.fn(),
 }));

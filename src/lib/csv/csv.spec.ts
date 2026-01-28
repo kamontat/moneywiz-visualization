@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCsv, CsvParseError } from './csv';
+import { parseCsv, CsvParseError } from './index';
 
 describe('parseCsv', () => {
 	it('skips sep preamble and respects declared delimiter', () => {
