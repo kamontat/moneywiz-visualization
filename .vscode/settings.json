@@ -25,5 +25,6 @@
 	"eslint.validate": ["javascript", "typescript", "svelte"],
 	"[svelte]": {
 		"editor.defaultFormatter": "svelte.svelte-vscode"
-	}
+	},
+	"bun.test.customScript": "bun run test"
 }
