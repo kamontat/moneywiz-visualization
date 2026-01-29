@@ -5,21 +5,15 @@ export function tokenize(line: string, delimiter = ','): string[] {
 
 	for (let index = 0; index < line.length; index += 1) {
 		const character = line[index]
-		const next = line[index + 1]
 
 		if (character === '"') {
-			if (inQuotes && next === '"') {
-				current += '"'
-				index += 1
-				continue
-			}
-
 			inQuotes = !inQuotes
+			current += character
 			continue
 		}
 
 		if (character === delimiter && !inQuotes) {
-			values.push(current.trim())
+			values.push(processValue(current))
 			current = ''
 			continue
 		}
@@ -27,6 +21,16 @@ export function tokenize(line: string, delimiter = ','): string[] {
 		current += character
 	}
 
-	values.push(current.trim())
+	values.push(processValue(current))
 	return values
+}
+
+function processValue(value: string): string {
+	const trimmed = value.trim()
+	// Check if it's a valid quoted value: starts and ends with " and has content
+	if (trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"')) {
+		const content = trimmed.slice(1, -1)
+		return content.replace(/""/g, '"')
+	}
+	return trimmed
 }
