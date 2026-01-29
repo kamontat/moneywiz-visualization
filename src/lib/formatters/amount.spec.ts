@@ -28,11 +28,11 @@ describe('amount', () => {
 		expect(result).toMatch(/฿1,234\.568/)
 	})
 
-    it('should handle zero', () => {
-        const result = formatAmount({
-            value: 0,
-            currency: 'THB'
-        })
-        expect(result).toMatch(/฿0\.00/)
-    })
+	it('should handle zero', () => {
+		const result = formatAmount({
+			value: 0,
+			currency: 'THB',
+		})
+		expect(result).toMatch(/฿0\.00/)
+	})
 })
