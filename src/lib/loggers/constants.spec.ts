@@ -16,20 +16,13 @@ vi.mock('debug', () => {
 })
 
 describe('Logger Constants', () => {
-    it('should export defined loggers', () => {
-        const expected = [
-            'csv',
-            'transaction',
-            'localStorage',
-            'store',
-            'component',
-            'page'
-        ]
-        
-        expected.forEach(key => {
-            const logger = (constants as any)[key]
-            expect(logger).toBeInstanceOf(Log)
-            expect((logger as any)._log.namespace).toBe(`moneywiz:${key}`)
-        })
-    })
+	it('should export defined loggers', () => {
+		const expected = ['csv', 'transaction', 'localStorage', 'store', 'component', 'page']
+
+		expected.forEach((key) => {
+			const logger = (constants as any)[key]
+			expect(logger).toBeInstanceOf(Log)
+			expect((logger as any)._log.namespace).toBe(`moneywiz:${key}`)
+		})
+	})
 })

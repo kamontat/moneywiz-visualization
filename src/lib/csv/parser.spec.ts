@@ -7,12 +7,12 @@ describe('parseCsv', () => {
 		const text = `col1,col2
 val1,val2`
 		const result = parseCsv(text)
-		
+
 		expect(result.headers).toEqual(['col1', 'col2'])
 		expect(result.rows).toHaveLength(1)
 		expect(result.rows[0]).toEqual({
 			col1: 'val1',
-			col2: 'val2'
+			col2: 'val2',
 		})
 	})
 
@@ -40,7 +40,7 @@ val1;val2`
 		expect(result.headers).toEqual(['col1', 'col2'])
 		expect(result.rows[0]).toEqual({
 			col1: 'val1',
-			col2: 'val2'
+			col2: 'val2',
 		})
 	})
 
@@ -56,7 +56,7 @@ val1`
 		const result = parseCsv(text)
 		expect(result.rows[0]).toEqual({
 			col1: 'val1',
-			col2: ''
+			col2: '',
 		})
 	})
 
@@ -67,7 +67,7 @@ val1,val2,val3`
 		const result = parseCsv(text)
 		expect(result.rows[0]).toEqual({
 			col1: 'val1',
-			col2: 'val2'
+			col2: 'val2',
 		})
 		expect(Object.keys(result.rows[0])).toEqual(['col1', 'col2'])
 	})
@@ -80,7 +80,7 @@ val1,val2`
 		const file = {
 			name: 'test.csv',
 			size: content.length,
-			text: async () => content
+			text: async () => content,
 		} as unknown as File
 
 		const result = await parseCsvFile(file)
@@ -92,7 +92,7 @@ val1,val2`
 		const file = {
 			name: 'empty.csv',
 			size: 0,
-			text: async () => ''
+			text: async () => '',
 		} as unknown as File
 
 		await expect(parseCsvFile(file)).rejects.toThrow(/File is empty/)

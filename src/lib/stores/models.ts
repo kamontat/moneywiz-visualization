@@ -1,6 +1,6 @@
 import type { ParsedCsv } from '$lib/csv'
 import type { ParsedTransaction } from '$lib/transactions'
-import type { Readable, Writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
 import type { STORE_STATE_CSV_KEY, STORE_STATE_FILTER_KEY, STORE_STATE_TRX_KEY } from './constants'
 
 export interface StoreState<K extends string, D> {
