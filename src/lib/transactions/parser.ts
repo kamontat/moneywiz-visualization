@@ -1,4 +1,4 @@
-import { getValue, type ParsedCsv } from '$lib/csv'
+import type { ParsedCsv } from '$lib/csv'
 import type {
 	ParsedBaseTransaction,
 	ParsedExpenseTransaction,
@@ -10,6 +10,7 @@ import { parseAccount, parseAmount, parseCategory, parseDate, parseTag } from '.
 
 import { parseCsvFile } from '$lib/csv'
 import { transaction } from '$lib/loggers'
+import { CsvKey, getValue } from './csv'
 
 const log = transaction.extends('parser')
 
@@ -23,12 +24,12 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 	log.debug('parsing %d rows from CSV', csv.rows.length)
 
 	return csv.rows.map((row) => {
-		const account = parseAccount(getValue(row, 'Account'))
-		const amount = parseAmount(getValue(row, 'Amount'), getValue(row, 'Currency'))
-		const date = parseDate(getValue(row, 'Date'), getValue(row, 'Time'))
-		const description = getValue(row, 'Description')
-		const memo = getValue(row, 'Memo')
-		const tags = parseTag(getValue(row, 'Tags'))
+		const account = parseAccount(getValue(row, CsvKey.Account))
+		const amount = parseAmount(getValue(row, CsvKey.Amount), getValue(row, CsvKey.Currency))
+		const date = parseDate(getValue(row, CsvKey.Date), getValue(row, CsvKey.Time))
+		const description = getValue(row, CsvKey.Description)
+		const memo = getValue(row, CsvKey.Memo)
+		const tags = parseTag(getValue(row, CsvKey.Tags))
 		const base: ParsedBaseTransaction = {
 			account,
 			amount,
@@ -40,7 +41,7 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 		}
 
 		// Check for Transfer
-		const transfer = getValue(row, 'Transfer')
+		const transfer = getValue(row, CsvKey.Transfers)
 		if (transfer) {
 			return {
 				...base,
@@ -49,9 +50,9 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 			} as ParsedTransferTransaction
 		}
 
-		const payee = getValue(row, 'Payee')
-		const category = parseCategory(getValue(row, 'Category'))
-		const checkNumber = getValue(row, 'Check #')
+		const payee = getValue(row, CsvKey.Payee)
+		const category = parseCategory(getValue(row, CsvKey.Category))
+		const checkNumber = getValue(row, CsvKey.CheckNumber)
 
 		// Check for Expense (negative amount) vs Income (positive amount)
 		if (amount.value < 0) {
