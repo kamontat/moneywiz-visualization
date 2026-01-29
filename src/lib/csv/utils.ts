@@ -1,16 +1,3 @@
-import { csv } from '$lib/loggers'
-import type { ParsedCsvRow } from './model'
-
-export const getValue = (row: ParsedCsvRow, key: string): string => {
-	const log = csv.extends('getValue')
-	const val = row[key]
-	if (val === undefined || val === null) {
-		log.warn('key "%s" not found in row: %o', key, row)
-		return ''
-	}
-	return val
-}
-
 export function tokenize(line: string, delimiter = ','): string[] {
 	const values: string[] = []
 	let current = ''
