@@ -17,7 +17,7 @@ A Svelte-based web application for visualizing MoneyWiz CSV export data.
 - To check styles: `bun run check`
 - To fix styles: `bun run fix`
 - To run unit-test: `bun run test:unit`
-    - with coverage: `bun run test:coverage`
+  - with coverage: `bun run test:coverage`
 - To run e2e-test: `bun run test:e2e`
 - To run all test: `bun run test`
 
