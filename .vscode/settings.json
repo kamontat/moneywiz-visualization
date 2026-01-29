@@ -26,5 +26,5 @@
 	"[svelte]": {
 		"editor.defaultFormatter": "svelte.svelte-vscode"
 	},
-	"bun.test.customScript": "bun run test"
+	"bun.test.customScript": "bun run test:unit"
 }
