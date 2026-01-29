@@ -1,15 +1,13 @@
 <script lang="ts">
-	interface Props {
-		tag?: string
-		children?: import('svelte').Snippet
-		class?: string
-		// Generic HTML props can be expanded if needed, but keeping simple for now
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		[key: string]: any
-	}
+	import type { BaseProps, ElementProps, TagName } from '$lib/models/props'
+
+	type Props = BaseProps & ElementProps<TagName>
+
+	const baseClass = ['container']
+
 	let { tag = 'div', children, class: className = '', ...rest }: Props = $props()
 </script>
 
-<svelte:element this={tag} class={className} {...rest}>
+<svelte:element this={tag} class={[...baseClass, className].flat()} {...rest}>
 	{@render children?.()}
 </svelte:element>
