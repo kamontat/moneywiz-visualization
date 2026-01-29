@@ -1,8 +1,8 @@
 {
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "svelte.svelte-vscode",
-    "oven.bun-vscode"
-  ]
+	"recommendations": [
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"svelte.svelte-vscode",
+		"oven.bun-vscode"
+	]
 }
