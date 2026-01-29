@@ -34,13 +34,13 @@ export const createStore = <S extends AnyStoreState>(
 	factory: StoreFactory<S>
 ): Store<S> => {
 	const log = store
-	let base = factory.emptyState(key)
+	let base = factory.emptyState
 	if (window !== undefined) {
 		log.debug('hydrating store from localStorage: %s', key)
-		base = {
+		base = factory.normalize({
 			...base,
 			...getLocalStorage(key),
-		}
+		})
 	}
 
 	const { subscribe, set, update } = writable(base)
@@ -65,9 +65,8 @@ export const createStore = <S extends AnyStoreState>(
 	}
 	const customReset = () => {
 		log.debug('resetting store to empty state: %s', key)
-		const empty = factory.emptyState(key)
-		setLocalStorage(key, empty)
-		set(empty)
+		setLocalStorage(key, factory.emptyState)
+		set(factory.emptyState)
 	}
 	return {
 		key,
