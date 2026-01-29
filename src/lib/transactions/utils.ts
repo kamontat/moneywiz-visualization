@@ -1,3 +1,4 @@
+import type { ParsedCsv } from '$lib/csv'
 import { DEFAULT_CURRENCY } from './constants'
 import type {
 	ParsedAccount,

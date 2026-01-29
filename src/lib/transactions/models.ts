@@ -44,21 +44,21 @@ export interface ParsedBaseTransaction {
 export interface ParsedExpenseTransaction extends ParsedBaseTransaction {
 	type: 'Expense'
 	payee: string
-	category: ParsedCategory | null
+	category: ParsedCategory
 	checkNumber: string
 }
 
 export interface ParsedRefundTransaction extends ParsedBaseTransaction {
 	type: 'Refund'
 	payee: string
-	category: ParsedCategory | null
+	category: ParsedCategory
 	checkNumber: string
 }
 
 export interface ParsedIncomeTransaction extends ParsedBaseTransaction {
 	type: 'Income'
 	payee: string
-	category: ParsedCategory | null
+	category: ParsedCategory
 	checkNumber: string
 }
 
