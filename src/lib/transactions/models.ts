@@ -1,5 +1,11 @@
+export interface ParsedAmount {
+	value: number
+	currency: string
+}
+
 export type ParsedAccountType =
 	| 'Wallet'
+	| 'OnlineWallet'
 	| 'Checking'
 	| 'CreditCard'
 	| 'DebitCard'
@@ -8,23 +14,67 @@ export type ParsedAccountType =
 	| 'Loan'
 	| 'Unknown'
 
-export interface ParsedAmount {
-	value: number
-	currency: string
-}
-
 export interface ParsedAccount {
 	type: ParsedAccountType
+	name: string
+	extra: string | null
 }
 
 export interface ParsedCategory {
-	id: string
+	category: string
+	subcategory: string
 }
 
 export interface ParsedTag {
-	id: string
+	category: string
+	name: string
 }
 
-export interface ParsedTransaction {
-	id: string
+export interface ParsedBaseTransaction {
+	account: ParsedAccount
+	description: string
+	amount: ParsedAmount
+	date: Date
+	memo: string
+	tags: ParsedTag[]
+	raw: Record<string, string>
 }
+
+export interface ParsedExpenseTransaction extends ParsedBaseTransaction {
+	type: 'Expense'
+	payee: string
+	category: ParsedCategory | null
+	checkNumber: string
+}
+
+export interface ParsedRefundTransaction extends ParsedBaseTransaction {
+	type: 'Refund'
+	payee: string
+	category: ParsedCategory | null
+	checkNumber: string
+}
+
+export interface ParsedIncomeTransaction extends ParsedBaseTransaction {
+	type: 'Income'
+	payee: string
+	category: ParsedCategory | null
+	checkNumber: string
+}
+
+export interface ParsedTransferTransaction extends ParsedBaseTransaction {
+	type: 'Transfer'
+	transfer: ParsedAccount
+}
+
+export interface ParsedUnknownTransaction extends ParsedBaseTransaction {
+	type: 'Unknown'
+}
+
+export type ParsedTransaction =
+	| ParsedExpenseTransaction
+	| ParsedRefundTransaction
+	| ParsedIncomeTransaction
+	| ParsedTransferTransaction
+	| ParsedUnknownTransaction
+
+export type ParsedTransactionType = ParsedTransaction['type']
