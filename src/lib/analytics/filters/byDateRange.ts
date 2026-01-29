@@ -1,9 +1,8 @@
-import type { FilterBy } from '../models'
+import type { FilterBy, FilterByFunc } from './models'
 
-export const byDateRange = (startDate: Date, endDate: Date) => {
+export const byDateRange: FilterByFunc<[Date, Date]> = (start, end) => {
 	const by: FilterBy = (trx) => {
-		// TODO: implement date range filter
-		return true
+		return trx.date >= start && trx.date <= end
 	}
 	by.type = 'byDateRange'
 	return by

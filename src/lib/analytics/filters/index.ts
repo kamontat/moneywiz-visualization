@@ -4,4 +4,4 @@ export { byCurrency } from './byCurrency'
 export { byDateRange } from './byDateRange'
 export { byTags, type FilterTags, type FilterTagMode } from './byTags'
 
-export type { FilterBy, FilterFunc } from '../models'
+export type { FilterBy, FilterByFunc } from './models'

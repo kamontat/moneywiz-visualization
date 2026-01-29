@@ -1,9 +1,8 @@
-import type { FilterBy } from '../models'
+import type { FilterBy, FilterByFunc } from './models'
 
-export const byCurrency = (currency: string) => {
+export const byCurrency: FilterByFunc<[string]> = (currency) => {
 	const by: FilterBy = (trx) => {
-		// TODO: implement currency filter
-		return true
+		return trx.amount.currency === currency
 	}
 	by.type = 'byCurrency'
 	return by
