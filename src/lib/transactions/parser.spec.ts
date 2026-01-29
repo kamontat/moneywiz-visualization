@@ -125,7 +125,7 @@ describe('transactions/parser', () => {
 				tags: [],
 				payee: '',
 				checkNumber: '',
-				category: null,
+				category: { category: '', subcategory: '' },
 				account: { name: '', type: 'Unknown' }, // parseAccount('') defaults
 			})
 			expect(result[0].date).toBeInstanceOf(Date)
