@@ -20,7 +20,7 @@ describe('csvFactory', () => {
 				fileName: 'test.csv',
 				data: {
 					headers: ['col1'],
-					rows: [['val1']],
+					rows: [{ col1: 'value1' }],
 				},
 			}
 			expect(csvFactory.normalize(validState)).toEqual(validState)

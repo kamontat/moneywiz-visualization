@@ -24,7 +24,6 @@ vi.mock('$lib/loggers', () => ({
 	localStorage: mockLocalStorageLogger,
 }))
 
-type TestState = StoreState<'TEST', { count: number }>
 const TEST_KEY = 'TEST'
 const testFactory = {
 	emptyState: { type: TEST_KEY, data: { count: 0 } },
