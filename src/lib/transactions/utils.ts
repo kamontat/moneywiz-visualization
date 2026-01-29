@@ -83,9 +83,11 @@ export const parseAccountType = (text: string): ParsedAccountType => {
 export const parseAmount = (text: string, currency: string | undefined | null): ParsedAmount => {
 	const sanitized = text.replace(/,/g, '').trim()
 	const value = parseFloat(sanitized)
+
 	return {
 		value: noNaN(value),
 		currency: currency || DEFAULT_CURRENCY,
+		format: undefined,
 	}
 }
 

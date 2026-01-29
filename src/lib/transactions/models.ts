@@ -1,6 +1,7 @@
 export interface ParsedAmount {
 	value: number
 	currency: string
+	format?: Intl.NumberFormatOptions
 }
 
 export type ParsedAccountType =
