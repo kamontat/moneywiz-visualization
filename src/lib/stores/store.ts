@@ -35,7 +35,7 @@ export const createStore = <S extends AnyStoreState>(
 ): Store<S> => {
 	const log = store
 	let base = factory.emptyState
-	if (window !== undefined) {
+	if (typeof window !== 'undefined') {
 		log.debug('hydrating store from localStorage: %s', key)
 		base = factory.normalize({
 			...base,
