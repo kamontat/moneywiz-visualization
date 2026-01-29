@@ -71,6 +71,26 @@ val1,val2,val3`
 		})
 		expect(Object.keys(result.rows[0])).toEqual(['col1', 'col2'])
 	})
+
+	it('should use default delimiter if sep= is empty', () => {
+		const text = `sep=
+col1,col2
+val1,val2`
+		const result = parseCsv(text)
+		expect(result.headers).toEqual(['col1', 'col2'])
+	})
+
+	it('should generate default field names for empty headers', () => {
+		const text = `col1,,col3
+val1,val2,val3`
+		const result = parseCsv(text)
+		expect(result.headers).toEqual(['col1', 'field-2', 'col3'])
+		expect(result.rows[0]).toEqual({
+			col1: 'val1',
+			'field-2': 'val2',
+			col3: 'val3',
+		})
+	})
 })
 
 describe('parseCsvFile', () => {

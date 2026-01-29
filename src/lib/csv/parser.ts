@@ -51,11 +51,6 @@ export const parseCsv = (text: string): ParsedCsv => {
 		(header, index) => header || `field-${index + 1}`
 	)
 
-	if (headers.length === 0) {
-		log.error('No headers found')
-		throw new CsvParseError('CSV contains no headers')
-	}
-
 	const rows = lines.slice(1).map((line) => {
 		const cells = tokenize(line, delimiter)
 		const row: ParsedCsvRow = {}
