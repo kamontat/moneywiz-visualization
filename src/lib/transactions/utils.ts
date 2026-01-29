@@ -7,14 +7,34 @@ import type {
 	ParsedTag,
 } from './models'
 
+const noNaN = (val: number) => (isNaN(val) ? 0 : val)
+
 /**
  * parseAccount syntax: `<name> [<extra>] (<type>)`
  * @param text input raw account name
  * @returns parsed account
  */
 export const parseAccount = (text: string): ParsedAccount => {
-	// TODO: implement this function
-	return {} as ParsedAccount
+	const typeRegex = /\(([^)]+)\)$/
+	const extraRegex = /\[([^\]]+)\]$/
+
+	let name = text.trim()
+	let type: ParsedAccountType = 'Unknown'
+	let extra: string | null = null
+
+	const typeMatch = text.match(typeRegex)
+	if (typeMatch) {
+		type = parseAccountType(typeMatch[1])
+		name = text.replace(typeMatch[0], '').trim()
+	}
+
+	const extraMatch = name.match(extraRegex)
+	if (extraMatch) {
+		extra = extraMatch[1]
+		name = name.replace(extraMatch[0], '').trim()
+	}
+
+	return { type, name, extra }
 }
 
 /**
@@ -32,8 +52,26 @@ export const parseAccount = (text: string): ParsedAccount => {
  * @returns parsed account type
  */
 export const parseAccountType = (text: string): ParsedAccountType => {
-	// TODO: implement this function
-	return 'Unknown' as ParsedAccountType
+	switch (text) {
+		case 'A':
+			return 'Checking'
+		case 'C':
+			return 'CreditCard'
+		case 'D':
+			return 'DebitCard'
+		case 'I':
+			return 'Investment'
+		case 'L':
+			return 'Loan'
+		case 'W':
+			return 'Wallet'
+		case 'OW':
+			return 'OnlineWallet'
+		case 'CT':
+			return 'Cryptocurrency'
+		default:
+			return 'Unknown'
+	}
 }
 
 /**
@@ -42,9 +80,13 @@ export const parseAccountType = (text: string): ParsedAccountType => {
  * @param currency optional currency code
  * @returns parsed amount
  */
-export const parseAmount = (text: string, currency: string = DEFAULT_CURRENCY): ParsedAmount => {
-	// TODO: implement this function
-	return {} as ParsedAmount
+export const parseAmount = (text: string, currency: string | undefined | null): ParsedAmount => {
+	const sanitized = text.replace(/,/g, '').trim()
+	const value = parseFloat(sanitized)
+	return {
+		value: noNaN(value),
+		currency: currency || DEFAULT_CURRENCY,
+	}
 }
 
 /**
@@ -53,8 +95,12 @@ export const parseAmount = (text: string, currency: string = DEFAULT_CURRENCY): 
  * @returns parsed category
  */
 export const parseCategory = (text: string): ParsedCategory => {
-	// TODO: implement this function
-	return {} as ParsedCategory
+	const parts = text.split(/\s*>\s*/, 2)
+	if (parts.length === 2) {
+		return { category: parts[0].trim(), subcategory: parts[1].trim() }
+	}
+
+	return { category: text.trim(), subcategory: '' }
 }
 
 /**
@@ -63,6 +109,43 @@ export const parseCategory = (text: string): ParsedCategory => {
  * @returns parsed tag
  */
 export const parseTag = (text: string): ParsedTag[] => {
-	// TODO: implement this function
-	return []
+	if (!text) return []
+
+	const categoryMap = (name: string) => {
+		switch (name) {
+			case 'Zvent':
+				return 'Event'
+			default:
+				return name
+		}
+	}
+
+	return text.split(';').map((tag) => {
+		const parts = tag.split(/\s*:\s*/, 2)
+		if (parts.length === 2) {
+			return {
+				category: categoryMap(parts[0].trim()),
+				name: parts[1].trim(),
+			}
+		}
+		return { category: '', name: tag.trim() }
+	})
+}
+
+/**
+ * parseDate parses date and optional time text (DD/MM/YYYY and HH:MM)
+ * @param text input raw date text
+ * @param time input raw time text
+ * @returns parsed Date
+ */
+export const parseDate = (text: string, time: string | undefined | null): Date => {
+	if (!text) return new Date(0)
+
+	// Format: DD/MM/YYYY
+	const [day, month, year] = text.split('/', 3).map((v) => Number.parseInt(v, 10))
+	// Format: HH:MM
+	const [hours, minutes] = time?.split(':').map((v) => Number.parseInt(v, 10)) ?? [0, 0]
+
+	// Create date (month is 0-indexed)
+	return new Date(year, month - 1, day, noNaN(hours), noNaN(minutes))
 }
