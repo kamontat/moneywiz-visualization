@@ -10,6 +10,11 @@
 	"files.associations": {
 		"*.css": "tailwindcss"
 	},
+	"editor.quickSuggestions": {
+		"strings": "on"
+	},
+	"tailwindCSS.classFunctions": ["newTwClass", "newBaseClass", "newVariantClass", "mergeClass"],
+	"tailwindCSS.experimental.configFile": "src/css/global.css",
 	"chat.tools.terminal.autoApprove": {
 		"bun": true,
 		"git add": true,
@@ -18,13 +23,12 @@
 	},
 	"git.branchProtectionPrompt": "alwaysCommit",
 	"editor.formatOnSave": true,
+	"editor.formatOnType": false,
+	"editor.formatOnPaste": false,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit"
 	},
 	"eslint.validate": ["javascript", "typescript", "svelte"],
-	"[svelte]": {
-		"editor.defaultFormatter": "svelte.svelte-vscode"
-	},
 	"bun.test.customScript": "bun run test:unit"
 }
