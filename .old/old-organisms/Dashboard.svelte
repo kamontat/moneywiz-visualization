@@ -3,11 +3,11 @@
 	import QuickSummary from './QuickSummary.svelte'
 	import OverviewTab from './OverviewTab.svelte'
 	import PreviewTab from './PreviewTab.svelte'
-	import DateRangeDisplay from '$components/atoms/DateRangeDisplay.svelte'
+	import DateRangeDisplay from '$components/molecules/DateRangeDisplay.svelte'
 	import Title from '$components/atoms/Title.svelte'
-	import DashboardContainer from '$components/molecules/DashboardContainer.svelte'
-	import NavigationBar from '$components/molecules/NavigationBar.svelte'
-	import NavigationItem from '$components/molecules/NavigationItem.svelte'
+	import DashboardContainer from '$components/molecules-old/DashboardContainer.svelte'
+	import NavigationBar from '$components/molecules-old/NavigationBar.svelte'
+	import NavigationItem from '$components/molecules-old/NavigationItem.svelte'
 	import type {
 		CategoryBreakdown,
 		IncomeExpenseTimeSeries,

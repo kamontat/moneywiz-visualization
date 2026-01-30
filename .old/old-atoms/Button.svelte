@@ -1,24 +1,20 @@
 <script lang="ts">
 	import type { BaseProps, CustomProps, ElementProps } from '$lib/models/props'
 
+	type Variant = 'plain' | 'primary' | 'danger' | 'icon'
 	type Props = BaseProps &
-		ElementProps<'button'> &
+		(ElementProps<'button'> | ElementProps<'input'>) &
 		CustomProps<{
-			type?: 'button' | 'submit' | 'reset'
-			variant?: 'primary' | 'danger' | 'ghost' | 'tab' | 'icon'
-			disabled?: boolean
+			variant?: Variant
 			label?: string
-			active?: boolean
 		}>
 
 	let {
-		type = 'button',
+		tag = 'button',
 		variant = 'primary',
-		disabled = false,
 		label,
-		class: className = '',
+		class: className,
 		children,
-		active = false,
 		...rest
 	}: Props = $props()
 
@@ -38,9 +34,9 @@
 		'disabled:shadow-none',
 		'disabled:cursor-not-allowed',
 	]
-
-	const variantClass = {
-		primary: [
+	const variantClass: Record<Variant, string[]> = {
+		plain: [],
+		primary: baseClass.concat([
 			'px-3.5',
 			'py-2',
 			'text-sm',
@@ -60,8 +56,8 @@
 			'hover:not-disabled:shadow-mw-primary/30',
 			'hover:not-disabled:-translate-y-px',
 			'focus-visible:outline-mw-primary',
-		],
-		danger: [
+		]),
+		danger: baseClass.concat([
 			'px-3',
 			'py-2',
 			'text-sm',
@@ -74,46 +70,16 @@
 			'hover:bg-red-100',
 			'hover:border-red-300',
 			'focus-visible:outline-red-600',
-		],
-		ghost: [
-			'p-2',
-			'text-mw-text-muted',
-			'hover:text-mw-text-main',
-			'hover:bg-mw-surface-alt',
-			'rounded-full',
-			'hover:bg-mw-surface-alt',
-		],
-		tab: [
-			'px-4',
-			'py-2',
-			'text-sm',
-			'font-medium',
-			'border-b-2',
-			'bg-transparent',
-			'rounded-none',
-			'focus-visible:outline-mw-primary',
-			'text-mw-text-muted',
-			'hover:text-mw-text-secondary',
-			'hover:border-gray-300',
-			'border-transparent',
-		],
-		icon: ['p-2', 'rounded-full', 'hover:bg-black/5'],
+		]),
+		icon: baseClass.concat(['p-2', 'rounded-full', 'hover:bg-black/5']),
 	}
-	const activeClass = ['border-mw-primary', 'text-mw-primary', '!text-mw-primary']
 </script>
 
-<button
-	{type}
-	class={[
-		...baseClass,
-		...(variantClass[variant] ?? []),
-		...(active ? activeClass : []),
-		className,
-	].flat()}
-	{disabled}
+<svelte:element
+	this={tag}
+	class={[...variantClass[variant], className].flat()}
 	aria-label={label}
-	aria-current={active && variant === 'tab' ? 'page' : undefined}
 	{...rest}
 >
 	{@render children?.()}
-</button>
+</svelte:element>

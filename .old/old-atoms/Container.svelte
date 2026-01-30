@@ -3,9 +3,9 @@
 
 	type Props = BaseProps & ElementProps<TagName>
 
-	const baseClass = ['container']
-
 	let { tag = 'div', children, class: className = '', ...rest }: Props = $props()
+
+	const baseClass = [] as string[]
 </script>
 
 <svelte:element this={tag} class={[...baseClass, className].flat()} {...rest}>
