@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+
 import { generateCsv, defaultRecord } from './utils/csv-generator'
 
 test.describe('Dashboard - Tag Filtering', () => {
