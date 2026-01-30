@@ -12,7 +12,7 @@ export interface BaseProps {
 
 export type CustomProps<T> = T
 
-export type ElementProps<T extends TagName> = SvelteHTMLElements[T] & {
+export type ElementProps<T extends TagName> = Omit<SvelteHTMLElements[T], 'class'> & {
 	tag?: T
 }
 
