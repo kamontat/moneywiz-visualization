@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { filterFactory } from './index'
+
 import { STORE_STATE_FLT_KEY } from '../constants'
+
+import { filterFactory } from './index'
 
 describe('filterFactory', () => {
 	describe('emptyState', () => {

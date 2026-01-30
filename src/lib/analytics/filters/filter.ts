@@ -1,6 +1,6 @@
-import { analytics } from '$lib/loggers/constants'
-import type { ParsedTransaction } from '$lib/transactions'
 import type { FilterByFunc, FilterBy } from './models'
+import type { ParsedTransaction } from '$lib/transactions'
+import { analytics } from '$lib/loggers/constants'
 
 export const byAND: FilterByFunc<FilterBy[]> = (...bys): FilterBy => {
 	const by: FilterBy = (trx) => {

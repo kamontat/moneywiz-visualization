@@ -1,7 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
-import { parseTransactions, parseTransactionsFile } from './parser'
-import * as csvLib from '$lib/csv'
 import type { ParsedCsv } from '$lib/csv'
+import { describe, it, expect, vi } from 'vitest'
+
+import { parseTransactions, parseTransactionsFile } from './parser'
+
+import * as csvLib from '$lib/csv'
 
 // Mock the $lib/csv module
 vi.mock('$lib/csv', async (importOriginal) => {

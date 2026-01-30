@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import * as loggers from './index'
+
 import * as constants from './constants'
+
+import * as loggers from './index'
 
 describe('Logger Entrypoint', () => {
 	it('should export everything from constants', () => {

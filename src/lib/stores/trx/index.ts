@@ -1,6 +1,5 @@
-import type { ParsedTransaction } from '$lib/transactions'
 import type { StoreFactory, StoreState } from '../models'
-
+import type { ParsedTransaction } from '$lib/transactions'
 import { STORE_STATE_TRX_KEY } from '../constants'
 
 export interface StoreStateTrx extends StoreState<typeof STORE_STATE_TRX_KEY, ParsedTransaction[]> {

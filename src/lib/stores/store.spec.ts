@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { createStore } from './store'
-import type { StoreState } from './models'
 import { get } from 'svelte/store'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
+import { createStore } from './store'
 
 const { mockStoreLogger, mockLocalStorageLogger } = vi.hoisted(() => {
 	return {

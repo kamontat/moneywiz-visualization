@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+
 import { formatCategory } from './category'
 
 describe('category', () => {

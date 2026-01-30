@@ -1,5 +1,5 @@
-import type { ParsedTransactionType } from '$lib/transactions'
 import type { TransformBy } from './models'
+import type { ParsedTransactionType } from '$lib/transactions'
 
 export type CategoryTotalChildren = Record<string, number>
 

@@ -1,4 +1,3 @@
-import type { ParsedCsv } from '$lib/csv'
 import type {
 	ParsedBaseTransaction,
 	ParsedExpenseTransaction,
@@ -6,11 +5,12 @@ import type {
 	ParsedTransaction,
 	ParsedTransferTransaction,
 } from './models'
+import type { ParsedCsv } from '$lib/csv'
+import { CsvKey, getValue } from './csv'
 import { parseAccount, parseAmount, parseCategory, parseDate, parseTag } from './utils'
 
 import { parseCsvFile } from '$lib/csv'
 import { transaction } from '$lib/loggers'
-import { CsvKey, getValue } from './csv'
 
 const log = transaction.extends('parser')
 

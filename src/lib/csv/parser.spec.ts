@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { parseCsv, parseCsvFile } from './parser'
+
 import { CsvParseError } from './errors'
+import { parseCsv, parseCsvFile } from './parser'
 
 describe('parseCsv', () => {
 	it('should parse simple csv string', () => {

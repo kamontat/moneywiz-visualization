@@ -1,7 +1,8 @@
-import { csv } from '$lib/loggers'
-import { CsvParseError } from './errors'
 import type { ParsedCsv, ParsedCsvRow } from './model'
+import { CsvParseError } from './errors'
 import { tokenize } from './utils'
+
+import { csv } from '$lib/loggers'
 
 const log = csv.extends('parser')
 

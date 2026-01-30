@@ -1,4 +1,6 @@
+import type { ParsedAccountType } from './models'
 import { describe, it, expect } from 'vitest'
+
 import {
 	parseAccount,
 	parseAccountType,
@@ -7,7 +9,6 @@ import {
 	parseDate,
 	parseTag,
 } from './utils'
-import type { ParsedAccountType } from './models'
 
 describe('transactions/utils', () => {
 	describe('parseAccountType', () => {

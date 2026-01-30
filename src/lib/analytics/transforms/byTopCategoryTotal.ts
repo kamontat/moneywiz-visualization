@@ -1,6 +1,6 @@
+import type { TransformBy, TransformByFunc } from './models'
 import type { ParsedTransactionType } from '$lib/transactions'
 import { byCategoryTotal, type CategoryTotal } from './byCategoryTotal'
-import type { TransformBy, TransformByFunc } from './models'
 
 export interface TopCategoryTotal extends CategoryTotal {
 	type: ParsedTransactionType

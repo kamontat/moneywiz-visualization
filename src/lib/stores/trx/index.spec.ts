@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { trxFactory } from './index'
+
 import { STORE_STATE_TRX_KEY } from '../constants'
+
+import { trxFactory } from './index'
 
 describe('trxFactory', () => {
 	describe('emptyState', () => {

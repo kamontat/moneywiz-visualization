@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { csvFactory } from './index'
+
 import { STORE_STATE_CSV_KEY } from '../constants'
+
+import { csvFactory } from './index'
 
 describe('csvFactory', () => {
 	describe('emptyState', () => {

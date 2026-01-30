@@ -1,5 +1,3 @@
-import type { ParsedCsv } from '$lib/csv'
-import { DEFAULT_CURRENCY } from './constants'
 import type {
 	ParsedAccount,
 	ParsedAccountType,
@@ -7,6 +5,7 @@ import type {
 	ParsedCategory,
 	ParsedTag,
 } from './models'
+import { DEFAULT_CURRENCY } from './constants'
 
 const noNaN = (val: number) => (isNaN(val) ? 0 : val)
 

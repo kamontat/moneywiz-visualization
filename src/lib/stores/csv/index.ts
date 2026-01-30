@@ -1,5 +1,5 @@
-import type { ParsedCsv } from '$lib/csv'
 import type { StoreFactory, StoreState } from '../models'
+import type { ParsedCsv } from '$lib/csv'
 import { STORE_STATE_CSV_KEY } from '../constants'
 
 export interface StoreStateCsv extends StoreState<typeof STORE_STATE_CSV_KEY, ParsedCsv> {

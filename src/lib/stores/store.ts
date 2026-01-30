@@ -1,6 +1,6 @@
 import type { AnyStoreState, Store, StoreFactory, StoreUpdater } from './models'
-
 import { writable, type Readable } from 'svelte/store'
+
 import { store, localStorage } from '$lib/loggers'
 
 const getLocalStorage = <V>(key: string): V | undefined => {

@@ -1,5 +1,5 @@
-import { STORE_STATE_FLT_KEY } from '../constants'
 import type { StoreFactory, StoreState } from '../models'
+import { STORE_STATE_FLT_KEY } from '../constants'
 
 // TODO: Implement filter object structure
 export type StoreStateFlt = StoreState<typeof STORE_STATE_FLT_KEY, undefined>
