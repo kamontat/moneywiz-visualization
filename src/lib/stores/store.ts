@@ -74,5 +74,6 @@ export const createStore = <S extends AnyStoreState>(
 		set: customSet,
 		update: customUpdate,
 		reset: customReset,
+		normalize: factory.normalize,
 	}
 }
