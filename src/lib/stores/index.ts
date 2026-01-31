@@ -15,4 +15,5 @@ export const trxStore = createStore(STORE_STATE_TRX_KEY, trxFactory)
 export const filterStore = createStore(STORE_STATE_FLT_KEY, filterFactory)
 export const themeStore = createStore(STORE_STATE_THM_KEY, themeFactory)
 
-export type { ThemeName, ThemeData } from './theme'
+export { themeMap } from './theme'
+export type { ThemeSchema, ThemeNames, ThemeData } from './theme'
