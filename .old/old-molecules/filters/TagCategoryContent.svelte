@@ -61,17 +61,17 @@
 
 <div class="p-4">
 	<div class="mb-4 flex items-center justify-between">
-		<h3 class="text-xs font-semibold tracking-wider text-mw-text-muted uppercase">
+		<h3 class="text-mw-text-muted text-xs font-semibold tracking-wider uppercase">
 			{category}
 		</h3>
 
 		<!-- Mode Switcher (Segmented Control) -->
-		<div class="flex rounded-lg border border-mw-border bg-gray-50/50 p-1">
+		<div class="border-mw-border flex rounded-lg border bg-gray-50/50 p-1">
 			<button
 				onclick={() => updateMode('include')}
 				class="relative rounded-md px-3 py-1 text-xs font-medium transition-all
                 {mode === 'include'
-					? 'bg-white text-mw-primary shadow-sm ring-1 ring-mw-border'
+					? 'text-mw-primary ring-mw-border bg-white shadow-sm ring-1'
 					: 'text-mw-text-secondary hover:text-mw-text-main'}"
 			>
 				Include
@@ -80,7 +80,7 @@
 				onclick={() => updateMode('exclude')}
 				class="relative rounded-md px-3 py-1 text-xs font-medium transition-all
                 {mode === 'exclude'
-					? 'bg-white text-red-600 shadow-sm ring-1 ring-mw-border'
+					? 'ring-mw-border bg-white text-red-600 shadow-sm ring-1'
 					: 'text-mw-text-secondary hover:text-mw-text-main'}"
 			>
 				Exclude
@@ -100,7 +100,7 @@
 					? mode === 'include'
 						? 'border-mw-primary bg-mw-primary/5 text-mw-primary'
 						: 'border-red-200 bg-red-50 text-red-600 line-through decoration-red-400'
-					: 'border-mw-border bg-white text-mw-text-secondary hover:border-gray-300 hover:text-mw-text-main'}"
+					: 'border-mw-border text-mw-text-secondary hover:text-mw-text-main bg-white hover:border-gray-300'}"
 			>
 				<span class="truncate" title={option}>{option}</span>
 				{#if selectedValues.includes(option)}
@@ -121,7 +121,7 @@
 						tagFilters = newFilters
 					}
 				}}
-				class="text-xs text-mw-text-muted hover:text-red-500 hover:underline"
+				class="text-mw-text-muted text-xs hover:text-red-500 hover:underline"
 			>
 				Clear {category} Filter
 			</button>

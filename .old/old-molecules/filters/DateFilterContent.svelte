@@ -64,15 +64,15 @@
 <div class="flex flex-col gap-6 p-4">
 	<!-- Date Inputs -->
 	<section>
-		<h3 class="mb-3 text-xs font-semibold tracking-wider text-mw-text-muted uppercase">
+		<h3 class="text-mw-text-muted mb-3 text-xs font-semibold tracking-wider uppercase">
 			Date Range
 		</h3>
 		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 			<div class="flex flex-col gap-1.5">
-				<label for="start-date" class="text-xs text-mw-text-secondary">Start</label>
+				<label for="start-date" class="text-mw-text-secondary text-xs">Start</label>
 				<div class="relative">
 					<div
-						class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-mw-text-muted"
+						class="text-mw-text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
 					>
 						<CalendarIcon class="h-4 w-4" />
 					</div>
@@ -81,16 +81,16 @@
 						type="date"
 						value={startInput}
 						onchange={(e) => (start = fromIso(e.currentTarget.value))}
-						class="block w-full rounded-lg border-mw-border pl-9 text-xs text-mw-text-main shadow-sm focus:border-mw-primary focus:ring-mw-primary"
+						class="border-mw-border text-mw-text-main focus:border-mw-primary focus:ring-mw-primary block w-full rounded-lg pl-9 text-xs shadow-sm"
 					/>
 				</div>
 			</div>
 
 			<div class="flex flex-col gap-1.5">
-				<label for="end-date" class="text-xs text-mw-text-secondary">End</label>
+				<label for="end-date" class="text-mw-text-secondary text-xs">End</label>
 				<div class="relative">
 					<div
-						class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-mw-text-muted"
+						class="text-mw-text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
 					>
 						<CalendarIcon class="h-4 w-4" />
 					</div>
@@ -99,7 +99,7 @@
 						type="date"
 						value={endInput}
 						onchange={(e) => (end = fromIso(e.currentTarget.value))}
-						class="block w-full rounded-lg border-mw-border pl-9 text-xs text-mw-text-main shadow-sm focus:border-mw-primary focus:ring-mw-primary"
+						class="border-mw-border text-mw-text-main focus:border-mw-primary focus:ring-mw-primary block w-full rounded-lg pl-9 text-xs shadow-sm"
 					/>
 				</div>
 			</div>
@@ -107,45 +107,45 @@
 	</section>
 
 	<!-- Divider -->
-	<div class="h-px bg-mw-border/50"></div>
+	<div class="bg-mw-border/50 h-px"></div>
 
 	<!-- Quick Buttons -->
 	<div>
-		<span class="mb-2 block text-xs font-medium text-mw-text-muted">Quick Presets</span>
+		<span class="text-mw-text-muted mb-2 block text-xs font-medium">Quick Presets</span>
 		<div class="flex flex-wrap gap-2">
 			<button
 				onclick={() => applyPreset('month')}
-				class="rounded-full border border-mw-border bg-white px-3 py-1.5 text-xs font-medium text-mw-text-secondary transition-colors hover:bg-gray-50 hover:text-mw-text-main focus:ring-2 focus:ring-mw-primary/20"
+				class="border-mw-border text-mw-text-secondary hover:text-mw-text-main focus:ring-mw-primary/20 rounded-full border bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50 focus:ring-2"
 			>
 				This Month
 			</button>
 			<button
 				onclick={() => applyPreset('last_month')}
-				class="rounded-full border border-mw-border bg-white px-3 py-1.5 text-xs font-medium text-mw-text-secondary transition-colors hover:bg-gray-50 hover:text-mw-text-main focus:ring-2 focus:ring-mw-primary/20"
+				class="border-mw-border text-mw-text-secondary hover:text-mw-text-main focus:ring-mw-primary/20 rounded-full border bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50 focus:ring-2"
 			>
 				Last Month
 			</button>
 			<button
 				onclick={() => applyPreset('30days')}
-				class="rounded-full border border-mw-border bg-white px-3 py-1.5 text-xs font-medium text-mw-text-secondary transition-colors hover:bg-gray-50 hover:text-mw-text-main focus:ring-2 focus:ring-mw-primary/20"
+				class="border-mw-border text-mw-text-secondary hover:text-mw-text-main focus:ring-mw-primary/20 rounded-full border bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50 focus:ring-2"
 			>
 				Last 30 Days
 			</button>
 			<button
 				onclick={() => applyPreset('year')}
-				class="rounded-full border border-mw-border bg-white px-3 py-1.5 text-xs font-medium text-mw-text-secondary transition-colors hover:bg-gray-50 hover:text-mw-text-main focus:ring-2 focus:ring-mw-primary/20"
+				class="border-mw-border text-mw-text-secondary hover:text-mw-text-main focus:ring-mw-primary/20 rounded-full border bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50 focus:ring-2"
 			>
 				This Year
 			</button>
 			<button
 				onclick={() => applyPreset('last_year')}
-				class="rounded-full border border-mw-border bg-white px-3 py-1.5 text-xs font-medium text-mw-text-secondary transition-colors hover:bg-gray-50 hover:text-mw-text-main focus:ring-2 focus:ring-mw-primary/20"
+				class="border-mw-border text-mw-text-secondary hover:text-mw-text-main focus:ring-mw-primary/20 rounded-full border bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50 focus:ring-2"
 			>
 				Last Year
 			</button>
 			<button
 				onclick={() => applyPreset('all')}
-				class="rounded-full border border-mw-border bg-white px-3 py-1.5 text-xs font-medium text-mw-text-secondary transition-colors hover:bg-gray-50 hover:text-mw-text-main focus:ring-2 focus:ring-mw-primary/20"
+				class="border-mw-border text-mw-text-secondary hover:text-mw-text-main focus:ring-mw-primary/20 rounded-full border bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50 focus:ring-2"
 			>
 				All Time
 			</button>

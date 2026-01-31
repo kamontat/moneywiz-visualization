@@ -24,7 +24,7 @@
 			href="https://github.com/kamontat/moneywiz-visualization"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="inline-flex items-center justify-center rounded-full p-2 text-mw-text-muted transition-colors hover:bg-mw-surface-alt hover:text-mw-text-main"
+			class="text-mw-text-muted hover:bg-mw-surface-alt hover:text-mw-text-main inline-flex items-center justify-center rounded-full p-2 transition-colors"
 			aria-label="GitHub Repository"
 		>
 			<GithubIcon class="h-5 w-5" />

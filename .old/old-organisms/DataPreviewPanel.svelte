@@ -16,36 +16,36 @@
 </script>
 
 {#if hasStructure}
-	<div class="overflow-hidden rounded-xl border border-mw-border bg-mw-surface shadow-sm">
+	<div class="border-mw-border bg-mw-surface overflow-hidden rounded-xl border shadow-sm">
 		<div class="flex flex-col gap-2 p-4">
 			{#if (data?.rows?.length ?? 0) > 0}
 				<div class="mb-1 flex items-center justify-end gap-2">
-					<label for="row-limit-select" class="text-xs text-mw-text-muted">Show rows:</label>
+					<label for="row-limit-select" class="text-mw-text-muted text-xs">Show rows:</label>
 					<div class="relative">
 						<select
 							id="row-limit-select"
 							bind:value={maxPreviewRows}
-							class="cursor-pointer appearance-none rounded border border-mw-border bg-white bg-none py-1 pr-6 pl-2 text-xs text-mw-text-main outline-none focus:border-mw-primary focus:ring-1 focus:ring-mw-primary"
+							class="border-mw-border text-mw-text-main focus:border-mw-primary focus:ring-mw-primary cursor-pointer appearance-none rounded border bg-white bg-none py-1 pr-6 pl-2 text-xs outline-none focus:ring-1"
 						>
 							{#each limitOptions as option (option)}
 								<option value={option}>{option}</option>
 							{/each}
 						</select>
 						<div
-							class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-mw-text-muted"
+							class="text-mw-text-muted pointer-events-none absolute inset-y-0 right-0 flex items-center px-1"
 						>
 							<ChevronDownIcon class="h-3 w-3" />
 						</div>
 					</div>
 				</div>
-				<div class="overflow-x-auto rounded-lg border border-mw-border">
+				<div class="border-mw-border overflow-x-auto rounded-lg border">
 					<table class="border-collapse" style="table-layout: auto; min-width: 100%;">
 						<thead class="bg-gray-50">
-							<tr class="border-b border-mw-border">
+							<tr class="border-mw-border border-b">
 								{#each data?.headers ?? [] as header (header)}
 									<th
 										scope="col"
-										class="px-3 py-2 text-left text-sm font-bold whitespace-nowrap text-mw-text-main"
+										class="text-mw-text-main px-3 py-2 text-left text-sm font-bold whitespace-nowrap"
 										>{header}</th
 									>
 								{/each}
@@ -53,10 +53,10 @@
 						</thead>
 						<tbody>
 							{#each (data?.rows ?? []).slice(0, maxPreviewRows) as row, i (i)}
-								<tr class="border-b border-mw-border last:border-0">
+								<tr class="border-mw-border border-b last:border-0">
 									{#each data?.headers ?? [] as header (header)}
 										<td
-											class="max-w-[200px] overflow-hidden px-3 py-2 text-left text-sm text-ellipsis whitespace-nowrap text-mw-text-secondary"
+											class="text-mw-text-secondary max-w-[200px] overflow-hidden px-3 py-2 text-left text-sm text-ellipsis whitespace-nowrap"
 											>{row[header]}</td
 										>
 									{/each}
@@ -66,7 +66,7 @@
 					</table>
 				</div>
 				{#if (data?.rows?.length ?? 0) > maxPreviewRows}
-					<div class="pt-1 text-center text-xs text-mw-text-muted">
+					<div class="text-mw-text-muted pt-1 text-center text-xs">
 						Showing first {maxPreviewRows} rows of {data?.rows.length}
 					</div>
 				{/if}

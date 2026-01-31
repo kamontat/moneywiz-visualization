@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { page } from 'vitest/browser'
-import { userEvent } from 'vitest/browser'
+import { page , userEvent } from 'vitest/browser'
+
 import DataPreviewPanel from './DataPreviewPanel.svelte'
 
 describe('DataPreviewPanel.svelte', () => {

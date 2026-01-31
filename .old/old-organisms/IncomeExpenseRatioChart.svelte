@@ -110,9 +110,9 @@
 				class="mt-1 h-3 w-3 flex-shrink-0 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-[0_2px_4px_rgba(16,185,129,0.3)]"
 			></span>
 			<div class="flex flex-col gap-0.5">
-				<span class="text-xs font-semibold text-mw-text-main">Income</span>
+				<span class="text-mw-text-main text-xs font-semibold">Income</span>
 				<span class="text-sm font-bold text-gray-900">{formatTHB(income)}</span>
-				<span class="text-xs text-mw-text-muted">{incomePercent.toFixed(0)}%</span>
+				<span class="text-mw-text-muted text-xs">{incomePercent.toFixed(0)}%</span>
 			</div>
 		</div>
 		<div class="flex items-start gap-3">
@@ -120,9 +120,9 @@
 				class="mt-1 h-3 w-3 flex-shrink-0 rounded-full bg-gradient-to-br from-red-400 to-red-500 shadow-[0_2px_4px_rgba(239,68,68,0.3)]"
 			></span>
 			<div class="flex flex-col gap-0.5">
-				<span class="text-xs font-semibold text-mw-text-main">Expenses</span>
+				<span class="text-mw-text-main text-xs font-semibold">Expenses</span>
 				<span class="text-sm font-bold text-gray-900">{formatTHB(absExpenses)}</span>
-				<span class="text-xs text-mw-text-muted">{expensePercent.toFixed(0)}%</span>
+				<span class="text-mw-text-muted text-xs">{expensePercent.toFixed(0)}%</span>
 			</div>
 		</div>
 	</div>

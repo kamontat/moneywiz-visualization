@@ -61,7 +61,7 @@
 
 		<!-- Meta Info -->
 		<div
-			class="animate-in fade-in mt-1 flex flex-wrap items-center gap-2 text-xs text-mw-text-muted duration-300 sm:text-sm"
+			class="animate-in fade-in text-mw-text-muted mt-1 flex flex-wrap items-center gap-2 text-xs duration-300 sm:text-sm"
 		>
 			{#if dateRange}
 				<DateRangeDisplay start={dateRange.start} end={dateRange.end} class="" />
@@ -72,7 +72,7 @@
 
 			{#if filteredCount !== thbCount}
 				<span class="opacity-40">|</span>
-				<span class="font-medium text-mw-primary">{filteredCount} shown</span>
+				<span class="text-mw-primary font-medium">{filteredCount} shown</span>
 			{/if}
 		</div>
 	</header>

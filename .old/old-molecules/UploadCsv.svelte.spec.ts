@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { page } from 'vitest/browser'
+
 import UploadCsv from './UploadCsv.svelte'
+
 import { parseCsvFile } from '$lib/csv'
 
 vi.mock('$lib/csv', () => {

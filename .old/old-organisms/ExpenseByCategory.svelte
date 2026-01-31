@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="h-fit overflow-hidden rounded-xl border border-mw-border bg-mw-surface shadow-sm ring-mw-primary/5 transition-shadow focus-within:ring-2 focus-within:ring-offset-1"
+	class="border-mw-border bg-mw-surface ring-mw-primary/5 h-fit overflow-hidden rounded-xl border shadow-sm transition-shadow focus-within:ring-2 focus-within:ring-offset-1"
 >
 	<button
 		type="button"
@@ -48,15 +48,15 @@
 						<span class="text-mw-text-std truncate pr-4">{item.name}</span>
 						<div class="flex flex-shrink-0 items-center gap-4">
 							<!-- Display as negative since it's expense section -->
-							<span class="font-medium text-mw-text-main text-rose-700"
+							<span class="text-mw-text-main font-medium text-rose-700"
 								>{formatTHB(-item.value)}</span
 							>
-							<span class="w-10 text-right text-xs text-mw-text-muted">{percent.toFixed(1)}%</span>
+							<span class="text-mw-text-muted w-10 text-right text-xs">{percent.toFixed(1)}%</span>
 						</div>
 					</li>
 				{/each}
 				{#if items.length === 0}
-					<li class="text-sm text-mw-text-muted italic">No expenses data</li>
+					<li class="text-mw-text-muted text-sm italic">No expenses data</li>
 				{/if}
 			</ul>
 		</div>

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { page } from 'vitest/browser'
+
 import QuickSummary from './QuickSummary.svelte'
 
 describe('QuickSummary.svelte', () => {

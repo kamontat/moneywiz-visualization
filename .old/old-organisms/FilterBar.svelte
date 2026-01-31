@@ -67,12 +67,12 @@
 				? 'border-mw-primary bg-mw-primary/10 text-mw-primary'
 				: isDateActive
 					? 'border-mw-primary/50 bg-mw-surface text-mw-primary'
-					: 'border-mw-border bg-mw-surface text-mw-text-secondary hover:border-gray-300 hover:text-mw-text-main'}"
+					: 'border-mw-border bg-mw-surface text-mw-text-secondary hover:text-mw-text-main hover:border-gray-300'}"
 		>
 			<CalendarIcon class="h-3.5 w-3.5" />
 			<span>Date</span>
 			{#if isDateActive}
-				<span class="ml-1 h-1.5 w-1.5 rounded-full bg-mw-primary"></span>
+				<span class="bg-mw-primary ml-1 h-1.5 w-1.5 rounded-full"></span>
 			{/if}
 			<ChevronDownIcon
 				class="h-3 w-3 opacity-50 transition-transform {activeFilter === 'date'
@@ -83,7 +83,7 @@
 
 		<!-- Divider -->
 		{#if sortedCategories.length > 0}
-			<div class="mx-1 h-6 w-px flex-none bg-mw-border/50"></div>
+			<div class="bg-mw-border/50 mx-1 h-6 w-px flex-none"></div>
 		{/if}
 
 		<!-- Category Triggers -->
@@ -97,12 +97,12 @@
 					? 'border-mw-primary bg-mw-primary/10 text-mw-primary'
 					: isActive
 						? 'border-mw-primary/50 bg-mw-surface text-mw-primary'
-						: 'border-mw-border bg-mw-surface text-mw-text-secondary hover:border-gray-300 hover:text-mw-text-main'}"
+						: 'border-mw-border bg-mw-surface text-mw-text-secondary hover:text-mw-text-main hover:border-gray-300'}"
 			>
 				<span>{category}</span>
 				{#if isActive}
 					<span
-						class="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-mw-primary px-1 text-[9px] font-bold text-white"
+						class="bg-mw-primary flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[9px] font-bold text-white"
 					>
 						{count}
 					</span>
@@ -120,7 +120,7 @@
 			<div class="ml-auto pl-2">
 				<button
 					onclick={clearAll}
-					class="text-xs whitespace-nowrap text-mw-text-muted hover:text-red-500 hover:underline"
+					class="text-mw-text-muted text-xs whitespace-nowrap hover:text-red-500 hover:underline"
 				>
 					Clear All
 				</button>
@@ -132,7 +132,7 @@
 	{#if activeFilter}
 		<div
 			transition:slide={{ duration: 200, axis: 'y' }}
-			class="overflow-hidden rounded-xl border border-mw-border bg-mw-surface shadow-sm"
+			class="border-mw-border bg-mw-surface overflow-hidden rounded-xl border shadow-sm"
 		>
 			{#if activeFilter === 'date'}
 				<DateFilterContent bind:start bind:end />

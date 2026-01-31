@@ -6,6 +6,6 @@
 	let { children, label = 'Dashboard views' }: Props = $props()
 </script>
 
-<nav class="mt-4 flex border-b border-mw-border" aria-label={label}>
+<nav class="border-mw-border mt-4 flex border-b" aria-label={label}>
 	{@render children()}
 </nav>

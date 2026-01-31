@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { page } from 'vitest/browser'
+
 import IncomeByCategory from './IncomeByCategory.svelte'
 
 describe('IncomeByCategory', () => {

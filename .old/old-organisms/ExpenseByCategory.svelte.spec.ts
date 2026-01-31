@@ -1,6 +1,7 @@
-import { page } from 'vitest/browser'
-import ExpenseByCategory from './ExpenseByCategory.svelte'
 import { describe, it, expect } from 'vitest'
+import { page } from 'vitest/browser'
+
+import ExpenseByCategory from './ExpenseByCategory.svelte'
 
 describe('ExpenseByCategory', () => {
 	it('renders expense items correctly as negative values', async () => {

@@ -132,7 +132,7 @@
 </script>
 
 <div
-	class="relative h-[300px] w-full rounded-xl border border-mw-border bg-mw-surface p-4 shadow-sm"
+	class="border-mw-border bg-mw-surface relative h-[300px] w-full rounded-xl border p-4 shadow-sm"
 >
 	<canvas bind:this={canvas}></canvas>
 </div>

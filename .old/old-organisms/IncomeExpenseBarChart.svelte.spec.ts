@@ -1,6 +1,7 @@
-import { page } from 'vitest/browser'
-import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte'
 import { describe, it, expect, vi } from 'vitest'
+import { page } from 'vitest/browser'
+
+import IncomeExpenseBarChart from './IncomeExpenseBarChart.svelte'
 
 // Mock Chart.js
 vi.mock('chart.js/auto', () => {

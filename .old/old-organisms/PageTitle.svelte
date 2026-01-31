@@ -14,7 +14,7 @@
 		class="flex min-w-0 items-center gap-1 decoration-0 transition-opacity hover:opacity-80"
 	>
 		<span
-			class="text-base font-bold tracking-tight whitespace-nowrap text-mw-text-main uppercase sm:text-lg"
+			class="text-mw-text-main text-base font-bold tracking-tight whitespace-nowrap uppercase sm:text-lg"
 		>
 			{title}
 		</span>
