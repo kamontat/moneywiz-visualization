@@ -8,6 +8,7 @@
 		'whitespace-nowrap',
 		'uppercase',
 		'font-semibold',
+		'text-base-content',
 	])
 </script>
 

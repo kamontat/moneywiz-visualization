@@ -1,25 +1,13 @@
 <script lang="ts">
 	import Select from '$components/atoms/Select.svelte'
-	import { themeStore } from '$lib/stores'
+	import { themeStore, themeMap } from '$lib/stores'
 
-	const options = [
-		{
-			label: 'System',
-			value: 'system',
-		},
-		{
-			label: 'Light/Default',
-			value: 'light',
-		},
-		{
-			label: 'Dark/Default',
-			value: 'dark',
-		},
-		{
-			label: 'Light/Cupcake',
-			value: 'cupcake',
-		},
-	]
+	const options = [{ label: 'System', value: 'system' }].concat(
+		Object.entries(themeMap).map(([key, theme]) => ({
+			label: theme.label,
+			value: key,
+		}))
+	)
 	let current = $state($themeStore.data)
 
 	$effect(() => {
@@ -30,6 +18,7 @@
 
 	$effect(() => {
 		document.documentElement.dataset['theme'] = $themeStore.theme
+		document.documentElement.dataset['themeSchema'] = $themeStore.schema
 	})
 </script>
 
@@ -37,6 +26,6 @@
 	bind:value={current}
 	name="theme"
 	values={options}
-	class="d-select-accent text-accent-content bg-accent min-w-36"
+	class="min-w-22 bg-accent text-accent-content d-select-accent"
 	aria-label="Select theme"
 />
