@@ -1,7 +1,7 @@
 <script lang="ts">
 	import AppBody from '$components/organisms/AppBody.svelte'
 
-	let tests = Array.from({ length: 1 }, (_, k) => k + 1)
+	let tests = Array.from({ length: 100 }, (_, k) => k + 1)
 </script>
 
 <AppBody>
