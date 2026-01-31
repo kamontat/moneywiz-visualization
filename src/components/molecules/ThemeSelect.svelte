@@ -37,6 +37,6 @@
 	bind:value={current}
 	name="theme"
 	values={options}
-	class="min-w-36"
+	class="d-select-accent text-accent-content bg-accent min-w-36"
 	aria-label="Select theme"
 />
