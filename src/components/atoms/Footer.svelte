@@ -10,11 +10,10 @@
 		'flex',
 		'flex-row',
 		'items-center',
-		'justify-between',
-		'px-3',
+		'justify-center',
 		'py-2 sm:py-4',
-		'bg-base-300',
-		'text-base-content',
+		'bg-neutral',
+		'text-neutral-content',
 	])
 </script>
 
