@@ -51,10 +51,10 @@
 
 @plugin 'daisyui/theme' {
 	name: 'dark';
-	--color-base-100: oklch(30.857% 0.023 264.149);
-	--color-base-200: oklch(28.036% 0.019 264.182);
-	--color-base-300: oklch(26.346% 0.018 262.177);
-	--color-base-content: oklch(87.9% 0.039 222.959);
+	--color-base-100: oklch(25.33% 0.016 252.42);
+	--color-base-200: oklch(23.26% 0.014 253.1);
+	--color-base-300: oklch(21.15% 0.012 254.09);
+	--color-base-content: oklch(97.807% 0.029 256.847);
 	--color-primary: oklch(58% 0.233 277.117);
 	--color-primary-content: oklch(96% 0.018 272.314);
 	--color-secondary: oklch(65% 0.241 354.308);
@@ -99,5 +99,6 @@
 }
 
 body {
+	color: rgb(17, 17, 47);
 	@apply flex min-h-screen flex-col;
 }
