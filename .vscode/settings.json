@@ -30,5 +30,6 @@
 		"source.fixAll.eslint": "explicit"
 	},
 	"eslint.validate": ["javascript", "typescript", "svelte"],
-	"bun.test.customScript": "bun run test:unit"
+	"bun.test.customScript": "bun run test:unit",
+	"color-highlight.markRuler": false
 }

@@ -4,6 +4,7 @@
 		"dbaeumer.vscode-eslint",
 		"svelte.svelte-vscode",
 		"oven.bun-vscode",
-		"bradlc.vscode-tailwindcss"
+		"bradlc.vscode-tailwindcss",
+		"naumovs.color-highlight"
 	]
 }
