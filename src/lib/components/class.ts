@@ -1,20 +1,27 @@
+/**
+ * When variant is undefined returns BaseClass
+ * When variant is 'plain' returns VariantClass[plain]
+ * When variant is other value returns BaseClass + VariantClass[variant]
+ */
+
 import type { ClassArray, ClassArrayString, ClassName } from './models'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ClassSelector<ARGS extends any[], O extends ClassName> = (...args: ARGS) => O
+type ClassSelector<ARG, O extends ClassName> = (arg?: ARG) => O
 
 export const newTwClass = (className: ClassArrayString) => className
 
 type BaseClass = ClassArrayString
-type BaseClassSelector = ClassSelector<[BaseClass], BaseClass>
-export const newBaseClass: BaseClassSelector = (baseClass) => baseClass
+type BaseClassSelector = ClassSelector<string, BaseClass>
+export const newBaseClass = (baseClass: BaseClass): BaseClassSelector => {
+	return (variant) => (variant !== 'plain' ? baseClass : [])
+}
 
 type VariantClass<K extends string> = Record<K, ClassArrayString>
-type VariantClassSelector<K extends string> = ClassSelector<[variant: K], VariantClass<K>[K]>
+type VariantClassSelector<K extends string> = ClassSelector<K, VariantClass<K>[K]>
 export const newVariantClass = <V extends string>(
 	variantClass: VariantClass<V>
 ): VariantClassSelector<V> => {
-	return (variant) => variantClass[variant]
+	return (variant) => (variant ? variantClass[variant] : [])
 }
 
 export const mergeClass = (
