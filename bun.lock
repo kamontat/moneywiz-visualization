@@ -15,6 +15,7 @@
         "@fontsource-variable/noto-sans-thai": "5.2.8",
         "@fontsource-variable/noto-serif-thai": "5.2.7",
         "@iconify-svelte/lucide": "1.0.18",
+        "@iconify-svelte/simple-icons": "1.0.14",
         "@neoconfetti/svelte": "2.2.2",
         "@playwright/test": "1.58.0",
         "@sveltejs/adapter-static": "3.0.10",
@@ -151,6 +152,8 @@
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
     "@iconify-svelte/lucide": ["@iconify-svelte/lucide@1.0.18", "", { "dependencies": { "@iconify/css-svelte": "^1.0.0" } }, "sha512-jn8Wm2uMI6VNIZPm7UTWD9Uh0NvMOHAQtZbvAnazA8PSJI9FJATSarrXxmWo++s2gn7VAXnQAZQKvUxO5ihJlA=="],
+
+    "@iconify-svelte/simple-icons": ["@iconify-svelte/simple-icons@1.0.14", "", { "dependencies": { "@iconify/css-svelte": "^1.0.0" } }, "sha512-VMvP6JkXWiDvmy0IoOW06/Uo4Wq9EMrwNsEQIgmQWZJvgnVIAkWKGNSm6Fb3gxNKQ0EuNPPicpEom/kLNCP87g=="],
 
     "@iconify/css-svelte": ["@iconify/css-svelte@1.0.0", "", { "dependencies": { "@iconify/types": "^2.0.0" }, "peerDependencies": { "svelte": ">4.0.0" } }, "sha512-S9kZ+U/hQ+QVHZVLKu06xiVi0rII4DJCh2Z6M1m7IOyECBD7A1emk5pRx4fWG9Zp7ZOHL8dWO90sxtsaOPZBJw=="],
 
