@@ -2,6 +2,15 @@ import { initCsvStore } from './csv'
 import { initThemeStore } from './theme'
 import { initTrxStore } from './trx'
 
-export const themeStore = await initThemeStore()
-export const csvStore = await initCsvStore()
-export const trxStore = await initTrxStore()
+const {
+    themeStore,
+    csvStore,
+    trxStore,
+} = await (async () => {
+    const themeStore = await initThemeStore()
+    const csvStore = await initCsvStore()
+    const trxStore = await initTrxStore()
+    return { themeStore, csvStore, trxStore }
+})()
+
+export { themeStore, csvStore, trxStore }
