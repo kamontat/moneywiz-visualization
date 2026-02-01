@@ -12,4 +12,6 @@ export type ThemeMap<M extends Theme<ThemeSchema, string>[]> = {
 }
 export type AnyThemeMap = ThemeMap<AnyTheme[]>
 
-export type ToThemeNames<M extends AnyThemeMap> = keyof M
+export type ToThemeNames<M extends AnyThemeMap> = keyof M extends string
+	? keyof M
+	: never

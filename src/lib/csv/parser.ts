@@ -15,10 +15,10 @@ export const parseCsvFile = async (file: File): Promise<ParsedCsv> => {
 	}
 
 	const text = await file.text()
-	return parseCsv(text)
+	return parseCsv(text, file.name)
 }
 
-export const parseCsv = (text: string): ParsedCsv => {
+export const parseCsv = (text: string, fileName: string | null = null): ParsedCsv => {
 	log.debug('starting to parse CSV text: %d characters', text.length)
 
 	const rawLines = text.replace(/^\uFEFF/, '').split(/\r?\n/)
@@ -64,5 +64,5 @@ export const parseCsv = (text: string): ParsedCsv => {
 	})
 
 	log.debug('parsed %d headers, %d rows', headers.length, rows.length)
-	return { headers, rows }
+	return { fileName, headers, rows }
 }

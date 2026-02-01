@@ -13,6 +13,15 @@
 		secondary: newTwClass(['bg-gray-100', 'text-gray-800', 'hover:bg-gray-200']),
 		danger: newTwClass(['bg-red-600', 'text-white', 'hover:bg-red-700']),
 	})
+
+	let element = $state<HTMLInputElement | null>(null)
+	export const click = () => {
+		element?.click()
+	}
 </script>
 
-<input class={mergeClass(baseClass(variant), variantClass(variant), className)} {...rest} />
+<input
+	class={mergeClass(baseClass(variant), variantClass(variant), className)}
+	bind:this={element}
+	{...rest}
+/>

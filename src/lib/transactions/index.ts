@@ -7,6 +7,7 @@ export type {
 	ParsedAmount,
 	ParsedCategory,
 	ParsedTag,
+	ParsedTransactions,
 	ParsedTransaction,
 	ParsedTransactionType,
 } from './models'

@@ -80,3 +80,8 @@ export type ParsedTransaction =
 	| ParsedUnknownTransaction
 
 export type ParsedTransactionType = ParsedTransaction['type']
+
+export interface ParsedTransactions {
+	fileName: string | null
+	data: ParsedTransaction[]
+}
