@@ -86,6 +86,7 @@ const parseVersion = (v: string) => {
 }
 
 export class IndexDB {
+	// TODO: Make this synchronous like LocalDB
 	static async create<
 		Name extends StoreSchemaVersion,
 		Schema extends StoreSchema[Name],

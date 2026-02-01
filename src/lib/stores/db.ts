@@ -8,7 +8,7 @@ import {
 
 import { IndexDB, LocalDB } from '$lib/db'
 
-export const localDBV1 = await LocalDB.create('v1:app-db')
+export const localDBV1 = LocalDB.create('v1:app-db')
 export const indexDBV1 = await IndexDB.create<
 	'v1:app-db',
 	StoreSchema['v1:app-db'],

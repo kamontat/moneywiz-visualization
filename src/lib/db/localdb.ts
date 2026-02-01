@@ -17,7 +17,7 @@ export class LocalDB<
 	Name extends StoreSchemaVersion,
 	Schema extends StoreSchema[Name],
 > implements DB<Name, Schema> {
-	static async create<
+	static create<
 		Name extends StoreSchemaVersion,
 		Schema extends StoreSchema[Name],
 	>(name: Name) {

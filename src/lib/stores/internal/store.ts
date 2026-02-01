@@ -40,22 +40,16 @@ export interface Store<S> extends Writable<S> {
 	reset: StoreReset
 }
 
-export const newStore = async <D extends DB<DBFullName>, S extends AnyRecord>(
+export const newStore = <D extends DB<DBFullName>, S extends AnyRecord>(
 	db: D,
 	empty: S,
 	{ getVal, setVal, delVal, normalize, onChange, log }: StoreContext<D, S>
-): Promise<Store<S>> => {
-	let base = empty
-	if (db.available()) {
-		const val = await getVal(db)
-		if (val) base = val
-	}
-
+): Store<S> => {
 	const {
 		subscribe: _subscribe,
 		set: _set,
 		update: _update,
-	} = writable<S>(base, () => {
+	} = writable<S>(empty, () => {
 		log.debug('got a subscriber')
 		return () => log.debug('no more subscribers')
 	})
@@ -100,10 +94,15 @@ export const newStore = async <D extends DB<DBFullName>, S extends AnyRecord>(
 
 	const store = { subscribe, set, update, merge, reset }
 
-	if (db.available() && onChange) {
-		db.onChange((event, data) => {
-			onChange(store, db, data, event)
+	if (db.available()) {
+		Promise.resolve(getVal(db))?.then((val) => {
+			if (val !== undefined && val !== null) set(val)
 		})
+		if (onChange) {
+			db.onChange((event, data) => {
+				onChange(store, db, data, event)
+			})
+		}
 	}
 
 	return store
