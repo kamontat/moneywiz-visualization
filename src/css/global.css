@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@import '@fontsource-variable/noto-serif-thai';
+@import '@fontsource-variable/noto-sans-thai';
+@import '@fontsource-variable/jetbrains-mono';
+
+@theme {
+	--font-sans: 'Noto Sans Thai Variable', sans-serif;
+	--font-serif: 'Noto Serif Thai Variable', serif;
+	--font-mono: 'JetBrains Mono Variable', monospace;
+}
+
+@plugin 'daisyui' {
+	prefix: 'd-';
+	themes: light, cupcake, retro, valentine, pastel, dark, black, dracula, dim;
+	log: false;
+}
+
+@plugin 'daisyui/theme' {
+	name: 'light';
+	--radius-selector: 0.25rem;
+	--radius-field: 0.5rem;
+	--radius-box: 1rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 1;
+	--noise: 0;
+}
+
+@plugin 'daisyui/theme' {
+	name: 'dark';
+	--radius-selector: 0.25rem;
+	--radius-field: 0.5rem;
+	--radius-box: 1rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 1;
+	--noise: 0;
+}
+
+:where(:root, [data-theme]) {
+	/* FIXME: Needs https://github.com/saadeghi/daisyui/pull/4373 to merge; then we can remove this */
+	--root-bg: var(--color-base-200);
+}
+
+body {
+	color: rgb(17, 17, 47);
+	@apply flex min-h-screen flex-col;
+}

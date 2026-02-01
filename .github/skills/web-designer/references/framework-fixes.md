@@ -92,16 +92,16 @@ This document explains specific fix techniques for each framework and styling me
 {
 	/* Before: Overflow */
 }
-<div className="w-full">
+;<div className="w-full">
 	<img src="..." />
-</div>;
+</div>
 
 {
 	/* After: Overflow control */
 }
-<div className="w-full max-w-full overflow-hidden">
+;<div className="w-full max-w-full overflow-hidden">
 	<img src="..." className="h-auto w-full object-contain" />
-</div>;
+</div>
 ```
 
 ### Text Clipping Prevention
@@ -110,17 +110,17 @@ This document explains specific fix techniques for each framework and styling me
 {
 	/* Single line truncation */
 }
-<p className="truncate">Long text...</p>;
+;<p className="truncate">Long text...</p>
 
 {
 	/* Multi-line truncation */
 }
-<p className="line-clamp-3">Long text...</p>;
+;<p className="line-clamp-3">Long text...</p>
 
 {
 	/* Allow wrapping */
 }
-<p className="break-words">Long text...</p>;
+;<p className="break-words">Long text...</p>
 ```
 
 ### Responsive Support
@@ -129,9 +129,9 @@ This document explains specific fix techniques for each framework and styling me
 {
 	/* Mobile-first responsive */
 }
-<div className="flex flex-col gap-4 md:flex-row md:gap-6 lg:gap-8">
+;<div className="flex flex-col gap-4 md:flex-row md:gap-6 lg:gap-8">
 	<div className="w-full md:w-1/2 lg:w-1/3">Content</div>
-</div>;
+</div>
 ```
 
 ### Spacing Unification (Tailwind Config)
@@ -147,7 +147,7 @@ module.exports = {
 			},
 		},
 	},
-};
+}
 ```
 
 ### Accessibility Improvements
@@ -156,18 +156,18 @@ module.exports = {
 {
 	/* Add focus state */
 }
-<button className="bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
+;<button className="bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
 	Button
-</button>;
+</button>
 
 {
 	/* Improve contrast */
 }
-<p className="bg-white text-gray-700">
+;<p className="bg-white text-gray-700">
 	{' '}
 	{/* Changed from text-gray-500 */}
 	Readable text
-</p>;
+</p>
 ```
 
 ---
@@ -216,7 +216,7 @@ import styles from './Component.module.css';
 // Before
 const Container = styled.div`
 	width: 100%;
-`;
+`
 
 // After
 const Container = styled.div`
@@ -227,7 +227,7 @@ const Container = styled.div`
 	@media (max-width: 768px) {
 		padding: 1rem;
 	}
-`;
+`
 ```
 
 ### Responsive Support
@@ -246,7 +246,7 @@ const Card = styled.div`
 		grid-template-columns: 1fr;
 		gap: 1rem;
 	}
-`;
+`
 ```
 
 ### Consistency with Theme
@@ -264,13 +264,13 @@ export const theme = {
 		md: '1rem',
 		lg: '1.5rem',
 	},
-};
+}
 
 // Usage
 const Text = styled.p`
 	color: ${({ theme }) => theme.colors.text};
 	margin-bottom: ${({ theme }) => theme.spacing.md};
-`;
+`
 ```
 
 ---
@@ -358,7 +358,7 @@ export default function RootLayout({ children }) {
 				<footer>{/* Footer */}</footer>
 			</body>
 		</html>
-	);
+	)
 }
 ```
 
@@ -461,12 +461,12 @@ textarea:focus-visible {
 // Run in console to detect overflow elements
 document.querySelectorAll('*').forEach((el) => {
 	if (el.scrollWidth > el.clientWidth) {
-		console.log('Horizontal overflow:', el);
+		console.log('Horizontal overflow:', el)
 	}
 	if (el.scrollHeight > el.clientHeight) {
-		console.log('Vertical overflow:', el);
+		console.log('Vertical overflow:', el)
 	}
-});
+})
 ```
 
 ### Checking Contrast Ratio

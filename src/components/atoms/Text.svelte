@@ -1,21 +1,24 @@
 <script lang="ts">
-	interface Props {
-		tag?: 'p' | 'span' | 'div' | 'label';
-		variant?: 'body' | 'muted' | 'small' | 'error';
-		children: import('svelte').Snippet;
-		class?: string;
-		for?: string;
-	}
-	let { tag = 'p', variant = 'body', children, class: className = '', ...rest }: Props = $props();
+	import type { BaseProps, ElementTagProps } from '$lib/components/models'
+	import { mergeClass, newBaseClass, newTwClass, newVariantClass } from '$lib/components'
 
-	const variants = {
-		body: 'text-mw-text-main',
-		muted: 'text-mw-text-muted',
-		small: 'text-xs text-secondary',
-		error: 'text-red-500 text-sm',
-	};
+	type TagName = 'p' | 'span' | 'small' | 'code'
+	type Props = BaseProps & ElementTagProps<TagName>
+	let { tag = 'span', children, class: className, ...rest }: Props = $props()
+
+	const baseClass = newBaseClass(['m-0', 'text-base'])
+	const variantClass = newVariantClass<TagName>({
+		p: newTwClass([]),
+		span: newTwClass(['sm:text-lg']),
+		code: newTwClass(['font-mono']),
+		small: newTwClass(['text-sm', 'text-gray-400']),
+	})
 </script>
 
-<svelte:element this={tag} class="{variants[variant]} {className}" {...rest}>
-	{@render children()}
+<svelte:element
+	this={tag}
+	class={mergeClass(baseClass(tag), variantClass(tag), className)}
+	{...rest}
+>
+	{@render children?.()}
 </svelte:element>

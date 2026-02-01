@@ -13,18 +13,18 @@ Always use Runes. **Do not use legacy stores** (`svelte/store`) or Svelte 4 synt
 
 ```svelte
 <script>
-	let { title, count = 0, ...rest } = $props(); // Props
-	let internalCount = $state(count); // State
-	let double = $derived(internalCount * 2); // Derived
+	let { title, count = 0, ...rest } = $props() // Props
+	let internalCount = $state(count) // State
+	let double = $derived(internalCount * 2) // Derived
 
 	function increment() {
-		internalCount += 1;
+		internalCount += 1
 	}
 
 	$effect(() => {
-		console.log(internalCount);
-		return () => console.log('cleanup');
-	});
+		console.log(internalCount)
+		return () => console.log('cleanup')
+	})
 </script>
 
 <button onclick={increment}>{double}</button>
@@ -54,13 +54,13 @@ Always use Runes. **Do not use legacy stores** (`svelte/store`) or Svelte 4 synt
 - **Server Load**: `+page.server.ts`
   ```typescript
   export const load = async ({ locals }) => {
-  	return { user: locals.user };
-  };
+  	return { user: locals.user }
+  }
   ```
 - **Page Data**:
   ```svelte
   <script>
-  	let { data } = $props();
+  	let { data } = $props()
   </script>
   ```
 
@@ -69,10 +69,10 @@ Always use Runes. **Do not use legacy stores** (`svelte/store`) or Svelte 4 synt
 ```typescript
 export const actions = {
 	default: async ({ request }) => {
-		const data = await request.formData();
+		const data = await request.formData()
 		// process
 	},
-};
+}
 ```
 
 ## Styling

@@ -2,100 +2,30 @@
 
 A Svelte-based web application for visualizing MoneyWiz CSV export data.
 
-## Getting Started
+## Prerequisite
 
-### Development Server
+1. [Bun](https://bun.com/)
 
-```sh
-bun run dev
-```
+## Get start
 
-The dev server runs on `http://localhost:5173` (or next available port).
+1. Install dependencies: `bun install`
+2. Start development server: `bun run dev`
+3. Go to `http://localhost:5173`
 
-**Tip:** Before starting a new dev server, check if http://localhost:5173/ is already running to reuse the existing instance and avoid port conflicts.
+### Commands
 
-### Testing
-
-Run the full test suite:
-
-```sh
-bun run test
-```
-
-Run E2E tests:
-
-```sh
-bun run test:e2e
-```
-
-Run unit tests:
-
-```sh
-bun run test:unit
-```
-
-Run server-side unit tests only (includes CSV parser):
-
-```sh
-bun vitest run --project=server
-```
-
-Run client-side unit tests only (Svelte components):
-
-```sh
-bun vitest run --project=client
-```
-
-**Note:** Always use `bun` as the package manager and command runner (not `npm`, `npx`, or `bunx`).
-
-### Linting & Formatting
-
-The project uses ESLint for code linting and Prettier for code formatting.
-
-**Check all (formatting, linting, types):**
-
-```sh
-bun run check
-```
-
-**Fix all (formatting and linting):**
-
-```sh
-bun run fix
-```
-
-**Formatting:**
-
-```sh
-bun run format        # Fix formatting
-bun run format:check  # Check formatting only
-```
-
-**Linting:**
-
-```sh
-bun run lint        # Fix linting issues
-bun run lint:check  # Check linting only
-```
-
-**Type checking:**
-
-```sh
-bun run svelte:check  # Type check Svelte/TypeScript files
-```
-
-**VS Code Integration:**
-
-- Install the [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- Install the [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- Install the [Svelte extension](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
-- The workspace settings automatically enable format-on-save and ESLint auto-fix
+- To check styles: `bun run check`
+- To fix styles: `bun run fix`
+- To run unit-test: `bun run test:unit`
+  - with coverage: `bun run test:coverage`
+- To run e2e-test: `bun run test:e2e`
+- To run all test: `bun run test`
 
 ### Debugging
 
 Enable debug logs to troubleshoot issues:
 
-**Terminal:**
+1. On Terminal
 
 ```sh
 DEBUG=moneywiz:* bun run dev       # All MoneyWiz logs
@@ -103,60 +33,25 @@ DEBUG=moneywiz:csv bun run dev     # CSV parser only
 DEBUG=moneywiz:store:* bun run dev # Store operations
 ```
 
-**Browser Console:**
+2. On Browser
 
 ```javascript
-localStorage.debug = 'moneywiz:*'; // All MoneyWiz logs
-localStorage.debug = 'moneywiz:csv'; // CSV parser only
-localStorage.debug = '*'; // All debug logs (includes 3rd-party)
+localStorage.debug = 'moneywiz:*' // All MoneyWiz logs
+localStorage.debug = 'moneywiz:csv' // CSV parser only
+localStorage.debug = '*' // All debug logs (includes 3rd-party)
 ```
-
-**Available Namespaces:**
-
-- `moneywiz:csv` - CSV parsing operations
-- `moneywiz:store:csv` - CSV store updates
-- `moneywiz:component:upload` - Upload button interactions
-- `moneywiz:page:dashboard` - Dashboard rendering
-- `moneywiz:fetch` - Data fetching
-
-After setting `localStorage.debug`, refresh the page to apply changes.
 
 ### Building
 
-To create a production build:
-
-```sh
-bun run build
-```
-
-Preview the production build:
-
-```sh
-bun run preview
-```
+1. To create a production build: `bun run build`
+2. To preview the production build: `bun run preview`
 
 ## Project Structure
 
-- `src/components/` - Reusable UI components (organized using Atomic Design)
-  - `atoms/` - Basic building blocks
-    - `MoneyLogo.svelte` - App logo component
-  - `molecules/` - Simple component combinations
-    - `CsvUploadButton.svelte` - CSV file upload handler
-  - `organisms/` - Complex UI sections
-    - `AppHeader.svelte` - Main header with logo and CSV upload
-    - `SummaryCards.svelte` - Dashboard summary cards (Income, Expenses, Net, Transactions)
-    - `FilterBar.svelte` - Horizontal scrolling filter bar with expandable popovers for Date and Tag Categories
-    - `TopCategoriesChart.svelte` - Bar chart for top spending categories
-    - `IncomeExpenseBarChart.svelte` - Mixed bar/line chart for income, expenses, and net trend
-    - `IncomeExpenseRatioChart.svelte` - Pie chart for income vs expenses ratio
-    - `IncomeByCategory.svelte` - Collapsible income breakdown by category
-    - `ExpenseByCategory.svelte` - Collapsible expense breakdown by category
+- `src/components/atoms/` - Basic building blocks
+- `src/components/molecules/` - Simple component combinations
+- `src/components/organisms/` - Complex UI sections
 - `src/lib/` - Shared utilities and libraries
-  - `csv.ts` - CSV parsing with error handling
-  - `analytics.ts` - Financial analytics calculations (totals, categories, daily expenses, date filtering)
-  - `finance.ts` - Financial data parsing and formatting utilities
-  - `debug.ts` - Debug logging with namespace filtering
-  - `stores/` - Svelte stores (CSV state management)
 - `src/routes/` - Page routes
 - `static/` - Static assets
 - `e2e/` - Playwright end-to-end tests
@@ -167,7 +62,6 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
 
 - Uses `@sveltejs/adapter-static` for static site generation
 - All pages are prerendered via `export const prerender = true`
-- No base path configuration needed (root-level deployment)
 
 ## Features
 
@@ -196,20 +90,6 @@ Deploys to custom domain: https://moneywiz.kamontat.net/
   - GitHub repository link for easy access to source code
   - Optimized layout: visualizations prioritized above raw data preview
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
-
-## CSV Format
-
-The app supports MoneyWiz CSV exports with the following format:
-
-```csv
-sep=,
-"Account","Transfers","Description","Payee","Category","Date","Time","Memo","Amount","Currency","Check #","Tags"
-"Wallet A","Wallet B","Transfer to Wallet B","","","23/01/2026","21:18","","173,250.46","THB","",""
-```
-
-- Leading `sep=` line is automatically detected and respected
-- Supports quoted fields with embedded commas and quotes
-- BOM (Byte Order Mark) is automatically stripped
 
 ## Tech Stack
 

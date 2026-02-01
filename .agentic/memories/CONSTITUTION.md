@@ -31,7 +31,6 @@ Rules that AI agents **must always respect** when working in this repository.
 - **Co-located tests** — Unit tests live next to source files as `.spec.ts`
 - **Vitest** — Use for unit tests (`bun run test:unit`)
 - **Playwright** — Use for E2E tests in `e2e/` directory (`bun run test:e2e`)
-- **Test projects** — `--project=server` for server-side, `--project=client` for components
 
 ## Documentation
 
@@ -45,7 +44,7 @@ Rules that AI agents **must always respect** when working in this repository.
   - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
   - Scope: component name, feature area, or omit for broad changes
 - **Atomic commits** — One logical change per commit
-- **Branch naming** — `feat/`, `fix/`, `docs/` prefixes
+- **Branch naming** — `feature/`, `fix/`, `docs/` prefixes
 
 ## Security
 

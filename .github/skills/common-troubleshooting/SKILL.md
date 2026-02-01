@@ -30,7 +30,7 @@ The project uses the `debug` library.
 **Enable in Browser Console:**
 
 ```javascript
-localStorage.debug = 'moneywiz:*'; // Then refresh
+localStorage.debug = 'moneywiz:*' // Then refresh
 ```
 
 **Enable in Terminal:**

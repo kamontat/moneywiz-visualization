@@ -1,23 +1,26 @@
 <script lang="ts">
-	interface Props {
-		level?: 1 | 2 | 3 | 4 | 5 | 6;
-		children: import('svelte').Snippet;
-		class?: string;
-		id?: string;
-	}
-	let { level = 2, children, class: className = '', id }: Props = $props();
+	import type { BaseProps, ElementTagProps } from '$lib/components/models'
+	import { mergeClass, newBaseClass, newTwClass, newVariantClass } from '$lib/components'
 
-	const sizes = {
-		1: 'text-3xl font-bold tracking-tight',
-		2: 'text-2xl font-bold',
-		3: 'text-lg font-semibold',
-		4: 'text-base font-semibold',
-		5: 'text-sm font-semibold',
-		6: 'text-xs font-semibold',
-	};
-	const baseClass = 'text-mw-text-main m-0';
+	type TagName = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+	type Props = BaseProps & ElementTagProps<TagName>
+	let { tag = 'h1', children, class: className, ...rest }: Props = $props()
+
+	const baseClass = newBaseClass(['text-mw-title', 'm-0'])
+	const variantClass = newVariantClass<TagName>({
+		h1: newTwClass(['text-3xl', 'font-bold', 'tracking-tight']),
+		h2: newTwClass(['text-2xl', 'font-bold']),
+		h3: newTwClass(['text-lg', 'font-semibold']),
+		h4: newTwClass(['text-base', 'font-semibold']),
+		h5: newTwClass(['text-sm', 'font-semibold']),
+		h6: newTwClass(['text-xs', 'font-semibold']),
+	})
 </script>
 
-<svelte:element this={`h${level}`} {id} class="{baseClass} {sizes[level]} {className}">
-	{@render children()}
+<svelte:element
+	this={tag}
+	class={mergeClass(baseClass(tag), variantClass(tag), className)}
+	{...rest}
+>
+	{@render children?.()}
 </svelte:element>

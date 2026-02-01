@@ -1,3 +1,4 @@
+coverage
 test-results
 node_modules
 
@@ -6,8 +7,8 @@ node_modules
 .vercel
 .netlify
 .wrangler
-/.svelte-kit
-/build
+/.svelte-kit/
+/build/
 
 # OS
 .DS_Store
@@ -24,4 +25,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 static/data/*.csv
-.playwright-mcp
+/.playwright-mcp/
+
+/.old/
