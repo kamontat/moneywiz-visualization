@@ -1,11 +1,13 @@
 import type { ParsedCsv, ParsedCsvRow } from './model'
+import papaparse from 'papaparse'
+
 import { CsvParseError } from './errors'
-import { tokenize } from './utils'
 
 import { csv } from '$lib/loggers'
 
 const log = csv.extends('parser')
 
+const { parse } = papaparse
 export const parseCsvFile = async (file: File): Promise<ParsedCsv> => {
 	log.debug('starting to parse CSV file: %s', file.name)
 
@@ -18,7 +20,10 @@ export const parseCsvFile = async (file: File): Promise<ParsedCsv> => {
 	return parseCsv(text, file.name)
 }
 
-export const parseCsv = (text: string, fileName: string | null = null): ParsedCsv => {
+export const parseCsv = (
+	text: string,
+	fileName: string | null = null
+): ParsedCsv => {
 	log.debug('starting to parse CSV text: %d characters', text.length)
 
 	const rawLines = text.replace(/^\uFEFF/, '').split(/\r?\n/)
@@ -40,26 +45,37 @@ export const parseCsv = (text: string, fileName: string | null = null): ParsedCs
 		startIndex += 1
 	}
 
-	const lines = rawLines.slice(startIndex).filter((line) => line.trim().length > 0)
-	log.debug('filtered to %d non-empty lines (starting at index %d)', lines.length, startIndex)
+	const lines = rawLines
+		.slice(startIndex)
+		.filter((line) => line.trim().length > 0)
+	log.debug(
+		'filtered to %d non-empty lines (starting at index %d)',
+		lines.length,
+		startIndex
+	)
 
 	if (lines.length === 0) {
 		log.error('No data lines found')
 		throw new CsvParseError('CSV contains no data')
 	}
 
-	const headers = tokenize(lines[0], delimiter).map(
-		(header, index) => header || `field-${index + 1}`
-	)
+	const csv = parse(lines.join('\n'), {
+		delimiter,
+		skipEmptyLines: true,
+		header: true,
+	})
 
-	const rows = lines.slice(1).map((line) => {
-		const cells = tokenize(line, delimiter)
+	if (csv.errors.length > 0) {
+		log.error('Parse errors: %O', csv.errors)
+		throw new CsvParseError(`CSV contains ${csv.errors.length} errors`)
+	}
+
+	const headers = csv.meta.fields ?? []
+	const rows = csv.data.map((raw) => {
 		const row: ParsedCsvRow = {}
-
-		headers.forEach((header, index) => {
-			row[header] = cells[index] ?? ''
+		headers.forEach((header) => {
+			row[header] = (raw as Record<string, string>)[header] ?? ''
 		})
-
 		return row
 	})
 
