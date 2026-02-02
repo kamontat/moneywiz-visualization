@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Select from '$components/atoms/Select.svelte'
-	import { themeStore } from '$lib/stores'
-	import { themeList } from '$lib/themes'
+	import { themeStore, themeList } from '$lib/themes'
 
 	let current = $state($themeStore.current)
 
@@ -21,6 +20,6 @@
 	bind:value={current}
 	name="theme"
 	values={themeList}
-	class="min-w-22 text-base-content d-select-accent focus:outline-0 focus-within:outline-0"
+	class="min-w-22 text-base-content d-select-accent focus-within:outline-0 focus:outline-0"
 	aria-label="Select theme"
 />

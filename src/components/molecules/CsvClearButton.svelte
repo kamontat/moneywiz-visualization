@@ -1,20 +1,46 @@
 <script lang="ts">
 	import type { MouseEventHandler } from 'svelte/elements'
-	import type { BaseProps, ComponentProps } from '$lib/components/models'
+	import type {
+		BaseProps,
+		ComponentProps,
+		CustomProps,
+	} from '$lib/components/models'
 	import TrashIcon from '@iconify-svelte/lucide/trash-2'
 
 	import Button from '$components/atoms/Button.svelte'
-	import { csvStore, trxStore } from '$lib/stores'
+	import { csvStore } from '$lib/csv'
+	import { trxStore } from '$lib/transactions'
 
-	type Props = Omit<BaseProps, 'children'> & ComponentProps<typeof Button>
+	type Props = Omit<BaseProps, 'children'> &
+		ComponentProps<typeof Button> &
+		CustomProps<{
+			onsuccess?: () => void
+			onfail?: (err: Error) => void
+		}>
 
-	let { class: className, onclick: _onclick, ...rest }: Props = $props()
-	const onclick: MouseEventHandler<HTMLButtonElement> = (event) => {
-		csvStore.reset()
-		trxStore.reset()
-		// filterStore.reset()
+	let {
+		class: className,
+		onsuccess,
+		onfail,
+		onclick: _onclick,
+		...rest
+	}: Props = $props()
+	let loading = $state(false)
 
-		_onclick?.(event)
+	const onclick: MouseEventHandler<HTMLButtonElement> = async (event) => {
+		loading = true
+		try {
+			await csvStore.reset()
+			await trxStore.reset()
+			onsuccess?.()
+			// filterStore.reset()
+		} catch (error) {
+			onfail?.(error as Error)
+			return
+		} finally {
+			_onclick?.(event)
+			loading = false
+		}
 	}
 </script>
 
@@ -26,7 +52,12 @@
 		{onclick}
 		{...rest}
 	>
-		<TrashIcon class="h-5 w-5" aria-hidden="true" />
+		{#if loading}
+			<span class="d-loading d-loading-sm d-loading-spinner"></span>
+		{:else}
+			<TrashIcon class="h-5 w-5" aria-hidden="true" />
+		{/if}
+
 		<span class="hidden sm:inline">Clear</span>
 	</Button>
 {/if}

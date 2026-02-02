@@ -12,6 +12,8 @@
 	--font-mono: 'JetBrains Mono Variable', monospace;
 }
 
+@custom-variant dark (&:where([data-theme-schema=dark], [data-theme-schema=dark] *));
+
 @plugin 'daisyui' {
 	prefix: 'd-';
 	themes: light, cupcake, retro, valentine, pastel, dark, black, dracula, dim;

@@ -3,27 +3,39 @@
 	import type {
 		BaseProps,
 		ComponentProps,
+		CustomProps,
 		ElementProps,
 	} from '$lib/components/models'
 	import UploadIcon from '@iconify-svelte/lucide/upload'
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
-	import { parseCsvFile } from '$lib/csv'
+	import { csvStore, parseCsvFile } from '$lib/csv'
 	import { component } from '$lib/loggers'
-	import { csvStore, trxStore } from '$lib/stores'
-	import { parseTransactions } from '$lib/transactions'
+	import { trxStore, parseTransactions } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
 		Pick<ElementProps<'input'>, 'onchange'> &
 		Omit<ElementProps<'button'>, 'onclick' | 'onchange'> &
-		ComponentProps<typeof Button>
+		ComponentProps<typeof Button> &
+		CustomProps<{
+			onsuccess?: () => void
+			onfail?: (err: Error) => void
+		}>
 
-	let { class: className, onchange: _onchange, ...rest }: Props = $props()
+	let {
+		class: className,
+		onsuccess,
+		onfail,
+		onchange: _onchange,
+		...rest
+	}: Props = $props()
 	const log = component.extends('CsvUploadButton')
 	let file = $state<Input | null>(null)
+	let loading = $state(false)
 
 	const onchange: ChangeEventHandler<HTMLInputElement> = async (event) => {
+		loading = true
 		const target = event.currentTarget
 		const file = target?.files?.[0]
 
@@ -33,15 +45,22 @@
 		}
 
 		log.info('file selected: %s', file.name)
-		const csv = await parseCsvFile(file)
-		const transactions = parseTransactions(csv)
+		try {
+			const csv = await parseCsvFile(file)
+			const transactions = parseTransactions(csv)
 
-		csvStore.reset()
-		csvStore.merge({ [file.name]: csv })
+			await csvStore.reset()
+			await csvStore.merge({ [file.name]: csv })
 
-		trxStore.reset()
-		trxStore.merge(transactions)
-		_onchange?.(event)
+			await trxStore.reset()
+			await trxStore.merge(transactions)
+			onsuccess?.()
+		} catch (error) {
+			onfail?.(error as Error)
+		} finally {
+			_onchange?.(event)
+			loading = false
+		}
 	}
 </script>
 
@@ -59,6 +78,10 @@
 	onclick={() => file?.click()}
 	{...rest}
 >
-	<UploadIcon class="h-5 w-5" aria-hidden="true" />
+	{#if loading}
+		<span class="d-loading d-loading-sm d-loading-spinner"></span>
+	{:else}
+		<UploadIcon class="h-5 w-5" aria-hidden="true" />
+	{/if}
 	<span class="ml-2 hidden sm:inline">Upload</span>
 </Button>
