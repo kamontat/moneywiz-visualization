@@ -13,7 +13,12 @@
 	"editor.quickSuggestions": {
 		"strings": "on"
 	},
-	"tailwindCSS.classFunctions": ["newTwClass", "newBaseClass", "newVariantClass", "mergeClass"],
+	"tailwindCSS.classFunctions": [
+		"newTwClass",
+		"newBaseClass",
+		"newVariantClass",
+		"mergeClass"
+	],
 	"tailwindCSS.experimental.configFile": "src/css/global.css",
 	"chat.tools.terminal.autoApprove": {
 		"bun": true,
