@@ -1,11 +1,25 @@
 <script lang="ts">
-	import type { BaseProps, ElementProps, VariantProps } from '$lib/components/models'
-	import { mergeClass, newBaseClass, newTwClass, newVariantClass } from '$lib/components'
+	import type {
+		BaseProps,
+		ElementProps,
+		VariantProps,
+	} from '$lib/components/models'
+	import {
+		mergeClass,
+		newBaseClass,
+		newTwClass,
+		newVariantClass,
+	} from '$lib/components'
 
 	type Variant = 'plain' | 'primary' | 'secondary' | 'danger'
 	type Props = BaseProps & VariantProps<Variant> & ElementProps<'button'>
 
-	let { variant = 'primary', children, class: className, ...rest }: Props = $props()
+	let {
+		variant = 'primary',
+		children,
+		class: className,
+		...rest
+	}: Props = $props()
 
 	const baseClass = newBaseClass(['d-btn'])
 	const variantClass = newVariantClass<Variant>({
@@ -16,6 +30,9 @@
 	})
 </script>
 
-<button class={mergeClass(baseClass(variant), variantClass(variant), className)} {...rest}>
+<button
+	class={mergeClass(baseClass(variant), variantClass(variant), className)}
+	{...rest}
+>
 	{@render children?.()}
 </button>

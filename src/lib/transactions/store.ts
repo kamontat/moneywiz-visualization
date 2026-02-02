@@ -1,8 +1,11 @@
 import type { ParsedTransactions } from '$lib/transactions'
-import { indexDBV1 } from './db'
-import { newStore, STORE_STATE_TRX_KEY_V1, type StateNormal } from './internal'
-
 import { store } from '$lib/loggers'
+import {
+	newStore,
+	indexDBV1,
+	STORE_STATE_TRX_KEY_V1,
+	type StateNormal,
+} from '$lib/stores'
 
 type TrxState = ParsedTransactions
 
@@ -27,7 +30,9 @@ export const initTrxStore = () => {
 			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1)
 			const fileName = await trx.store.get('fileName')
 			// TODO: Fix getAll also include the key 'fileName'
-			const data = await trx.store.getAll()
+			const data = (await trx.store.getAll()).filter(
+				(item) => item !== undefined && item !== null
+			)
 			await trx.done
 
 			return { fileName, data } as TrxState

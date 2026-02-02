@@ -1,11 +1,16 @@
-import type { SchemaState, StateNormal, StoreSchema } from './internal'
 import { MediaQuery } from 'svelte/reactivity'
 
-import { localDBV1 } from './db'
-import { newStore, STORE_STATE_THM_KEY_V1 } from './internal'
+import { themeMap } from './constants'
 
 import { store } from '$lib/loggers'
-import { themeMap } from '$lib/themes'
+import {
+	newStore,
+	localDBV1,
+	STORE_STATE_THM_KEY_V1,
+	type SchemaState,
+	type StateNormal,
+	type StoreSchema,
+} from '$lib/stores'
 
 type ThemeState = SchemaState<
 	StoreSchema,

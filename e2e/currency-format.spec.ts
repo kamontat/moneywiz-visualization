@@ -34,7 +34,9 @@ test.describe('Dashboard - Currency Formatting', () => {
 
 		// Check Income Value
 		// We select the list item that has text "Income"
-		const incomeCard = summaryList.locator('div[role="listitem"]').filter({ hasText: 'Income' })
+		const incomeCard = summaryList
+			.locator('div[role="listitem"]')
+			.filter({ hasText: 'Income' })
 		const incomeValue = incomeCard.locator('p.text-lg')
 
 		await expect(incomeValue).toBeVisible()
@@ -43,7 +45,9 @@ test.describe('Dashboard - Currency Formatting', () => {
 		expect(incomeText).toMatch(/^฿[\d,]+\.\d{2}$/)
 
 		// Check Expenses Value
-		const expensesCard = summaryList.locator('div[role="listitem"]').filter({ hasText: 'Expenses' })
+		const expensesCard = summaryList
+			.locator('div[role="listitem"]')
+			.filter({ hasText: 'Expenses' })
 		const expensesValue = expensesCard.locator('p.text-lg')
 		await expect(expensesValue).toBeVisible()
 		const expensesText = await expensesValue.textContent()
@@ -65,7 +69,9 @@ test.describe('Dashboard - Currency Formatting', () => {
 
 	test('uses symbols in Category Breakdown', async ({ page }) => {
 		// Income Breakdown Total
-		const incomeButton = page.getByRole('button', { name: /Income by Category/ })
+		const incomeButton = page.getByRole('button', {
+			name: /Income by Category/,
+		})
 		await expect(incomeButton).toBeVisible()
 		// The button contains the total text
 		const incomeButtonText = await incomeButton.textContent()
@@ -77,7 +83,10 @@ test.describe('Dashboard - Currency Formatting', () => {
 		await expect(incomeList).toBeVisible()
 
 		// Check list items
-		const firstItemAmount = incomeList.locator('li').first().locator('span.font-medium')
+		const firstItemAmount = incomeList
+			.locator('li')
+			.first()
+			.locator('span.font-medium')
 		await expect(firstItemAmount).toBeVisible()
 		expect(await firstItemAmount.textContent()).toContain('฿')
 	})

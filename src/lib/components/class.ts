@@ -17,7 +17,10 @@ export const newBaseClass = (baseClass: BaseClass): BaseClassSelector => {
 }
 
 type VariantClass<K extends string> = Record<K, ClassArrayString>
-type VariantClassSelector<K extends string> = ClassSelector<K, VariantClass<K>[K]>
+type VariantClassSelector<K extends string> = ClassSelector<
+	K,
+	VariantClass<K>[K]
+>
 export const newVariantClass = <V extends string>(
 	variantClass: VariantClass<V>
 ): VariantClassSelector<V> => {

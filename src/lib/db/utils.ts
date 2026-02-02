@@ -1,5 +1,5 @@
 import type { DB } from './models'
-import type { DBFullName, DBName, DBVersion } from '$lib/stores/internal'
+import type { DBFullName, DBName, DBVersion } from '$lib/stores'
 
 export const emptyDB = <D extends DB<DBFullName>>() => {
 	return {

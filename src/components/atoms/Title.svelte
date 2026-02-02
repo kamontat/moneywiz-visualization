@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { BaseProps, ElementTagProps } from '$lib/components/models'
-	import { mergeClass, newBaseClass, newTwClass, newVariantClass } from '$lib/components'
+	import {
+		mergeClass,
+		newBaseClass,
+		newTwClass,
+		newVariantClass,
+	} from '$lib/components'
 
 	type TagName = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 	type Props = BaseProps & ElementTagProps<TagName>

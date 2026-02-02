@@ -15,7 +15,13 @@
 		Pick<ComponentTagProps<AnyComponent>, 'Component'> &
 		VariantProps<Variant>
 
-	let { tag = 'span', variant = 'medium', class: className, Component, ...rest }: Props = $props()
+	let {
+		tag = 'span',
+		variant = 'medium',
+		class: className,
+		Component,
+		...rest
+	}: Props = $props()
 
 	const baseClass = newBaseClass(['d-btn', 'd-btn-ghost', 'd-btn-circle'])
 	const variantClass = newVariantClass<Variant>({
@@ -26,6 +32,10 @@
 	})
 </script>
 
-<svelte:element this={tag} class={mergeClass(baseClass(variant), className)} {...rest}>
+<svelte:element
+	this={tag}
+	class={mergeClass(baseClass(variant), className)}
+	{...rest}
+>
 	<Component class={variantClass(variant)} />
 </svelte:element>

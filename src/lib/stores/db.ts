@@ -1,10 +1,10 @@
+import type { StoreSchema } from './schema'
 import type { ToIDBSchema } from '$lib/db/models'
 import {
 	STORE_STATE_CSV_KEY_V1,
 	STORE_STATE_THM_KEY_V1,
 	STORE_STATE_TRX_KEY_V1,
-	type StoreSchema,
-} from './internal'
+} from './constants'
 
 import { IndexDB, LocalDB } from '$lib/db'
 

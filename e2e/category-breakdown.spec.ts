@@ -9,8 +9,16 @@ test.describe('Dashboard - Category Breakdown', () => {
 		const fileInput = page.locator('input[type="file"]').first()
 
 		const csvContent = generateCsv([
-			{ Category: 'Compensation > Salary', Amount: '50000.00', Description: 'Salary' },
-			{ Category: 'Food and Beverage > Food', Amount: '-500.00', Description: 'Lunch' },
+			{
+				Category: 'Compensation > Salary',
+				Amount: '50000.00',
+				Description: 'Salary',
+			},
+			{
+				Category: 'Food and Beverage > Food',
+				Amount: '-500.00',
+				Description: 'Lunch',
+			},
 		])
 
 		await fileInput.setInputFiles({
@@ -20,12 +28,16 @@ test.describe('Dashboard - Category Breakdown', () => {
 		})
 
 		// Wait for dashboard to load by checking for the filename heading
-		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'report.csv' })
+		).toBeVisible()
 	})
 
 	test('collapsible panels are visible and interactive', async ({ page }) => {
 		const incomeBtn = page.getByRole('button', { name: /Income by Category/ })
-		const expenseBtn = page.getByRole('button', { name: /Expenses by Category/ })
+		const expenseBtn = page.getByRole('button', {
+			name: /Expenses by Category/,
+		})
 
 		await expect(incomeBtn).toBeVisible()
 		await expect(expenseBtn).toBeVisible()
@@ -37,7 +49,9 @@ test.describe('Dashboard - Category Breakdown', () => {
 		// Expand income
 		await incomeBtn.click()
 		await expect(page.locator('#income-breakdown')).toBeVisible()
-		await expect(page.locator('#income-breakdown').getByText('Compensation > Salary')).toBeVisible()
+		await expect(
+			page.locator('#income-breakdown').getByText('Compensation > Salary')
+		).toBeVisible()
 
 		// Expand expense
 		await expenseBtn.click()

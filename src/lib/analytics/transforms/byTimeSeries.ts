@@ -20,10 +20,10 @@ export interface TimeSeries {
 	points: TimeSeriesPoint[]
 }
 
-export const byTimeSeries: TransformByFunc<[Date | null, Date | null], TimeSeries> = (
-	start,
-	end
-) => {
+export const byTimeSeries: TransformByFunc<
+	[Date | null, Date | null],
+	TimeSeries
+> = (start, end) => {
 	const by: TransformBy<TimeSeries> = (trx) => {
 		const mode = getMode(trx, start, end)
 		const map = new Map<string, TimeSeriesPoint>()
@@ -31,7 +31,13 @@ export const byTimeSeries: TransformByFunc<[Date | null, Date | null], TimeSerie
 		for (const t of trx) {
 			const key = getKey(mode, t.date)
 			if (!map.has(key)) {
-				map.set(key, { date: t.date, income: 0, expense: 0, net: 0, label: getLabel(mode, t.date) })
+				map.set(key, {
+					date: t.date,
+					income: 0,
+					expense: 0,
+					net: 0,
+					label: getLabel(mode, t.date),
+				})
 			}
 			const entry = map.get(key)!
 			if (t.type === 'Income') entry.income += t.amount.value

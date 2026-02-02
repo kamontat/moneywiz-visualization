@@ -7,7 +7,7 @@ import type {
 	StoreSchemaVersion,
 	StoreTableKey,
 	StoreTableName,
-} from '$lib/stores/internal'
+} from '$lib/stores'
 import { emptyDB, parseDBFullName } from './utils'
 
 import { browser } from '$app/environment'

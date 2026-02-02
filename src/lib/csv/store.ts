@@ -1,14 +1,12 @@
-import { indexDBV1 } from './db'
+import { store } from '$lib/loggers'
 import {
 	newStore,
 	STORE_STATE_CSV_KEY_V1,
-	STORE_STATE_THM_KEY_V1,
+	indexDBV1,
 	type SchemaState,
 	type StateNormal,
 	type StoreSchema,
-} from './internal'
-
-import { store } from '$lib/loggers'
+} from '$lib/stores'
 
 type CsvState = SchemaState<
 	StoreSchema,

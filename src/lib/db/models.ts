@@ -7,7 +7,7 @@ import type {
 	StoreSchemaVersion,
 	StoreTableKey,
 	StoreTableName,
-} from '$lib/stores/internal'
+} from '$lib/stores'
 import type { AnyRecord, ToKey, ToObj } from '$lib/types'
 
 export interface TriggerData<

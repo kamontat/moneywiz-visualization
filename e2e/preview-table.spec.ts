@@ -7,7 +7,9 @@ test.describe('CSV Preview Table Layout', () => {
 		await page.goto('/')
 	})
 
-	test('preview table displays all columns without wrapping headers', async ({ page }) => {
+	test('preview table displays all columns without wrapping headers', async ({
+		page,
+	}) => {
 		// Upload CSV file to show preview table
 		const fileInput = page.locator('input[type="file"]').first()
 		const csvContent = generateCsv([defaultRecord])

@@ -30,7 +30,9 @@ export const byNOT: FilterByFunc<[FilterBy]> = (by): FilterBy => {
 
 export const filter = (trx: ParsedTransaction[], ...bys: FilterBy[]) => {
 	const log = analytics.extends('filter')
-	log.debug(`starting filter with ${bys.length} criteria on ${trx.length} transactions`)
+	log.debug(
+		`starting filter with ${bys.length} criteria on ${trx.length} transactions`
+	)
 	const out = bys.reduce((filtered, by) => filtered.filter(by), trx)
 	log.debug(`filter result: ${out.length} transactions after filtering`)
 

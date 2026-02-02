@@ -80,7 +80,10 @@ export const parseAccountType = (text: string): ParsedAccountType => {
  * @param currency optional currency code
  * @returns parsed amount
  */
-export const parseAmount = (text: string, currency: string | undefined | null): ParsedAmount => {
+export const parseAmount = (
+	text: string,
+	currency: string | undefined | null
+): ParsedAmount => {
 	const sanitized = text.replace(/,/g, '').trim()
 	const value = parseFloat(sanitized)
 
@@ -140,13 +143,20 @@ export const parseTag = (text: string): ParsedTag[] => {
  * @param time input raw time text
  * @returns parsed Date
  */
-export const parseDate = (text: string, time: string | undefined | null): Date => {
+export const parseDate = (
+	text: string,
+	time: string | undefined | null
+): Date => {
 	if (!text) return new Date(0)
 
 	// Format: DD/MM/YYYY
-	const [day, month, year] = text.split('/', 3).map((v) => Number.parseInt(v, 10))
+	const [day, month, year] = text
+		.split('/', 3)
+		.map((v) => Number.parseInt(v, 10))
 	// Format: HH:MM
-	const [hours, minutes] = time?.split(':').map((v) => Number.parseInt(v, 10)) ?? [0, 0]
+	const [hours, minutes] = time
+		?.split(':')
+		.map((v) => Number.parseInt(v, 10)) ?? [0, 0]
 
 	// Create date (month is 0-indexed)
 	return new Date(year, month - 1, day, noNaN(hours), noNaN(minutes))

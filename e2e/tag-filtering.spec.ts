@@ -75,7 +75,9 @@ test.describe('Dashboard - Tag Filtering', () => {
 
 		// Should reset
 		await expect(page.getByText(/shown/)).not.toBeVisible()
-		await expect(page.getByRole('button', { name: /Clear All/i })).not.toBeVisible()
+		await expect(
+			page.getByRole('button', { name: /Clear All/i })
+		).not.toBeVisible()
 	})
 
 	test('persists tag filters on reload', async ({ page }) => {

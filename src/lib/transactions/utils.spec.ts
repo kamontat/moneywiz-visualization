@@ -78,11 +78,17 @@ describe('transactions/utils', () => {
 		})
 
 		it('should parse float', () => {
-			expect(parseAmount('100.50', undefined)).toEqual({ value: 100.5, currency: 'THB' })
+			expect(parseAmount('100.50', undefined)).toEqual({
+				value: 100.5,
+				currency: 'THB',
+			})
 		})
 
 		it('should parse negative number', () => {
-			expect(parseAmount('-100', undefined)).toEqual({ value: -100, currency: 'THB' })
+			expect(parseAmount('-100', undefined)).toEqual({
+				value: -100,
+				currency: 'THB',
+			})
 		})
 
 		it('should ignore commas', () => {
@@ -126,7 +132,9 @@ describe('transactions/utils', () => {
 
 	describe('parseTag', () => {
 		it('should parse single tag with group', () => {
-			expect(parseTag('Priority: High')).toEqual([{ category: 'Priority', name: 'High' }])
+			expect(parseTag('Priority: High')).toEqual([
+				{ category: 'Priority', name: 'High' },
+			])
 		})
 
 		it('should parse single tag without group', () => {
@@ -142,7 +150,9 @@ describe('transactions/utils', () => {
 		})
 
 		it('should convert Zvent category to Event', () => {
-			expect(parseTag('Zvent: Anniversary')).toEqual([{ category: 'Event', name: 'Anniversary' }])
+			expect(parseTag('Zvent: Anniversary')).toEqual([
+				{ category: 'Event', name: 'Anniversary' },
+			])
 		})
 
 		it('should handle empty input', () => {
@@ -152,11 +162,15 @@ describe('transactions/utils', () => {
 
 	describe('parseDate', () => {
 		it('should parse date with time', () => {
-			expect(parseDate('31/12/2023', '23:59')).toEqual(new Date(2023, 11, 31, 23, 59))
+			expect(parseDate('31/12/2023', '23:59')).toEqual(
+				new Date(2023, 11, 31, 23, 59)
+			)
 		})
 
 		it('should parse date without time', () => {
-			expect(parseDate('01/01/2023', undefined)).toEqual(new Date(2023, 0, 1, 0, 0))
+			expect(parseDate('01/01/2023', undefined)).toEqual(
+				new Date(2023, 0, 1, 0, 0)
+			)
 		})
 
 		it('should parse date with empty time', () => {

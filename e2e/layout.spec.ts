@@ -5,7 +5,9 @@ test.describe('Layout', () => {
 		await page.goto('/')
 
 		// Header Title
-		await expect(page.getByRole('link', { name: 'MoneyWiz Report' })).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: 'MoneyWiz Report' })
+		).toBeVisible()
 
 		// Upload Button
 		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible()

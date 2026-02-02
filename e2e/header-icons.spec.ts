@@ -29,7 +29,9 @@ test.describe('Header Icons', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'report.csv' })
+		).toBeVisible()
 
 		const clearBtn = page.getByRole('button', { name: 'Clear loaded CSV' })
 		await expect(clearBtn).toBeVisible()

@@ -5,7 +5,10 @@ export type DateFormat = 'DD MMM YYYY' | 'MMM YYYY' | 'YYYY-MM-DD' | 'YYYY-MM'
  * @param date input date
  * @returns formatted date string
  */
-export const formatDate = (date: Date, format: DateFormat = 'DD MMM YYYY'): string => {
+export const formatDate = (
+	date: Date,
+	format: DateFormat = 'DD MMM YYYY'
+): string => {
 	switch (format) {
 		case 'DD MMM YYYY':
 			return formatDateDDMMMYYYY(date)

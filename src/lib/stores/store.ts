@@ -32,8 +32,8 @@ export interface StoreContext<D extends DB<DBFullName>, S extends AnyRecord> {
 	log: Log<string, string>
 }
 
-export type StoreMerger<S> = (partial: DeepPartial<S>) => void
-export type StoreReset = () => void
+export type StoreMerger<S> = (partial: DeepPartial<S>) => Promise<void>
+export type StoreReset = () => Promise<void>
 
 export interface Store<S> extends Writable<S> {
 	merge: StoreMerger<S>
@@ -68,28 +68,32 @@ export const newStore = <D extends DB<DBFullName>, S extends AnyRecord>(
 		return _set(next)
 	}
 
-	const update: Writable<S>['update'] = (updater) => {
-		return _update((current) => {
-			const next = normalize?.(updater(current)) ?? updater(current)
-			if (next !== current) {
-				Promise.resolve(setVal(db, next))
-					.then(() => log.debug('store persisted'))
-					.catch((err) => log.warn('failed to persist store', err))
-			}
-			return next
+	const updateAsync = async (updater: StateNormal<S>): Promise<void> => {
+		return new Promise((res, rej) => {
+			_update((current) => {
+				const next = normalize?.(updater(current)) ?? updater(current)
+				if (next !== current) {
+					Promise.resolve(setVal(db, next))
+						.then(() => res())
+						.catch(rej)
+				}
+				return next
+			})
 		})
 	}
 
-	const merge: StoreMerger<S> = (partial: DeepPartial<S>) => {
-		update((current) => mergeState(current, partial, 1, false))
+	const update: Writable<S>['update'] = (updater) => {
+		updateAsync(updater)
 	}
 
-	const reset: StoreReset = () => {
+	const merge: StoreMerger<S> = (partial: DeepPartial<S>) => {
+		return updateAsync((current) => mergeState(current, partial, 1, false))
+	}
+
+	const reset: StoreReset = async () => {
 		log.debug('resetting store')
-		Promise.resolve(delVal(db))
-			.then(() => log.debug('store persisted'))
-			.catch((err) => log.warn('failed to persist store', err))
 		_set(empty)
+		await Promise.resolve(delVal(db))
 	}
 
 	const store = { subscribe, set, update, merge, reset }

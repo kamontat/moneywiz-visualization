@@ -5,4 +5,6 @@ export type TransformBy<O> = {
 	(trx: ParsedTransaction[]): O
 }
 
-export type TransformByFunc<ARGS extends unknown[], O> = (...args: ARGS) => TransformBy<O>
+export type TransformByFunc<ARGS extends unknown[], O> = (
+	...args: ARGS
+) => TransformBy<O>

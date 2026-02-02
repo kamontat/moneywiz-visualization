@@ -8,7 +8,9 @@ describe('category', () => {
 	})
 
 	it('should format category with subcategory', () => {
-		expect(formatCategory({ category: 'Food', subcategory: 'Groceries' })).toBe('Food > Groceries')
+		expect(formatCategory({ category: 'Food', subcategory: 'Groceries' })).toBe(
+			'Food > Groceries'
+		)
 	})
 
 	it('should format category with null subcategory (if type allows, though type says string)', () => {

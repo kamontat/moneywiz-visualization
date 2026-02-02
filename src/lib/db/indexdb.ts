@@ -1,4 +1,4 @@
-import type { DB, DBChangeCallback, ToIDBSchema, TriggerData } from './models'
+import type { DB, DBChangeCallback, TriggerData } from './models'
 import type { Log } from '$lib/loggers/models'
 import type {
 	DBName,
@@ -7,7 +7,7 @@ import type {
 	StoreSchemaVersion,
 	StoreTableKey,
 	StoreTableName,
-} from '$lib/stores/internal'
+} from '$lib/stores'
 import type { ToKey } from '$lib/types'
 import {
 	openDB,

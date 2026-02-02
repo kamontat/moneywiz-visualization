@@ -10,6 +10,10 @@ export const newTheme = <S extends ThemeSchema, N extends string>(
 	name,
 })
 
-export const newThemeMap = <M extends Theme<ThemeSchema, string>[]>(...map: M): ThemeMap<M> => {
-	return Object.fromEntries(map.map((theme) => [theme.name, theme])) as ThemeMap<M>
+export const newThemeMap = <M extends Theme<ThemeSchema, string>[]>(
+	...map: M
+): ThemeMap<M> => {
+	return Object.fromEntries(
+		map.map((theme) => [theme.name, theme])
+	) as ThemeMap<M>
 }

@@ -20,14 +20,18 @@ test.describe('CSV Persistence', () => {
 		})
 
 		// Check for elements that only appear when data is loaded
-		await expect(page.getByRole('heading', { name: 'report.csv' })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'report.csv' })
+		).toBeVisible()
 		await expect(page.getByText('Saving Rate')).toBeVisible()
 
 		// Reload page and verify persistence
 		await page.reload()
 		// Data should still be there immediately after load
 		await expect(page.getByText('Saving Rate')).toBeVisible()
-		await expect(page.getByRole('button', { name: 'Clear loaded CSV' })).toBeVisible()
+		await expect(
+			page.getByRole('button', { name: 'Clear loaded CSV' })
+		).toBeVisible()
 
 		// Clear data and reload
 		await page.getByRole('button', { name: 'Clear loaded CSV' }).click()

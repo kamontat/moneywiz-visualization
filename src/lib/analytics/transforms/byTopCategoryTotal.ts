@@ -6,10 +6,16 @@ export interface TopCategoryTotal extends CategoryTotal {
 	type: ParsedTransactionType
 }
 
-export const byTopCategoryTotal: TransformByFunc<[number], TopCategoryTotal[]> = (size) => {
+export const byTopCategoryTotal: TransformByFunc<
+	[number],
+	TopCategoryTotal[]
+> = (size) => {
 	const by: TransformBy<TopCategoryTotal[]> = (trx) => {
 		const totals = byCategoryTotal(trx)
-		const entries = Object.entries(totals).map(([type, data]) => ({ type, ...data }))
+		const entries = Object.entries(totals).map(([type, data]) => ({
+			type,
+			...data,
+		}))
 		entries.sort((a, b) => Math.abs(b.total) - Math.abs(a.total))
 		const top = entries.slice(0, size)
 

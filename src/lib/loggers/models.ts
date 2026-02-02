@@ -3,10 +3,11 @@
 import type { Debugger } from 'debug'
 import createDebug from 'debug'
 
-type Namespace<T extends string, S extends string[], SEP extends string> = S extends [
-	infer F extends string,
-	...infer R extends string[],
-]
+type Namespace<
+	T extends string,
+	S extends string[],
+	SEP extends string,
+> = S extends [infer F extends string, ...infer R extends string[]]
 	? Namespace<`${T}${SEP}${F}`, R, SEP>
 	: T
 
@@ -31,7 +32,9 @@ export class Log<T extends string, SEP extends string> {
 		this._error = this._log.extend('error')
 	}
 
-	extends<S extends string[]>(...namespaces: S): Log<Namespace<T, S, SEP>, SEP> {
+	extends<S extends string[]>(
+		...namespaces: S
+	): Log<Namespace<T, S, SEP>, SEP> {
 		return new Log([this._log.namespace, ...namespaces].join(Log.separator))
 	}
 

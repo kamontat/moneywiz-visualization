@@ -13,7 +13,9 @@ export interface CategoryTotal {
 	parents: Record<string, CategoryTotalParent>
 }
 
-export const byCategoryTotal: TransformBy<Record<ParsedTransactionType, CategoryTotal>> = (trx) => {
+export const byCategoryTotal: TransformBy<
+	Record<ParsedTransactionType, CategoryTotal>
+> = (trx) => {
 	const totals = {} as Record<ParsedTransactionType, CategoryTotal>
 
 	for (const t of trx) {
@@ -31,7 +33,8 @@ export const byCategoryTotal: TransformBy<Record<ParsedTransactionType, Category
 				totals[type].parents[cat.category].children[cat.subcategory] = 0
 			}
 
-			totals[type].parents[cat.category].children[cat.subcategory] += t.amount.value
+			totals[type].parents[cat.category].children[cat.subcategory] +=
+				t.amount.value
 			totals[type].parents[cat.category].total += t.amount.value
 			totals[type].total += t.amount.value
 		}

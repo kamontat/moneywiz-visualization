@@ -7,14 +7,22 @@ import type {
 } from './models'
 import type { ParsedCsv } from '$lib/csv'
 import { CsvKey, getValue } from './csv'
-import { parseAccount, parseAmount, parseCategory, parseDate, parseTag } from './utils'
+import {
+	parseAccount,
+	parseAmount,
+	parseCategory,
+	parseDate,
+	parseTag,
+} from './utils'
 
 import { parseCsvFile } from '$lib/csv'
 import { transaction } from '$lib/loggers'
 
 const log = transaction.extends('parser')
 
-export const parseTransactionsFile = async (file: File): Promise<ParsedTransactions> => {
+export const parseTransactionsFile = async (
+	file: File
+): Promise<ParsedTransactions> => {
 	log.debug('parsing transactions from file: %s', file.name)
 	const csv = await parseCsvFile(file)
 	return parseTransactions(csv)
@@ -25,8 +33,14 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransactions => {
 
 	const data = csv.rows.map((row) => {
 		const account = parseAccount(getValue(row, CsvKey.Account))
-		const amount = parseAmount(getValue(row, CsvKey.Amount), getValue(row, CsvKey.Currency))
-		const date = parseDate(getValue(row, CsvKey.Date), getValue(row, CsvKey.Time))
+		const amount = parseAmount(
+			getValue(row, CsvKey.Amount),
+			getValue(row, CsvKey.Currency)
+		)
+		const date = parseDate(
+			getValue(row, CsvKey.Date),
+			getValue(row, CsvKey.Time)
+		)
 		const description = getValue(row, CsvKey.Description)
 		const memo = getValue(row, CsvKey.Memo)
 		const tags = parseTag(getValue(row, CsvKey.Tags))
