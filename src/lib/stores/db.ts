@@ -8,12 +8,10 @@ import {
 
 import { IndexDB, LocalDB } from '$lib/db'
 
+type DBSchema = ToIDBSchema<StoreSchema['v1:app-db']>
+
 export const localDBV1 = LocalDB.create('v1:app-db')
-export const indexDBV1 = await IndexDB.create<
-	'v1:app-db',
-	StoreSchema['v1:app-db'],
-	ToIDBSchema<StoreSchema['v1:app-db']>
->('v1:app-db', {
+export const indexDBV1 = IndexDB.create<DBSchema>('v1:app-db', {
 	upgrade(db) {
 		db.createObjectStore(STORE_STATE_THM_KEY_V1)
 		db.createObjectStore(STORE_STATE_CSV_KEY_V1)

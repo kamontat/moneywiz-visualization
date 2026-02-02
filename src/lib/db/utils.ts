@@ -1,5 +1,5 @@
 import type { DB } from './models'
-import type { DBFullName } from '$lib/stores/internal'
+import type { DBFullName, DBName, DBVersion } from '$lib/stores/internal'
 
 export const emptyDB = <D extends DB<DBFullName>>() => {
 	return {
@@ -14,7 +14,7 @@ const parseVersion = (v: string) => {
 	else return version
 }
 
-export const parseDBFullName = (name: DBFullName) => {
+export const parseDBFullName = <N extends DBFullName>(name: N) => {
 	const raw = name.split(':', 2)
-	return [raw[1], parseVersion(raw[0])] as const
+	return [raw[1] as DBName<N>, parseVersion(raw[0]) as DBVersion<N>] as const
 }

@@ -35,7 +35,7 @@ export class LocalDB<
 	private readonly log: Log<string, string>
 	private constructor(name: Name, storage: Storage) {
 		const [_name, _version] = parseDBFullName(name)
-		this.name = _name as DBName<Name>
+		this.name = _name
 		this.version = _version as DBVersion<Name>
 		this.storage = storage
 		this.log = logger.extends('localdb')
@@ -106,23 +106,6 @@ export class LocalDB<
 		this.trigger(table, key, undefined)
 	}
 
-	clear() {
-		const keys = []
-		for (let i = 0; i < this.storage.length; i++) {
-			const key = this.storage.key(i)
-			if (key) keys.push(key)
-		}
-
-		this.storage.clear()
-
-		for (const key of keys) {
-			type Table = StoreTableName<Schema>
-			type Key = StoreTableKey<Schema, Table>
-			const [_v, _db, _table, _key] = this.splitKey(key)
-			if (_table && _key) this.trigger(_table as Table, _key as Key, undefined)
-		}
-	}
-
 	private getKey(table?: string, key?: string) {
 		let output = this.baseKey()
 		if (table !== undefined) output = `${output}${LocalDB.separator}${table}`
@@ -130,18 +113,7 @@ export class LocalDB<
 		return output
 	}
 
-	private splitKey(fullKey: string) {
-		if (!fullKey.startsWith(this.baseKey()))
-			return [undefined, undefined, undefined, undefined] as const
-		const parts = fullKey.split(LocalDB.separator, 4)
-		return [parts.at(0), parts.at(1), parts.at(2), parts.at(3)] as const
-	}
-
 	private baseKey() {
 		return `v${this.version}:${this.name}`
 	}
-
-	// private getPrefixKey(table?: string, key?: string) {
-	// 	return this.getKey(table, key) + LocalDB.separator
-	// }
 }

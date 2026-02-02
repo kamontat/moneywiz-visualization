@@ -24,14 +24,16 @@ export const initTrxStore = () => {
 	return newStore(indexDBV1, empty, {
 		normalize,
 		getVal: async (db) => {
-			const fileName = await db.get(STORE_STATE_TRX_KEY_V1, 'fileName')
+			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1)
+			const fileName = await trx.store.get('fileName')
 			// TODO: Fix getAll also include the key 'fileName'
-			const data = await db.getAll(STORE_STATE_TRX_KEY_V1)
-			console.log(fileName, data)
+			const data = await trx.store.getAll()
+			await trx.done
+
 			return { fileName, data } as TrxState
 		},
 		setVal: async (db, state) => {
-			const trx = db.transaction(STORE_STATE_TRX_KEY_V1, 'readwrite')
+			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1, 'readwrite')
 			await Promise.all([
 				trx.store.put(state.fileName, 'fileName'),
 				...state.data.map((item, index) =>
@@ -41,7 +43,7 @@ export const initTrxStore = () => {
 			])
 		},
 		delVal: async (db) => {
-			const trx = db.transaction(STORE_STATE_TRX_KEY_V1, 'readwrite')
+			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1, 'readwrite')
 			await Promise.all([trx.store.clear(), trx.done])
 		},
 		log,

@@ -1,4 +1,5 @@
 import type { DB, DBChangeCallback, ToIDBSchema, TriggerData } from './models'
+import type { Log } from '$lib/loggers/models'
 import type {
 	DBName,
 	DBVersion,
@@ -7,6 +8,7 @@ import type {
 	StoreTableKey,
 	StoreTableName,
 } from '$lib/stores/internal'
+import type { ToKey } from '$lib/types'
 import {
 	openDB,
 	type DBSchema as iDBSchema,
@@ -14,95 +16,127 @@ import {
 	type OpenDBCallbacks,
 } from 'idb'
 
-import { emptyDB } from './utils'
+import { emptyDB, parseDBFullName } from './utils'
 
 import { browser } from '$app/environment'
+import { storage as logger } from '$lib/loggers'
 
-type IndexDBModel<
+export class IndexDB<
 	Name extends StoreSchemaVersion,
 	Schema extends StoreSchema[Name],
 	DBSchema extends iDBSchema,
-> = DB<Name, Schema> & IDBPDatabase<DBSchema>
+> implements DB<Name, Schema> {
+	static create<
+		DBSchema extends iDBSchema,
+		Name extends StoreSchemaVersion = StoreSchemaVersion,
+		Schema extends StoreSchema[Name] = StoreSchema[Name],
+	>(name: Name, callback: OpenDBCallbacks<DBSchema>) {
+		if (!browser) return emptyDB<IndexDB<Name, Schema, DBSchema>>()
 
-const buildIndexDB = <
-	Name extends StoreSchemaVersion,
-	Schema extends StoreSchema[Name],
->(
-	name: DBName<Name>,
-	version: DBVersion<Name>
-): Omit<DB<Name, Schema>, 'name' | 'version'> => {
-	const triggerName = `indexdb-trigger:v${version}:${name}`
+		const [_name, _version] = parseDBFullName(name)
+		const engine = openDB<DBSchema>(_name, _version, callback)
+		return new IndexDB<Name, Schema, DBSchema>(_name, _version, engine)
+	}
 
-	const available: DB<Name, Schema>['available'] = () => {
+	public readonly name: DBName<Name>
+	public readonly version: DBVersion<Name>
+	public readonly triggerName: string
+	private readonly engine: Promise<IDBPDatabase<DBSchema>>
+	private readonly log: Log<string, string>
+
+	private constructor(
+		name: DBName<Name>,
+		version: DBVersion<Name>,
+		engine: Promise<IDBPDatabase<DBSchema>>
+	) {
+		this.name = name
+		this.version = version
+		this.engine = engine
+		this.triggerName = `indexdb-trigger:v${version}:${name}`
+
+		this.log = logger.extends('indexdb')
+	}
+
+	available(): boolean {
 		return (
 			browser &&
 			typeof window !== 'undefined' &&
+			typeof window.localStorage !== 'undefined' &&
 			typeof window.indexedDB !== 'undefined'
 		)
 	}
 
-	const trigger = <
-		T extends StoreTableName<Schema>,
-		K extends StoreTableKey<Schema, T>,
-	>(
-		table: T,
-		key: K,
-		value: Schema[T][K]['value'] | undefined
-	) => {
-		localStorage.setItem(
-			`${triggerName}:${table}:${key}`,
-			JSON.stringify({
-				db: name,
-				version,
-				table,
-				key,
-				value,
-			} satisfies TriggerData<Schema, StoreTableName<Schema>>)
-		)
-	}
-
-	const onChange: DB<Name, Schema>['onChange'] = (
-		cb: DBChangeCallback<Name, Schema>
-	) => {
+	onChange(cb: DBChangeCallback<Name, Schema>): void {
 		window.addEventListener('storage', (event) => {
-			if (event.key?.startsWith(triggerName)) {
+			if (event.key?.startsWith(this.triggerName)) {
 				cb(event, JSON.parse(event.newValue ?? 'null') ?? undefined)
 			}
 		})
 	}
 
-	return {
-		available,
-		triggerName,
-		trigger,
-		onChange,
-	}
-}
-
-const parseVersion = (v: string) => {
-	const version = parseInt(v.slice(1), 10)
-	if (isNaN(version) || version < 1) return 1
-	else return version
-}
-
-export class IndexDB {
-	// TODO: Make this synchronous like LocalDB
-	static async create<
-		Name extends StoreSchemaVersion,
-		Schema extends StoreSchema[Name],
-		DBSchema extends iDBSchema,
-	>(name: Name, callback: OpenDBCallbacks<DBSchema>) {
-		if (!browser) return emptyDB<IndexDBModel<Name, Schema, DBSchema>>()
-
-		const raw = name.split(':', 2)
-
-		const _name = raw[1] as DBName<Name>
-		const _version = parseVersion(raw[0]) as DBVersion<Name>
-		const engine = await openDB<DBSchema>(_name, _version, callback)
-		const db = buildIndexDB(_name, _version)
-
-		return Object.assign(engine, db) as IndexDBModel<Name, Schema, DBSchema>
+	trigger<T extends StoreTableName<Schema>, K extends StoreTableKey<Schema, T>>(
+		table: T,
+		key: K,
+		value: Schema[T][K]['value'] | undefined
+	) {
+		window.localStorage.setItem(
+			`${this.triggerName}:${table}:${key}`,
+			JSON.stringify({
+				db: this.name,
+				version: this.version,
+				table,
+				key,
+				value,
+			} satisfies TriggerData<Schema, T>)
+		)
 	}
 
-	private constructor() {}
+	async get<
+		T extends StoreTableName<Schema>,
+		K extends StoreTableKey<Schema, T>,
+	>(table: T, key: K): Promise<Schema[T][K]['value'] | undefined> {
+		const db = await this.engine
+		return db.get(table, key)
+	}
+
+	async set<
+		T extends StoreTableName<Schema>,
+		K extends StoreTableKey<Schema, T>,
+	>(table: T, key: K, value: Schema[T][K]['value']): Promise<void> {
+		const db = await this.engine
+		await db.put(table, value, key)
+		this.trigger(table, key, value)
+	}
+
+	async remove<
+		T extends StoreTableName<Schema>,
+		K extends StoreTableKey<Schema, T>,
+	>(table: T, key?: K): Promise<void> {
+		const db = await this.engine
+		if (typeof key === 'undefined') {
+			const keys = (await db.getAllKeys(table)).map((k) => k.toString())
+			await db.clear(table)
+			keys.forEach((key) =>
+				this.trigger(table, key as ToKey<Schema[T]>, undefined)
+			)
+		} else {
+			await db.delete(table, key)
+			this.trigger(table, key, undefined)
+		}
+	}
+
+	async transaction<
+		T extends StoreTableName<Schema>,
+		Mode extends IDBTransactionMode,
+	>(table: T, mode?: Mode, options?: IDBTransactionOptions) {
+		const db = await this.engine
+		return db.transaction(table, mode, options)
+	}
+	async transactions<
+		TS extends ArrayLike<StoreTableName<Schema>>,
+		Mode extends IDBTransactionMode,
+	>(tables: TS, mode?: Mode, options?: IDBTransactionOptions) {
+		const db = await this.engine
+		return db.transaction(tables, mode, options)
+	}
 }

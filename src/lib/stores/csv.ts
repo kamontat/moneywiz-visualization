@@ -36,11 +36,9 @@ export const initCsvStore = () => {
 	return newStore(indexDBV1, empty, {
 		normalize,
 		getVal: (db) => db.get(STORE_STATE_CSV_KEY_V1, 'default'),
-		setVal: async (db, state) => {
-			await db.put(STORE_STATE_CSV_KEY_V1, state, 'default')
-			db.trigger(STORE_STATE_CSV_KEY_V1, 'default', state)
-		},
-		delVal: (db) => db.delete(STORE_STATE_CSV_KEY_V1, 'default'),
+		setVal: async (db, state) =>
+			db.set(STORE_STATE_CSV_KEY_V1, 'default', state),
+		delVal: (db) => db.remove(STORE_STATE_CSV_KEY_V1, 'default'),
 		log,
 	})
 }
