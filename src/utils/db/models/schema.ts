@@ -1,5 +1,5 @@
 import type { DBFullName, DBIndexKeys } from './name'
-import type { AnyKeyVal, AnyRecord, ToKey, ToKVs, ToObj } from '$utils/types'
+import type { AnyKeyVal, ToKey, ToKVs, ToObj } from '$utils/types'
 
 export interface SchemaState<
 	Value,

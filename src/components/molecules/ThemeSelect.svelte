@@ -1,15 +1,21 @@
 <script lang="ts">
 	import Select from '$components/atoms/Select.svelte'
-	import { themeStore, themeList } from '$lib/themes'
+	import { themeStore, themeState, themeList } from '$lib/themes'
 
 	let current = $state($themeStore.current)
 
 	$effect(() => {
-		themeStore.merge({ current })
+		themeStore.update((prev) => {
+			// Only trigger when value is changed
+			if (prev.current !== current) themeStore.trigger('set', current)
+			return themeState.normalize({ current })
+		})
 	})
 
 	$effect(() => {
-		if (current !== $themeStore.current) current = $themeStore.current
+		if (current !== $themeStore.current) {
+			current = $themeStore.current
+		}
 
 		document.documentElement.dataset['theme'] = $themeStore.theme.name
 		document.documentElement.dataset['themeSchema'] = $themeStore.theme.schema

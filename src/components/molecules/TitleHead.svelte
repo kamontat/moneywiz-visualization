@@ -10,4 +10,4 @@
 	let { name }: Props = $props()
 </script>
 
-<Title tag="h1">{name}</Title>
+<Title tag="h1" class="mb-2">{name}</Title>

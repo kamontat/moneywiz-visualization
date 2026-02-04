@@ -5,7 +5,7 @@ import {
 	indexDBV1,
 	STORE_STATE_TRX_KEY_V1,
 	type StateNormal,
-} from '$lib/stores'
+} from '$utils/stores'
 
 type TrxState = ParsedTransactions
 

@@ -50,12 +50,15 @@ export interface DatabaseCRUD<
 	): WithPromiseLike<PromiseLike, void>
 
 	/** Delete item from database */
+	delete<T extends GetSchemaTableName<Schema>>(
+		table: T
+	): WithPromiseLike<PromiseLike, string[]>
 	delete<
 		T extends GetSchemaTableName<Schema>,
 		K extends GetSchemaTableKey<Schema, T>,
 	>(
 		table: T,
-		key?: K
+		key: K
 	): WithPromiseLike<PromiseLike, void>
 }
 

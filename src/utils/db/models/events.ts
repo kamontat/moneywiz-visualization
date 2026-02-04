@@ -20,9 +20,11 @@ export interface ChangedTriggerData<
 	table: T
 	key: K
 	action: ChangedTriggerDataAction
+	/** when value is the same, event will not trigger */
+	value: string
 }
 
-type ChangedValueReader<V> = () => Promise<V>
+export type ChangedValueReader<V> = () => Promise<V>
 
 /** Data received from onChange() */
 export interface ChangedData<
@@ -33,6 +35,16 @@ export interface ChangedData<
 > extends ChangedTriggerData<Name, Schema, T, K> {
 	read: ChangedValueReader<GetSchemaValue<Schema, T, K>>
 }
+
+export type AnyChangedData<
+	Name extends DBFullName,
+	Schema extends AnySchemaTable,
+> = ChangedData<
+	Name,
+	Schema,
+	GetSchemaTableName<Schema>,
+	GetSchemaTableKey<Schema, GetSchemaTableName<Schema>>
+>
 
 /** Callback from OnChange event */
 export type OnChangeCallback<
@@ -52,7 +64,8 @@ export type TriggerFn<Schema extends AnySchemaTable> = <
 >(
 	action: ChangedTriggerDataAction,
 	table: T,
-	key: K
+	key: K,
+	value: string
 ) => void
 
 /** Function to register onChange callback */

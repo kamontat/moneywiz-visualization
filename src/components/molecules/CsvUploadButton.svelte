@@ -10,9 +10,9 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
-	import { csvStore, parseCsvFile } from '$lib/csv'
+	// import { csvStore, parseCsvFile } from '$lib/csv'
 	import { component } from '$lib/loggers'
-	import { trxStore, parseTransactions } from '$lib/transactions'
+	// import { trxStore, parseTransactions } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
 		Pick<ElementProps<'input'>, 'onchange'> &
@@ -46,14 +46,14 @@
 
 		log.info('file selected: %s', file.name)
 		try {
-			const csv = await parseCsvFile(file)
-			const transactions = parseTransactions(csv)
+			// const csv = await parseCsvFile(file)
+			// const transactions = parseTransactions(csv)
 
-			await csvStore.reset()
-			await csvStore.merge({ [file.name]: csv })
+			// await csvStore.reset()
+			// await csvStore.merge({ [file.name]: csv })
 
-			await trxStore.reset()
-			await trxStore.merge(transactions)
+			// await trxStore.reset()
+			// await trxStore.merge(transactions)
 			onsuccess?.()
 		} catch (error) {
 			onfail?.(error as Error)

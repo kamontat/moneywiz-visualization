@@ -1,11 +1,17 @@
 import { Log } from './models'
 
-export const lib = Log.root.extends('lib')
-export const csv = lib.extends('csv')
-export const transaction = lib.extends('transaction')
-export const storage = lib.extends('storage')
-export const store = lib.extends('store')
-export const analytics = lib.extends('analytics')
+export const libs = Log.root.extends('libs')
+export const analytic = libs.extends('analytic')
+export const component = libs.extends('component')
+export const csv = libs.extends('csv')
+export const formatter = libs.extends('formatter')
+export const theme = libs.extends('theme')
+export const transaction = libs.extends('transaction')
 
-export const component = Log.root.extends('component')
-export const page = Log.root.extends('page')
+export const utils = Log.root.extends('utils')
+export const db = utils.extends('db')
+export const store = utils.extends('store')
+
+export const components = Log.root.extends('components')
+
+export const pages = Log.root.extends('pages')

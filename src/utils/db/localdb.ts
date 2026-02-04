@@ -1,20 +1,24 @@
 import type {
+	AnyChangedData,
 	AnySchemaDB,
 	AnySchemaTable,
+	ChangedData,
 	ChangedTriggerData,
 	ChangedTriggerDataAction,
+	ChangedValueReader,
 	Database,
 	DatabaseCRUD,
 	DBFullName,
 	DBName,
 	DBVersion,
+	GetAnySchemaValue,
 	GetSchemaTableKey,
 	GetSchemaTableName,
 	GetSchemaValue,
 	OnChangeCallback,
 } from './models'
-import type { ToKey } from '$utils/types'
-import { emptyDB, parseDBFullName } from './utils'
+import type { ToKey, WithPromiseLike } from '$utils/types'
+import { emptyDB, parseChangedData, parseDBFullName } from './utils'
 
 import { browser } from '$app/environment'
 import { db } from '$lib/loggers'
@@ -59,7 +63,7 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	trigger<
 		T extends GetSchemaTableName<Schema>,
 		K extends GetSchemaTableKey<Schema, T>,
-	>(action: ChangedTriggerDataAction, table: T, key: K) {
+	>(action: ChangedTriggerDataAction, table: T, key: K, value: string) {
 		const trigger = `${this.triggerName}:${table}:${key}`
 		const data: ChangedTriggerData<Name, Schema, T, K> = {
 			db: this.name,
@@ -67,6 +71,7 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 			table,
 			key,
 			action,
+			value,
 		}
 
 		this.storage.setItem(trigger, JSON.stringify(data))
@@ -75,7 +80,17 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	onChange(callback: OnChangeCallback<Name, Schema>) {
 		window.addEventListener('storage', (event) => {
 			if (event.key?.startsWith(this.triggerName)) {
-				callback(event, JSON.parse(event.newValue ?? 'null') ?? undefined)
+				const data = parseChangedData<Name, Schema>(
+					this.log,
+					event.newValue,
+					(data) => {
+						return this.get(data.table, data.key) as Promise<
+							GetAnySchemaValue<Schema>
+						>
+					}
+				)
+
+				callback(event, data)
 			}
 		})
 	}
@@ -110,26 +125,34 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 		const _key = this.getKey(table, key)
 		this.log.debug(`setting item with key: ${_key}`)
 		this.storage.setItem(_key, JSON.stringify(value))
-		this.trigger('set', table, key)
 	}
 
-	delete<T extends ToKey<Schema>, K extends ToKey<Schema, T>>(
+	delete<T extends GetSchemaTableName<Schema>>(
+		table: T
+	): WithPromiseLike<false, string[]>
+	delete<
+		T extends GetSchemaTableName<Schema>,
+		K extends GetSchemaTableKey<Schema, T>,
+	>(table: T, key: K): WithPromiseLike<false, void>
+	delete<T extends ToKey<Schema>, K extends ToKey<Schema, T> | undefined>(
 		table: T,
 		key?: K
-	): void {
+		// ts-ignore
+	): string[] | void {
 		if (typeof key === 'undefined') {
 			// delete all items in table
 			const prefix = `${this.getKey(table)}${LocalDB.separator}`
+			const keys = []
 			for (let i = 0; i < this.storage.length; i++) {
 				const key = this.storage.key(i)
 				if (key?.startsWith(prefix)) {
 					this.storage.removeItem(key)
-					this.trigger('delete', table, key as K)
+					keys.push(key)
 				}
 			}
+			return keys
 		} else {
 			this.storage.removeItem(this.getKey(table, key))
-			this.trigger('delete', table, key)
 		}
 	}
 

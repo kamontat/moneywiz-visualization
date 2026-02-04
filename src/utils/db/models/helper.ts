@@ -1,3 +1,5 @@
+import type { Database } from './db'
+import type { DBFullName } from './name'
 import type { AnySchemaTable } from './schema'
 import type { ToKey } from '$utils/types'
 
@@ -21,3 +23,14 @@ export type GetSchemaValue<
 	K extends GetSchemaTableKey<S, T>
 		? S[T][K]['value']
 		: ExtractSchemaValue<S[T]>
+
+export type GetAnySchemaValue<Schema extends AnySchemaTable> = GetSchemaValue<
+	Schema,
+	GetSchemaTableName<Schema>,
+	GetSchemaTableKey<Schema, GetSchemaTableName<Schema>>
+>
+
+export type GetDBFullNameFromDatabase<D> =
+	D extends Database<infer N, AnySchemaTable> ? N : never
+export type GetTableNameFromDatabase<D> =
+	D extends Database<DBFullName, infer S> ? GetSchemaTableName<S> : never

@@ -6,7 +6,7 @@ import {
 	type SchemaState,
 	type StateNormal,
 	type StoreSchema,
-} from '$lib/stores'
+} from '$utils/stores'
 
 type CsvState = SchemaState<
 	StoreSchema,

@@ -1,4 +1,5 @@
-import type { ToKey } from '$utils/types'
+import type { Log } from '$lib/loggers/models'
+import type { ToKey, WithPromiseLike } from '$utils/types'
 import {
 	openDB,
 	type IDBPDatabase,
@@ -16,15 +17,17 @@ import {
 	type DBFullName,
 	type DBName,
 	type DBVersion,
+	type GetAnySchemaValue,
 	type GetSchemaTableKey,
 	type GetSchemaTableName,
 	type GetSchemaValue,
 	type OnChangeCallback,
 	type ToIDBSchema,
 } from './models'
-import { emptyDB, parseDBFullName } from './utils'
+import { emptyDB, parseChangedData, parseDBFullName } from './utils'
 
 import { browser } from '$app/environment'
+import { db } from '$lib/loggers'
 
 export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	implements Database<Name, Schema>, DatabaseCRUD<Schema, true>
@@ -43,6 +46,7 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	public readonly version: DBVersion<Name>
 	public readonly triggerName: string
 	private readonly engine: Promise<IDBPDatabase<ToIDBSchema<Schema>>>
+	private readonly log: Log<string, string>
 	private constructor(
 		name: DBName<Name>,
 		version: DBVersion<Name>,
@@ -51,6 +55,7 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 		this.name = name
 		this.version = version
 		this.engine = engine
+		this.log = db.extends('indexdb')
 
 		this.triggerName = `indexdb-trigger:${name}`
 	}
@@ -67,7 +72,7 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	trigger<
 		T extends GetSchemaTableName<Schema>,
 		K extends GetSchemaTableKey<Schema, T>,
-	>(action: ChangedTriggerDataAction, table: T, key: K) {
+	>(action: ChangedTriggerDataAction, table: T, key: K, value: string) {
 		const trigger = `${this.triggerName}:${table}:${key}`
 		const data: ChangedTriggerData<Name, Schema, T, K> = {
 			db: this.name,
@@ -75,6 +80,7 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 			table,
 			key,
 			action,
+			value,
 		}
 
 		localStorage.setItem(trigger, JSON.stringify(data))
@@ -83,7 +89,17 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	onChange(callback: OnChangeCallback<Name, Schema>) {
 		window.addEventListener('storage', (event) => {
 			if (event.key?.startsWith(this.triggerName)) {
-				callback(event, JSON.parse(event.newValue ?? 'null') ?? undefined)
+				const data = parseChangedData<Name, Schema>(
+					this.log,
+					event.newValue,
+					(data) => {
+						return this.get(data.table, data.key) as Promise<
+							GetAnySchemaValue<Schema>
+						>
+					}
+				)
+
+				callback(event, data)
 			}
 		})
 	}
@@ -114,23 +130,26 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	): Promise<void> {
 		const db = await this.engine
 		await db.put(table, value as StoreValue<ToIDBSchema<Schema>, K>, key)
-		this.trigger('set', table, key)
 	}
 
+	delete<T extends GetSchemaTableName<Schema>>(
+		table: T
+	): WithPromiseLike<true, string[]>
+	delete<
+		T extends GetSchemaTableName<Schema>,
+		K extends GetSchemaTableKey<Schema, T>,
+	>(table: T, key: K): WithPromiseLike<true, void>
 	async delete<T extends ToKey<Schema, undefined>, K extends ToKey<Schema, T>>(
 		table: T,
 		key?: K
-	): Promise<void> {
+	): Promise<string[] | void> {
 		const db = await this.engine
 		if (typeof key === 'undefined') {
 			const keys = (await db.getAllKeys(table)).map((k) => k.toString())
 			await db.clear(table)
-			keys.forEach((key) =>
-				this.trigger('delete', table, key as ToKey<Schema[T]>)
-			)
+			return keys
 		} else {
 			await db.delete(table, key)
-			this.trigger('delete', table, key)
 		}
 	}
 

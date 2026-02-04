@@ -8,8 +8,8 @@
 	import TrashIcon from '@iconify-svelte/lucide/trash-2'
 
 	import Button from '$components/atoms/Button.svelte'
-	import { csvStore } from '$lib/csv'
-	import { trxStore } from '$lib/transactions'
+	// import { csvStore } from '$lib/csv'
+	// import { trxStore } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
 		ComponentProps<typeof Button> &
@@ -30,8 +30,8 @@
 	const onclick: MouseEventHandler<HTMLButtonElement> = async (event) => {
 		loading = true
 		try {
-			await csvStore.reset()
-			await trxStore.reset()
+			// await csvStore.reset()
+			// await trxStore.reset()
 			onsuccess?.()
 			// filterStore.reset()
 		} catch (error) {
@@ -44,20 +44,20 @@
 	}
 </script>
 
-{#if $trxStore.fileName}
-	<Button
-		variant="danger"
-		aria-label="Clear loaded CSV"
-		class={className}
-		{onclick}
-		{...rest}
-	>
-		{#if loading}
-			<span class="d-loading d-loading-sm d-loading-spinner"></span>
-		{:else}
-			<TrashIcon class="h-5 w-5" aria-hidden="true" />
-		{/if}
+<!-- {#if $trxStore.fileName} -->
+<Button
+	variant="danger"
+	aria-label="Clear loaded CSV"
+	class={className}
+	{onclick}
+	{...rest}
+>
+	{#if loading}
+		<span class="d-loading d-loading-sm d-loading-spinner"></span>
+	{:else}
+		<TrashIcon class="h-5 w-5" aria-hidden="true" />
+	{/if}
 
-		<span class="hidden sm:inline">Clear</span>
-	</Button>
-{/if}
+	<span class="hidden sm:inline">Clear</span>
+</Button>
+<!-- {/if} -->
