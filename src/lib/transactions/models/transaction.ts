@@ -1,36 +1,7 @@
-export interface ParsedAmount {
-	value: number
-	currency: string
-	locale?: string
-	format?: Intl.NumberFormatOptions
-}
-
-export type ParsedAccountType =
-	| 'Wallet'
-	| 'OnlineWallet'
-	| 'Checking'
-	| 'CreditCard'
-	| 'DebitCard'
-	| 'Investment'
-	| 'Cryptocurrency'
-	| 'Loan'
-	| 'Unknown'
-
-export interface ParsedAccount {
-	type: ParsedAccountType
-	name: string
-	extra: string | null
-}
-
-export interface ParsedCategory {
-	category: string
-	subcategory: string
-}
-
-export interface ParsedTag {
-	category: string
-	name: string
-}
+import type { ParsedAccount } from './account'
+import type { ParsedAmount } from './amount'
+import type { ParsedCategory } from './category'
+import type { ParsedTag } from './tag'
 
 export interface ParsedBaseTransaction {
 	account: ParsedAccount
@@ -70,18 +41,4 @@ export interface ParsedTransferTransaction extends ParsedBaseTransaction {
 
 export interface ParsedUnknownTransaction extends ParsedBaseTransaction {
 	type: 'Unknown'
-}
-
-export type ParsedTransaction =
-	| ParsedExpenseTransaction
-	| ParsedRefundTransaction
-	| ParsedIncomeTransaction
-	| ParsedTransferTransaction
-	| ParsedUnknownTransaction
-
-export type ParsedTransactionType = ParsedTransaction['type']
-
-export interface ParsedTransactions {
-	fileName: string | null
-	data: ParsedTransaction[]
 }
