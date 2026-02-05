@@ -1,12 +1,26 @@
 <script lang="ts">
+	import type { ParsedCsv } from '$lib/csv/models'
+	import { onMount } from 'svelte'
+
 	import AppBody from '$components/organisms/AppBody.svelte'
 	import BodyHeader from '$components/organisms/BodyHeader.svelte'
-	// import { trxStore } from '$lib/transactions'
+	import { csvAPIs, csvStore } from '$lib/csv'
+
+	let data = $state<ParsedCsv | undefined>(undefined)
+	onMount(() => {
+		csvStore.subscribe(() => {
+			csvAPIs.read().then((res) => {
+				data = res
+			})
+		})
+	})
 </script>
 
 <AppBody>
 	<BodyHeader />
 
-	<!-- <span class="mt-6">Total transactions: {$trxStore.data.length}</span> -->
-	<!-- <pre>{JSON.stringify($trxStore.data.slice(0, 20), null, 2)}</pre> -->
+	{#if data}
+		<span class="mt-6">Total transactions: {data.rows.length}</span>
+		<pre>{JSON.stringify(data.rows.slice(0, 20), null, 2)}</pre>
+	{/if}
 </AppBody>
