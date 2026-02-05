@@ -1,41 +1,53 @@
 import type {
 	STORE_DB_V1,
-	STORE_STATE_CSV_KEY_V1,
-	STORE_STATE_THM_KEY_V1,
-	STORE_STATE_TRX_KEY_V1,
+	STATE_CSV_V1,
+	STATE_THEME_V1,
+	STATE_CSV_RAW_ROWS_V1,
+	STATE_CSV_RAW_HEAD_V1,
 } from '../constants'
-import type { ParsedCsv } from '$lib/csv'
-import type { ParsedTheme } from '$lib/themes'
-import type { ParsedTransactions } from '$lib/transactions'
+import type { CsvState, ParsedCsv } from '$lib/csv/models'
+import type { ParsedTheme } from '$lib/themes/models'
 import type { ISchemaDB, ISchemaState, ISchemaTable } from '$utils/db/models'
 
-export type ThemeTableSchemaV1 = ISchemaTable<
-	typeof STORE_STATE_THM_KEY_V1,
+type ThemeTableSchemaV1 = ISchemaTable<
+	typeof STATE_THEME_V1,
 	[ISchemaState<'default', ParsedTheme>]
 >
 
-export type CsvTableSchemaV1 = ISchemaTable<
-	typeof STORE_STATE_CSV_KEY_V1,
-	[ISchemaState<'default', ParsedCsv>]
+type CsvTableSchemaV1 = ISchemaTable<
+	typeof STATE_CSV_V1,
+	[ISchemaState<'default', CsvState | undefined>]
 >
 
-export type TransactionTableSchemaV1 = ISchemaTable<
-	typeof STORE_STATE_TRX_KEY_V1,
-	[
-		ISchemaState<'fileName', string | null>,
-		ISchemaState<
-			`transaction/${number}`,
-			ParsedTransactions,
-			{ date: Date; type: string }
-		>,
-	]
+type CsvRawHeadTableSchemaV1 = ISchemaTable<
+	typeof STATE_CSV_RAW_HEAD_V1,
+	[ISchemaState<string, ParsedCsv['headers'][number]>]
 >
+type CsvRawRowTableSchemaV1 = ISchemaTable<
+	typeof STATE_CSV_RAW_ROWS_V1,
+	[ISchemaState<string, ParsedCsv['rows'][number]>]
+>
+
+// export type TransactionTableSchemaV1 = ISchemaTable<
+// 	typeof STATE_TRX_V1,
+// 	[
+// 		ISchemaState<'fileName', string | null>,
+// 		ISchemaState<
+// 			`transaction/${number}`,
+// 			ParsedTransactions,
+// 			{ date: Date; type: string }
+// 		>,
+// 	]
+// >
 
 export type StoreSchema = ISchemaDB<{
 	[STORE_DB_V1]: [
-		CsvTableSchemaV1,
 		ThemeTableSchemaV1,
-		TransactionTableSchemaV1,
+		CsvTableSchemaV1,
+		CsvRawHeadTableSchemaV1,
+		CsvRawRowTableSchemaV1,
+
+		// TransactionTableSchemaV1,
 	]
 	// 'v2:app-db': [CsvTableSchemaV1, ThemeTableSchemaV1, TransactionTableSchemaV1]
 }>

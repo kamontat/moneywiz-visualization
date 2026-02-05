@@ -1,7 +1,12 @@
 export const STORE_DB_V1 = 'v1:app-db' as const
 
-export const STORE_STATE_THM_KEY_V1 = 'mw_theme_data_v1' as const
+export const STATE_THEME_V1 = 'mw_theme_v1' as const
 
-export const STORE_STATE_TRX_KEY_V1 = 'mw_trx_data_v1' as const
-export const STORE_STATE_CSV_KEY_V1 = 'mw_csv_data_v1' as const
-export const STORE_STATE_FLT_KEY_V1 = 'mw_flt_data_v1' as const
+export const STATE_CSV_V1 = 'mw_csv_v1' as const
+export const STATE_CSV_RAW_HEAD_V1 = 'mw_csv_raw_head_v1' as const
+export const STATE_CSV_RAW_ROWS_V1 = 'mw_csv_raw_rows_v1' as const
+
+// Legacy keys
+
+export const STATE_TRX_V1 = 'mw_transaction_v1' as const
+export const STATE_FILTER_V1 = 'mw_filter_v1' as const

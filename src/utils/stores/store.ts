@@ -40,6 +40,7 @@ export const newStore = <
 
 	const setAsync: StoreSetAsyncFn<StateValue<S>> = async (value) => {
 		const next = state.normalize(value)
+
 		try {
 			await Promise.resolve(ctx.set(db, next))
 			ctx.log.debug('persist state on %s', db.type)
