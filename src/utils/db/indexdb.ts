@@ -42,6 +42,7 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 		return new IndexDB<Name, Schema[Name]>(_name, _version, engine)
 	}
 
+	public readonly type: string
 	public readonly name: DBName<Name>
 	public readonly version: DBVersion<Name>
 	public readonly triggerName: string
@@ -52,12 +53,13 @@ export class IndexDB<Name extends DBFullName, Schema extends AnySchemaTable>
 		version: DBVersion<Name>,
 		engine: Promise<IDBPDatabase<ToIDBSchema<Schema>>>
 	) {
+		this.type = 'indexdb'
 		this.name = name
 		this.version = version
 		this.engine = engine
-		this.log = db.extends('indexdb')
+		this.log = db.extends(this.type)
 
-		this.triggerName = `indexdb-trigger:${name}`
+		this.triggerName = `${this.type}-trigger:${name}`
 	}
 
 	available(): boolean {

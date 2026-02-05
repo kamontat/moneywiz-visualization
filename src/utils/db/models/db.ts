@@ -9,7 +9,11 @@ import type { AnySchemaDB, AnySchemaTable } from './schema'
 import type { ToKey, WithPromiseLike } from '$utils/types'
 
 export interface DatabaseRaw<Name extends DBFullName> {
+	/** Underlay Database Type */
+	readonly type: string
+	/** Database name */
 	readonly name: DBName<Name>
+	/** Database version */
 	readonly version: DBVersion<Name>
 
 	available(): boolean

@@ -1,11 +1,8 @@
 import type {
-	AnyChangedData,
 	AnySchemaDB,
 	AnySchemaTable,
-	ChangedData,
 	ChangedTriggerData,
 	ChangedTriggerDataAction,
-	ChangedValueReader,
 	Database,
 	DatabaseCRUD,
 	DBFullName,
@@ -37,6 +34,7 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 
 	private static readonly separator = ':'
 
+	public readonly type: string
 	public readonly name: DBName<Name>
 	public readonly version: DBVersion<Name>
 	public readonly triggerName: string
@@ -44,12 +42,13 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 	private readonly log: Log<string, string>
 	private constructor(name: Name, storage: Storage) {
 		const [_name, _version] = parseDBFullName(name)
+		this.type = 'localdb'
 		this.name = _name
 		this.version = _version
 		this.storage = storage
-		this.log = db.extends('localdb')
+		this.log = db.extends(this.type)
 
-		this.triggerName = `localdb-trigger:${name}`
+		this.triggerName = `${this.type}-trigger:${name}`
 	}
 
 	available(): boolean {
