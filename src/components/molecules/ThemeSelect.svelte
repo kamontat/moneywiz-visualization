@@ -5,11 +5,7 @@
 	let current = $state($themeStore.current)
 
 	$effect(() => {
-		themeStore.update((prev) => {
-			// Only trigger when value is changed
-			if (prev.current !== current) themeStore.trigger('set', current)
-			return themeState.normalize({ current })
-		})
+		themeStore.update((_) => themeState.normalize({ current }))
 	})
 
 	$effect(() => {

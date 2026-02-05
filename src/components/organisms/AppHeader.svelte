@@ -64,8 +64,10 @@
 	</Container>
 </Header>
 
-{#each messages as message (message.id)}
-	<Alert id={message.id} variant={message.variant} onclose={onAlertDismiss}>
-		{message.text}
-	</Alert>
-{/each}
+<div class="d-stack">
+	{#each messages as message (message.id)}
+		<Alert id={message.id} variant={message.variant} onclose={onAlertDismiss}>
+			{message.text}; Click to dismiss ({messages.length} remaining)
+		</Alert>
+	{/each}
+</div>
