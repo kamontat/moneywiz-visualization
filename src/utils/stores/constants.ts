@@ -1,12 +1,14 @@
 export const STORE_DB_V1 = 'v1:app-db' as const
 
+/** For localDB */
 export const STATE_THEME_V1 = 'mw_theme_v1' as const
 
+/** For localDB */
 export const STATE_CSV_V1 = 'mw_csv_v1' as const
+/** For indexDB */
 export const STATE_CSV_RAW_HEAD_V1 = 'mw_csv_raw_head_v1' as const
+/** For indexDB */
 export const STATE_CSV_RAW_ROWS_V1 = 'mw_csv_raw_rows_v1' as const
 
-// Legacy keys
-
+/** For indexDB */
 export const STATE_TRX_V1 = 'mw_transaction_v1' as const
-export const STATE_FILTER_V1 = 'mw_filter_v1' as const
