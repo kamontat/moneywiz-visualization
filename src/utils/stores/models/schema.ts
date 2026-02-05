@@ -21,11 +21,11 @@ type CsvTableSchemaV1 = ISchemaTable<
 
 type CsvRawHeadTableSchemaV1 = ISchemaTable<
 	typeof STATE_CSV_RAW_HEAD_V1,
-	[ISchemaState<string, ParsedCsv['headers'][number]>]
+	[ISchemaState<number, ParsedCsv['headers'][number]>]
 >
 type CsvRawRowTableSchemaV1 = ISchemaTable<
 	typeof STATE_CSV_RAW_ROWS_V1,
-	[ISchemaState<string, ParsedCsv['rows'][number]>]
+	[ISchemaState<number, ParsedCsv['rows'][number]>]
 >
 
 // export type TransactionTableSchemaV1 = ISchemaTable<

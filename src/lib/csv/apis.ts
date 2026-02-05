@@ -35,14 +35,14 @@ export const initCsvAPIs = <V extends number>(
 		log.debug('storing parsed csv headers into indexdb')
 		const headTrx = await db.transaction(STATE_CSV_RAW_HEAD_V1, 'readwrite')
 		await Promise.all([
-			parsed.headers.map((head, i) => headTrx.store.put(head, i.toString())),
+			parsed.headers.map((head, i) => headTrx.store.put(head, i)),
 			headTrx.done,
 		])
 
 		log.debug('storing parsed csv rows into indexdb')
 		const rowTrx = await db.transaction(STATE_CSV_RAW_ROWS_V1, 'readwrite')
 		await Promise.all([
-			...parsed.rows.map((row, i) => rowTrx.store.put(row, i.toString())),
+			...parsed.rows.map((row, i) => rowTrx.store.put(row, i)),
 			rowTrx.done,
 		])
 

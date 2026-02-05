@@ -21,5 +21,7 @@ export type ToKey<S, K extends keyof S | undefined = undefined> = (
 ) extends infer R
 	? R extends string
 		? R
-		: never
+		: R extends number
+			? R
+			: never
 	: never

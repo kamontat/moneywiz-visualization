@@ -11,7 +11,7 @@ export interface SchemaState<
 
 /** For create schema state */
 export type ISchemaState<
-	Key extends string,
+	Key extends string | number,
 	Value,
 	Indexes extends DBIndexKeys | undefined = undefined,
 > = { key: Key; value: SchemaState<Value, Indexes> }
