@@ -1,11 +1,6 @@
 import type { ParsedTransactions } from '$lib/transactions'
 import { store } from '$lib/loggers'
-import {
-	newStore,
-	indexDBV1,
-	STATE_TRX_V1,
-	type StateNormal,
-} from '$utils/stores'
+import { newStore, indexDBV1, STATE_TRX_V1 } from '$utils/stores'
 
 type TrxState = ParsedTransactions
 
