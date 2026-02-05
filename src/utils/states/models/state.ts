@@ -1,14 +1,8 @@
-import type {
-	StateEqualFn,
-	StateMergeFn,
-	StateNormalizeFn,
-	StateUpdateFn,
-} from './functions'
+import type { StateEqualFn, StateMergeFn, StateNormalizeFn } from './functions'
 
 export interface State<S> {
 	empty: S
 	equal: StateEqualFn<S>
-	update: StateUpdateFn<S>
 	merge: StateMergeFn<S>
 	normalize: StateNormalizeFn<S>
 }
