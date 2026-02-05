@@ -8,16 +8,15 @@ import type { ParsedCsv } from '$lib/csv'
 import type { ParsedTheme } from '$lib/themes'
 import type { ParsedTransactions } from '$lib/transactions'
 import type { ISchemaDB, ISchemaState, ISchemaTable } from '$utils/db/models'
-import type { ToKey } from '$utils/types'
-
-export type CsvTableSchemaV1 = ISchemaTable<
-	typeof STORE_STATE_CSV_KEY_V1,
-	[ISchemaState<'default', ParsedCsv>]
->
 
 export type ThemeTableSchemaV1 = ISchemaTable<
 	typeof STORE_STATE_THM_KEY_V1,
 	[ISchemaState<'default', ParsedTheme>]
+>
+
+export type CsvTableSchemaV1 = ISchemaTable<
+	typeof STORE_STATE_CSV_KEY_V1,
+	[ISchemaState<'default', ParsedCsv>]
 >
 
 export type TransactionTableSchemaV1 = ISchemaTable<
@@ -40,5 +39,3 @@ export type StoreSchema = ISchemaDB<{
 	]
 	// 'v2:app-db': [CsvTableSchemaV1, ThemeTableSchemaV1, TransactionTableSchemaV1]
 }>
-
-export type StoreSchemaDBFullName = ToKey<StoreSchema>
