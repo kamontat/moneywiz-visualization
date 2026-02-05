@@ -1,7 +1,7 @@
 import type { Writable } from 'svelte/store'
 import type { StoreSchema } from './schema'
 import type { Log } from '$lib/loggers/models'
-import type { AnyDatabase, ChangedTriggerDataAction } from '$utils/db/models'
+import type { AnyDatabase } from '$utils/db/models'
 import type { PromiseOrVal } from '$utils/types'
 
 /** Get value from database */
@@ -20,12 +20,6 @@ export type StorageDelFn<DB extends AnyDatabase<StoreSchema>> = (
 	database: DB
 ) => PromiseOrVal<void>
 
-export type StorageTrgFn<DB extends AnyDatabase<StoreSchema>> = (
-	database: DB,
-	action: ChangedTriggerDataAction,
-	value: string
-) => void
-
 export type StoreSubscribeFn<O> = Writable<O>['subscribe']
 
 export type StoreSetFn<O> = Writable<O>['set']
@@ -41,11 +35,6 @@ export type StoreUpdateAsyncFn<O> = (
 export type StoreResetFn = () => void
 export type StoreResetAsyncFn = () => Promise<void>
 
-export type StoreTriggerFn = (
-	action: ChangedTriggerDataAction,
-	value: string
-) => void
-
 export type StoreContext<DB extends AnyDatabase<StoreSchema>, O> = {
 	/** Get state */
 	get: StorageGetFn<DB, O>
@@ -53,8 +42,6 @@ export type StoreContext<DB extends AnyDatabase<StoreSchema>, O> = {
 	set: StorageSetFn<DB, O>
 	/** Delete state */
 	del: StorageDelFn<DB>
-	/** Trigger changes */
-	trg: StorageTrgFn<DB>
 	log: Log<string, string>
 }
 
@@ -66,5 +53,4 @@ export interface Store<O> {
 	updateAsync: StoreUpdateAsyncFn<O>
 	reset: StoreResetFn
 	resetAsync: StoreResetAsyncFn
-	trigger: StoreTriggerFn
 }

@@ -7,7 +7,6 @@ import type {
 	StoreSetAsyncFn,
 	StoreSetFn,
 	StoreSubscribeFn,
-	StoreTriggerFn,
 	StoreUpdateAsyncFn,
 	StoreUpdateFn,
 } from './models'
@@ -43,9 +42,9 @@ export const newStore = <
 		const next = state.normalize(value)
 		try {
 			await Promise.resolve(ctx.set(db, next))
-			ctx.log.debug('store persisted')
+			ctx.log.debug('persist state on %s', db.type)
 		} catch (err) {
-			ctx.log.warn('failed to persist store', err)
+			ctx.log.warn('failed to persist state on %s:', db.type, err)
 		}
 		return _set(next)
 	}
@@ -58,14 +57,14 @@ export const newStore = <
 		return new Promise((res, rej) => {
 			_update((current) => {
 				const next = state.normalize(updater(current))
-				if (next !== current) {
+				if (!state.equal(next, current)) {
 					Promise.resolve(ctx.set(db, next))
 						.then(() => {
-							ctx.log.debug('store persisted')
+							ctx.log.debug('persist state on %s', db.type)
 							res()
 						})
 						.catch((err) => {
-							ctx.log.warn('failed to persist store', err)
+							ctx.log.warn('failed to persist state on %s:', db.type, err)
 							rej(err)
 						})
 				}
@@ -88,10 +87,6 @@ export const newStore = <
 		resetAsync()
 	}
 
-	const trigger: StoreTriggerFn = (act, value) => {
-		ctx.trg(db, act, value)
-	}
-
 	// Load initial value from database
 	if (db.available()) {
 		Promise.resolve(ctx.get(db)).then((val) => {
@@ -110,6 +105,5 @@ export const newStore = <
 		updateAsync,
 		reset,
 		resetAsync,
-		trigger,
 	}
 }
