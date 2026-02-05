@@ -2,6 +2,8 @@ import type { State } from './models'
 import type { AnyRecord, DeepPartial } from '$utils/types'
 import { mergeState } from './utils'
 
+const defaultEqual = <S>(a: S, b: S) => a === b
+
 const defaultUpdate = <S>(s: S) => s
 
 const defaultMerge = <S>(s: S, p: Partial<S>) =>
@@ -13,6 +15,7 @@ const defaultNormalize = <S>(p: S | Partial<S>) =>
 export const newState = <S>(empty: S, state: Partial<State<S>>): State<S> => {
 	return {
 		empty,
+		equal: state.equal ?? defaultEqual,
 		update: state.update ?? defaultUpdate,
 		merge: state.merge ?? defaultMerge,
 		normalize: state.normalize ?? defaultNormalize,
