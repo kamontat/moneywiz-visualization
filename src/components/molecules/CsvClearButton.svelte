@@ -8,7 +8,7 @@
 	import TrashIcon from '@iconify-svelte/lucide/trash-2'
 
 	import Button from '$components/atoms/Button.svelte'
-	// import { csvStore } from '$lib/csv'
+	import { csvAPIs, csvStore } from '$lib/csv'
 	// import { trxStore } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
@@ -30,7 +30,7 @@
 	const onclick: MouseEventHandler<HTMLButtonElement> = async (event) => {
 		loading = true
 		try {
-			// await csvStore.reset()
+			await csvAPIs.reset()
 			// await trxStore.reset()
 			onsuccess?.()
 			// filterStore.reset()
@@ -44,7 +44,7 @@
 	}
 </script>
 
-<!-- {#if $trxStore.fileName} -->
+{#if $csvStore}
 <Button
 	variant="danger"
 	aria-label="Clear loaded CSV"
@@ -60,4 +60,4 @@
 
 	<span class="hidden sm:inline">Clear</span>
 </Button>
-<!-- {/if} -->
+{/if}

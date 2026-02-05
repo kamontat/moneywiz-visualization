@@ -10,7 +10,7 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
-	// import { csvStore, parseCsvFile } from '$lib/csv'
+	import { csvAPIs } from '$lib/csv'
 	import { component } from '$lib/loggers'
 	// import { trxStore, parseTransactions } from '$lib/transactions'
 
@@ -46,6 +46,7 @@
 
 		log.info('file selected: %s', file.name)
 		try {
+			await csvAPIs.parse(file)
 			// const csv = await parseCsvFile(file)
 			// const transactions = parseTransactions(csv)
 
