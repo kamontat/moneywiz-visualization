@@ -3,7 +3,7 @@ import { store } from '$lib/loggers'
 import {
 	newStore,
 	indexDBV1,
-	STORE_STATE_TRX_KEY_V1,
+	STATE_TRX_V1,
 	type StateNormal,
 } from '$utils/stores'
 
@@ -27,7 +27,7 @@ export const initTrxStore = () => {
 	return newStore(indexDBV1, empty, {
 		normalize,
 		getVal: async (db) => {
-			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1)
+			const trx = await db.transaction(STATE_TRX_V1)
 			const fileName = await trx.store.get('fileName')
 			// TODO: Fix getAll also include the key 'fileName'
 			const data = (await trx.store.getAll()).filter(
@@ -38,7 +38,7 @@ export const initTrxStore = () => {
 			return { fileName, data } as TrxState
 		},
 		setVal: async (db, state) => {
-			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1, 'readwrite')
+			const trx = await db.transaction(STATE_TRX_V1, 'readwrite')
 			await Promise.all([
 				trx.store.put(state.fileName, 'fileName'),
 				...state.data.map((item, index) =>
@@ -48,7 +48,7 @@ export const initTrxStore = () => {
 			])
 		},
 		delVal: async (db) => {
-			const trx = await db.transaction(STORE_STATE_TRX_KEY_V1, 'readwrite')
+			const trx = await db.transaction(STATE_TRX_V1, 'readwrite')
 			await Promise.all([trx.store.clear(), trx.done])
 		},
 		log,
