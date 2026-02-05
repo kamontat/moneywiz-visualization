@@ -9,9 +9,14 @@ export const initThemeStore = (state: State<ThemeState>) => {
 
 	const store = newStore(db, state, {
 		get: (db) => db.get(STORE_STATE_THM_KEY_V1, 'default'),
-		set: (db, state) => db.set(STORE_STATE_THM_KEY_V1, 'default', state),
-		del: (db) => db.delete(STORE_STATE_THM_KEY_V1, 'default'),
-		trg: (db, act, v) => db.trigger(act, STORE_STATE_THM_KEY_V1, 'default', v),
+		set: (db, state) => {
+			db.set(STORE_STATE_THM_KEY_V1, 'default', state)
+			db.trigger('set', STORE_STATE_THM_KEY_V1, 'default', state.theme.name)
+		},
+		del: (db) => {
+			db.delete(STORE_STATE_THM_KEY_V1, 'default')
+			db.trigger('delete', STORE_STATE_THM_KEY_V1, 'default', '')
+		},
 		log,
 	})
 

@@ -39,5 +39,6 @@ export const initThemeState = () => {
 	})
 	return newState(empty, {
 		normalize,
+		equal: (a, b) => a.theme === b.theme,
 	})
 }
