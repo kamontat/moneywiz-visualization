@@ -1,42 +1,27 @@
-import { store } from '$lib/loggers'
-import {
-	newStore,
-	STORE_STATE_CSV_KEY_V1,
-	indexDBV1,
-	type SchemaState,
-	type StateNormal,
-	type StoreSchema,
-} from '$utils/stores'
+import type { CsvState } from './state'
+import type { State } from '$utils/states/models'
+import { csv } from '$lib/loggers'
+import { localDBV1, newStore, STATE_CSV_V1 } from '$utils/stores'
 
-type CsvState = SchemaState<
-	StoreSchema,
-	'v1:app-db',
-	typeof STORE_STATE_CSV_KEY_V1,
-	'default'
->
+export const initCsvStore = (state: State<CsvState>) => {
+	const db = localDBV1
+	const log = csv.extends('store')
 
-export const initCsvStore = () => {
-	const log = store.extends('csv')
-	const empty: CsvState = {
-		fileName: null,
-		headers: [],
-		rows: [],
-	}
-
-	const normalize: StateNormal<CsvState> = (state) => {
-		return {
-			fileName: state?.fileName ?? null,
-			headers: state?.headers ?? [],
-			rows: state?.rows ?? [],
-		}
-	}
-
-	return newStore(indexDBV1, empty, {
-		normalize,
-		getVal: (db) => db.get(STORE_STATE_CSV_KEY_V1, 'default'),
-		setVal: async (db, state) =>
-			db.set(STORE_STATE_CSV_KEY_V1, 'default', state),
-		delVal: (db) => db.remove(STORE_STATE_CSV_KEY_V1, 'default'),
+	return newStore(db, state, {
+		get: (db) => db.get(STATE_CSV_V1, 'default'),
+		set: (db, state) => {
+			db.set(STATE_CSV_V1, 'default', state)
+			db.trigger(
+				'set',
+				STATE_CSV_V1,
+				'default',
+				state ? (state.fileName ?? '') : ''
+			)
+		},
+		del: (db) => {
+			db.delete(STATE_CSV_V1, 'default')
+			db.trigger('delete', STATE_CSV_V1, 'default', '')
+		},
 		log,
 	})
 }

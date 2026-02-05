@@ -1,4 +1,4 @@
-import type { ParsedCsv, ParsedCsvRow } from './model'
+import type { ParsedCsv, ParsedCsvRow } from './models'
 import papaparse from 'papaparse'
 
 import { CsvParseError } from './errors'
@@ -16,14 +16,12 @@ export const parseCsvFile = async (file: File): Promise<ParsedCsv> => {
 		throw new CsvParseError('File is empty')
 	}
 
+	// TODO: support large files via streaming
 	const text = await file.text()
-	return parseCsv(text, file.name)
+	return parseCsv(text)
 }
 
-export const parseCsv = (
-	text: string,
-	fileName: string | null = null
-): ParsedCsv => {
+export const parseCsv = (text: string): ParsedCsv => {
 	log.debug('starting to parse CSV text: %d characters', text.length)
 
 	const rawLines = text.replace(/^\uFEFF/, '').split(/\r?\n/)
@@ -80,5 +78,5 @@ export const parseCsv = (
 	})
 
 	log.debug('parsed %d headers, %d rows', headers.length, rows.length)
-	return { fileName, headers, rows }
+	return { headers, rows }
 }

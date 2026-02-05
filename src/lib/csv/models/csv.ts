@@ -3,7 +3,6 @@ export interface ParsedCsvRow {
 }
 
 export interface ParsedCsv {
-	fileName: string | null
 	headers: string[]
 	rows: ParsedCsvRow[]
 }
