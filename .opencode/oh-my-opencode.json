@@ -23,11 +23,11 @@
 			"model": "github-copilot/gemini-3-flash"
 		},
 		"prometheus": {
-			"model": "github-copilot/claude-opus-4.5",
+			"model": "github-copilot/claude-sonnet-4.5",
 			"variant": "max"
 		},
 		"metis": {
-			"model": "github-copilot/claude-opus-4.5",
+			"model": "github-copilot/gemini-3-pro-preview",
 			"variant": "max"
 		},
 		"momus": {
@@ -66,6 +66,9 @@
 		"writing": {
 			"model": "github-copilot/gemini-3-flash"
 		}
+	},
+	"skills": {
+		"sources": [{ "path": ".agents/skills", "recursive": true }]
 	},
 	"experimental": {
 		"truncate_all_tool_outputs": true
