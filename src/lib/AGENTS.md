@@ -79,6 +79,33 @@ export const byX: TransformByFunc<Args, Output> = (
 - Don't access IndexedDB directly (use store APIs from `csv/apis.ts`)
 - Don't put UI-specific code in transforms/filters
 
+## MONEYWIZ CSV FORMAT
+
+MoneyWiz CSV exports have a specific structure with account header rows that must be skipped during import.
+
+### CSV Structure
+
+```csv
+sep=,
+"Name","Current balance","Account","Transfers","Description","Payee","Category","Date","Time","Memo","Amount","Currency","Check #","Tags","Balance"
+"Cash wallet [THB] (W)","1,380.00","THB","","","","","","","","","","","",""   ← Account header (skip)
+"","","Cash wallet [THB] (W)","","Description","Payee","Category","21/12/2025","20:33","","-310.00","THB","","","1,380.00"   ← Transaction row
+```
+
+### Account Header Rows
+
+- Have `Name` column filled (account name)
+- Have `Date` column empty
+- These are balance summary rows, NOT transactions
+- Use `isAccountHeaderRow()` from `transactions/csv.ts` to detect and skip
+
+### Transaction Rows
+
+- Have `Name` column empty
+- Have `Date` column filled
+- `Account` column contains the account name
+- `Transfers` column non-empty indicates a transfer transaction
+
 ## NOTES
 
 - `lib/components/` contains TypeScript utilities for component styling, NOT Svelte components

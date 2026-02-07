@@ -13,6 +13,14 @@
 
 ## 1. Data Parsing
 
+### Initial Balance Records
+
+MoneyWiz CSV exports include **initial balance records** for each account. These rows only contain the account name, current balance, and currency — all other fields are empty. These must be skipped during import as they are not transactions.
+
+Example: `"Cash wallet [THB] (W)","1,380.00","THB","","","","","","","","","","","",""`
+
+### Field Formats
+
 | Field    | Format                             | Notes                                |
 | -------- | ---------------------------------- | ------------------------------------ |
 | Date     | `DD/MM/YYYY`                       | Parsed to JS Date object             |

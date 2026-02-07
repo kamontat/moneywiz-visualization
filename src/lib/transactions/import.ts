@@ -8,7 +8,7 @@ import type {
 import type { ParsedCsvRow } from '$lib/csv/models'
 import papaparse from 'papaparse'
 
-import { CsvKey, getValue } from './csv'
+import { CsvKey, getValue, isAccountHeaderRow } from './csv'
 import {
 	parseAccount,
 	parseAmount,
@@ -183,6 +183,12 @@ export const importTransactionsFromFile = async (
 
 	for (let i = 0; i < allRows.length; i++) {
 		const row = allRows[i]
+
+		if (isAccountHeaderRow(row)) {
+			log.debug('skipping account header row: %o', row)
+			continue
+		}
+
 		const trx = parseRowToTransaction(row)
 		batch.push(trx)
 
