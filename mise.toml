@@ -5,6 +5,7 @@ bun                      = "1.3.6"
 "npm:@google/gemini-cli" = "0.25.2"
 "npm:@openai/codex"      = "0.91.0"
 "npm:ctx7"               = "0.1.4"
+opencode                 = "1.1.51"
 
 [env]
 DO_NOT_TRACK = "1"
