@@ -86,6 +86,10 @@
 	class="sr-only"
 	accept=".csv,text/csv"
 	{onchange}
+	onclick={(e) => {
+		// Reset input value so re-selecting the same file triggers onchange
+		e.currentTarget.value = ''
+	}}
 	bind:this={fileInput}
 	disabled={loading}
 />
