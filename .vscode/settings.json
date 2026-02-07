@@ -4,6 +4,7 @@
 	"chat.agent.thinking.collapsedTools": "off",
 	"chat.useAgentSkills": true,
 	"chat.agentSkillsLocations": {
+		".agents/skills": true,
 		".github/skills": true,
 		"~/.github/skills": true
 	},
@@ -30,11 +31,18 @@
 	"editor.formatOnSave": true,
 	"editor.formatOnType": false,
 	"editor.formatOnPaste": false,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit"
 	},
 	"eslint.validate": ["javascript", "typescript", "svelte"],
 	"bun.test.customScript": "bun run test:unit",
-	"color-highlight.markRuler": false
+	"color-highlight.markRuler": false,
+	"[toml]": {
+		"editor.defaultFormatter": "tamasfe.even-better-toml"
+	},
+	"json.schemaDownload.trustedDomains": {
+		"https://www.schemastore.org/": true,
+		"https://json-schema.org/": true,
+		"https://opencode.ai/config.json": true
+	}
 }
