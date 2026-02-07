@@ -1,6 +1,4 @@
-import type { TransformBy, TransformByFunc } from './models'
-
-export type AggregatedTag = Record<string, string[]>
+import type { AggregatedTag, TransformBy, TransformByFunc } from './models'
 
 export const byAggregatedTag: TransformByFunc<[], AggregatedTag> = () => {
 	const by: TransformBy<AggregatedTag> = (trx) => {

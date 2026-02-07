@@ -1,17 +1,5 @@
-import type { TransformBy } from './models'
-import type { ParsedTransactionType } from '$lib/transactions'
-
-export type CategoryTotalChildren = Record<string, number>
-
-export interface CategoryTotalParent {
-	total: number
-	children: CategoryTotalChildren
-}
-
-export interface CategoryTotal {
-	total: number
-	parents: Record<string, CategoryTotalParent>
-}
+import type { CategoryTotal, TransformBy } from './models'
+import type { ParsedTransactionType } from '$lib/transactions/models'
 
 export const byCategoryTotal: TransformBy<
 	Record<ParsedTransactionType, CategoryTotal>

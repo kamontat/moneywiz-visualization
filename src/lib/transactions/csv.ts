@@ -1,4 +1,4 @@
-import type { ParsedCsvRow } from '$lib/csv'
+import type { ParsedCsvRow } from '$lib/csv/models'
 import { transaction } from '$lib/loggers'
 
 export enum CsvKey {

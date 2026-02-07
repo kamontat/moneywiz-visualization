@@ -1,24 +1,15 @@
-import type { TransformBy, TransformByFunc } from './models'
-import type { ParsedTransaction } from '$lib/transactions'
+import type {
+	TimeSeries,
+	TimeSeriesMode,
+	TimeSeriesPoint,
+	TransformBy,
+	TransformByFunc,
+} from './models'
+import type { ParsedTransaction } from '$lib/transactions/models'
 import { bySummarize } from './bySummarize'
 import { transform } from './transform'
 
 import { formatDate } from '$lib/formatters/date'
-
-export interface TimeSeriesPoint {
-	date: Date
-	income: number
-	expense: number
-	net: number
-	label: string
-}
-
-export type TimeSeriesMode = 'Daily' | 'Monthly'
-
-export interface TimeSeries {
-	mode: TimeSeriesMode
-	points: TimeSeriesPoint[]
-}
 
 export const byTimeSeries: TransformByFunc<
 	[Date | null, Date | null],

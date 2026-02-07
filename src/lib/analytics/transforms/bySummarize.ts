@@ -1,18 +1,4 @@
-import type { TransformBy, TransformByFunc } from './models'
-
-export interface SummarizeDateRange {
-	start: Date
-	end: Date
-}
-
-export interface Summarize {
-	totalIncome: number
-	totalExpenses: number
-	netTotal: number
-	transactionCount: number
-	savingRate: number
-	dateRange: SummarizeDateRange
-}
+import type { Summarize, TransformBy, TransformByFunc } from './models'
 
 export const bySummarize: TransformByFunc<[], Summarize> = () => {
 	const by: TransformBy<Summarize> = (trx) => {

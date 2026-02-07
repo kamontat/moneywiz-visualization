@@ -1,18 +1,11 @@
-import type { FilterBy, FilterByFunc } from './models'
-
-export type FilterTagMode = 'include' | 'exclude'
-
-export interface FilterTags {
-	category: string
-	values: string[]
-	mode: FilterTagMode
-}
+import type { FilterBy, FilterByFunc, FilterTags } from './models'
+import type { ParsedTag } from '$lib/transactions/models'
 
 export const byTags: FilterByFunc<FilterTags[]> = (...tags) => {
 	const by: FilterBy = (trx) => {
 		return tags.every((tagFilter) => {
 			const hasTag = trx.tags.some(
-				(t) =>
+				(t: ParsedTag) =>
 					t.category === tagFilter.category && tagFilter.values.includes(t.name)
 			)
 

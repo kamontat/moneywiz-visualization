@@ -1,6 +1,6 @@
 import type { FilterByFunc, FilterBy } from './models'
-import type { ParsedTransaction } from '$lib/transactions'
-import { analytics } from '$lib/loggers/constants'
+import type { ParsedTransaction } from '$lib/transactions/models'
+import { analytic } from '$lib/loggers/constants'
 
 export const byAND: FilterByFunc<FilterBy[]> = (...bys): FilterBy => {
 	const by: FilterBy = (trx) => {
@@ -29,7 +29,7 @@ export const byNOT: FilterByFunc<[FilterBy]> = (by): FilterBy => {
 }
 
 export const filter = (trx: ParsedTransaction[], ...bys: FilterBy[]) => {
-	const log = analytics.extends('filter')
+	const log = analytic.extends('filter')
 	log.debug(
 		`starting filter with ${bys.length} criteria on ${trx.length} transactions`
 	)

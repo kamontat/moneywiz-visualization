@@ -2,10 +2,10 @@ import type {
 	ParsedBaseTransaction,
 	ParsedExpenseTransaction,
 	ParsedIncomeTransaction,
-	ParsedTransactions,
+	ParsedTransaction,
 	ParsedTransferTransaction,
 } from './models'
-import type { ParsedCsv } from '$lib/csv'
+import type { ParsedCsv, ParsedCsvRow } from '$lib/csv/models'
 import { CsvKey, getValue } from './csv'
 import {
 	parseAccount,
@@ -22,16 +22,16 @@ const log = transaction.extends('parser')
 
 export const parseTransactionsFile = async (
 	file: File
-): Promise<ParsedTransactions> => {
+): Promise<ParsedTransaction[]> => {
 	log.debug('parsing transactions from file: %s', file.name)
 	const csv = await parseCsvFile(file)
 	return parseTransactions(csv)
 }
 
-export const parseTransactions = (csv: ParsedCsv): ParsedTransactions => {
+export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 	log.debug('parsing %d rows from CSV', csv.rows.length)
 
-	const data = csv.rows.map((row) => {
+	const data = csv.rows.map((row: ParsedCsvRow) => {
 		const account = parseAccount(getValue(row, CsvKey.Account))
 		const amount = parseAmount(
 			getValue(row, CsvKey.Amount),
@@ -89,5 +89,5 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransactions => {
 		} as ParsedIncomeTransaction
 	})
 
-	return { fileName: csv.fileName, data }
+	return data
 }

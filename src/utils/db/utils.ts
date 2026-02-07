@@ -1,7 +1,6 @@
 import type {
 	AnyChangedData,
 	AnySchemaTable,
-	ChangedData,
 	DatabaseRaw,
 	DBFullName,
 	DBName,

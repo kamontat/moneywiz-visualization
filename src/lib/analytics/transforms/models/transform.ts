@@ -1,4 +1,4 @@
-import type { ParsedTransaction } from '$lib/transactions'
+import type { ParsedTransaction } from '$lib/transactions/models'
 
 export type TransformBy<O> = {
 	type: string;

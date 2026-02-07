@@ -1,4 +1,4 @@
-import type { ParsedAmount } from '$lib/transactions'
+import type { ParsedAmount } from '$lib/transactions/models'
 
 export const formatAmount = (amount: ParsedAmount): string => {
 	return new Intl.NumberFormat(amount.locale ?? 'th-TH', {
