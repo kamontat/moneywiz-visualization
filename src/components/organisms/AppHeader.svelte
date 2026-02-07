@@ -14,6 +14,7 @@
 		text: string
 	}
 	let messages = $state<Message[]>([])
+	let uploading = $state(false)
 	const log = component.extends('AppHeader')
 
 	const onClearSuccess = () => {
@@ -32,12 +33,15 @@
 			text: `CSV clear failed: ${err.message}`,
 		})
 	}
-	const onUploadSuccess = () => {
+	const onUploadLoading = (loading: boolean) => {
+		uploading = loading
+	}
+	const onUploadSuccess = (count: number) => {
 		const len = messages.length
 		messages.unshift({
 			id: `U${len + 1}`,
 			variant: 'success',
-			text: 'CSV data uploaded successfully',
+			text: `Imported ${count.toLocaleString()} transactions successfully`,
 		})
 	}
 	const onUploadError = (err: Error) => {
@@ -58,8 +62,16 @@
 <Header>
 	<NameHeader />
 	<Container class="items-stretch gap-x-2">
-		<CsvClearButton onsuccess={onClearSuccess} onfail={onClearError} />
-		<CsvUploadButton onsuccess={onUploadSuccess} onfail={onUploadError} />
+		<CsvClearButton
+			{uploading}
+			onsuccess={onClearSuccess}
+			onfail={onClearError}
+		/>
+		<CsvUploadButton
+			onsuccess={onUploadSuccess}
+			onfail={onUploadError}
+			onloadingchange={onUploadLoading}
+		/>
 		<ThemeSelect />
 	</Container>
 </Header>

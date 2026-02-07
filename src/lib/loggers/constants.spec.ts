@@ -18,13 +18,30 @@ vi.mock('debug', () => {
 
 describe('Logger Constants', () => {
 	it('should export defined loggers', () => {
-		const libLoggers = ['csv', 'transaction', 'localStorage', 'store']
-		const rootLoggers = ['component', 'page']
+		// Test that core library loggers are under 'moneywiz:libs:*'
+		const libsLoggers = [
+			'csv',
+			'transaction',
+			'analytic',
+			'component',
+			'formatter',
+			'theme',
+		]
+		// Test utils loggers under 'moneywiz:utils:*'
+		const utilsLoggers = ['db', 'store']
+		// Test root-level loggers
+		const rootLoggers = ['libs', 'utils', 'components', 'pages']
 
-		libLoggers.forEach((key) => {
+		libsLoggers.forEach((key) => {
 			const logger = (constants as any)[key]
 			expect(logger).toBeInstanceOf(Log)
-			expect((logger as any)._log.namespace).toBe(`moneywiz:lib:${key}`)
+			expect((logger as any)._log.namespace).toBe(`moneywiz:libs:${key}`)
+		})
+
+		utilsLoggers.forEach((key) => {
+			const logger = (constants as any)[key]
+			expect(logger).toBeInstanceOf(Log)
+			expect((logger as any)._log.namespace).toBe(`moneywiz:utils:${key}`)
 		})
 
 		rootLoggers.forEach((key) => {

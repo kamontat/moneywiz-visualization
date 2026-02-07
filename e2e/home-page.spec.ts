@@ -7,18 +7,16 @@ test.describe('Home Page', () => {
 		await page.goto('/')
 	})
 
-	test('renders a blank canvas initially', async ({ page }) => {
-		const canvas = page.locator('.blank-canvas').first()
-		await expect(canvas).toBeVisible()
-
-		const dashboardHeading = page.locator('h1#dash-title')
-		await expect(dashboardHeading).not.toBeVisible()
+	test('renders empty state initially', async ({ page }) => {
+		await expect(page.getByText('No transactions loaded')).toBeVisible()
+		await expect(
+			page.getByText('Upload a MoneyWiz CSV file to get started')
+		).toBeVisible()
 	})
 
-	test('renders dashboard after uploading csv', async ({ page }) => {
+	test('renders transaction table after uploading csv', async ({ page }) => {
 		const csvContent = generateCsv([defaultRecord])
 
-		// Use consistent upload method
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
 		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible()
@@ -29,9 +27,11 @@ test.describe('Home Page', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		// Check for dashboard
-		await expect(page.locator('h1#dash-title')).toBeVisible()
-		// The welcome message should be gone
-		await expect(page.getByText('Welcome to MoneyWiz Report')).not.toBeVisible()
+		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
+			timeout: 10000,
+		})
+		await expect(page.locator('table')).toBeVisible()
+		await expect(page.getByText('Total transactions:')).toBeVisible()
+		await expect(page.getByText('No transactions loaded')).not.toBeVisible()
 	})
 })

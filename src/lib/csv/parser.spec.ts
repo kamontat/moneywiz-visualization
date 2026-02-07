@@ -50,27 +50,16 @@ val1;val2`
 		expect(() => parseCsv('   \n  ')).toThrow(CsvParseError)
 	})
 
-	it('should handle missing values in rows', () => {
-		// Code logic: cells[index] ?? ''
+	it('should throw error when row has missing values', () => {
 		const text = `col1,col2
 val1`
-		const result = parseCsv(text)
-		expect(result.rows[0]).toEqual({
-			col1: 'val1',
-			col2: '',
-		})
+		expect(() => parseCsv(text)).toThrow(CsvParseError)
 	})
 
-	it('should handle extra values in rows', () => {
-		// Code logic: headers.forEach(...) so extra cells are ignored
+	it('should throw error when row has extra values', () => {
 		const text = `col1,col2
 val1,val2,val3`
-		const result = parseCsv(text)
-		expect(result.rows[0]).toEqual({
-			col1: 'val1',
-			col2: 'val2',
-		})
-		expect(Object.keys(result.rows[0])).toEqual(['col1', 'col2'])
+		expect(() => parseCsv(text)).toThrow(CsvParseError)
 	})
 
 	it('should use default delimiter if sep= is empty', () => {
@@ -81,14 +70,14 @@ val1,val2`
 		expect(result.headers).toEqual(['col1', 'col2'])
 	})
 
-	it('should generate default field names for empty headers', () => {
+	it('should preserve empty header names from source', () => {
 		const text = `col1,,col3
 val1,val2,val3`
 		const result = parseCsv(text)
-		expect(result.headers).toEqual(['col1', 'field-2', 'col3'])
+		expect(result.headers).toEqual(['col1', '', 'col3'])
 		expect(result.rows[0]).toEqual({
 			col1: 'val1',
-			'field-2': 'val2',
+			'': 'val2',
 			col3: 'val3',
 		})
 	})

@@ -49,5 +49,4 @@ export type StoreSchema = ISchemaDB<{
 		CsvRawRowTableSchemaV1,
 		TransactionTableSchemaV1,
 	]
-	// 'v2:app-db': [CsvTableSchemaV1, ThemeTableSchemaV1, TransactionTableSchemaV1]
 }>

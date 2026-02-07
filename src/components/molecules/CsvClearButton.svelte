@@ -9,17 +9,19 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import { csvAPIs, csvStore } from '$lib/csv'
-	// import { trxStore } from '$lib/transactions'
+	import { clearTransactions } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
 		ComponentProps<typeof Button> &
 		CustomProps<{
+			uploading?: boolean
 			onsuccess?: () => void
 			onfail?: (err: Error) => void
 		}>
 
 	let {
 		class: className,
+		uploading = false,
 		onsuccess,
 		onfail,
 		onclick: _onclick,
@@ -31,9 +33,8 @@
 		loading = true
 		try {
 			await csvAPIs.reset()
-			// await trxStore.reset()
+			await clearTransactions()
 			onsuccess?.()
-			// filterStore.reset()
 		} catch (error) {
 			onfail?.(error as Error)
 			return
@@ -44,7 +45,7 @@
 	}
 </script>
 
-{#if $csvStore}
+{#if $csvStore && !uploading}
 	<Button
 		variant="danger"
 		aria-label="Clear loaded CSV"

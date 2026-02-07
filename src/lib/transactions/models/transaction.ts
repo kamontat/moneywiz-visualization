@@ -4,6 +4,8 @@ import type { ParsedCategory } from './category'
 import type { ParsedTag } from './tag'
 
 export interface ParsedBaseTransaction {
+	/** Auto-generated ID (assigned by IndexedDB autoIncrement) */
+	id?: number
 	account: ParsedAccount
 	description: string
 	amount: ParsedAmount

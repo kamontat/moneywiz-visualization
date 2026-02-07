@@ -172,3 +172,4 @@ bun run preview          # Preview production build
 - **IndexedDB + localStorage triggers**: Cross-tab sync via storage events
 - **Prerendered**: All routes have `prerender = true`
 - **Thai locale default**: Amount formatting uses `th-TH` locale
+- **Verification workflow**: Always run `bun run fix` then `bun run check` for full validation (format → lint → svelte-check)
