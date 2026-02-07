@@ -32,10 +32,8 @@
 			'%'
 	)
 
-	const netVariant = $derived(summary.netTotal >= 0 ? 'income' : 'expense')
-	const savingsVariant = $derived(
-		summary.savingRate >= 0 ? 'highlight' : 'expense'
-	)
+	const netVariant = 'neutral' // Blue
+	const savingsVariant = 'highlight' // Purple
 </script>
 
 <div
