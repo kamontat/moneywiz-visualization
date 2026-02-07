@@ -1,11 +1,15 @@
 [tools]
-"claude"                 = "2.1.19"
-bun                      = "1.3.6"
-"npm:@github/copilot"    = "0.0.394"
-"npm:@google/gemini-cli" = "0.25.2"
-"npm:@openai/codex"      = "0.91.0"
-"npm:ctx7"               = "0.1.4"
-opencode                 = "1.1.51"
+bun                              = "1.3.8"
+claude                           = "2.1.34"
+"npm:@ast-grep/napi"             = "0.40.5" ## oh-my-opencode optional dependencies
+"npm:@github/copilot"            = "0.0.405"
+"npm:@google/gemini-cli"         = "0.27.3"
+"npm:@openai/codex"              = "0.98.0"
+"npm:typescript-language-server" = "5.1.3" ## oh-my-opencode optional dependencies
+opencode                         = "1.1.53"
+"pipx:pyright"                   = "1.1.408" ## oh-my-opencode optional dependencies
 
 [env]
-DO_NOT_TRACK = "1"
+DO_NOT_TRACK      = "1" ## For openspec
+DISABLE_TELEMETRY = "1" ## For skills.sh
+OPENCODE_CONFIG   = ".claude/opencode.json"
