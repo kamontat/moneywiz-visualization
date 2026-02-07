@@ -32,8 +32,9 @@
 	const onclick: MouseEventHandler<HTMLButtonElement> = async (event) => {
 		loading = true
 		try {
-			await csvAPIs.reset()
+			// Clear transactions first to avoid race condition with csvStore subscribers
 			await clearTransactions()
+			await csvAPIs.reset()
 			onsuccess?.()
 		} catch (error) {
 			onfail?.(error as Error)
