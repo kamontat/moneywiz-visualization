@@ -4,12 +4,26 @@
 
 	type Props = BaseProps &
 		CustomProps<{
-			startDate: string
-			endDate: string
+			startDate?: Date
+			endDate?: Date
 			total: number
 		}>
 
 	let { startDate, endDate, total }: Props = $props()
+
+	const formatDate = (d?: Date) =>
+		d?.toLocaleDateString('th-TH', {
+			day: '2-digit',
+			month: 'short',
+			year: 'numeric',
+		})
 </script>
 
-<Text tag="small">{startDate} - {endDate} | {total} rows total</Text>
+<Text tag="small">
+	{#if startDate && endDate}
+		{formatDate(startDate)} - {formatDate(endDate)}
+	{:else}
+		No date range
+	{/if}
+	| {total} rows total
+</Text>

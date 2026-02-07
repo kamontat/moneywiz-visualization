@@ -1,7 +1,7 @@
+import type { ParsedCsvRow } from '$lib/csv/models'
 import { describe, it, expect } from 'vitest'
 
 import { isAccountHeaderRow, CsvKey } from './csv'
-import type { ParsedCsvRow } from '$lib/csv/models'
 
 describe('isAccountHeaderRow', () => {
 	it('should return true for account header row with Name but no Date', () => {
