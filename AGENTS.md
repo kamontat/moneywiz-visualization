@@ -52,6 +52,39 @@ import { ... } from '$lib/...'     // 3. Internal aliases
 import { ... } from './...'        // 4. Relative
 ```
 
+### Type Import Convention (MANDATORY)
+
+**All types must be imported from `*/models` paths only.**
+
+```typescript
+// ✅ CORRECT - import types from */models
+import type { ParsedTransaction } from '$lib/transactions/models'
+import type { CsvRow } from '$lib/csv/models'
+import type { TransformBy } from './models'
+
+// ❌ WRONG - never import types from package index
+import type { ParsedTransaction } from '$lib/transactions'
+import type { CsvRow } from '$lib/csv'
+```
+
+**Rules:**
+
+1. **Domain `index.ts`** (e.g., `$lib/csv/index.ts`) — export functions only, NO type re-exports
+2. **`models/index.ts`** — CAN use barrel exports to aggregate types within the folder
+3. **Types belong in `models/`** — never define types in implementation files
+
+**Structure:**
+
+```
+src/lib/{domain}/
+├── index.ts              # Functions only, no type exports
+├── models/
+│   ├── index.ts          # Barrel: export * from './foo'
+│   ├── foo.ts            # Type definitions
+│   └── bar.ts            # Type definitions
+└── implementation.ts     # Imports types from './models'
+```
+
 ### Component Props Pattern
 
 ```typescript
