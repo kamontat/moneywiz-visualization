@@ -12,4 +12,4 @@ opencode                         = "1.1.53"
 [env]
 DO_NOT_TRACK      = "1" ## For openspec
 DISABLE_TELEMETRY = "1" ## For skills.sh
-OPENCODE_CONFIG   = ".claude/opencode.json"
+OPENCODE_CONFIG   = ".opencode/config.json"
