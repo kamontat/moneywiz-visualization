@@ -5,6 +5,7 @@
 	type Tab = {
 		id: string
 		label: string
+		icon?: string
 	}
 
 	type Props = BaseProps &
@@ -19,15 +20,20 @@
 
 <div
 	role="tablist"
-	class={mergeClass(['d-tabs', 'd-tabs-lifted'], className)}
+	class={mergeClass(
+		['d-tabs', 'd-tabs-box', 'bg-base-200', 'p-1', 'rounded-box', 'gap-2'],
+		className
+	)}
 	{...rest}
 >
 	{#each tabs as tab (tab.id)}
 		<button
 			role="tab"
 			class={mergeClass(
-				['d-tab'],
-				activeTab === tab.id ? 'd-tab-active' : undefined
+				['d-tab', 'gap-2', 'transition-all', 'duration-200'],
+				activeTab === tab.id
+					? 'd-tab-active rounded-lg bg-base-100 shadow-sm'
+					: 'hover:bg-base-300/50'
 			)}
 			aria-selected={activeTab === tab.id}
 			onclick={() => onchange?.(tab.id)}

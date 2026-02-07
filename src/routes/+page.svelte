@@ -9,7 +9,7 @@
 	import Dashboard from '$components/organisms/Dashboard.svelte'
 	import QuickSummary from '$components/organisms/QuickSummary.svelte'
 	import { bySummarize, transform } from '$lib/analytics/transforms'
-	import { csvStore } from '$lib/csv'
+	import { csvStore, csvUploading } from '$lib/csv'
 	import { getTransactionCount, getTransactions } from '$lib/transactions'
 
 	const LIMIT = 20
@@ -19,6 +19,7 @@
 	let totalCount = $state(0)
 	let fileInfo = $state<CsvState | undefined>(undefined)
 	let summary = $state<Summarize | undefined>(undefined)
+	let uploading = $state(false)
 
 	const loadData = async () => {
 		totalCount = await getTransactionCount()
@@ -38,6 +39,9 @@
 			fileInfo = state
 			loadData()
 		})
+		csvUploading.subscribe((u: boolean) => {
+			uploading = u
+		})
 	})
 </script>
 
@@ -53,5 +57,12 @@
 		<QuickSummary {summary} class="mt-6" />
 	{/if}
 
-	<Dashboard {transactions} {totalCount} limit={LIMIT} class="mt-6" />
+	<Dashboard
+		{transactions}
+		{totalCount}
+		{uploading}
+		limit={LIMIT}
+		hasData={totalCount > 0}
+		class="mt-6 mb-8"
+	/>
 </AppBody>

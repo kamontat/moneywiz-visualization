@@ -11,7 +11,7 @@
 		newVariantClass,
 	} from '$lib/components'
 
-	type Variant = 'plain' | 'primary' | 'secondary' | 'danger'
+	type Variant = 'plain' | 'primary' | 'secondary' | 'danger' | 'ghost'
 	type Props = BaseProps & VariantProps<Variant> & ElementProps<'button'>
 
 	let {
@@ -21,12 +21,13 @@
 		...rest
 	}: Props = $props()
 
-	const baseClass = newBaseClass(['d-btn'])
+	const baseClass = newBaseClass(['d-btn', 'gap-2', 'font-medium'])
 	const variantClass = newVariantClass<Variant>({
 		plain: newTwClass([]),
 		primary: newTwClass(['d-btn-primary']),
 		secondary: newTwClass(['d-btn-secondary']),
 		danger: newTwClass(['d-btn-warning']),
+		ghost: newTwClass(['d-btn-ghost']),
 	})
 </script>
 

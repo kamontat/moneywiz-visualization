@@ -11,7 +11,7 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
-	import { csvAPIs } from '$lib/csv'
+	import { csvAPIs, csvUploading } from '$lib/csv'
 	import { component } from '$lib/loggers'
 	import {
 		importTransactionsFromFile,
@@ -45,6 +45,7 @@
 
 	const onchange: ChangeEventHandler<HTMLInputElement> = async (event) => {
 		loading = true
+		csvUploading.set(true)
 		onloadingchange?.(true)
 		progress = null
 		const target = event.currentTarget
@@ -53,6 +54,7 @@
 		if (!file) {
 			log.info('no file selected')
 			loading = false
+			csvUploading.set(false)
 			onloadingchange?.(false)
 			return
 		}
@@ -75,6 +77,7 @@
 		} finally {
 			_onchange?.(event)
 			loading = false
+			csvUploading.set(false)
 			onloadingchange?.(false)
 			progress = null
 		}

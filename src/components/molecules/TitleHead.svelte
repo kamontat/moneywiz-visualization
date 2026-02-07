@@ -10,4 +10,9 @@
 	let { name }: Props = $props()
 </script>
 
-<Title tag="h1" class="mb-2">{name}</Title>
+<Title
+	tag="h1"
+	class="text-2xl font-bold tracking-tight text-base-content sm:text-3xl"
+>
+	{name}
+</Title>

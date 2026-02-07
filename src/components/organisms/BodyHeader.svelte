@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import Container from '$components/atoms/Container.svelte'
 	import SubtitleHead from '$components/molecules/SubtitleHead.svelte'
 	import TitleHead from '$components/molecules/TitleHead.svelte'
 
@@ -21,7 +20,7 @@
 	}: Props = $props()
 </script>
 
-<Container class="flex-col">
+<div class="flex flex-col gap-2">
 	<TitleHead name={fileName} />
 	<SubtitleHead {startDate} {endDate} total={totalRows} />
-</Container>
+</div>
