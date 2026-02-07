@@ -67,9 +67,6 @@
 			"model": "github-copilot/gemini-3-flash"
 		}
 	},
-	"skills": {
-		"sources": [{ "path": ".agents/skills", "recursive": true }]
-	},
 	"experimental": {
 		"truncate_all_tool_outputs": true
 	}
