@@ -1,0 +1,141 @@
+# PROJECT KNOWLEDGE BASE
+
+**Generated:** 2026-02-07
+**Commit:** 75de207
+**Branch:** main
+
+## OVERVIEW
+
+SvelteKit 2 + Svelte 5 static site for visualizing MoneyWiz CSV exports. Uses Tailwind CSS 4 + DaisyUI 5, IndexedDB persistence, and Chart.js for analytics.
+
+## STRUCTURE
+
+```
+moneywiz-visualization/
+├── src/
+│   ├── routes/           # SvelteKit file-based routing (+page.svelte, +layout.svelte)
+│   ├── components/       # Atomic Design: atoms/molecules/organisms (see AGENTS.md)
+│   ├── lib/              # Domain modules: csv, transactions, analytics, themes (see AGENTS.md)
+│   ├── utils/            # Data layer: db, stores, states, types (see AGENTS.md)
+│   └── css/              # Global styles (Tailwind + DaisyUI config)
+├── e2e/                  # Playwright E2E tests
+├── static/               # Static assets, demo data
+└── .github/workflows/    # GitHub Pages deployment
+```
+
+## WHERE TO LOOK
+
+| Task               | Location                                      | Notes                                                     |
+| ------------------ | --------------------------------------------- | --------------------------------------------------------- |
+| Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load     |
+| Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                      |
+| Add business logic | `src/lib/{domain}/`                           | csv, transactions, analytics, themes, formatters, loggers |
+| Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                         |
+| Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                         |
+| Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                             |
+
+## CONVENTIONS
+
+### Path Aliases (svelte.config.js)
+
+- `$lib` → `src/lib` (SvelteKit default)
+- `$components` → `src/components`
+- `$utils` → `src/utils`
+- `$css` → `src/css`
+
+### Import Order (ESLint enforced)
+
+```typescript
+import type { ... } from '...'     // 1. Types first
+import { ... } from 'svelte'       // 2. Builtin/external
+import { ... } from '$lib/...'     // 3. Internal aliases
+import { ... } from './...'        // 4. Relative
+```
+
+### Component Props Pattern
+
+```typescript
+type Props = BaseProps & VariantProps<Variant> & ElementProps<'button'>
+let {
+	variant = 'primary',
+	children,
+	class: className,
+	...rest
+}: Props = $props()
+```
+
+### Svelte 5 Runes
+
+- Use `$state()`, `$derived()`, `$effect()`, `$props()`
+- Render children: `{@render children?.()}`
+
+### DaisyUI Classes
+
+- Prefixed with `d-` (e.g., `d-btn`, `d-btn-primary`)
+- Configured in `src/css/global.css`
+
+### Formatting
+
+- Tabs (not spaces)
+- No semicolons
+- Single quotes
+- 80 char line width
+
+## ANTI-PATTERNS
+
+| Pattern                      | Why Forbidden                              |
+| ---------------------------- | ------------------------------------------ |
+| `as any`, `@ts-ignore`       | Type safety; fix the type instead          |
+| Empty `catch(e) {}`          | Always handle or log errors                |
+| Direct localStorage for data | Use `src/utils/stores` with DB abstraction |
+| Editing `.svelte-kit/*`      | Generated; changes overwritten             |
+
+## KNOWN ISSUES (TODOs in code)
+
+| Location                                       | Issue                               |
+| ---------------------------------------------- | ----------------------------------- |
+| `src/lib/csv/parser.ts`                        | TODO: Add streaming for large files |
+| `src/lib/transactions/store.ts`                | TODO: getAll missing fileName key   |
+| `src/lib/analytics/transforms/byTimeSeries.ts` | TODO: Expense sign ambiguity        |
+| `src/css/global.css`                           | FIXME: Waiting on daisyui#4373      |
+
+## COMMANDS
+
+```bash
+# Development
+bun install              # Install deps (uses Bun)
+bun run dev              # Start dev server
+
+# Quality
+bun run check            # Format + lint + svelte-check
+bun run fix              # Auto-fix format + lint
+
+# Testing
+bun run test:unit        # Vitest unit tests
+bun run test:e2e         # Playwright E2E (builds first)
+bun run test             # Both
+
+# Build
+bun run build            # Production build → ./build/
+bun run preview          # Preview production build
+```
+
+## TESTING
+
+- **Unit tests**: Vitest, colocated as `*.spec.ts` next to source
+- **Component tests**: `*.svelte.spec.ts`, run in browser via Playwright provider
+- **E2E tests**: `e2e/*.spec.ts`, Playwright with auto webServer
+- Config split: `vite.config.ts` defines `server` (Node) and `client` (browser) projects
+
+## DEPLOYMENT
+
+- Static site via `@sveltejs/adapter-static`
+- GitHub Actions → GitHub Pages
+- `BASE_PATH` set to repo name for subpath hosting
+
+## NOTES
+
+- **Bun required**: Scripts use `bun run`; npm/pnpm work for individual commands
+- **IndexedDB + localStorage triggers**: Cross-tab sync via storage events
+- **Prerendered**: All routes have `prerender = true`
+- **Thai locale default**: Amount formatting uses `th-TH` locale
