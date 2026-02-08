@@ -31,6 +31,7 @@
 
 	type CategoryOption = {
 		fullName: string
+		displayName: string
 		category: string
 		subcategory: string
 	}
@@ -63,7 +64,6 @@
 	// Track which filter panel is open (null = all closed)
 	let openPanel = $state<string | null>(null)
 	let categoryQuery = $state('')
-	let expandedCategories = $state<string[]>([])
 	let tagQueries = $state<Record<string, string>>({})
 
 	const isActive = $derived(hasActiveFilters(filterState))
@@ -80,61 +80,20 @@
 	}
 
 	const categoryOptions = $derived.by(() => {
-		const options: CategoryOption[] = availableCategories.map((cat) => ({
-			fullName: getCategoryFullName(cat),
-			category: cat.category,
-			subcategory: cat.subcategory,
-		}))
+		const options: CategoryOption[] = availableCategories.map((cat) => {
+			const fullName = getCategoryFullName(cat)
+			return {
+				fullName,
+				displayName: fullName.trim() ? fullName : 'Uncategorized',
+				category: cat.category,
+				subcategory: cat.subcategory,
+			}
+		})
 		const query = categoryQuery.trim().toLowerCase()
 		if (!query) return options
 		return options.filter((option) =>
-			option.fullName.toLowerCase().includes(query)
+			option.displayName.toLowerCase().includes(query)
 		)
-	})
-
-	type CategoryGroup = {
-		category: string
-		subcategories: string[]
-		visibleSubcategories: string[]
-		hasMatch: boolean
-		matchesCategory: boolean
-	}
-
-	const categoryTree = $derived.by(() => {
-		const map = new Map<string, Set<string>>()
-		for (const option of categoryOptions) {
-			if (!map.has(option.category)) {
-				map.set(option.category, new Set())
-			}
-			if (option.subcategory) {
-				map.get(option.category)!.add(option.subcategory)
-			}
-		}
-
-		const query = categoryQuery.trim().toLowerCase()
-		const groups = Array.from(map.entries())
-			.sort((a, b) => a[0].localeCompare(b[0]))
-			.map(([category, subcategories]) => {
-				const subcategoryList = Array.from(subcategories).sort()
-				const matchesCategory = query
-					? category.toLowerCase().includes(query)
-					: true
-				const visibleSubcategories = query
-					? subcategoryList.filter((subcategory) =>
-							subcategory.toLowerCase().includes(query)
-						)
-					: subcategoryList
-				const hasMatch = matchesCategory || visibleSubcategories.length > 0
-				return {
-					category,
-					subcategories: subcategoryList,
-					visibleSubcategories,
-					hasMatch,
-					matchesCategory,
-				}
-			})
-
-		return query ? groups.filter((group) => group.hasMatch) : groups
 	})
 
 	// --- Date helpers ---
@@ -262,28 +221,6 @@
 		onfilterchange?.(filterState)
 	}
 
-	const toggleCategoryGroup = (category: string) => {
-		if (expandedCategories.includes(category)) {
-			expandedCategories = expandedCategories.filter(
-				(item) => item !== category
-			)
-			return
-		}
-		expandedCategories = [...expandedCategories, category]
-	}
-
-	const isCategoryExpanded = (category: string): boolean => {
-		if (categoryQuery.trim()) return true
-		return expandedCategories.includes(category)
-	}
-
-	const getCategoryDisplayName = (
-		category: string,
-		subcategory = ''
-	): string => {
-		return getCategoryFullName({ category, subcategory })
-	}
-
 	const clearCategoryFilter = () => {
 		filterState = {
 			...filterState,
@@ -386,9 +323,7 @@
 		const options = query
 			? tagCategory.tags.filter((tag) => tag.toLowerCase().includes(query))
 			: tagCategory.tags
-		const selected = options.filter((tag) => selectedTags.includes(tag))
-		const unselected = options.filter((tag) => !selectedTags.includes(tag))
-		return [...selected, ...unselected].slice(0, 8)
+		return options.slice(0, 8)
 	}
 
 	const getTagMode = (categoryName: string): FilterTagMode => {
@@ -450,179 +385,40 @@
 </script>
 
 {#snippet categoryPanel()}
-	<div class="flex max-h-[60vh] flex-col gap-3">
-		<div class="sticky top-0 z-10 border-b border-base-200 bg-base-100 pb-2">
-			<label
-				class="d-input-bordered d-input d-input-sm flex items-center gap-2"
-			>
-				<input
-					type="text"
-					class="grow"
-					placeholder="Search categories..."
-					bind:value={categoryQuery}
-				/>
-				<SearchIcon class="size-3 opacity-50" />
-			</label>
-		</div>
-		<div class="flex-1 overflow-y-auto pr-1">
-			{#if categoryTree.length > 0}
-				<div class="flex flex-col gap-1">
-					{#each categoryTree as group (group.category)}
-						<div class="flex flex-col">
-							<div
-								class={mergeClass(
-									[
-										'flex',
-										'items-center',
-										'gap-2',
-										'rounded-lg',
-										'px-2',
-										'py-1.5',
-										'hover:bg-base-200/60',
-										'cursor-pointer',
-									],
-									filterState.categories.includes(
-										getCategoryDisplayName(group.category)
-									)
-										? 'bg-primary/5'
-										: undefined
-								)}
-								role="button"
-								aria-expanded={isCategoryExpanded(group.category)}
-								onclick={() => toggleCategoryGroup(group.category)}
-							>
-								<ChevronDown
-									class={mergeClass(
-										['size-3', 'transition-transform', 'duration-200'],
-										isCategoryExpanded(group.category)
-											? 'rotate-180'
-											: 'opacity-40'
-									)}
-								/>
-								<span class="flex-1 text-sm font-semibold">
-									{group.category}
-								</span>
-								{#if group.subcategories.length > 0}
-									<span class="text-[10px] text-base-content/50">
-										{group.subcategories.length}
-									</span>
-								{/if}
-								<input
-									type="checkbox"
-									class="d-checkbox rounded-md d-checkbox-xs d-checkbox-primary"
-									checked={filterState.categories.includes(
-										getCategoryDisplayName(group.category)
-									)}
-									onclick={(event) => {
-										event.stopPropagation()
-										toggleCategory(getCategoryDisplayName(group.category))
-									}}
-								/>
-							</div>
-
-							{#if isCategoryExpanded(group.category)}
-								<div class="mt-1 flex flex-col gap-1">
-									{#if group.visibleSubcategories.length > 0}
-										{#each group.visibleSubcategories as subcategory (subcategory)}
-											{@const fullName = getCategoryDisplayName(
-												group.category,
-												subcategory
-											)}
-											<label
-												class={mergeClass(
-													[
-														'd-label',
-														'w-full',
-														'items-center',
-														'gap-2',
-														'cursor-pointer',
-														'rounded-lg',
-														'px-2',
-														'py-1',
-														'hover:bg-base-200/60',
-													],
-													filterState.categories.includes(fullName)
-														? 'bg-primary/5'
-														: undefined
-												)}
-											>
-												<span
-													class="d-label-text ml-6 flex-1 text-[12px] text-base-content/80"
-												>
-													{subcategory}
-												</span>
-												<input
-													type="checkbox"
-													class="d-checkbox rounded-md d-checkbox-xs d-checkbox-primary"
-													checked={filterState.categories.includes(fullName)}
-													onclick={() => toggleCategory(fullName)}
-												/>
-											</label>
-										{/each}
-									{:else}
-										<p class="px-2 py-2 text-[11px] text-base-content/50">
-											No subcategories found
-										</p>
-									{/if}
-								</div>
-							{/if}
-						</div>
-					{/each}
-				</div>
+	<div class="flex flex-col gap-2">
+		<label class="d-input-bordered d-input d-input-sm flex items-center gap-2">
+			<input
+				type="text"
+				class="grow"
+				placeholder="Search categories..."
+				bind:value={categoryQuery}
+			/>
+			<SearchIcon class="size-3 opacity-50" />
+		</label>
+		<div
+			class="flex max-h-[50vh] flex-wrap content-start gap-1.5 overflow-y-auto"
+		>
+			{#if categoryOptions.length > 0}
+				{#each categoryOptions as option (option.fullName)}
+					<button
+						type="button"
+						class={mergeClass(
+							tagOptionBase,
+							filterState.categories.includes(option.fullName)
+								? tagOptionIncludeClass
+								: tagOptionInactiveClass
+						)}
+						onclick={() => toggleCategory(option.fullName)}
+					>
+						{option.displayName}
+					</button>
+				{/each}
 			{:else}
-				<p class="px-2 py-3 text-xs text-base-content/60">
-					No categories found
-				</p>
+				<p class="text-xs text-base-content/50">No categories found</p>
 			{/if}
 		</div>
 	</div>
 {/snippet}
-
-<dialog
-	class="d-modal d-modal-bottom lg:hidden"
-	class:d-modal-open={openPanel === 'category'}
->
-	<div class="d-modal-box max-h-[85vh] p-0">
-		<div
-			class="flex items-center justify-between border-b border-base-200/60 px-4 py-3"
-		>
-			<div class="flex items-center gap-2">
-				<FolderIcon class="size-4 text-base-content/70" />
-				<span class="text-sm font-semibold">Category</span>
-				{#if hasCategoryFilter}
-					<span class="d-badge min-h-0 d-badge-xs text-[10px] d-badge-primary">
-						{filterState.categories.length}
-					</span>
-				{/if}
-			</div>
-			<div class="flex items-center gap-2">
-				{#if hasCategoryFilter}
-					<button
-						type="button"
-						class="text-xs text-base-content/60 transition-colors hover:text-base-content"
-						onclick={clearCategoryFilter}
-					>
-						Clear
-					</button>
-				{/if}
-				<button
-					type="button"
-					class="d-btn d-btn-circle d-btn-ghost d-btn-sm"
-					aria-label="Close category filter"
-					onclick={closePanel}
-				>
-					<X class="size-4" />
-				</button>
-			</div>
-		</div>
-		<div class="px-4 py-4">
-			{@render categoryPanel()}
-		</div>
-	</div>
-	<form method="dialog" class="d-modal-backdrop">
-		<button type="button" onclick={closePanel}>close</button>
-	</form>
-</dialog>
 
 <div class={mergeClass(['w-full'], className)} {...rest}>
 	<!-- Horizontal Filter Chips Row -->
@@ -753,8 +549,6 @@
 	{#if openPanel !== null}
 		<div
 			class="mt-1 rounded-lg border border-base-300/60 bg-base-100 p-4 shadow-lg"
-			class:hidden={openPanel === 'category'}
-			class:lg:block={openPanel === 'category'}
 		>
 			<!-- Date Range Panel -->
 			{#if openPanel === 'date'}
@@ -871,22 +665,15 @@
 							</button>
 						{/if}
 					</div>
-					<div class="flex flex-wrap gap-2">
+					<div class="flex flex-wrap gap-1.5">
 						{#each transactionTypes as type (type)}
 							<button
 								type="button"
 								class={mergeClass(
-									[
-										'd-badge',
-										'd-badge-lg',
-										'px-4',
-										'py-2',
-										'cursor-pointer',
-										'transition-all',
-									],
+									tagOptionBase,
 									filterState.transactionTypes.includes(type)
-										? 'd-badge-primary'
-										: 'hover:d-badge-primary/50 d-badge-outline text-base-content/70'
+										? tagOptionIncludeClass
+										: tagOptionInactiveClass
 								)}
 								onclick={() => toggleTransactionType(type)}
 							>
