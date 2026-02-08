@@ -521,7 +521,7 @@
 							</div>
 
 							{#if isCategoryExpanded(group.category)}
-								<div class="mt-1 ml-6 flex flex-col gap-1">
+								<div class="mt-1 flex flex-col gap-1">
 									{#if group.visibleSubcategories.length > 0}
 										{#each group.visibleSubcategories as subcategory (subcategory)}
 											{@const fullName = getCategoryDisplayName(
@@ -532,6 +532,9 @@
 												class={mergeClass(
 													[
 														'd-label',
+														'w-full',
+														'items-center',
+														'gap-2',
 														'cursor-pointer',
 														'rounded-lg',
 														'px-2',
@@ -544,7 +547,7 @@
 												)}
 											>
 												<span
-													class="d-label-text text-[12px] text-base-content/80"
+													class="d-label-text ml-6 flex-1 text-[12px] text-base-content/80"
 												>
 													{subcategory}
 												</span>
