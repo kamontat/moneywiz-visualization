@@ -10,6 +10,8 @@
 	import Select from '$components/atoms/Select.svelte'
 	import { mergeClass } from '$lib/components'
 	import { hasActiveFilters } from '$lib/analytics/filters/models'
+	import ChevronRight from '@iconify-svelte/lucide/chevron-right'
+	import X from '@iconify-svelte/lucide/x'
 
 	type TagCategory = {
 		category: string
@@ -249,105 +251,181 @@
 
 <div
 	class={mergeClass(
-		['rounded-box', 'bg-base-200/50', 'flex', 'flex-col'],
+		[
+			'rounded-box',
+			'bg-base-200/30',
+			'border',
+			'border-base-300/40',
+			'flex',
+			'flex-col',
+			'overflow-hidden',
+		],
 		className
 	)}
 	{...rest}
 >
-	<!-- Collapsible header -->
-	<button
-		type="button"
-		class="flex w-full items-center justify-between rounded-box
-			p-3 transition-colors hover:bg-base-300/30"
+	<!-- Collapsible Header -->
+	<div
+		class="flex w-full cursor-pointer items-center justify-between p-3 transition-colors hover:bg-base-300/30"
 		onclick={() => (collapsed = !collapsed)}
+		role="button"
+		tabindex="0"
+		onkeydown={(e) => e.key === 'Enter' && (collapsed = !collapsed)}
 	>
-		<div class="flex items-center gap-2">
-			<span
-				class="inline-block text-sm text-base-content/70
-					transition-transform {collapsed ? '' : 'rotate-90'}"
-			>
-				&#9654;
-			</span>
-			<span class="text-sm font-semibold text-base-content"> Filters </span>
-			{#if isActive && collapsed}
-				<span class="d-badge d-badge-xs d-badge-primary">
-					{activeFilterCount}
+		<div class="flex items-center gap-3 overflow-hidden">
+			<div class="flex items-center gap-2">
+				<ChevronRight
+					class={mergeClass(
+						[
+							'size-4',
+							'text-base-content/50',
+							'transition-transform',
+							'duration-200',
+						],
+						!collapsed ? 'rotate-90' : undefined
+					)}
+				/>
+				<span
+					class="text-xs font-bold tracking-wider text-base-content/80 uppercase"
+				>
+					Filters
 				</span>
+			</div>
+
+			{#if collapsed && isActive}
+				<div class="flex flex-nowrap items-center gap-2 overflow-hidden">
+					<div class="h-4 w-px bg-base-content/20"></div>
+
+					{#each getDatePresets() as preset}
+						{#if isPresetActive(preset)}
+							<span
+								class="d-badge d-badge-outline d-badge-xs whitespace-nowrap d-badge-neutral"
+							>
+								{preset.label}
+							</span>
+						{/if}
+					{/each}
+					{#if !getDatePresets().some(isPresetActive) && (filterState.dateRange.start || filterState.dateRange.end)}
+						<span
+							class="d-badge d-badge-outline d-badge-xs whitespace-nowrap d-badge-neutral"
+						>
+							Custom Dates
+						</span>
+					{/if}
+
+					{#if filterState.transactionTypes.length > 0}
+						<span
+							class="d-badge d-badge-outline d-badge-xs whitespace-nowrap d-badge-neutral"
+						>
+							{filterState.transactionTypes.length} Types
+						</span>
+					{/if}
+
+					{#each filterState.tags as tag}
+						{#if tag.values.length > 0}
+							<span
+								class="d-badge d-badge-outline d-badge-xs whitespace-nowrap d-badge-neutral"
+							>
+								{tag.category}: {tag.values.length}
+							</span>
+						{/if}
+					{/each}
+				</div>
 			{/if}
 		</div>
+
 		{#if isActive}
 			<Button
 				variant="ghost"
-				class="d-btn-xs"
+				class="text-base-content/60 d-btn-xs hover:text-base-content"
 				onclick={(e) => {
 					e.stopPropagation()
 					clearFilters()
 				}}
 			>
+				<X class="size-3.5" />
 				Clear
 			</Button>
 		{/if}
-	</button>
+	</div>
 
-	<!-- Collapsible content -->
+	<!-- Collapsible Content -->
 	{#if !collapsed}
-		<div class="flex flex-col gap-4 px-4 pb-4">
+		<div class="flex flex-col">
 			<!-- Date Range Section -->
-			<div class="flex flex-col gap-2">
-				<span class="text-xs font-medium text-base-content/70">
+			<div class="flex flex-col gap-3 border-b border-base-300/50 px-4 py-3">
+				<span
+					class="text-xs font-semibold tracking-wider text-base-content/50 uppercase"
+				>
 					Date Range
 				</span>
 
-				<!-- Quick date presets -->
-				<div class="flex flex-wrap gap-1">
-					{#each getDatePresets() as preset (preset.label)}
-						<button
-							type="button"
-							class={mergeClass(
-								['d-badge', 'd-badge-sm', 'cursor-pointer', 'transition-all'],
-								isPresetActive(preset)
-									? 'd-badge-primary'
-									: 'hover:d-badge-primary/50 d-badge-ghost'
-							)}
-							onclick={() => applyDatePreset(preset)}
-						>
-							{preset.label}
-						</button>
-					{/each}
-				</div>
+				<div class="flex flex-wrap items-center gap-3">
+					<!-- Presets -->
+					<div class="flex flex-wrap gap-1">
+						{#each getDatePresets() as preset (preset.label)}
+							<button
+								type="button"
+								class={mergeClass(
+									['d-badge', 'd-badge-sm', 'cursor-pointer', 'transition-all'],
+									isPresetActive(preset)
+										? 'd-badge-primary'
+										: 'hover:d-badge-primary/50 d-badge-ghost'
+								)}
+								onclick={() => applyDatePreset(preset)}
+							>
+								{preset.label}
+							</button>
+						{/each}
+					</div>
 
-				<!-- Custom date inputs -->
-				<div class="flex flex-wrap items-center gap-2">
-					<input
-						id="start-date"
-						type="date"
-						class="d-input-bordered d-input d-input-sm"
-						value={formatDate(filterState.dateRange.start)}
-						onchange={handleStartDateChange}
-					/>
-					<span class="text-xs text-base-content/50">to</span>
-					<input
-						id="end-date"
-						type="date"
-						class="d-input-bordered d-input d-input-sm"
-						value={formatDate(filterState.dateRange.end)}
-						onchange={handleEndDateChange}
-					/>
+					<!-- Separator -->
+					<span class="text-base-content/20">|</span>
+
+					<!-- Inputs -->
+					<div class="flex flex-wrap items-center gap-2">
+						<input
+							id="start-date"
+							type="date"
+							class="d-input-bordered d-input d-input-xs opacity-80 transition-opacity hover:opacity-100 focus:opacity-100"
+							value={formatDate(filterState.dateRange.start)}
+							onchange={handleStartDateChange}
+						/>
+						<span class="text-xs text-base-content/40">to</span>
+						<input
+							id="end-date"
+							type="date"
+							class="d-input-bordered d-input d-input-xs opacity-80 transition-opacity hover:opacity-100 focus:opacity-100"
+							value={formatDate(filterState.dateRange.end)}
+							onchange={handleEndDateChange}
+						/>
+					</div>
 				</div>
 			</div>
 
 			<!-- Transaction Type Section -->
-			<div class="flex flex-col gap-1">
-				<span class="text-xs font-medium text-base-content/70"> Type </span>
-				<div class="flex flex-wrap gap-1">
+			<div class="flex flex-col gap-3 border-b border-base-300/50 px-4 py-3">
+				<span
+					class="text-xs font-semibold tracking-wider text-base-content/50 uppercase"
+				>
+					Transaction Type
+				</span>
+				<div class="flex flex-wrap gap-2">
 					{#each transactionTypes as type (type)}
 						<button
 							type="button"
 							class={mergeClass(
-								['d-badge', 'd-badge-sm', 'cursor-pointer', 'transition-all'],
+								[
+									'd-badge',
+									'd-badge-md',
+									'px-3',
+									'py-1',
+									'cursor-pointer',
+									'transition-all',
+								],
 								filterState.transactionTypes.includes(type)
 									? 'd-badge-primary'
-									: 'hover:d-badge-primary/50 d-badge-ghost'
+									: 'hover:d-badge-primary/50 d-badge-outline text-base-content/70'
 							)}
 							onclick={() => toggleTransactionType(type)}
 						>
@@ -359,41 +437,51 @@
 
 			<!-- Tags Section -->
 			{#if availableTagCategories.length > 0}
-				<div class="flex flex-col gap-3">
-					<span class="text-xs font-medium text-base-content/70"> Tags </span>
-					{#each availableTagCategories as tagCategory (tagCategory.category)}
-						{@const selectedTags = getSelectedTags(tagCategory.category)}
-						{@const tagMode = getTagMode(tagCategory.category)}
-						<div class="flex flex-col gap-1">
-							<div class="flex items-center gap-2">
-								<span class="text-xs text-base-content/60">
-									{tagCategory.category}
-								</span>
-								{#if selectedTags.length > 0}
-									<button
-										type="button"
-										class={mergeClass(
-											[
-												'd-badge',
-												'd-badge-xs',
-												'cursor-pointer',
-												'transition-all',
-												'font-mono',
-											],
-											tagMode === 'include'
-												? 'd-badge-success'
-												: 'd-badge-error'
-										)}
-										title={tagMode === 'include'
-											? 'Including selected tags (click to exclude)'
-											: 'Excluding selected tags (click to include)'}
-										onclick={() => toggleTagMode(tagCategory.category)}
-									>
-										{tagMode === 'include' ? 'include' : 'exclude'}
-									</button>
-								{/if}
-							</div>
-							<div class="flex items-center gap-2">
+				<div class="flex flex-col gap-3 px-4 py-3 pb-4">
+					<span
+						class="text-xs font-semibold tracking-wider text-base-content/50 uppercase"
+					>
+						Tags
+					</span>
+					<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+						{#each availableTagCategories as tagCategory (tagCategory.category)}
+							{@const selectedTags = getSelectedTags(tagCategory.category)}
+							{@const tagMode = getTagMode(tagCategory.category)}
+
+							<div
+								class="flex flex-col gap-3 rounded-lg bg-base-100/80 p-3 ring-1 ring-base-300/30"
+							>
+								<div class="flex items-center justify-between">
+									<span class="text-xs font-medium text-base-content/70">
+										{tagCategory.category}
+									</span>
+									{#if selectedTags.length > 0}
+										<div class="flex items-center gap-2">
+											<span
+												class={mergeClass(
+													[
+														'text-[10px]',
+														'font-bold',
+														'tracking-wide',
+														'uppercase',
+													],
+													tagMode === 'include' ? 'text-success' : 'text-error'
+												)}
+											>
+												{tagMode}
+											</span>
+											<input
+												type="checkbox"
+												class="d-toggle d-toggle-xs"
+												class:d-toggle-success={tagMode === 'include'}
+												class:d-toggle-error={tagMode === 'exclude'}
+												checked={tagMode === 'include'}
+												onclick={() => toggleTagMode(tagCategory.category)}
+											/>
+										</div>
+									{/if}
+								</div>
+
 								<Select
 									values={[
 										'',
@@ -402,40 +490,42 @@
 										),
 									]}
 									value=""
-									class="min-w-32 d-select-sm"
+									class="w-full d-select-sm"
+									placeholder={`Add ${tagCategory.category.toLowerCase()}...`}
 									onchange={(e) => {
 										const select = e.target as HTMLSelectElement
 										handleTagChange(tagCategory.category, select.value)
 										select.value = ''
 									}}
 								/>
+
 								{#if selectedTags.length > 0}
-									<div class="flex flex-wrap gap-1">
+									<div class="flex flex-wrap gap-1.5">
 										{#each selectedTags as tag (tag)}
 											<span
 												class={mergeClass(
-													['d-badge', 'gap-1', 'd-badge-sm'],
+													['d-badge', 'gap-1', 'pr-1', 'pl-2', 'd-badge-sm'],
 													tagMode === 'include'
-														? 'd-badge-info'
-														: 'd-badge-outline d-badge-error'
+														? 'd-badge-info/10 border-info/20 text-info-content'
+														: 'd-badge-error/10 border-error/20 text-error-content line-through opacity-80'
 												)}
 											>
-												{tagMode === 'exclude' ? '!' : ''}{tag}
+												{tag}
 												<button
 													type="button"
-													class="hover:text-error"
+													class="ml-1 rounded-full p-0.5 hover:bg-black/10 hover:text-current"
 													onclick={() =>
 														handleTagChange(tagCategory.category, tag)}
 												>
-													&times;
+													<X class="size-3" />
 												</button>
 											</span>
 										{/each}
 									</div>
 								{/if}
 							</div>
-						</div>
-					{/each}
+						{/each}
+					</div>
 				</div>
 			{/if}
 		</div>
