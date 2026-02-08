@@ -2,6 +2,7 @@
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import { mergeClass, newTwClass } from '$lib/components'
+	import { formatDate } from '$lib/formatters/date'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -57,17 +58,18 @@
 						>
 							Amount
 						</th>
+						<th
+							class="text-xs font-semibold tracking-wider text-base-content/70 uppercase"
+						>
+							Tags
+						</th>
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-base-200">
 					{#each transactions as trx, i (trx.id ?? i)}
 						<tr class="transition-colors duration-150 hover:bg-base-200/30">
 							<td class="py-3 text-sm whitespace-nowrap">
-								{trx.date.toLocaleDateString('th-TH', {
-									day: '2-digit',
-									month: 'short',
-									year: 'numeric',
-								})}
+								{formatDate(trx.date)}
 							</td>
 							<td class="py-3">
 								<span
@@ -115,6 +117,20 @@
 								<span class="ml-1 text-xs text-base-content/50">
 									{trx.amount.currency}
 								</span>
+							</td>
+							<td class="py-3">
+								{#if trx.tags.length > 0}
+									<div class="flex flex-wrap gap-1.5">
+										{#each trx.tags as tag (tag.category + ':' + tag.name)}
+											<span
+												class="inline-flex items-center gap-1 rounded-full border border-base-300 bg-base-200/50 px-2 py-0.5 text-xs text-base-content/80 transition-colors hover:bg-base-200"
+											>
+												<span class="text-primary/60">#</span>
+												{tag.name}
+											</span>
+										{/each}
+									</div>
+								{/if}
 							</td>
 						</tr>
 					{/each}

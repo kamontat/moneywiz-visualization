@@ -103,9 +103,8 @@ describe('parseTag', () => {
 
 	it('should handle trailing semicolon', () => {
 		const result = parseTag('Group: KcNt; ')
-		expect(result).toHaveLength(2)
+		expect(result).toHaveLength(1)
 		expect(result[0]).toEqual({ category: 'Group', name: 'KcNt' })
-		expect(result[1]).toEqual({ category: '', name: '' })
 	})
 
 	it('should return empty array for empty string', () => {

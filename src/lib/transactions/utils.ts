@@ -129,16 +129,24 @@ export const parseTag = (text: string): ParsedTag[] => {
 		}
 	}
 
-	return text.split(';').map((tag) => {
-		const parts = tag.split(/\s*:\s*/, 2)
-		if (parts.length === 2) {
-			return {
-				category: categoryMap(parts[0].trim()),
-				name: parts[1].trim(),
+	return text
+		.split(';')
+		.map((tag) => {
+			const trimmed = tag.trim()
+			if (!trimmed) return null
+
+			const parts = trimmed.split(/\s*:\s*/, 2)
+			if (parts.length === 2) {
+				const name = parts[1].trim()
+				if (!name) return null
+				return {
+					category: categoryMap(parts[0].trim()),
+					name,
+				}
 			}
-		}
-		return { category: '', name: tag.trim() }
-	})
+			return { category: '', name: trimmed }
+		})
+		.filter((tag): tag is ParsedTag => tag !== null)
 }
 
 /**
