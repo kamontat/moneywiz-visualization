@@ -3,6 +3,8 @@
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 	import FileTextIcon from '@iconify-svelte/lucide/file-text'
 
+	import { formatDate } from '$lib/formatters/date'
+
 	type Props = BaseProps &
 		CustomProps<{
 			startDate?: Date
@@ -14,13 +16,6 @@
 	let { startDate, endDate, total, filtered }: Props = $props()
 
 	const hasFilter = $derived(filtered !== undefined && filtered !== total)
-
-	const formatDate = (d?: Date) =>
-		d?.toLocaleDateString('th-TH', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric',
-		})
 </script>
 
 <div class="flex flex-wrap items-center gap-4 text-sm text-base-content/60">
