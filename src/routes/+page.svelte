@@ -99,7 +99,11 @@
 		return undefined
 	})
 
-	const displayTransactions = $derived(filteredTransactions.slice(0, LIMIT))
+	const displayTransactions = $derived(
+		filteredTransactions
+			.toSorted((a, b) => b.date.getTime() - a.date.getTime())
+			.slice(0, LIMIT)
+	)
 	const filteredCount = $derived(filteredTransactions.length)
 </script>
 

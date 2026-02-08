@@ -189,9 +189,8 @@ export const getCategoryFullName = (category: ParsedCategory): string => {
 
 export const isSpecialCategory = (category: ParsedCategory): boolean => {
 	const fullName = getCategoryFullName(category)
-	return Object.values(SPECIAL_CATEGORIES).includes(
-		fullName as (typeof SPECIAL_CATEGORIES)[keyof typeof SPECIAL_CATEGORIES]
-	)
+	const allSpecial = Object.values(SPECIAL_CATEGORIES)
+	return allSpecial.includes(fullName as (typeof allSpecial)[number])
 }
 
 export const isDebtCategory = (category: ParsedCategory): boolean => {

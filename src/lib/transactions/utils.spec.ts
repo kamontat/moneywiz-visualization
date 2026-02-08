@@ -198,9 +198,9 @@ describe('isIncomeCategory', () => {
 		).toBe(false)
 	})
 
-	it('should return false for Payment category', () => {
+	it('should return false for Other Expenses category', () => {
 		expect(
-			isIncomeCategory({ category: 'Payment', subcategory: 'Windfall' })
+			isIncomeCategory({ category: 'Other Expenses', subcategory: 'Debt' })
 		).toBe(false)
 	})
 })
@@ -208,8 +208,8 @@ describe('isIncomeCategory', () => {
 describe('getCategoryFullName', () => {
 	it('should return full name with subcategory', () => {
 		expect(
-			getCategoryFullName({ category: 'Payment', subcategory: 'Debt' })
-		).toBe('Payment > Debt')
+			getCategoryFullName({ category: 'Other Expenses', subcategory: 'Debt' })
+		).toBe('Other Expenses > Debt')
 	})
 
 	it('should return just category when no subcategory', () => {
@@ -220,27 +220,33 @@ describe('getCategoryFullName', () => {
 })
 
 describe('isSpecialCategory', () => {
-	it('should return true for Payment > Debt', () => {
+	it('should return true for Other Expenses > Debt', () => {
 		expect(
-			isSpecialCategory({ category: 'Payment', subcategory: 'Debt' })
+			isSpecialCategory({ category: 'Other Expenses', subcategory: 'Debt' })
 		).toBe(true)
 	})
 
-	it('should return true for Payment > Debt Repayment', () => {
+	it('should return true for Other Incomes > Debt Repayment', () => {
 		expect(
-			isSpecialCategory({ category: 'Payment', subcategory: 'Debt Repayment' })
+			isSpecialCategory({
+				category: 'Other Incomes',
+				subcategory: 'Debt Repayment',
+			})
 		).toBe(true)
 	})
 
-	it('should return true for Payment > Giveaways', () => {
+	it('should return true for Other Expenses > Giveaways', () => {
 		expect(
-			isSpecialCategory({ category: 'Payment', subcategory: 'Giveaways' })
+			isSpecialCategory({
+				category: 'Other Expenses',
+				subcategory: 'Giveaways',
+			})
 		).toBe(true)
 	})
 
-	it('should return true for Payment > Windfall', () => {
+	it('should return true for Other Incomes > Windfall', () => {
 		expect(
-			isSpecialCategory({ category: 'Payment', subcategory: 'Windfall' })
+			isSpecialCategory({ category: 'Other Incomes', subcategory: 'Windfall' })
 		).toBe(true)
 	})
 
@@ -252,86 +258,101 @@ describe('isSpecialCategory', () => {
 })
 
 describe('isDebtCategory', () => {
-	it('should return true for Payment > Debt', () => {
-		expect(isDebtCategory({ category: 'Payment', subcategory: 'Debt' })).toBe(
-			true
-		)
+	it('should return true for Other Expenses > Debt', () => {
+		expect(
+			isDebtCategory({ category: 'Other Expenses', subcategory: 'Debt' })
+		).toBe(true)
 	})
 
-	it('should return false for Payment > Debt Repayment', () => {
+	it('should return false for Other Incomes > Debt Repayment', () => {
 		expect(
-			isDebtCategory({ category: 'Payment', subcategory: 'Debt Repayment' })
+			isDebtCategory({
+				category: 'Other Incomes',
+				subcategory: 'Debt Repayment',
+			})
 		).toBe(false)
 	})
 
 	it('should return false for gift categories', () => {
 		expect(
-			isDebtCategory({ category: 'Payment', subcategory: 'Giveaways' })
+			isDebtCategory({ category: 'Other Expenses', subcategory: 'Giveaways' })
 		).toBe(false)
 	})
 })
 
 describe('isDebtRepaymentCategory', () => {
-	it('should return true for Payment > Debt Repayment', () => {
+	it('should return true for Other Incomes > Debt Repayment', () => {
 		expect(
 			isDebtRepaymentCategory({
-				category: 'Payment',
+				category: 'Other Incomes',
 				subcategory: 'Debt Repayment',
 			})
 		).toBe(true)
 	})
 
-	it('should return false for Payment > Debt', () => {
+	it('should return false for Other Expenses > Debt', () => {
 		expect(
-			isDebtRepaymentCategory({ category: 'Payment', subcategory: 'Debt' })
+			isDebtRepaymentCategory({
+				category: 'Other Expenses',
+				subcategory: 'Debt',
+			})
 		).toBe(false)
 	})
 })
 
 describe('isWindfallCategory', () => {
-	it('should return true for Payment > Windfall', () => {
+	it('should return true for Other Incomes > Windfall', () => {
 		expect(
-			isWindfallCategory({ category: 'Payment', subcategory: 'Windfall' })
+			isWindfallCategory({ category: 'Other Incomes', subcategory: 'Windfall' })
 		).toBe(true)
 	})
 
 	it('should return false for other categories', () => {
 		expect(
-			isWindfallCategory({ category: 'Payment', subcategory: 'Giveaways' })
+			isWindfallCategory({
+				category: 'Other Expenses',
+				subcategory: 'Giveaways',
+			})
 		).toBe(false)
 	})
 })
 
 describe('isGiveawayCategory', () => {
-	it('should return true for Payment > Giveaways', () => {
+	it('should return true for Other Expenses > Giveaways', () => {
 		expect(
-			isGiveawayCategory({ category: 'Payment', subcategory: 'Giveaways' })
+			isGiveawayCategory({
+				category: 'Other Expenses',
+				subcategory: 'Giveaways',
+			})
 		).toBe(true)
 	})
 
 	it('should return false for other categories', () => {
 		expect(
-			isGiveawayCategory({ category: 'Payment', subcategory: 'Windfall' })
+			isGiveawayCategory({
+				category: 'Other Incomes',
+				subcategory: 'Windfall',
+			})
 		).toBe(false)
 	})
 })
 
 describe('isGiftCategory', () => {
-	it('should return true for Payment > Giveaways', () => {
+	it('should return true for Other Expenses > Giveaways', () => {
 		expect(
-			isGiftCategory({ category: 'Payment', subcategory: 'Giveaways' })
+			isGiftCategory({ category: 'Other Expenses', subcategory: 'Giveaways' })
 		).toBe(true)
 	})
 
-	it('should return true for Payment > Windfall', () => {
+	it('should return true for Other Incomes > Windfall', () => {
 		expect(
-			isGiftCategory({ category: 'Payment', subcategory: 'Windfall' })
+			isGiftCategory({ category: 'Other Incomes', subcategory: 'Windfall' })
 		).toBe(true)
 	})
 
 	it('should return false for debt categories', () => {
-		expect(isGiftCategory({ category: 'Payment', subcategory: 'Debt' })).toBe(
-			false
-		)
+		expect(
+			isGiftCategory({ category: 'Other Expenses', subcategory: 'Debt' })
+		).toBe(false)
 	})
 })

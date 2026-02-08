@@ -93,24 +93,24 @@ describe('bySpecialCategory filter', () => {
 	it('should exclude special categories in exclude-all mode', () => {
 		const filter = bySpecialCategory('exclude-all')
 
-		expect(filter(createExpense('Payment', 'Debt'))).toBe(false)
-		expect(filter(createExpense('Payment', 'Giveaways'))).toBe(false)
+		expect(filter(createExpense('Other Expenses', 'Debt'))).toBe(false)
+		expect(filter(createExpense('Other Expenses', 'Giveaways'))).toBe(false)
 		expect(filter(createExpense('Food', 'Restaurant'))).toBe(true)
 	})
 
 	it('should only keep debt in only-debt mode', () => {
 		const filter = bySpecialCategory('only-debt')
 
-		expect(filter(createExpense('Payment', 'Debt'))).toBe(true)
-		expect(filter(createExpense('Payment', 'Debt Repayment'))).toBe(true)
-		expect(filter(createExpense('Payment', 'Giveaways'))).toBe(false)
+		expect(filter(createExpense('Other Expenses', 'Debt'))).toBe(true)
+		expect(filter(createExpense('Other Incomes', 'Debt Repayment'))).toBe(true)
+		expect(filter(createExpense('Other Expenses', 'Giveaways'))).toBe(false)
 	})
 
 	it('should only keep gifts in only-gift mode', () => {
 		const filter = bySpecialCategory('only-gift')
 
-		expect(filter(createExpense('Payment', 'Giveaways'))).toBe(true)
-		expect(filter(createExpense('Payment', 'Windfall'))).toBe(true)
-		expect(filter(createExpense('Payment', 'Debt'))).toBe(false)
+		expect(filter(createExpense('Other Expenses', 'Giveaways'))).toBe(true)
+		expect(filter(createExpense('Other Incomes', 'Windfall'))).toBe(true)
+		expect(filter(createExpense('Other Expenses', 'Debt'))).toBe(false)
 	})
 })

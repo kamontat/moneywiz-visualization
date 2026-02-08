@@ -18,6 +18,9 @@
 		class: className,
 	}: Props = $props()
 
+	const stripNumberPrefix = (name: string): string =>
+		name.replace(/^\d+\s+/, '')
+
 	const baseClass = newTwClass(['w-full'])
 	let finalClass = $derived(mergeClass(baseClass, className))
 </script>
@@ -82,7 +85,7 @@
 									{trx.type}
 								</span>
 							</td>
-							<td class="py-3 text-sm text-base-content/80"
+							<td class="py-3 text-sm whitespace-nowrap text-base-content/80"
 								>{trx.account.name}</td
 							>
 							<td class="max-w-xs truncate py-3 text-sm font-medium">
@@ -126,7 +129,7 @@
 												class="inline-flex items-center gap-1 rounded-full border border-base-300 bg-base-200/50 px-2 py-0.5 text-xs text-base-content/80 transition-colors hover:bg-base-200"
 											>
 												<span class="text-primary/60">#</span>
-												{tag.name}
+												{stripNumberPrefix(tag.name)}
 											</span>
 										{/each}
 									</div>
