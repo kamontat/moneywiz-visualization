@@ -45,14 +45,12 @@
 	bind:value
 	{...rest}
 >
-	{#if value}
-		{#each values as v (v)}
-			<option
-				value={typeof v === 'string' ? v : v.value}
-				selected={value === (typeof v === 'string' ? v : v.value)}
-			>
-				{typeof v === 'string' ? v : v.label}
-			</option>
-		{/each}
-	{/if}
+	{#each values as v (v)}
+		<option
+			value={typeof v === 'string' ? v : v.value}
+			selected={value === (typeof v === 'string' ? v : v.value)}
+		>
+			{typeof v === 'string' ? v : v.label}
+		</option>
+	{/each}
 </select>

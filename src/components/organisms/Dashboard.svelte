@@ -11,6 +11,7 @@
 	type Props = BaseProps &
 		CustomProps<{
 			transactions: ParsedTransaction[]
+			allTransactions?: ParsedTransaction[]
 			totalCount?: number
 			limit?: number
 			hasData?: boolean
@@ -19,6 +20,7 @@
 
 	let {
 		transactions,
+		allTransactions: _allTransactions = [],
 		totalCount = 0,
 		limit = 0,
 		hasData = false,
@@ -28,6 +30,7 @@
 	}: Props = $props()
 
 	let activeTab = $state('transactions')
+
 	const tabs = [
 		{ id: 'transactions', label: '💰 Transactions' },
 		{ id: 'analytics', label: '📊 Analytics' },
@@ -62,7 +65,7 @@
 					{transactions}
 					{totalCount}
 					{limit}
-					title="Recent Transactions"
+					title="Transactions"
 				/>
 			</div>
 		{:else if activeTab === 'analytics'}

@@ -8,9 +8,12 @@
 			startDate?: Date
 			endDate?: Date
 			total: number
+			filtered?: number
 		}>
 
-	let { startDate, endDate, total }: Props = $props()
+	let { startDate, endDate, total, filtered }: Props = $props()
+
+	const hasFilter = $derived(filtered !== undefined && filtered !== total)
 
 	const formatDate = (d?: Date) =>
 		d?.toLocaleDateString('th-TH', {
@@ -31,6 +34,15 @@
 	</span>
 	<span class="flex items-center gap-1.5">
 		<FileTextIcon class="h-4 w-4" />
-		<span class="font-medium text-base-content">{total.toLocaleString()}</span> transactions
+		{#if hasFilter}
+			<span class="font-medium text-base-content"
+				>{filtered?.toLocaleString()}</span
+			>
+			of {total.toLocaleString()} transactions
+		{:else}
+			<span class="font-medium text-base-content">{total.toLocaleString()}</span
+			>
+			transactions
+		{/if}
 	</span>
 </div>

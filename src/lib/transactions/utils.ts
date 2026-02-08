@@ -199,3 +199,31 @@ export const isGiftCategory = (category: ParsedCategory): boolean => {
 		fullName === SPECIAL_CATEGORIES.WINDFALL
 	)
 }
+
+export interface TagCategoryGroup {
+	category: string
+	tags: string[]
+}
+
+export const extractTagCategories = (
+	transactions: { tags: ParsedTag[] }[]
+): TagCategoryGroup[] => {
+	const categoryMap = new Map<string, Set<string>>()
+
+	for (const trx of transactions) {
+		for (const tag of trx.tags) {
+			if (!tag.category || !tag.name) continue
+			if (!categoryMap.has(tag.category)) {
+				categoryMap.set(tag.category, new Set())
+			}
+			categoryMap.get(tag.category)!.add(tag.name)
+		}
+	}
+
+	return Array.from(categoryMap.entries())
+		.map(([category, tags]) => ({
+			category,
+			tags: Array.from(tags).sort(),
+		}))
+		.sort((a, b) => a.category.localeCompare(b.category))
+}

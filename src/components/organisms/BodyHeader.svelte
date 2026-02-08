@@ -9,6 +9,7 @@
 			startDate?: Date
 			endDate?: Date
 			totalRows?: number
+			filteredRows?: number
 		}>
 
 	let {
@@ -16,11 +17,17 @@
 		startDate,
 		endDate,
 		totalRows = 0,
+		filteredRows,
 		class: _className,
 	}: Props = $props()
 </script>
 
 <div class="flex flex-col gap-2">
 	<TitleHead name={fileName} />
-	<SubtitleHead {startDate} {endDate} total={totalRows} />
+	<SubtitleHead
+		{startDate}
+		{endDate}
+		total={totalRows}
+		filtered={filteredRows}
+	/>
 </div>
