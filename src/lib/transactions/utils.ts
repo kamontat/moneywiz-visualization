@@ -99,12 +99,16 @@ export const parseAmount = (
 }
 
 /**
- * parseCategory parses `<category> > <subcategory>` syntax
+ * parseCategory parses `<category> > <subcategory>` or `<category> ► <subcategory>` syntax
+ * MoneyWiz exports use different separators:
+ * - ">" (greater-than) in some exports
+ * - "►" (U+25BA, filled right-pointing triangle) in other exports
  * @param text input raw category text
  * @returns parsed category
  */
 export const parseCategory = (text: string): ParsedCategory => {
-	const parts = text.split(/\s*>\s*/, 2)
+	// Match both ">" and "►" (U+25BA) as category separators
+	const parts = text.split(/\s*[>►]\s*/, 2)
 	if (parts.length === 2) {
 		return { category: parts[0].trim(), subcategory: parts[1].trim() }
 	}

@@ -80,6 +80,18 @@ describe('parseCategory', () => {
 		expect(result.subcategory).toBe('Food')
 	})
 
+	it('should parse parent ► child category (triangle arrow separator)', () => {
+		const result = parseCategory('Compensation ► Salary')
+		expect(result.category).toBe('Compensation')
+		expect(result.subcategory).toBe('Salary')
+	})
+
+	it('should parse category with spaces around ► (triangle arrow)', () => {
+		const result = parseCategory('Food and Beverage ► Food')
+		expect(result.category).toBe('Food and Beverage')
+		expect(result.subcategory).toBe('Food')
+	})
+
 	it('should handle category without subcategory', () => {
 		const result = parseCategory('Utilities')
 		expect(result.category).toBe('Utilities')
