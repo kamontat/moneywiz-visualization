@@ -1,8 +1,10 @@
 export interface TimeSeriesPoint {
 	date: Date
 	income: number
-	expense: number
-	net: number
+	grossExpense: number
+	refund: number
+	netExpense: number
+	remaining: number
 	label: string
 }
 

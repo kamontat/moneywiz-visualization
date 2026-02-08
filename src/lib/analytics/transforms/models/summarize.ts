@@ -5,9 +5,11 @@ export interface SummarizeDateRange {
 
 export interface Summarize {
 	totalIncome: number
-	totalExpenses: number
-	netTotal: number
+	grossExpenses: number
+	totalRefunds: number
+	netExpenses: number
+	netCashFlow: number
+	savingsRate: number
 	transactionCount: number
-	savingRate: number
 	dateRange: SummarizeDateRange
 }

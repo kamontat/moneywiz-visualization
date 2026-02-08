@@ -25,16 +25,36 @@ export const byTimeSeries: TransformByFunc<
 				map.set(key, {
 					date: t.date,
 					income: 0,
-					expense: 0,
-					net: 0,
+					grossExpense: 0,
+					refund: 0,
+					netExpense: 0,
+					remaining: 0,
 					label: getLabel(mode, t.date),
 				})
 			}
 			const entry = map.get(key)!
-			if (t.type === 'Income') entry.income += t.amount.value
-			if (t.type === 'Expense') entry.expense += t.amount.value
-			// TODO: Depends on how expense is stored, if negative value then use +, else use -
-			entry.net = entry.income - Math.abs(entry.expense)
+
+			switch (t.type) {
+				case 'Income':
+					entry.income += t.amount.value
+					break
+				case 'Expense':
+					entry.grossExpense += Math.abs(t.amount.value)
+					break
+				case 'Refund':
+					entry.refund += t.amount.value
+					break
+				case 'CategorizedTransfer':
+					if (t.amount.value > 0) {
+						entry.income += t.amount.value
+					} else {
+						entry.grossExpense += Math.abs(t.amount.value)
+					}
+					break
+			}
+
+			entry.netExpense = entry.grossExpense - entry.refund
+			entry.remaining = entry.income - entry.netExpense
 		}
 
 		const points: TimeSeriesPoint[] = []

@@ -2,5 +2,7 @@ export { transform } from './transform'
 
 export { byAggregatedTag } from './byAggregatedTag'
 export { byCategoryTotal } from './byCategoryTotal'
+export { byCategoryTree } from './byCategoryTree'
 export { bySummarize } from './bySummarize'
+export { byTimeSeries } from './byTimeSeries'
 export { byTopCategoryTotal } from './byTopCategoryTotal'

@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest'
 
 import {
+	getCategoryFullName,
+	isDebtCategory,
+	isGiftCategory,
+	isIncomeCategory,
+	isSpecialCategory,
 	parseAccount,
 	parseAmount,
 	parseCategory,
@@ -133,5 +138,111 @@ describe('parseDate', () => {
 	it('should return epoch date for empty input', () => {
 		const result = parseDate('', '')
 		expect(result.getTime()).toBe(0)
+	})
+})
+
+describe('isIncomeCategory', () => {
+	it('should return true for Compensation category', () => {
+		expect(
+			isIncomeCategory({ category: 'Compensation', subcategory: 'Salary' })
+		).toBe(true)
+	})
+
+	it('should return true for Income category', () => {
+		expect(
+			isIncomeCategory({ category: 'Income', subcategory: 'Interest' })
+		).toBe(true)
+	})
+
+	it('should return false for non-income category', () => {
+		expect(
+			isIncomeCategory({ category: 'Food', subcategory: 'Restaurant' })
+		).toBe(false)
+	})
+})
+
+describe('getCategoryFullName', () => {
+	it('should return full name with subcategory', () => {
+		expect(
+			getCategoryFullName({ category: 'Payment', subcategory: 'Debt' })
+		).toBe('Payment > Debt')
+	})
+
+	it('should return just category when no subcategory', () => {
+		expect(
+			getCategoryFullName({ category: 'Utilities', subcategory: '' })
+		).toBe('Utilities')
+	})
+})
+
+describe('isSpecialCategory', () => {
+	it('should return true for Payment > Debt', () => {
+		expect(
+			isSpecialCategory({ category: 'Payment', subcategory: 'Debt' })
+		).toBe(true)
+	})
+
+	it('should return true for Payment > Debt Repayment', () => {
+		expect(
+			isSpecialCategory({ category: 'Payment', subcategory: 'Debt Repayment' })
+		).toBe(true)
+	})
+
+	it('should return true for Payment > Giveaways', () => {
+		expect(
+			isSpecialCategory({ category: 'Payment', subcategory: 'Giveaways' })
+		).toBe(true)
+	})
+
+	it('should return true for Payment > Windfall', () => {
+		expect(
+			isSpecialCategory({ category: 'Payment', subcategory: 'Windfall' })
+		).toBe(true)
+	})
+
+	it('should return false for regular category', () => {
+		expect(
+			isSpecialCategory({ category: 'Food', subcategory: 'Restaurant' })
+		).toBe(false)
+	})
+})
+
+describe('isDebtCategory', () => {
+	it('should return true for Payment > Debt', () => {
+		expect(isDebtCategory({ category: 'Payment', subcategory: 'Debt' })).toBe(
+			true
+		)
+	})
+
+	it('should return true for Payment > Debt Repayment', () => {
+		expect(
+			isDebtCategory({ category: 'Payment', subcategory: 'Debt Repayment' })
+		).toBe(true)
+	})
+
+	it('should return false for gift categories', () => {
+		expect(
+			isDebtCategory({ category: 'Payment', subcategory: 'Giveaways' })
+		).toBe(false)
+	})
+})
+
+describe('isGiftCategory', () => {
+	it('should return true for Payment > Giveaways', () => {
+		expect(
+			isGiftCategory({ category: 'Payment', subcategory: 'Giveaways' })
+		).toBe(true)
+	})
+
+	it('should return true for Payment > Windfall', () => {
+		expect(
+			isGiftCategory({ category: 'Payment', subcategory: 'Windfall' })
+		).toBe(true)
+	})
+
+	it('should return false for debt categories', () => {
+		expect(isGiftCategory({ category: 'Payment', subcategory: 'Debt' })).toBe(
+			false
+		)
 	})
 })

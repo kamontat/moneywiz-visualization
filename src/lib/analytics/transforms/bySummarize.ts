@@ -3,7 +3,8 @@ import type { Summarize, TransformBy, TransformByFunc } from './models'
 export const bySummarize: TransformByFunc<[], Summarize> = () => {
 	const by: TransformBy<Summarize> = (trx) => {
 		let totalIncome = 0
-		let totalExpenses = 0
+		let grossExpenses = 0
+		let totalRefunds = 0
 		let transactionCount = 0
 		let minDate = new Date(8640000000000000)
 		let maxDate = new Date(-8640000000000000)
@@ -12,23 +13,40 @@ export const bySummarize: TransformByFunc<[], Summarize> = () => {
 			if (t.date < minDate) minDate = t.date
 			if (t.date > maxDate) maxDate = t.date
 
-			if (t.type === 'Income') {
-				totalIncome += t.amount.value
-			} else if (t.type === 'Expense') {
-				totalExpenses += t.amount.value
+			switch (t.type) {
+				case 'Income':
+					totalIncome += t.amount.value
+					break
+				case 'Expense':
+					grossExpenses += Math.abs(t.amount.value)
+					break
+				case 'Refund':
+					totalRefunds += t.amount.value
+					break
+				case 'CategorizedTransfer':
+					if (t.amount.value > 0) {
+						totalIncome += t.amount.value
+					} else {
+						grossExpenses += Math.abs(t.amount.value)
+					}
+					break
 			}
 			transactionCount++
 		}
 
-		const netTotal = totalIncome + totalExpenses
-		const savingRate = totalIncome === 0 ? 0 : (netTotal / totalIncome) * 100
+		const netExpenses = grossExpenses - totalRefunds
+		const netCashFlow = totalIncome - netExpenses
+		const savingsRate =
+			totalIncome === 0 ? 0 : (netCashFlow / totalIncome) * 100
 
 		return {
 			totalIncome,
-			totalExpenses,
-			netTotal,
+			grossExpenses,
+			totalRefunds,
+			netExpenses,
+			netCashFlow,
+			savingsRate,
 			transactionCount,
-			savingRate,
 			dateRange: {
 				start: transactionCount === 0 ? new Date() : minDate,
 				end: transactionCount === 0 ? new Date() : maxDate,

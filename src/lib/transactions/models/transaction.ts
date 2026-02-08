@@ -36,9 +36,25 @@ export interface ParsedIncomeTransaction extends ParsedBaseTransaction {
 	checkNumber: string
 }
 
+/**
+ * Pure Transfer: Transfers field populated AND no Category
+ * These are excluded from analysis (moving money between accounts)
+ */
 export interface ParsedTransferTransaction extends ParsedBaseTransaction {
 	type: 'Transfer'
 	transfer: ParsedAccount
+}
+
+/**
+ * Categorized Transfer: Transfers field populated AND has Category
+ * Treated as real expense/income (e.g., paying credit card bill categorized as "Bills")
+ */
+export interface ParsedCategorizedTransferTransaction extends ParsedBaseTransaction {
+	type: 'CategorizedTransfer'
+	transfer: ParsedAccount
+	payee: string
+	category: ParsedCategory
+	checkNumber: string
 }
 
 export interface ParsedUnknownTransaction extends ParsedBaseTransaction {

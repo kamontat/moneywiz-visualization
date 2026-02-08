@@ -1,8 +1,10 @@
 import type { ParsedTransaction } from './models'
 import type {
 	ParsedBaseTransaction,
+	ParsedCategorizedTransferTransaction,
 	ParsedExpenseTransaction,
 	ParsedIncomeTransaction,
+	ParsedRefundTransaction,
 	ParsedTransferTransaction,
 } from './models/transaction'
 import type { ParsedCsvRow } from '$lib/csv/models'
@@ -10,6 +12,7 @@ import papaparse from 'papaparse'
 
 import { CsvKey, getValue, isAccountHeaderRow } from './csv'
 import {
+	isIncomeCategory,
 	parseAccount,
 	parseAmount,
 	parseCategory,
@@ -58,18 +61,47 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 		raw: row,
 	}
 
-	const transfer = getValue(row, CsvKey.Transfers)
-	if (transfer) {
+	const transferField = getValue(row, CsvKey.Transfers)
+	const categoryField = getValue(row, CsvKey.Category)
+	const payee = getValue(row, CsvKey.Payee)
+	const category = parseCategory(categoryField)
+	const checkNumber = getValue(row, CsvKey.CheckNumber)
+
+	// Transfer classification per RULES.md:
+	// - Pure Transfer: Transfers field populated AND no Category
+	// - Categorized Transfer: Transfers field populated AND has Category
+	if (transferField) {
+		const hasCategory = categoryField && categoryField.trim() !== ''
+		if (hasCategory) {
+			return {
+				...base,
+				type: 'CategorizedTransfer',
+				transfer: parseAccount(transferField),
+				payee,
+				category,
+				checkNumber,
+			} as ParsedCategorizedTransferTransaction
+		}
 		return {
 			...base,
 			type: 'Transfer',
-			transfer: parseAccount(transfer),
+			transfer: parseAccount(transferField),
 		} as ParsedTransferTransaction
 	}
 
-	const payee = getValue(row, CsvKey.Payee)
-	const category = parseCategory(getValue(row, CsvKey.Category))
-	const checkNumber = getValue(row, CsvKey.CheckNumber)
+	// Transaction classification per RULES.md:
+	// - Income: Amount > 0 AND category starts with Compensation or Income
+	// - Expense: Amount < 0 AND NOT income category
+	// - Refund: Amount > 0 AND NOT income category (reduces expense totals)
+	if (amount.value > 0 && isIncomeCategory(category)) {
+		return {
+			...base,
+			type: 'Income',
+			payee,
+			category,
+			checkNumber,
+		} as ParsedIncomeTransaction
+	}
 
 	if (amount.value < 0) {
 		return {
@@ -81,13 +113,14 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 		} as ParsedExpenseTransaction
 	}
 
+	// Amount > 0 but not income category = Refund
 	return {
 		...base,
-		type: 'Income',
+		type: 'Refund',
 		payee,
 		category,
 		checkNumber,
-	} as ParsedIncomeTransaction
+	} as ParsedRefundTransaction
 }
 
 const insertBatch = async (

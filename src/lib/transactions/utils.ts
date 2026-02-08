@@ -5,7 +5,11 @@ import type {
 	ParsedCategory,
 	ParsedTag,
 } from './models'
-import { DEFAULT_CURRENCY } from './constants'
+import {
+	DEFAULT_CURRENCY,
+	INCOME_CATEGORIES,
+	SPECIAL_CATEGORIES,
+} from './constants'
 
 const noNaN = (val: number) => (isNaN(val) ? 0 : val)
 
@@ -160,4 +164,38 @@ export const parseDate = (
 
 	// Create date (month is 0-indexed)
 	return new Date(year, month - 1, day, noNaN(hours), noNaN(minutes))
+}
+
+export const isIncomeCategory = (category: ParsedCategory): boolean => {
+	return INCOME_CATEGORIES.some((prefix) =>
+		category.category.startsWith(prefix)
+	)
+}
+
+export const getCategoryFullName = (category: ParsedCategory): string => {
+	if (!category.subcategory) return category.category
+	return `${category.category} > ${category.subcategory}`
+}
+
+export const isSpecialCategory = (category: ParsedCategory): boolean => {
+	const fullName = getCategoryFullName(category)
+	return Object.values(SPECIAL_CATEGORIES).includes(
+		fullName as (typeof SPECIAL_CATEGORIES)[keyof typeof SPECIAL_CATEGORIES]
+	)
+}
+
+export const isDebtCategory = (category: ParsedCategory): boolean => {
+	const fullName = getCategoryFullName(category)
+	return (
+		fullName === SPECIAL_CATEGORIES.DEBT ||
+		fullName === SPECIAL_CATEGORIES.DEBT_REPAYMENT
+	)
+}
+
+export const isGiftCategory = (category: ParsedCategory): boolean => {
+	const fullName = getCategoryFullName(category)
+	return (
+		fullName === SPECIAL_CATEGORIES.GIVEAWAYS ||
+		fullName === SPECIAL_CATEGORIES.WINDFALL
+	)
 }

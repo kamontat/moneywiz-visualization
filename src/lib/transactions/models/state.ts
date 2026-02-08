@@ -1,4 +1,5 @@
 import type {
+	ParsedCategorizedTransferTransaction,
 	ParsedExpenseTransaction,
 	ParsedIncomeTransaction,
 	ParsedRefundTransaction,
@@ -11,6 +12,7 @@ export type ParsedTransaction =
 	| ParsedRefundTransaction
 	| ParsedIncomeTransaction
 	| ParsedTransferTransaction
+	| ParsedCategorizedTransferTransaction
 	| ParsedUnknownTransaction
 
 export type ParsedTransactionType = ParsedTransaction['type']

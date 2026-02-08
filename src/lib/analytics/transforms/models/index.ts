@@ -5,6 +5,11 @@ export type {
 	CategoryTotalChildren,
 	CategoryTotalParent,
 } from './categoryTotal'
+export type {
+	CategoryTree,
+	CategoryTreeChild,
+	CategoryTreeParent,
+} from './categoryTree'
 export type { Summarize, SummarizeDateRange } from './summarize'
 export type { TopCategoryTotal } from './topCategoryTotal'
 export type { TimeSeries, TimeSeriesMode, TimeSeriesPoint } from './timeSeries'

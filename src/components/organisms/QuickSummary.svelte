@@ -20,15 +20,15 @@
 		summary.totalIncome.toLocaleString('th-TH', { minimumFractionDigits: 2 })
 	)
 	const expenses = $derived(
-		Math.abs(summary.totalExpenses).toLocaleString('th-TH', {
+		summary.netExpenses.toLocaleString('th-TH', {
 			minimumFractionDigits: 2,
 		})
 	)
 	const net = $derived(
-		summary.netTotal.toLocaleString('th-TH', { minimumFractionDigits: 2 })
+		summary.netCashFlow.toLocaleString('th-TH', { minimumFractionDigits: 2 })
 	)
 	const savings = $derived(
-		summary.savingRate.toLocaleString('th-TH', { minimumFractionDigits: 2 }) +
+		summary.savingsRate.toLocaleString('th-TH', { minimumFractionDigits: 2 }) +
 			'%'
 	)
 

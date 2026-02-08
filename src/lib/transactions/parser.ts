@@ -1,13 +1,16 @@
 import type {
 	ParsedBaseTransaction,
+	ParsedCategorizedTransferTransaction,
 	ParsedExpenseTransaction,
 	ParsedIncomeTransaction,
+	ParsedRefundTransaction,
 	ParsedTransaction,
 	ParsedTransferTransaction,
 } from './models'
 import type { ParsedCsv, ParsedCsvRow } from '$lib/csv/models'
 import { CsvKey, getValue } from './csv'
 import {
+	isIncomeCategory,
 	parseAccount,
 	parseAmount,
 	parseCategory,
@@ -54,21 +57,41 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 			raw: row,
 		}
 
-		// Check for Transfer
-		const transfer = getValue(row, CsvKey.Transfers)
-		if (transfer) {
+		const transferField = getValue(row, CsvKey.Transfers)
+		const categoryField = getValue(row, CsvKey.Category)
+		const payee = getValue(row, CsvKey.Payee)
+		const category = parseCategory(categoryField)
+		const checkNumber = getValue(row, CsvKey.CheckNumber)
+
+		if (transferField) {
+			const hasCategory = categoryField && categoryField.trim() !== ''
+			if (hasCategory) {
+				return {
+					...base,
+					type: 'CategorizedTransfer',
+					transfer: parseAccount(transferField),
+					payee,
+					category,
+					checkNumber,
+				} as ParsedCategorizedTransferTransaction
+			}
 			return {
 				...base,
 				type: 'Transfer',
-				transfer: parseAccount(transfer),
+				transfer: parseAccount(transferField),
 			} as ParsedTransferTransaction
 		}
 
-		const payee = getValue(row, CsvKey.Payee)
-		const category = parseCategory(getValue(row, CsvKey.Category))
-		const checkNumber = getValue(row, CsvKey.CheckNumber)
+		if (amount.value > 0 && isIncomeCategory(category)) {
+			return {
+				...base,
+				type: 'Income',
+				payee,
+				category,
+				checkNumber,
+			} as ParsedIncomeTransaction
+		}
 
-		// Check for Expense (negative amount) vs Income (positive amount)
 		if (amount.value < 0) {
 			return {
 				...base,
@@ -79,14 +102,13 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 			} as ParsedExpenseTransaction
 		}
 
-		// Default to Income
 		return {
 			...base,
-			type: 'Income',
+			type: 'Refund',
 			payee,
 			category,
 			checkNumber,
-		} as ParsedIncomeTransaction
+		} as ParsedRefundTransaction
 	})
 
 	return data
