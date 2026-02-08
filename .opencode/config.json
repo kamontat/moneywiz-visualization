@@ -2,8 +2,22 @@
 	"$schema": "https://opencode.ai/config.json",
 	"plugin": ["oh-my-opencode@3.3.2", "@sveltejs/opencode@0.1.2"],
 	"lsp": {
+		"deno": {
+			"disabled": true
+		},
 		"oxlint": {
 			// We are using eslint for linting
+			"disabled": true
+		}
+	},
+	"formatter": {
+		"prettier": {
+			"disabled": false
+		},
+		"biome": {
+			"disabled": true
+		},
+		"oxfmt": {
 			"disabled": true
 		}
 	}
