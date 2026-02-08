@@ -1,0 +1,351 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "Go to homepage" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e6]: M
+      - generic [ref=e7]: MoneyWiz Report
+    - generic [ref=e8]:
+      - button "Clear loaded CSV" [ref=e9] [cursor=pointer]:
+        - img [ref=e10]
+        - generic [ref=e12]: Clear
+      - button "Choose File" [ref=e13]
+      - button "Upload CSV" [ref=e14] [cursor=pointer]:
+        - img [ref=e15]
+        - generic [ref=e17]: Upload
+      - combobox "Select theme" [ref=e18]:
+        - option "System"
+        - option "Light"
+        - option "Dark" [selected]
+        - option "Cupcake"
+        - option "Retro"
+        - option "Valentine"
+        - option "Pastel"
+        - option "Black"
+        - option "Dracula"
+        - option "Dim"
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "report.csv" [level=1] [ref=e22]
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - img [ref=e25]
+          - text: 01 Nov 2020 – 08 Feb 2026
+        - generic [ref=e29]:
+          - img [ref=e30]
+          - generic [ref=e34]: 7,084
+          - text: transactions
+    - generic [ref=e35]:
+      - generic [ref=e36]:
+        - button "Date" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+          - generic [ref=e42]: Date
+          - img [ref=e43]
+        - button "Types" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: Types
+          - img [ref=e47]
+        - button "Event" [expanded] [active] [ref=e49] [cursor=pointer]:
+          - generic [ref=e50]: Event
+          - img [ref=e51]
+        - button "Group" [ref=e53] [cursor=pointer]:
+          - generic [ref=e54]: Group
+          - img [ref=e55]
+        - button "Location" [ref=e57] [cursor=pointer]:
+          - generic [ref=e58]: Location
+          - img [ref=e59]
+        - button "Status" [ref=e61] [cursor=pointer]:
+          - generic [ref=e62]: Status
+          - img [ref=e63]
+      - generic [ref=e341]:
+        - generic [ref=e343]: Event
+        - combobox [ref=e344]:
+          - option [selected]
+          - option "001 ChiangMai (Oct 2021)"
+          - option "002 Prang Birthday (Dec 2021)"
+          - option "003 GoKart Crash (May 2023)"
+          - option "004 Book fair (Oct 2023)"
+          - option "005 Europe trip (Nov 2023)"
+          - option "006 Osaka (Apr 2024)"
+          - option "007 Seilom Bangpu (Oct 2024)"
+          - option "008 Monster Concert (Nov 2024)"
+          - option "009 Attila Wedding (Jan 2025)"
+          - option "010 Hokkaido (Feb 2025)"
+          - option "011 Earthquake (Mar 2025)"
+          - option "012 BangSaRe (Apr 2025)"
+          - option "013 Tokyo (Nov 2025)"
+          - option "014 Chiang Mai (Dec 2025)"
+          - option "015 Prang Birthday (Dec 2025)"
+          - option "016 Shanghai (Mar 2026)"
+    - generic [ref=e65]:
+      - generic [ref=e66]:
+        - img [ref=e68]
+        - generic [ref=e72]: Total Income
+        - generic [ref=e73]: 8,847,653.14
+      - generic [ref=e74]:
+        - img [ref=e76]
+        - generic [ref=e80]: Total Expenses
+        - generic [ref=e81]: 14,990,541.39
+      - generic [ref=e82]:
+        - img [ref=e84]
+        - generic [ref=e88]: Net Flow
+        - generic [ref=e89]: "-6,142,888.25"
+      - generic [ref=e90]:
+        - img [ref=e92]
+        - generic [ref=e94]: Saving Rate
+        - generic [ref=e95]: "-69.43%"
+    - generic [ref=e96]:
+      - tablist [ref=e97]:
+        - tab "💰 Transactions" [selected] [ref=e98] [cursor=pointer]
+        - tab "📊 Analytics" [ref=e99] [cursor=pointer]
+        - tab "📁 Categories" [ref=e100] [cursor=pointer]
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - heading "Transactions" [level=3] [ref=e105]
+          - combobox [ref=e106]:
+            - option "5 rows"
+            - option "10 rows"
+            - option "20 rows" [selected]
+            - option "50 rows"
+            - option "100 rows"
+        - generic [ref=e107]:
+          - table [ref=e109]:
+            - rowgroup [ref=e110]:
+              - row "Date Type Account Description Category Amount Tags" [ref=e111]:
+                - columnheader "Date" [ref=e112]
+                - columnheader "Type" [ref=e113]
+                - columnheader "Account" [ref=e114]
+                - columnheader "Description" [ref=e115]
+                - columnheader "Category" [ref=e116]
+                - columnheader "Amount" [ref=e117]
+                - columnheader "Tags" [ref=e118]
+            - rowgroup [ref=e119]:
+              - row "08 Feb 2026 Income SCB Easy Saving Investments Compensation › Dividend 10,000.00 THB" [ref=e120]:
+                - cell "08 Feb 2026" [ref=e121]
+                - cell "Income" [ref=e122]:
+                  - generic [ref=e123]: Income
+                - cell "SCB Easy Saving" [ref=e124]
+                - cell "Investments" [ref=e125]
+                - cell "Compensation › Dividend" [ref=e126]
+                - cell "10,000.00 THB" [ref=e127]
+                - cell [ref=e128]
+              - row "07 Feb 2026 Debt KTC UnionPay Diamond Owndays Other Expenses › Debt -1,460.00 THB" [ref=e129]:
+                - cell "07 Feb 2026" [ref=e130]
+                - cell "Debt" [ref=e131]:
+                  - generic [ref=e132]: Debt
+                - cell "KTC UnionPay Diamond" [ref=e133]
+                - cell "Owndays" [ref=e134]
+                - cell "Other Expenses › Debt" [ref=e135]
+                - cell "-1,460.00 THB" [ref=e136]
+                - cell [ref=e137]
+              - row "07 Feb 2026 Expense Kbank primary K PLUS Food and Beverage › Dessert -129.00 THB" [ref=e138]:
+                - cell "07 Feb 2026" [ref=e139]
+                - cell "Expense" [ref=e140]:
+                  - generic [ref=e141]: Expense
+                - cell "Kbank primary" [ref=e142]
+                - cell "K PLUS" [ref=e143]
+                - cell "Food and Beverage › Dessert" [ref=e144]
+                - cell "-129.00 THB" [ref=e145]
+                - cell [ref=e146]
+              - row "07 Feb 2026 Transfer Kbank primary Transfer to KKP Start Saving (A) → KKP Start Saving -9,725.97 THB" [ref=e147]:
+                - cell "07 Feb 2026" [ref=e148]
+                - cell "Transfer" [ref=e149]:
+                  - generic [ref=e150]: Transfer
+                - cell "Kbank primary" [ref=e151]
+                - cell "Transfer to KKP Start Saving (A)" [ref=e152]
+                - cell "→ KKP Start Saving" [ref=e153]
+                - cell "-9,725.97 THB" [ref=e154]
+                - cell [ref=e155]
+              - row "07 Feb 2026 Transfer KKP Start Saving Transfer from Kbank primary (A) → Kbank primary 9,725.97 THB" [ref=e156]:
+                - cell "07 Feb 2026" [ref=e157]
+                - cell "Transfer" [ref=e158]:
+                  - generic [ref=e159]: Transfer
+                - cell "KKP Start Saving" [ref=e160]
+                - cell "Transfer from Kbank primary (A)" [ref=e161]
+                - cell "→ Kbank primary" [ref=e162]
+                - cell "9,725.97 THB" [ref=e163]
+                - cell [ref=e164]
+              - 'row "06 Feb 2026 Income Kbank primary ค่าคอนโด Life Ladprao Compensation › Rent 5,000.00 THB # Life Ladprao" [ref=e165]':
+                - cell "06 Feb 2026" [ref=e166]
+                - cell "Income" [ref=e167]:
+                  - generic [ref=e168]: Income
+                - cell "Kbank primary" [ref=e169]
+                - cell "ค่าคอนโด Life Ladprao" [ref=e170]
+                - cell "Compensation › Rent" [ref=e171]
+                - cell "5,000.00 THB" [ref=e172]
+                - cell "# Life Ladprao" [ref=e173]:
+                  - generic [ref=e175]:
+                    - generic [ref=e176]: "#"
+                    - text: Life Ladprao
+              - 'row "06 Feb 2026 Income Kbank primary ค่าคอนโด Life Ladprao Compensation › Rent 5,000.00 THB # Life Ladprao" [ref=e177]':
+                - cell "06 Feb 2026" [ref=e178]
+                - cell "Income" [ref=e179]:
+                  - generic [ref=e180]: Income
+                - cell "Kbank primary" [ref=e181]
+                - cell "ค่าคอนโด Life Ladprao" [ref=e182]
+                - cell "Compensation › Rent" [ref=e183]
+                - cell "5,000.00 THB" [ref=e184]
+                - cell "# Life Ladprao" [ref=e185]:
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: "#"
+                    - text: Life Ladprao
+              - row "06 Feb 2026 Expense UOB One Food Food and Beverage › Food -153.00 THB" [ref=e189]:
+                - cell "06 Feb 2026" [ref=e190]
+                - cell "Expense" [ref=e191]:
+                  - generic [ref=e192]: Expense
+                - cell "UOB One" [ref=e193]
+                - cell "Food" [ref=e194]
+                - cell "Food and Beverage › Food" [ref=e195]
+                - cell "-153.00 THB" [ref=e196]
+                - cell [ref=e197]
+              - 'row "06 Feb 2026 Expense TMRW Everyday Water Utilities › Water -180.00 THB # KcNt # Life Ladprao" [ref=e198]':
+                - cell "06 Feb 2026" [ref=e199]
+                - cell "Expense" [ref=e200]:
+                  - generic [ref=e201]: Expense
+                - cell "TMRW Everyday" [ref=e202]
+                - cell "Water" [ref=e203]
+                - cell "Utilities › Water" [ref=e204]
+                - cell "-180.00 THB" [ref=e205]
+                - 'cell "# KcNt # Life Ladprao" [ref=e206]':
+                  - generic [ref=e207]:
+                    - generic [ref=e208]:
+                      - generic [ref=e209]: "#"
+                      - text: KcNt
+                    - generic [ref=e210]:
+                      - generic [ref=e211]: "#"
+                      - text: Life Ladprao
+              - 'row "06 Feb 2026 Expense Kbank kcnt spending Electricity Utilities › Electricity -1,279.62 THB # KcNt # Life Ladprao" [ref=e212]':
+                - cell "06 Feb 2026" [ref=e213]
+                - cell "Expense" [ref=e214]:
+                  - generic [ref=e215]: Expense
+                - cell "Kbank kcnt spending" [ref=e216]
+                - cell "Electricity" [ref=e217]
+                - cell "Utilities › Electricity" [ref=e218]
+                - cell "-1,279.62 THB" [ref=e219]
+                - 'cell "# KcNt # Life Ladprao" [ref=e220]':
+                  - generic [ref=e221]:
+                    - generic [ref=e222]:
+                      - generic [ref=e223]: "#"
+                      - text: KcNt
+                    - generic [ref=e224]:
+                      - generic [ref=e225]: "#"
+                      - text: Life Ladprao
+              - row "06 Feb 2026 Transfer TMRW Everyday Transfer from KKP Start Saving (A) → KKP Start Saving 800.00 THB" [ref=e226]:
+                - cell "06 Feb 2026" [ref=e227]
+                - cell "Transfer" [ref=e228]:
+                  - generic [ref=e229]: Transfer
+                - cell "TMRW Everyday" [ref=e230]
+                - cell "Transfer from KKP Start Saving (A)" [ref=e231]
+                - cell "→ KKP Start Saving" [ref=e232]
+                - cell "800.00 THB" [ref=e233]
+                - cell [ref=e234]
+              - row "06 Feb 2026 Transfer KKP Start Saving Transfer to TMRW Everyday (A) → TMRW Everyday -800.00 THB" [ref=e235]:
+                - cell "06 Feb 2026" [ref=e236]
+                - cell "Transfer" [ref=e237]:
+                  - generic [ref=e238]: Transfer
+                - cell "KKP Start Saving" [ref=e239]
+                - cell "Transfer to TMRW Everyday (A)" [ref=e240]
+                - cell "→ TMRW Everyday" [ref=e241]
+                - cell "-800.00 THB" [ref=e242]
+                - cell [ref=e243]
+              - 'row "05 Feb 2026 Expense UOB One Food Food and Beverage › Food -233.00 THB # KcNt" [ref=e244]':
+                - cell "05 Feb 2026" [ref=e245]
+                - cell "Expense" [ref=e246]:
+                  - generic [ref=e247]: Expense
+                - cell "UOB One" [ref=e248]
+                - cell "Food" [ref=e249]
+                - cell "Food and Beverage › Food" [ref=e250]
+                - cell "-233.00 THB" [ref=e251]
+                - cell "# KcNt" [ref=e252]:
+                  - generic [ref=e254]:
+                    - generic [ref=e255]: "#"
+                    - text: KcNt
+              - row "05 Feb 2026 Income UOB One Cashback 1% Other Incomes › Cashback 13.64 THB" [ref=e256]:
+                - cell "05 Feb 2026" [ref=e257]
+                - cell "Income" [ref=e258]:
+                  - generic [ref=e259]: Income
+                - cell "UOB One" [ref=e260]
+                - cell "Cashback 1%" [ref=e261]
+                - cell "Other Incomes › Cashback" [ref=e262]
+                - cell "13.64 THB" [ref=e263]
+                - cell [ref=e264]
+              - row "05 Feb 2026 Giveaway Aeon Wellness platinum ฉีดยาคุม Other Expenses › Giveaways -1,178.00 THB" [ref=e265]:
+                - cell "05 Feb 2026" [ref=e266]
+                - cell "Giveaway" [ref=e267]:
+                  - generic [ref=e268]: Giveaway
+                - cell "Aeon Wellness platinum" [ref=e269]
+                - cell "ฉีดยาคุม" [ref=e270]
+                - cell "Other Expenses › Giveaways" [ref=e271]
+                - cell "-1,178.00 THB" [ref=e272]
+                - cell [ref=e273]
+              - 'row "05 Feb 2026 Expense TTB So Smart Internet Utilities › Internet -319.93 THB # KcNt # Life Ladprao" [ref=e274]':
+                - cell "05 Feb 2026" [ref=e275]
+                - cell "Expense" [ref=e276]:
+                  - generic [ref=e277]: Expense
+                - cell "TTB So Smart" [ref=e278]
+                - cell "Internet" [ref=e279]
+                - cell "Utilities › Internet" [ref=e280]
+                - cell "-319.93 THB" [ref=e281]
+                - 'cell "# KcNt # Life Ladprao" [ref=e282]':
+                  - generic [ref=e283]:
+                    - generic [ref=e284]:
+                      - generic [ref=e285]: "#"
+                      - text: KcNt
+                    - generic [ref=e286]:
+                      - generic [ref=e287]: "#"
+                      - text: Life Ladprao
+              - 'row "05 Feb 2026 Refund TTB So Smart Refund of Internet Utilities › Internet 30.00 THB # KcNt # Life Ladprao" [ref=e288]':
+                - cell "05 Feb 2026" [ref=e289]
+                - cell "Refund" [ref=e290]:
+                  - generic [ref=e291]: Refund
+                - cell "TTB So Smart" [ref=e292]
+                - cell "Refund of Internet" [ref=e293]
+                - cell "Utilities › Internet" [ref=e294]
+                - cell "30.00 THB" [ref=e295]
+                - 'cell "# KcNt # Life Ladprao" [ref=e296]':
+                  - generic [ref=e297]:
+                    - generic [ref=e298]:
+                      - generic [ref=e299]: "#"
+                      - text: KcNt
+                    - generic [ref=e300]:
+                      - generic [ref=e301]: "#"
+                      - text: Life Ladprao
+              - row "05 Feb 2026 Expense Krungsri NOW Phone Utilities › Phone -298.53 THB" [ref=e302]:
+                - cell "05 Feb 2026" [ref=e303]
+                - cell "Expense" [ref=e304]:
+                  - generic [ref=e305]: Expense
+                - cell "Krungsri NOW" [ref=e306]
+                - cell "Phone" [ref=e307]
+                - cell "Utilities › Phone" [ref=e308]
+                - cell "-298.53 THB" [ref=e309]
+                - cell [ref=e310]
+              - row "05 Feb 2026 Debt Krungsri NOW iCloud+ with 2TB storage (08 Mar) Other Expenses › Debt -399.00 THB" [ref=e311]:
+                - cell "05 Feb 2026" [ref=e312]
+                - cell "Debt" [ref=e313]:
+                  - generic [ref=e314]: Debt
+                - cell "Krungsri NOW" [ref=e315]
+                - cell "iCloud+ with 2TB storage (08 Mar)" [ref=e316]
+                - cell "Other Expenses › Debt" [ref=e317]
+                - cell "-399.00 THB" [ref=e318]
+                - cell [ref=e319]
+              - row "05 Feb 2026 Expense Krungsri NOW Apple One Productivity › Services -449.00 THB" [ref=e320]:
+                - cell "05 Feb 2026" [ref=e321]
+                - cell "Expense" [ref=e322]:
+                  - generic [ref=e323]: Expense
+                - cell "Krungsri NOW" [ref=e324]
+                - cell "Apple One" [ref=e325]
+                - cell "Productivity › Services" [ref=e326]
+                - cell "-449.00 THB" [ref=e327]
+                - cell [ref=e328]
+          - paragraph [ref=e329]: Showing 20 of 7,084 transactions
+  - contentinfo [ref=e330]:
+    - generic [ref=e331]:
+      - link "Go to source code repository" [ref=e332] [cursor=pointer]:
+        - /url: https://github.com/kamontat/moneywiz-visualization/?utm_source=localhost:5173&utm_medium=footer&utm_campaign=direct
+        - text: Source
+      - img [ref=e333]
+      - link "Go to creator website" [ref=e335] [cursor=pointer]:
+        - /url: https://kc.in.th/?utm_source=localhost:5173&utm_medium=footer&utm_campaign=direct
+        - text: "@kamontat"
+      - img [ref=e336]
+      - link "Go to Google" [ref=e338] [cursor=pointer]:
+        - /url: https://google.com/?utm_source=localhost:5173&utm_medium=footer&utm_campaign=direct
+        - text: Google

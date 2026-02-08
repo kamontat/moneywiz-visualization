@@ -375,7 +375,7 @@
 		{#if isActive}
 			<Button
 				variant="ghost"
-				class="h-7 min-h-0 gap-1 text-base-content/50 d-btn-xs hover:text-base-content"
+				class="h-7 min-h-0 gap-1 text-base-content/60 d-btn-xs hover:text-base-content"
 				onclick={clearFilters}
 			>
 				<X class="size-3" />
@@ -387,7 +387,7 @@
 	<!-- Full-Width Dropdown Panels -->
 	{#if openPanel !== null}
 		<div
-			class="mt-1 rounded-lg border border-base-300/40 bg-base-100 p-4 shadow-lg"
+			class="mt-1 rounded-lg border border-base-300/60 bg-base-100 p-4 shadow-lg"
 		>
 			<!-- Date Range Panel -->
 			{#if openPanel === 'date'}
@@ -401,7 +401,7 @@
 						{#if hasDateFilter}
 							<button
 								type="button"
-								class="text-xs text-base-content/50 transition-colors hover:text-base-content"
+								class="text-xs text-base-content/60 transition-colors hover:text-base-content"
 								onclick={() => {
 									filterState = {
 										...filterState,
@@ -424,7 +424,7 @@
 								value={formatDate(filterState.dateRange.start)}
 								onchange={handleStartDateChange}
 							/>
-							<span class="text-xs text-base-content/40">to</span>
+							<span class="text-xs text-base-content/50">to</span>
 							<input
 								id="end-date"
 								type="date"
@@ -471,7 +471,7 @@
 						{#if hasTypeFilter}
 							<button
 								type="button"
-								class="text-xs text-base-content/50 transition-colors hover:text-base-content"
+								class="text-xs text-base-content/60 transition-colors hover:text-base-content"
 								onclick={() => {
 									filterState = { ...filterState, transactionTypes: [] }
 									onfilterchange?.(filterState)
@@ -541,13 +541,15 @@
 											class="d-toggle d-toggle-xs"
 											class:d-toggle-success={tagMode === 'include'}
 											class:d-toggle-error={tagMode === 'exclude'}
+											class:text-success={tagMode === 'include'}
+											class:text-error={tagMode === 'exclude'}
 											checked={tagMode === 'include'}
 											onclick={() => toggleTagMode(tagCategory.category)}
 										/>
 									</div>
 									<button
 										type="button"
-										class="text-xs text-base-content/50 transition-colors hover:text-base-content"
+										class="text-xs text-base-content/60 transition-colors hover:text-base-content"
 										onclick={() => {
 											filterState = {
 												...filterState,
@@ -586,14 +588,14 @@
 										class={mergeClass(
 											['d-badge', 'gap-1', 'pr-1', 'pl-2', 'd-badge-sm'],
 											tagMode === 'include'
-												? 'd-badge-info/10 border-info/20 text-info-content'
-												: 'd-badge-error/10 border-error/20 text-error-content line-through opacity-80'
+												? 'border-info/30 bg-info/10 text-info'
+												: 'border-error/30 bg-error/10 text-error line-through opacity-80'
 										)}
 									>
 										{tag}
 										<button
 											type="button"
-											class="ml-1 rounded-full p-0.5 hover:bg-black/10 hover:text-current"
+											class="ml-1 rounded-full p-0.5 hover:bg-base-content/10 hover:text-current"
 											onclick={() => handleTagChange(tagCategory.category, tag)}
 										>
 											<X class="size-3" />

@@ -16,7 +16,7 @@
 		p: newTwClass([]),
 		span: newTwClass(['sm:text-lg']),
 		code: newTwClass(['font-mono']),
-		small: newTwClass(['text-sm', 'text-gray-400']),
+		small: newTwClass(['text-sm', 'text-base-content/60']),
 	})
 </script>
 

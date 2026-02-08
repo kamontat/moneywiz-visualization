@@ -11,7 +11,7 @@
 	type Props = BaseProps & ElementTagProps<TagName>
 	let { tag = 'h1', children, class: className, ...rest }: Props = $props()
 
-	const baseClass = newBaseClass(['text-mw-title', 'm-0'])
+	const baseClass = newBaseClass(['text-base-content', 'm-0'])
 	const variantClass = newVariantClass<TagName>({
 		h1: newTwClass(['text-3xl', 'font-bold', 'tracking-tight']),
 		h2: newTwClass(['text-2xl', 'font-bold']),

@@ -62,7 +62,7 @@
 						</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-base-200">
+				<tbody class="divide-y divide-base-300">
 					{#each transactions as trx, i (trx.id ?? i)}
 						<tr class="transition-colors duration-150 hover:bg-base-200/30">
 							<td class="py-3 text-sm whitespace-nowrap">
@@ -91,7 +91,7 @@
 										>{trx.category.category}</span
 									>
 									{#if trx.category.subcategory}
-										<span class="text-base-content/50">
+										<span class="text-base-content/60">
 											› {trx.category.subcategory}
 										</span>
 									{/if}
@@ -111,7 +111,7 @@
 										maximumFractionDigits: 2,
 									})}
 								</span>
-								<span class="ml-1 text-xs text-base-content/50">
+								<span class="ml-1 text-xs text-base-content/60">
 									{trx.amount.currency}
 								</span>
 							</td>

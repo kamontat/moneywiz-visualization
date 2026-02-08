@@ -52,3 +52,9 @@
 body {
 	@apply flex min-h-screen flex-col text-base-content;
 }
+
+/* Override @tailwindcss/forms injecting a white checkmark SVG on DaisyUI toggles */
+.d-toggle[type='checkbox']:checked {
+	background-image: none;
+	background-color: var(--color-base-100);
+}
