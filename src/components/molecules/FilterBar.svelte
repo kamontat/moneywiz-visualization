@@ -18,7 +18,6 @@
 	import X from '@iconify-svelte/lucide/x'
 
 	import Button from '$components/atoms/Button.svelte'
-	import Select from '$components/atoms/Select.svelte'
 	import { hasActiveFilters } from '$lib/analytics/filters/models/state'
 	import { mergeClass } from '$lib/components'
 	import { getCategoryFullName } from '$lib/transactions/utils'
@@ -64,6 +63,8 @@
 	// Track which filter panel is open (null = all closed)
 	let openPanel = $state<string | null>(null)
 	let categoryQuery = $state('')
+	let expandedCategories = $state<string[]>([])
+	let tagQueries = $state<Record<string, string>>({})
 
 	const isActive = $derived(hasActiveFilters(filterState))
 
@@ -89,6 +90,51 @@
 		return options.filter((option) =>
 			option.fullName.toLowerCase().includes(query)
 		)
+	})
+
+	type CategoryGroup = {
+		category: string
+		subcategories: string[]
+		visibleSubcategories: string[]
+		hasMatch: boolean
+		matchesCategory: boolean
+	}
+
+	const categoryTree = $derived.by(() => {
+		const map = new Map<string, Set<string>>()
+		for (const option of categoryOptions) {
+			if (!map.has(option.category)) {
+				map.set(option.category, new Set())
+			}
+			if (option.subcategory) {
+				map.get(option.category)!.add(option.subcategory)
+			}
+		}
+
+		const query = categoryQuery.trim().toLowerCase()
+		const groups = Array.from(map.entries())
+			.sort((a, b) => a[0].localeCompare(b[0]))
+			.map(([category, subcategories]) => {
+				const subcategoryList = Array.from(subcategories).sort()
+				const matchesCategory = query
+					? category.toLowerCase().includes(query)
+					: true
+				const visibleSubcategories = query
+					? subcategoryList.filter((subcategory) =>
+							subcategory.toLowerCase().includes(query)
+						)
+					: subcategoryList
+				const hasMatch = matchesCategory || visibleSubcategories.length > 0
+				return {
+					category,
+					subcategories: subcategoryList,
+					visibleSubcategories,
+					hasMatch,
+					matchesCategory,
+				}
+			})
+
+		return query ? groups.filter((group) => group.hasMatch) : groups
 	})
 
 	// --- Date helpers ---
@@ -216,6 +262,28 @@
 		onfilterchange?.(filterState)
 	}
 
+	const toggleCategoryGroup = (category: string) => {
+		if (expandedCategories.includes(category)) {
+			expandedCategories = expandedCategories.filter(
+				(item) => item !== category
+			)
+			return
+		}
+		expandedCategories = [...expandedCategories, category]
+	}
+
+	const isCategoryExpanded = (category: string): boolean => {
+		if (categoryQuery.trim()) return true
+		return expandedCategories.includes(category)
+	}
+
+	const getCategoryDisplayName = (
+		category: string,
+		subcategory = ''
+	): string => {
+		return getCategoryFullName({ category, subcategory })
+	}
+
 	const clearCategoryFilter = () => {
 		filterState = {
 			...filterState,
@@ -302,6 +370,27 @@
 		return getTagFilter(categoryName)?.values ?? []
 	}
 
+	const getTagQuery = (categoryName: string): string => {
+		return tagQueries[categoryName] ?? ''
+	}
+
+	const setTagQuery = (categoryName: string, value: string) => {
+		tagQueries = { ...tagQueries, [categoryName]: value }
+	}
+
+	const getTagOptions = (
+		tagCategory: TagCategory,
+		selectedTags: string[]
+	): string[] => {
+		const query = getTagQuery(tagCategory.category).trim().toLowerCase()
+		const options = query
+			? tagCategory.tags.filter((tag) => tag.toLowerCase().includes(query))
+			: tagCategory.tags
+		const selected = options.filter((tag) => selectedTags.includes(tag))
+		const unselected = options.filter((tag) => !selectedTags.includes(tag))
+		return [...selected, ...unselected].slice(0, 8)
+	}
+
 	const getTagMode = (categoryName: string): FilterTagMode => {
 		return getTagFilter(categoryName)?.mode ?? 'include'
 	}
@@ -346,6 +435,18 @@
 		'border-primary/40 text-primary hover:border-primary/60'
 	const chipInactiveClass =
 		'border-base-300 text-base-content/70 hover:border-base-content/30'
+	const tagOptionBase = [
+		'd-badge',
+		'cursor-pointer',
+		'd-badge-sm',
+		'text-[11px]',
+		'transition-all',
+	]
+	const tagOptionInactiveClass =
+		'd-badge-outline text-base-content/70 hover:d-badge-primary'
+	const tagOptionIncludeClass = 'border-info/30 bg-info/10 text-info'
+	const tagOptionExcludeClass =
+		'border-error/30 bg-error/10 text-error line-through opacity-80'
 </script>
 
 {#snippet categoryPanel()}
@@ -364,41 +465,105 @@
 			</label>
 		</div>
 		<div class="flex-1 overflow-y-auto pr-1">
-			{#if categoryOptions.length > 0}
-				<div class="flex flex-col">
-					{#each categoryOptions as option (option.fullName)}
-						<label
-							class={mergeClass(
-								[
-									'd-label',
-									'cursor-pointer',
-									'rounded-lg',
-									'py-1.5',
-									'px-2',
-									'hover:bg-base-200/60',
-								],
-								filterState.categories.includes(option.fullName)
-									? 'bg-primary/5'
-									: undefined
-							)}
-						>
-							<span class="d-label-text flex flex-col gap-0.5">
-								<span class="text-sm font-medium">
-									{option.category}
+			{#if categoryTree.length > 0}
+				<div class="flex flex-col gap-1">
+					{#each categoryTree as group (group.category)}
+						<div class="flex flex-col">
+							<div
+								class={mergeClass(
+									[
+										'flex',
+										'items-center',
+										'gap-2',
+										'rounded-lg',
+										'px-2',
+										'py-1.5',
+										'hover:bg-base-200/60',
+										'cursor-pointer',
+									],
+									filterState.categories.includes(
+										getCategoryDisplayName(group.category)
+									)
+										? 'bg-primary/5'
+										: undefined
+								)}
+								role="button"
+								aria-expanded={isCategoryExpanded(group.category)}
+								onclick={() => toggleCategoryGroup(group.category)}
+							>
+								<ChevronDown
+									class={mergeClass(
+										['size-3', 'transition-transform', 'duration-200'],
+										isCategoryExpanded(group.category)
+											? 'rotate-180'
+											: 'opacity-40'
+									)}
+								/>
+								<span class="flex-1 text-sm font-semibold">
+									{group.category}
 								</span>
-								{#if option.subcategory}
-									<span class="text-[11px] text-base-content/60">
-										› {option.subcategory}
+								{#if group.subcategories.length > 0}
+									<span class="text-[10px] text-base-content/50">
+										{group.subcategories.length}
 									</span>
 								{/if}
-							</span>
-							<input
-								type="checkbox"
-								class="d-checkbox rounded-md d-checkbox-xs d-checkbox-primary"
-								checked={filterState.categories.includes(option.fullName)}
-								onclick={() => toggleCategory(option.fullName)}
-							/>
-						</label>
+								<input
+									type="checkbox"
+									class="d-checkbox rounded-md d-checkbox-xs d-checkbox-primary"
+									checked={filterState.categories.includes(
+										getCategoryDisplayName(group.category)
+									)}
+									onclick={(event) => {
+										event.stopPropagation()
+										toggleCategory(getCategoryDisplayName(group.category))
+									}}
+								/>
+							</div>
+
+							{#if isCategoryExpanded(group.category)}
+								<div class="mt-1 ml-6 flex flex-col gap-1">
+									{#if group.visibleSubcategories.length > 0}
+										{#each group.visibleSubcategories as subcategory (subcategory)}
+											{@const fullName = getCategoryDisplayName(
+												group.category,
+												subcategory
+											)}
+											<label
+												class={mergeClass(
+													[
+														'd-label',
+														'cursor-pointer',
+														'rounded-lg',
+														'px-2',
+														'py-1',
+														'hover:bg-base-200/60',
+													],
+													filterState.categories.includes(fullName)
+														? 'bg-primary/5'
+														: undefined
+												)}
+											>
+												<span
+													class="d-label-text text-[12px] text-base-content/80"
+												>
+													{subcategory}
+												</span>
+												<input
+													type="checkbox"
+													class="d-checkbox rounded-md d-checkbox-xs d-checkbox-primary"
+													checked={filterState.categories.includes(fullName)}
+													onclick={() => toggleCategory(fullName)}
+												/>
+											</label>
+										{/each}
+									{:else}
+										<p class="px-2 py-2 text-[11px] text-base-content/50">
+											No subcategories found
+										</p>
+									{/if}
+								</div>
+							{/if}
+						</div>
 					{/each}
 				</div>
 			{:else}
@@ -734,6 +899,7 @@
 				{#if openPanel === tagCategory.category}
 					{@const selectedTags = getSelectedTags(tagCategory.category)}
 					{@const tagMode = getTagMode(tagCategory.category)}
+					{@const tagOptions = getTagOptions(tagCategory, selectedTags)}
 
 					<div class="flex flex-col gap-4">
 						<div class="flex items-center justify-between">
@@ -788,44 +954,62 @@
 							</div>
 						</div>
 
-						<Select
-							values={[
-								'',
-								...tagCategory.tags.filter((t) => !selectedTags.includes(t)),
-							]}
-							value=""
-							class="w-full max-w-md d-select-sm"
-							placeholder={`Add ${tagCategory.category.toLowerCase()}...`}
-							onchange={(e) => {
-								const select = e.target as HTMLSelectElement
-								handleTagChange(tagCategory.category, select.value)
-								select.value = ''
-							}}
-						/>
+						<div class="flex flex-col gap-2">
+							<label
+								class="d-input-bordered d-input d-input-sm flex items-center gap-2"
+							>
+								<input
+									type="text"
+									class="grow"
+									placeholder={`Search ${tagCategory.category.toLowerCase()} tags...`}
+									value={getTagQuery(tagCategory.category)}
+									oninput={(event) => {
+										const input = event.target as HTMLInputElement
+										setTagQuery(tagCategory.category, input.value)
+									}}
+									onkeydown={(event) => {
+										if (event.key !== 'Enter') return
+										event.preventDefault()
+										const nextOption = tagOptions.find(
+											(option) => !selectedTags.includes(option)
+										)
+										if (!nextOption) return
+										handleTagChange(tagCategory.category, nextOption)
+										setTagQuery(tagCategory.category, '')
+									}}
+								/>
+								<SearchIcon class="size-3 opacity-50" />
+							</label>
 
-						{#if selectedTags.length > 0}
-							<div class="flex flex-wrap gap-1.5">
-								{#each selectedTags as tag (tag)}
-									<span
-										class={mergeClass(
-											['d-badge', 'gap-1', 'pr-1', 'pl-2', 'd-badge-sm'],
-											tagMode === 'include'
-												? 'border-info/30 bg-info/10 text-info'
-												: 'border-error/30 bg-error/10 text-error line-through opacity-80'
-										)}
-									>
-										{tag}
+							{#if tagOptions.length > 0}
+								<div class="flex flex-wrap gap-1.5">
+									{#each tagOptions as option (option)}
+										{@const isSelected = selectedTags.includes(option)}
 										<button
 											type="button"
-											class="ml-1 rounded-full p-0.5 hover:bg-base-content/10 hover:text-current"
-											onclick={() => handleTagChange(tagCategory.category, tag)}
+											class={mergeClass(
+												tagOptionBase,
+												isSelected
+													? tagMode === 'include'
+														? tagOptionIncludeClass
+														: tagOptionExcludeClass
+													: tagOptionInactiveClass
+											)}
+											onclick={() => {
+												handleTagChange(tagCategory.category, option)
+												setTagQuery(tagCategory.category, '')
+											}}
 										>
-											<X class="size-3" />
+											{option}
 										</button>
-									</span>
-								{/each}
-							</div>
-						{/if}
+									{/each}
+								</div>
+							{:else}
+								<p class="text-xs text-base-content/50">
+									No tags match your search
+								</p>
+							{/if}
+						</div>
 					</div>
 				{/if}
 			{/each}
