@@ -16,8 +16,8 @@ export default defineConfig([
 	includeIgnoreFile(gitignorePath, 'global/gitignore'),
 	js.configs.recommended,
 	...ts.configs.recommended,
-	importPlugin.flatConfigs.recommended,
 	...svelte.configs.recommended,
+	importPlugin.flatConfigs.recommended,
 	prettier,
 	...svelte.configs.prettier,
 	{
@@ -56,6 +56,10 @@ export default defineConfig([
 					'newlines-between-types': 'never',
 				},
 			],
+		},
+		settings: {
+			// Required for eslint-plugin-import to ignore svelte files in node_modules
+			'import/ignore': ['node_modules'],
 		},
 	},
 	{
