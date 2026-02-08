@@ -7,5 +7,5 @@ export {
 	getTransactions,
 } from './import'
 export type { ImportProgress, ImportOptions } from './import'
-export { extractTagCategories } from './utils'
+export { extractCategories, extractTagCategories } from './utils'
 export type { TagCategoryGroup } from './utils'

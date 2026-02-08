@@ -244,3 +244,23 @@ export const extractTagCategories = (
 		}))
 		.sort((a, b) => a.category.localeCompare(b.category))
 }
+
+export const extractCategories = (
+	transactions: { category?: ParsedCategory }[]
+): ParsedCategory[] => {
+	const categoryMap = new Map<string, ParsedCategory>()
+
+	for (const trx of transactions) {
+		if (!trx.category) continue
+		const fullName = getCategoryFullName(trx.category)
+		categoryMap.set(fullName, trx.category)
+		categoryMap.set(trx.category.category, {
+			category: trx.category.category,
+			subcategory: '',
+		})
+	}
+
+	return Array.from(categoryMap.values()).sort((a, b) => {
+		return getCategoryFullName(a).localeCompare(getCategoryFullName(b))
+	})
+}

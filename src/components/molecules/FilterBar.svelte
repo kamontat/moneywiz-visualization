@@ -1,34 +1,50 @@
 <script lang="ts">
 	import type {
-		FilterState,
+		FilterState as BaseFilterState,
 		TagFilter,
-		FilterTagMode,
-	} from '$lib/analytics/filters/models'
+	} from '$lib/analytics/filters/models/state'
+	import type { FilterTagMode } from '$lib/analytics/filters/models/tags'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransactionType } from '$lib/transactions/models'
+	import type {
+		ParsedCategory,
+		ParsedTransactionType,
+	} from '$lib/transactions/models'
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 	import ChevronDown from '@iconify-svelte/lucide/chevron-down'
+	import FolderIcon from '@iconify-svelte/lucide/folder'
+	import SearchIcon from '@iconify-svelte/lucide/search'
 	import X from '@iconify-svelte/lucide/x'
 
 	import Button from '$components/atoms/Button.svelte'
 	import Select from '$components/atoms/Select.svelte'
-	import { hasActiveFilters } from '$lib/analytics/filters/models'
+	import { hasActiveFilters } from '$lib/analytics/filters/models/state'
 	import { mergeClass } from '$lib/components'
+	import { getCategoryFullName } from '$lib/transactions/utils'
+
+	type FilterState = BaseFilterState & { categories: string[] }
 
 	type TagCategory = {
 		category: string
 		tags: string[]
 	}
 
+	type CategoryOption = {
+		fullName: string
+		category: string
+		subcategory: string
+	}
+
 	type Props = BaseProps &
 		CustomProps<{
 			filterState: FilterState
+			availableCategories: ParsedCategory[]
 			availableTagCategories: TagCategory[]
 			onfilterchange?: (state: FilterState) => void
 		}>
 
 	let {
 		filterState = $bindable(),
+		availableCategories = [],
 		availableTagCategories = [],
 		onfilterchange,
 		class: className,
@@ -45,6 +61,7 @@
 
 	// Track which filter panel is open (null = all closed)
 	let openPanel = $state<string | null>(null)
+	let categoryQuery = $state('')
 
 	const isActive = $derived(hasActiveFilters(filterState))
 
@@ -54,9 +71,23 @@
 		!!(filterState.dateRange.start || filterState.dateRange.end)
 	)
 	const hasTypeFilter = $derived(filterState.transactionTypes.length > 0)
+	const hasCategoryFilter = $derived(filterState.categories.length > 0)
 	const getCategoryActiveCount = (categoryName: string): number => {
 		return getSelectedTags(categoryName).length
 	}
+
+	const categoryOptions = $derived.by(() => {
+		const options: CategoryOption[] = availableCategories.map((cat) => ({
+			fullName: getCategoryFullName(cat),
+			category: cat.category,
+			subcategory: cat.subcategory,
+		}))
+		const query = categoryQuery.trim().toLowerCase()
+		if (!query) return options
+		return options.filter((option) =>
+			option.fullName.toLowerCase().includes(query)
+		)
+	})
 
 	// --- Date helpers ---
 
@@ -169,6 +200,28 @@
 		onfilterchange?.(filterState)
 	}
 
+	// --- Categories ---
+
+	const toggleCategory = (category: string) => {
+		const current = filterState.categories
+		const updated = current.includes(category)
+			? current.filter((c: string) => c !== category)
+			: [...current, category]
+		filterState = {
+			...filterState,
+			categories: updated,
+		}
+		onfilterchange?.(filterState)
+	}
+
+	const clearCategoryFilter = () => {
+		filterState = {
+			...filterState,
+			categories: [],
+		}
+		onfilterchange?.(filterState)
+	}
+
 	// --- Tags ---
 
 	const handleTagChange = (categoryName: string, selectedTag: string) => {
@@ -255,6 +308,7 @@
 		filterState = {
 			dateRange: { start: undefined, end: undefined },
 			transactionTypes: [],
+			categories: [],
 			tags: [],
 		}
 		onfilterchange?.(filterState)
@@ -264,6 +318,10 @@
 	// Toggle panel open/closed
 	const togglePanel = (panel: string) => {
 		openPanel = openPanel === panel ? null : panel
+	}
+
+	const closePanel = () => {
+		openPanel = null
 	}
 
 	// Chip class composition
@@ -287,6 +345,114 @@
 	const chipInactiveClass =
 		'border-base-300 text-base-content/70 hover:border-base-content/30'
 </script>
+
+{#snippet categoryPanel()}
+	<div class="flex max-h-[60vh] flex-col gap-3">
+		<div class="sticky top-0 z-10 border-b border-base-200 bg-base-100 pb-2">
+			<label
+				class="d-input-bordered d-input d-input-sm flex items-center gap-2"
+			>
+				<input
+					type="text"
+					class="grow"
+					placeholder="Search categories..."
+					bind:value={categoryQuery}
+				/>
+				<SearchIcon class="size-3 opacity-50" />
+			</label>
+		</div>
+		<div class="flex-1 overflow-y-auto pr-1">
+			{#if categoryOptions.length > 0}
+				<div class="flex flex-col">
+					{#each categoryOptions as option (option.fullName)}
+						<label
+							class={mergeClass(
+								[
+									'd-label',
+									'cursor-pointer',
+									'rounded-lg',
+									'py-1.5',
+									'px-2',
+									'hover:bg-base-200/60',
+								],
+								filterState.categories.includes(option.fullName)
+									? 'bg-primary/5'
+									: undefined
+							)}
+						>
+							<span class="d-label-text flex flex-col gap-0.5">
+								<span class="text-sm font-medium">
+									{option.category}
+								</span>
+								{#if option.subcategory}
+									<span class="text-[11px] text-base-content/60">
+										› {option.subcategory}
+									</span>
+								{/if}
+							</span>
+							<input
+								type="checkbox"
+								class="d-checkbox rounded-md d-checkbox-xs d-checkbox-primary"
+								checked={filterState.categories.includes(option.fullName)}
+								onclick={() => toggleCategory(option.fullName)}
+							/>
+						</label>
+					{/each}
+				</div>
+			{:else}
+				<p class="px-2 py-3 text-xs text-base-content/60">
+					No categories found
+				</p>
+			{/if}
+		</div>
+	</div>
+{/snippet}
+
+<dialog
+	class="d-modal d-modal-bottom lg:hidden"
+	class:d-modal-open={openPanel === 'category'}
+>
+	<div class="d-modal-box max-h-[85vh] p-0">
+		<div
+			class="flex items-center justify-between border-b border-base-200/60 px-4 py-3"
+		>
+			<div class="flex items-center gap-2">
+				<FolderIcon class="size-4 text-base-content/70" />
+				<span class="text-sm font-semibold">Category</span>
+				{#if hasCategoryFilter}
+					<span class="d-badge min-h-0 d-badge-xs text-[10px] d-badge-primary">
+						{filterState.categories.length}
+					</span>
+				{/if}
+			</div>
+			<div class="flex items-center gap-2">
+				{#if hasCategoryFilter}
+					<button
+						type="button"
+						class="text-xs text-base-content/60 transition-colors hover:text-base-content"
+						onclick={clearCategoryFilter}
+					>
+						Clear
+					</button>
+				{/if}
+				<button
+					type="button"
+					class="d-btn d-btn-circle d-btn-ghost d-btn-sm"
+					aria-label="Close category filter"
+					onclick={closePanel}
+				>
+					<X class="size-4" />
+				</button>
+			</div>
+		</div>
+		<div class="px-4 py-4">
+			{@render categoryPanel()}
+		</div>
+	</div>
+	<form method="dialog" class="d-modal-backdrop">
+		<button type="button" onclick={closePanel}>close</button>
+	</form>
+</dialog>
 
 <div class={mergeClass(['w-full'], className)} {...rest}>
 	<!-- Horizontal Filter Chips Row -->
@@ -335,6 +501,33 @@
 				class={mergeClass(
 					['size-3', 'transition-transform', 'duration-200'],
 					openPanel === 'types' ? 'rotate-180' : undefined
+				)}
+			/>
+		</button>
+
+		<!-- Category Filter Chip -->
+		<button
+			type="button"
+			class={mergeClass(
+				chipBase,
+				hasCategoryFilter ? chipActiveClass : chipInactiveClass
+			)}
+			aria-expanded={openPanel === 'category'}
+			onclick={() => togglePanel('category')}
+		>
+			<FolderIcon class="size-3.5" />
+			<span class="text-xs">Category</span>
+			{#if hasCategoryFilter}
+				<span
+					class="d-badge min-h-0 min-w-4 d-badge-xs text-[10px] d-badge-primary"
+				>
+					{filterState.categories.length}
+				</span>
+			{/if}
+			<ChevronDown
+				class={mergeClass(
+					['size-3', 'transition-transform', 'duration-200'],
+					openPanel === 'category' ? 'rotate-180' : undefined
 				)}
 			/>
 		</button>
@@ -388,6 +581,8 @@
 	{#if openPanel !== null}
 		<div
 			class="mt-1 rounded-lg border border-base-300/60 bg-base-100 p-4 shadow-lg"
+			class:hidden={openPanel === 'category'}
+			class:lg:block={openPanel === 'category'}
 		>
 			<!-- Date Range Panel -->
 			{#if openPanel === 'date'}
@@ -456,6 +651,29 @@
 							{/each}
 						</div>
 					</div>
+				</div>
+			{/if}
+
+			<!-- Category Panel -->
+			{#if openPanel === 'category'}
+				<div class="flex flex-col gap-4">
+					<div class="flex items-center justify-between">
+						<span
+							class="text-xs font-semibold tracking-wider text-base-content/70 uppercase"
+						>
+							Category
+						</span>
+						{#if hasCategoryFilter}
+							<button
+								type="button"
+								class="text-xs text-base-content/60 transition-colors hover:text-base-content"
+								onclick={clearCategoryFilter}
+							>
+								Clear
+							</button>
+						{/if}
+					</div>
+					{@render categoryPanel()}
 				</div>
 			{/if}
 

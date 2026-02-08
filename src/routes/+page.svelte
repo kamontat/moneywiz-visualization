@@ -1,8 +1,12 @@
 <script lang="ts">
-	import type { FilterState } from '$lib/analytics/filters/models'
+	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
 	import type { CsvState } from '$lib/csv/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	import type {
+		ParsedCategory,
+		ParsedTransaction,
+	} from '$lib/transactions/models'
 	import { onMount } from 'svelte'
+	import { SvelteMap } from 'svelte/reactivity'
 
 	import FilterBar from '$components/molecules/FilterBar.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
@@ -12,17 +16,21 @@
 	import {
 		filter,
 		byDateRange,
+		byCategory,
 		byTransactionType,
 		byTags,
 	} from '$lib/analytics/filters'
-	import { emptyFilterState } from '$lib/analytics/filters/models'
+	import { emptyFilterState } from '$lib/analytics/filters/models/state'
 	import { bySummarize, transform } from '$lib/analytics/transforms'
 	import { csvStore, csvUploading } from '$lib/csv'
 	import {
+		extractTagCategories,
 		getTransactionCount,
 		getTransactions,
-		extractTagCategories,
 	} from '$lib/transactions'
+	import { getCategoryFullName } from '$lib/transactions/utils'
+
+	type FilterState = BaseFilterState & { categories: string[] }
 
 	const DEFAULT_LIMIT = 20
 
@@ -30,7 +38,10 @@
 	let totalCount = $state(0)
 	let fileInfo = $state<CsvState | undefined>(undefined)
 	let uploading = $state(false)
-	let filterState = $state<FilterState>(emptyFilterState())
+	let filterState = $state<FilterState>({
+		...emptyFilterState(),
+		categories: [],
+	})
 	let limit = $state(DEFAULT_LIMIT)
 
 	const loadData = async () => {
@@ -50,6 +61,21 @@
 	})
 
 	const tagCategories = $derived(extractTagCategories(allTransactions))
+	const availableCategories = $derived.by(() => {
+		const categoryMap = new SvelteMap<string, ParsedCategory>()
+		for (const trx of allTransactions) {
+			if (!('category' in trx) || !trx.category) continue
+			const fullName = getCategoryFullName(trx.category)
+			categoryMap.set(fullName, trx.category)
+			categoryMap.set(trx.category.category, {
+				category: trx.category.category,
+				subcategory: '',
+			})
+		}
+		return Array.from(categoryMap.values()).sort((a, b) => {
+			return getCategoryFullName(a).localeCompare(getCategoryFullName(b))
+		})
+	})
 
 	const filteredTransactions = $derived.by(() => {
 		let result = allTransactions
@@ -69,6 +95,15 @@
 			filters.push(
 				byTransactionType({
 					types: filterState.transactionTypes,
+					mode: 'include',
+				})
+			)
+		}
+
+		if (filterState.categories.length > 0) {
+			filters.push(
+				byCategory({
+					categories: filterState.categories,
 					mode: 'include',
 				})
 			)
@@ -120,6 +155,7 @@
 	{#if totalCount > 0}
 		<FilterBar
 			bind:filterState
+			{availableCategories}
 			availableTagCategories={tagCategories}
 			class="mt-4"
 		/>
