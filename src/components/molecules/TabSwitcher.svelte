@@ -1,11 +1,15 @@
 <script lang="ts">
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type {
+		AnyComponent,
+		BaseProps,
+		CustomProps,
+	} from '$lib/components/models'
 	import { mergeClass } from '$lib/components'
 
 	type Tab = {
 		id: string
 		label: string
-		icon?: string
+		icon?: AnyComponent
 	}
 
 	type Props = BaseProps &
@@ -38,6 +42,9 @@
 			aria-selected={activeTab === tab.id}
 			onclick={() => onchange?.(tab.id)}
 		>
+			{#if tab.icon}
+				<svelte:component this={tab.icon} class="size-4" />
+			{/if}
 			{tab.label}
 		</button>
 	{/each}

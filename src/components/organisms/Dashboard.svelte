@@ -1,6 +1,10 @@
 <script lang="ts">
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
+	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
+	import ChartPieIcon from '@iconify-svelte/lucide/chart-pie'
+	import FolderIcon from '@iconify-svelte/lucide/folder'
+
 	import Panel from '$components/atoms/Panel.svelte'
 	import Skeleton from '$components/atoms/Skeleton.svelte'
 	import UploadPrompt from '$components/atoms/UploadPrompt.svelte'
@@ -34,9 +38,9 @@
 	let activeTab = $state('transactions')
 
 	const tabs = [
-		{ id: 'transactions', label: '💰 Transactions' },
-		{ id: 'analytics', label: '📊 Analytics' },
-		{ id: 'categories', label: '📁 Categories' },
+		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
+		{ id: 'analytics', label: 'Analytics', icon: ChartPieIcon },
+		{ id: 'categories', label: 'Categories', icon: FolderIcon },
 	]
 </script>
 

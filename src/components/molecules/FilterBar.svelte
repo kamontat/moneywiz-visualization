@@ -12,6 +12,8 @@
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 	import ChevronDown from '@iconify-svelte/lucide/chevron-down'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
+	import HashIcon from '@iconify-svelte/lucide/hash'
+	import ListFilterIcon from '@iconify-svelte/lucide/list-filter'
 	import SearchIcon from '@iconify-svelte/lucide/search'
 	import X from '@iconify-svelte/lucide/x'
 
@@ -489,6 +491,7 @@
 			aria-expanded={openPanel === 'types'}
 			onclick={() => togglePanel('types')}
 		>
+			<ListFilterIcon class="size-3.5" />
 			<span class="text-xs">Types</span>
 			{#if hasTypeFilter}
 				<span
@@ -544,6 +547,7 @@
 				aria-expanded={openPanel === tagCategory.category}
 				onclick={() => togglePanel(tagCategory.category)}
 			>
+				<HashIcon class="size-3.5" />
 				<span class="text-xs">{tagCategory.category}</span>
 				{#if activeCount > 0}
 					<span
