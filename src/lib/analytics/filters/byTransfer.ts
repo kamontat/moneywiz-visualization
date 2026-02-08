@@ -1,15 +1,13 @@
 import type { FilterBy, FilterByFunc } from './models'
 
-export type TransferFilterMode = 'exclude-pure' | 'exclude-all' | 'only-pure'
+export type TransferFilterMode = 'exclude' | 'only'
 
 export const byTransfer: FilterByFunc<[TransferFilterMode]> = (mode) => {
 	const by: FilterBy = (trx) => {
 		switch (mode) {
-			case 'exclude-pure':
+			case 'exclude':
 				return trx.type !== 'Transfer'
-			case 'exclude-all':
-				return trx.type !== 'Transfer' && trx.type !== 'CategorizedTransfer'
-			case 'only-pure':
+			case 'only':
 				return trx.type === 'Transfer'
 			default:
 				return true

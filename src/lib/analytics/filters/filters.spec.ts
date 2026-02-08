@@ -36,22 +36,6 @@ const createTransfer = (): ParsedTransaction => ({
 	transfer: { type: 'Checking', name: 'To', extra: null },
 })
 
-const createCategorizedTransfer = (): ParsedTransaction => ({
-	type: 'CategorizedTransfer',
-	id: 3,
-	account: { type: 'Checking', name: 'From', extra: null },
-	description: 'CC Payment',
-	amount: { value: -5000, currency: 'THB' },
-	date: new Date(),
-	memo: '',
-	tags: [],
-	raw: {},
-	transfer: { type: 'CreditCard', name: 'CC', extra: null },
-	payee: '',
-	category: { category: 'Bills', subcategory: 'Credit Card' },
-	checkNumber: '',
-})
-
 describe('byCategory filter', () => {
 	it('should include transactions matching category in include mode', () => {
 		const filter = byCategory({ categories: ['Food'], mode: 'include' })
@@ -90,27 +74,17 @@ describe('byCategory filter', () => {
 })
 
 describe('byTransfer filter', () => {
-	it('should exclude pure transfers in exclude-pure mode', () => {
-		const filter = byTransfer('exclude-pure')
+	it('should exclude transfers in exclude mode', () => {
+		const filter = byTransfer('exclude')
 
 		expect(filter(createTransfer())).toBe(false)
-		expect(filter(createCategorizedTransfer())).toBe(true)
 		expect(filter(createExpense('Food', 'Restaurant'))).toBe(true)
 	})
 
-	it('should exclude all transfers in exclude-all mode', () => {
-		const filter = byTransfer('exclude-all')
-
-		expect(filter(createTransfer())).toBe(false)
-		expect(filter(createCategorizedTransfer())).toBe(false)
-		expect(filter(createExpense('Food', 'Restaurant'))).toBe(true)
-	})
-
-	it('should only keep pure transfers in only-pure mode', () => {
-		const filter = byTransfer('only-pure')
+	it('should only keep transfers in only mode', () => {
+		const filter = byTransfer('only')
 
 		expect(filter(createTransfer())).toBe(true)
-		expect(filter(createCategorizedTransfer())).toBe(false)
 		expect(filter(createExpense('Food', 'Restaurant'))).toBe(false)
 	})
 })

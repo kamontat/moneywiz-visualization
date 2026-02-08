@@ -3,9 +3,12 @@ import { describe, it, expect } from 'vitest'
 import {
 	getCategoryFullName,
 	isDebtCategory,
+	isDebtRepaymentCategory,
 	isGiftCategory,
+	isGiveawayCategory,
 	isIncomeCategory,
 	isSpecialCategory,
+	isWindfallCategory,
 	parseAccount,
 	parseAmount,
 	parseCategory,
@@ -148,15 +151,45 @@ describe('isIncomeCategory', () => {
 		).toBe(true)
 	})
 
-	it('should return true for Income category', () => {
+	it('should return true for Compensation with any subcategory', () => {
 		expect(
-			isIncomeCategory({ category: 'Income', subcategory: 'Interest' })
+			isIncomeCategory({ category: 'Compensation', subcategory: 'Dividend' })
+		).toBe(true)
+		expect(
+			isIncomeCategory({ category: 'Compensation', subcategory: 'Rent' })
+		).toBe(true)
+		expect(
+			isIncomeCategory({ category: 'Compensation', subcategory: '' })
+		).toBe(true)
+	})
+
+	it('should return true for Other Incomes category', () => {
+		expect(
+			isIncomeCategory({ category: 'Other Incomes', subcategory: 'Gift' })
+		).toBe(true)
+		expect(
+			isIncomeCategory({ category: 'Other Incomes', subcategory: '' })
 		).toBe(true)
 	})
 
 	it('should return false for non-income category', () => {
 		expect(
 			isIncomeCategory({ category: 'Food', subcategory: 'Restaurant' })
+		).toBe(false)
+	})
+
+	it('should return false for Financial category (not an income prefix)', () => {
+		expect(
+			isIncomeCategory({ category: 'Financial', subcategory: 'Cashback' })
+		).toBe(false)
+		expect(
+			isIncomeCategory({ category: 'Financial', subcategory: 'Interest' })
+		).toBe(false)
+	})
+
+	it('should return false for Payment category', () => {
+		expect(
+			isIncomeCategory({ category: 'Payment', subcategory: 'Windfall' })
 		).toBe(false)
 	})
 })
@@ -214,15 +247,60 @@ describe('isDebtCategory', () => {
 		)
 	})
 
-	it('should return true for Payment > Debt Repayment', () => {
+	it('should return false for Payment > Debt Repayment', () => {
 		expect(
 			isDebtCategory({ category: 'Payment', subcategory: 'Debt Repayment' })
-		).toBe(true)
+		).toBe(false)
 	})
 
 	it('should return false for gift categories', () => {
 		expect(
 			isDebtCategory({ category: 'Payment', subcategory: 'Giveaways' })
+		).toBe(false)
+	})
+})
+
+describe('isDebtRepaymentCategory', () => {
+	it('should return true for Payment > Debt Repayment', () => {
+		expect(
+			isDebtRepaymentCategory({
+				category: 'Payment',
+				subcategory: 'Debt Repayment',
+			})
+		).toBe(true)
+	})
+
+	it('should return false for Payment > Debt', () => {
+		expect(
+			isDebtRepaymentCategory({ category: 'Payment', subcategory: 'Debt' })
+		).toBe(false)
+	})
+})
+
+describe('isWindfallCategory', () => {
+	it('should return true for Payment > Windfall', () => {
+		expect(
+			isWindfallCategory({ category: 'Payment', subcategory: 'Windfall' })
+		).toBe(true)
+	})
+
+	it('should return false for other categories', () => {
+		expect(
+			isWindfallCategory({ category: 'Payment', subcategory: 'Giveaways' })
+		).toBe(false)
+	})
+})
+
+describe('isGiveawayCategory', () => {
+	it('should return true for Payment > Giveaways', () => {
+		expect(
+			isGiveawayCategory({ category: 'Payment', subcategory: 'Giveaways' })
+		).toBe(true)
+	})
+
+	it('should return false for other categories', () => {
+		expect(
+			isGiveawayCategory({ category: 'Payment', subcategory: 'Windfall' })
 		).toBe(false)
 	})
 })

@@ -12,4 +12,8 @@ export interface Summarize {
 	savingsRate: number
 	transactionCount: number
 	dateRange: SummarizeDateRange
+	totalDebt: number
+	totalDebtRepayment: number
+	totalWindfall: number
+	totalGiveaway: number
 }

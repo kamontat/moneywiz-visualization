@@ -1,10 +1,13 @@
 import type {
-	ParsedCategorizedTransferTransaction,
+	ParsedDebtRepaymentTransaction,
+	ParsedDebtTransaction,
 	ParsedExpenseTransaction,
+	ParsedGiveawayTransaction,
 	ParsedIncomeTransaction,
 	ParsedRefundTransaction,
 	ParsedTransferTransaction,
 	ParsedUnknownTransaction,
+	ParsedWindfallTransaction,
 } from './transaction'
 
 export type ParsedTransaction =
@@ -12,7 +15,10 @@ export type ParsedTransaction =
 	| ParsedRefundTransaction
 	| ParsedIncomeTransaction
 	| ParsedTransferTransaction
-	| ParsedCategorizedTransferTransaction
+	| ParsedDebtTransaction
+	| ParsedDebtRepaymentTransaction
+	| ParsedWindfallTransaction
+	| ParsedGiveawayTransaction
 	| ParsedUnknownTransaction
 
 export type ParsedTransactionType = ParsedTransaction['type']

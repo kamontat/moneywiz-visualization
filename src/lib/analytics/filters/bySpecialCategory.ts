@@ -1,6 +1,7 @@
 import type { FilterBy, FilterByFunc } from './models'
 import {
 	isDebtCategory,
+	isDebtRepaymentCategory,
 	isGiftCategory,
 	isSpecialCategory,
 } from '$lib/transactions/utils'
@@ -20,6 +21,7 @@ export const bySpecialCategory: FilterByFunc<[SpecialCategoryFilterMode]> = (
 		}
 
 		const isDebt = isDebtCategory(trx.category)
+		const isDebtRepayment = isDebtRepaymentCategory(trx.category)
 		const isGift = isGiftCategory(trx.category)
 		const isSpecial = isSpecialCategory(trx.category)
 
@@ -27,7 +29,7 @@ export const bySpecialCategory: FilterByFunc<[SpecialCategoryFilterMode]> = (
 			case 'exclude-all':
 				return !isSpecial
 			case 'only-debt':
-				return isDebt
+				return isDebt || isDebtRepayment
 			case 'only-gift':
 				return isGift
 			case 'only-special':

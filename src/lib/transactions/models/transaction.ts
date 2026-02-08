@@ -45,13 +45,29 @@ export interface ParsedTransferTransaction extends ParsedBaseTransaction {
 	transfer: ParsedAccount
 }
 
-/**
- * Categorized Transfer: Transfers field populated AND has Category
- * Treated as real expense/income (e.g., paying credit card bill categorized as "Bills")
- */
-export interface ParsedCategorizedTransferTransaction extends ParsedBaseTransaction {
-	type: 'CategorizedTransfer'
-	transfer: ParsedAccount
+export interface ParsedDebtTransaction extends ParsedBaseTransaction {
+	type: 'Debt'
+	payee: string
+	category: ParsedCategory
+	checkNumber: string
+}
+
+export interface ParsedDebtRepaymentTransaction extends ParsedBaseTransaction {
+	type: 'DebtRepayment'
+	payee: string
+	category: ParsedCategory
+	checkNumber: string
+}
+
+export interface ParsedWindfallTransaction extends ParsedBaseTransaction {
+	type: 'Windfall'
+	payee: string
+	category: ParsedCategory
+	checkNumber: string
+}
+
+export interface ParsedGiveawayTransaction extends ParsedBaseTransaction {
+	type: 'Giveaway'
 	payee: string
 	category: ParsedCategory
 	checkNumber: string

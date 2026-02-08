@@ -1,18 +1,25 @@
 import type { ParsedTransaction } from './models'
 import type {
 	ParsedBaseTransaction,
-	ParsedCategorizedTransferTransaction,
+	ParsedDebtRepaymentTransaction,
+	ParsedDebtTransaction,
 	ParsedExpenseTransaction,
+	ParsedGiveawayTransaction,
 	ParsedIncomeTransaction,
 	ParsedRefundTransaction,
 	ParsedTransferTransaction,
+	ParsedWindfallTransaction,
 } from './models/transaction'
 import type { ParsedCsvRow } from '$lib/csv/models'
 import papaparse from 'papaparse'
 
 import { CsvKey, getValue, isAccountHeaderRow } from './csv'
 import {
+	isDebtCategory,
+	isDebtRepaymentCategory,
+	isGiveawayCategory,
 	isIncomeCategory,
+	isWindfallCategory,
 	parseAccount,
 	parseAmount,
 	parseCategory,
@@ -67,20 +74,81 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 	const category = parseCategory(categoryField)
 	const checkNumber = getValue(row, CsvKey.CheckNumber)
 
+	if (isDebtCategory(category)) {
+		return {
+			...base,
+			type: 'Debt',
+			payee,
+			category,
+			checkNumber,
+		} as ParsedDebtTransaction
+	}
+
+	if (isDebtRepaymentCategory(category)) {
+		return {
+			...base,
+			type: 'DebtRepayment',
+			payee,
+			category,
+			checkNumber,
+		} as ParsedDebtRepaymentTransaction
+	}
+
+	if (isWindfallCategory(category)) {
+		return {
+			...base,
+			type: 'Windfall',
+			payee,
+			category,
+			checkNumber,
+		} as ParsedWindfallTransaction
+	}
+
+	if (isGiveawayCategory(category)) {
+		return {
+			...base,
+			type: 'Giveaway',
+			payee,
+			category,
+			checkNumber,
+		} as ParsedGiveawayTransaction
+	}
+
 	// Transfer classification per RULES.md:
 	// - Pure Transfer: Transfers field populated AND no Category
-	// - Categorized Transfer: Transfers field populated AND has Category
+	// - Transfer with Category: Classify as Income/Expense/Refund with transfer as payee
 	if (transferField) {
 		const hasCategory = categoryField && categoryField.trim() !== ''
 		if (hasCategory) {
+			const transferPayee = parseAccount(transferField).name
+
+			if (amount.value > 0 && isIncomeCategory(category)) {
+				return {
+					...base,
+					type: 'Income',
+					payee: transferPayee,
+					category,
+					checkNumber,
+				} as ParsedIncomeTransaction
+			}
+
+			if (amount.value < 0) {
+				return {
+					...base,
+					type: 'Expense',
+					payee: transferPayee,
+					category,
+					checkNumber,
+				} as ParsedExpenseTransaction
+			}
+
 			return {
 				...base,
-				type: 'CategorizedTransfer',
-				transfer: parseAccount(transferField),
-				payee,
+				type: 'Refund',
+				payee: transferPayee,
 				category,
 				checkNumber,
-			} as ParsedCategorizedTransferTransaction
+			} as ParsedRefundTransaction
 		}
 		return {
 			...base,

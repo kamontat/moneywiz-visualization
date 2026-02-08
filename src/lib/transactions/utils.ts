@@ -7,7 +7,7 @@ import type {
 } from './models'
 import {
 	DEFAULT_CURRENCY,
-	INCOME_CATEGORIES,
+	INCOME_CATEGORY_PREFIXES,
 	SPECIAL_CATEGORIES,
 } from './constants'
 
@@ -167,9 +167,7 @@ export const parseDate = (
 }
 
 export const isIncomeCategory = (category: ParsedCategory): boolean => {
-	return INCOME_CATEGORIES.some((prefix) =>
-		category.category.startsWith(prefix)
-	)
+	return INCOME_CATEGORY_PREFIXES.some((prefix) => category.category === prefix)
 }
 
 export const getCategoryFullName = (category: ParsedCategory): string => {
@@ -186,18 +184,26 @@ export const isSpecialCategory = (category: ParsedCategory): boolean => {
 
 export const isDebtCategory = (category: ParsedCategory): boolean => {
 	const fullName = getCategoryFullName(category)
-	return (
-		fullName === SPECIAL_CATEGORIES.DEBT ||
-		fullName === SPECIAL_CATEGORIES.DEBT_REPAYMENT
-	)
+	return fullName === SPECIAL_CATEGORIES.DEBT
+}
+
+export const isDebtRepaymentCategory = (category: ParsedCategory): boolean => {
+	const fullName = getCategoryFullName(category)
+	return fullName === SPECIAL_CATEGORIES.DEBT_REPAYMENT
+}
+
+export const isWindfallCategory = (category: ParsedCategory): boolean => {
+	const fullName = getCategoryFullName(category)
+	return fullName === SPECIAL_CATEGORIES.WINDFALL
+}
+
+export const isGiveawayCategory = (category: ParsedCategory): boolean => {
+	const fullName = getCategoryFullName(category)
+	return fullName === SPECIAL_CATEGORIES.GIVEAWAYS
 }
 
 export const isGiftCategory = (category: ParsedCategory): boolean => {
-	const fullName = getCategoryFullName(category)
-	return (
-		fullName === SPECIAL_CATEGORIES.GIVEAWAYS ||
-		fullName === SPECIAL_CATEGORIES.WINDFALL
-	)
+	return isWindfallCategory(category) || isGiveawayCategory(category)
 }
 
 export interface TagCategoryGroup {

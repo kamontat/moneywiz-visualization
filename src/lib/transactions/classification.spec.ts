@@ -44,7 +44,7 @@ describe('Transaction Classification', () => {
 			)
 		})
 
-		it('should classify as CategorizedTransfer when Transfers field AND Category are populated', async () => {
+		it('should classify as Expense when Transfers field AND Category are populated', async () => {
 			const { parseTransactions } = await import('./parser')
 
 			const row = createRow({
@@ -58,10 +58,8 @@ describe('Transaction Classification', () => {
 				rows: [row],
 			})
 
-			expect(result[0].type).toBe('CategorizedTransfer')
-			expect('transfer' in result[0] && result[0].transfer.name).toBe(
-				'Credit Card'
-			)
+			expect(result[0].type).toBe('Expense')
+			expect('payee' in result[0] && result[0].payee).toBe('Credit Card')
 			expect('category' in result[0] && result[0].category.category).toBe(
 				'Bills'
 			)
@@ -85,12 +83,12 @@ describe('Transaction Classification', () => {
 			expect(result[0].type).toBe('Income')
 		})
 
-		it('should classify as Income when amount > 0 AND category starts with Income', async () => {
+		it('should classify as Income when amount > 0 AND category is Other Incomes > Interest', async () => {
 			const { parseTransactions } = await import('./parser')
 
 			const row = createRow({
 				[CsvKey.Amount]: '100.00',
-				[CsvKey.Category]: 'Income > Interest',
+				[CsvKey.Category]: 'Other Incomes > Interest',
 			})
 
 			const result = parseTransactions({
@@ -152,6 +150,89 @@ describe('Transaction Classification', () => {
 			})
 
 			expect(result[0].type).toBe('Refund')
+		})
+	})
+
+	describe('Special Category Detection', () => {
+		it('should classify as Debt when category is Payment > Debt', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '-1000.00',
+				[CsvKey.Category]: 'Payment > Debt',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Debt')
+		})
+
+		it('should classify as DebtRepayment when category is Payment > Debt Repayment', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '-500.00',
+				[CsvKey.Category]: 'Payment > Debt Repayment',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('DebtRepayment')
+		})
+
+		it('should classify as Windfall when category is Payment > Windfall', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '5000.00',
+				[CsvKey.Category]: 'Payment > Windfall',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Windfall')
+		})
+
+		it('should classify as Giveaway when category is Payment > Giveaways', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '-200.00',
+				[CsvKey.Category]: 'Payment > Giveaways',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Giveaway')
+		})
+
+		it('should prioritize special categories over Transfer classification', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Transfers]: 'Other Account (A)',
+				[CsvKey.Amount]: '-1000.00',
+				[CsvKey.Category]: 'Payment > Debt',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Debt')
 		})
 	})
 })

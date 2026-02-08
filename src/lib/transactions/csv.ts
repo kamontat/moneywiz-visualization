@@ -3,6 +3,7 @@ import { transaction } from '$lib/loggers'
 
 export enum CsvKey {
 	Name = 'Name',
+	CurrentBalance = 'Current balance',
 	Account = 'Account',
 	Transfers = 'Transfers',
 	Description = 'Description',
@@ -21,12 +22,14 @@ export enum CsvKey {
  * Checks if a CSV row is an account header/summary row.
  * MoneyWiz CSV exports include account summary rows with format:
  * "AccountName","Balance","Currency","","","","","","","","","","","",""
- * These have the Name column filled but Date column empty.
+ * These have the Name column AND Current balance column filled.
  */
 export const isAccountHeaderRow = (row: ParsedCsvRow): boolean => {
 	const name = row[CsvKey.Name]
-	const date = row[CsvKey.Date]
-	return Boolean(name && name.trim() !== '' && (!date || date.trim() === ''))
+	const currentBalance = row[CsvKey.CurrentBalance]
+	return Boolean(
+		name && name.trim() !== '' && currentBalance && currentBalance.trim() !== ''
+	)
 }
 
 export const getValue = (row: ParsedCsvRow, key: CsvKey): string => {

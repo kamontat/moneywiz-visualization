@@ -6,6 +6,10 @@ export interface TimeSeriesPoint {
 	netExpense: number
 	remaining: number
 	label: string
+	debt: number
+	debtRepayment: number
+	windfall: number
+	giveaway: number
 }
 
 export type TimeSeriesMode = 'Daily' | 'Monthly'

@@ -31,7 +31,10 @@
 		'Income',
 		'Refund',
 		'Transfer',
-		'CategorizedTransfer',
+		'Debt',
+		'DebtRepayment',
+		'Windfall',
+		'Giveaway',
 		'Unknown',
 	]
 

@@ -30,6 +30,10 @@ export const byTimeSeries: TransformByFunc<
 					netExpense: 0,
 					remaining: 0,
 					label: getLabel(mode, t.date),
+					debt: 0,
+					debtRepayment: 0,
+					windfall: 0,
+					giveaway: 0,
 				})
 			}
 			const entry = map.get(key)!
@@ -44,12 +48,17 @@ export const byTimeSeries: TransformByFunc<
 				case 'Refund':
 					entry.refund += t.amount.value
 					break
-				case 'CategorizedTransfer':
-					if (t.amount.value > 0) {
-						entry.income += t.amount.value
-					} else {
-						entry.grossExpense += Math.abs(t.amount.value)
-					}
+				case 'Debt':
+					entry.debt += Math.abs(t.amount.value)
+					break
+				case 'DebtRepayment':
+					entry.debtRepayment += Math.abs(t.amount.value)
+					break
+				case 'Windfall':
+					entry.windfall += t.amount.value
+					break
+				case 'Giveaway':
+					entry.giveaway += Math.abs(t.amount.value)
 					break
 			}
 

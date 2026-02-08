@@ -1,7 +1,14 @@
 export const DEFAULT_CURRENCY = 'THB'
 
-export const INCOME_CATEGORIES = ['Compensation', 'Income'] as const
-export type IncomeCategory = (typeof INCOME_CATEGORIES)[number]
+/**
+ * Category prefixes that represent income transactions.
+ * Any transaction with a category starting with these names is classified as income.
+ */
+export const INCOME_CATEGORY_PREFIXES = [
+	'Compensation',
+	'Other Incomes',
+] as const
+export type IncomeCategoryPrefix = (typeof INCOME_CATEGORY_PREFIXES)[number]
 
 export const SPECIAL_CATEGORIES = {
 	DEBT: 'Payment > Debt',
