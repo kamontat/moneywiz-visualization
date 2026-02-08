@@ -50,6 +50,5 @@
 }
 
 body {
-	color: rgb(17, 17, 47);
-	@apply flex min-h-screen flex-col;
+	@apply flex min-h-screen flex-col text-base-content;
 }
