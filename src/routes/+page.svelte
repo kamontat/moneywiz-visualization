@@ -24,13 +24,14 @@
 		extractTagCategories,
 	} from '$lib/transactions'
 
-	const LIMIT = 20
+	const DEFAULT_LIMIT = 20
 
 	let allTransactions = $state<ParsedTransaction[]>([])
 	let totalCount = $state(0)
 	let fileInfo = $state<CsvState | undefined>(undefined)
 	let uploading = $state(false)
 	let filterState = $state<FilterState>(emptyFilterState())
+	let limit = $state(DEFAULT_LIMIT)
 
 	const loadData = async () => {
 		totalCount = await getTransactionCount()
@@ -102,7 +103,7 @@
 	const displayTransactions = $derived(
 		filteredTransactions
 			.toSorted((a, b) => b.date.getTime() - a.date.getTime())
-			.slice(0, LIMIT)
+			.slice(0, limit)
 	)
 	const filteredCount = $derived(filteredTransactions.length)
 </script>
@@ -133,7 +134,8 @@
 		allTransactions={filteredTransactions}
 		totalCount={filteredCount}
 		{uploading}
-		limit={LIMIT}
+		{limit}
+		onlimitchange={(newLimit) => (limit = newLimit)}
 		hasData={totalCount > 0}
 		class="mt-6 mb-8"
 	/>

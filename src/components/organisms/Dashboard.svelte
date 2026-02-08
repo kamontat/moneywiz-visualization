@@ -16,6 +16,7 @@
 			limit?: number
 			hasData?: boolean
 			uploading?: boolean
+			onlimitchange?: (limit: number) => void
 		}>
 
 	let {
@@ -25,6 +26,7 @@
 		limit = 0,
 		hasData = false,
 		uploading = false,
+		onlimitchange,
 		class: className,
 		...rest
 	}: Props = $props()
@@ -65,6 +67,7 @@
 					{transactions}
 					{totalCount}
 					{limit}
+					{onlimitchange}
 					title="Transactions"
 				/>
 			</div>

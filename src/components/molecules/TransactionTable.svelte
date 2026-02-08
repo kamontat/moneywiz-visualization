@@ -8,15 +8,9 @@
 		CustomProps<{
 			transactions: ParsedTransaction[]
 			totalCount?: number
-			limit?: number
 		}>
 
-	let {
-		transactions,
-		totalCount = 0,
-		limit = 0,
-		class: className,
-	}: Props = $props()
+	let { transactions, totalCount = 0, class: className }: Props = $props()
 
 	const stripNumberPrefix = (name: string): string =>
 		name.replace(/^\d+\s+/, '')
@@ -140,19 +134,17 @@
 				</tbody>
 			</table>
 		</div>
-		{#if limit > 0 && totalCount > limit}
-			<div
-				class="mt-4 flex items-center justify-between border-t border-base-200 pt-4"
-			>
-				<p class="text-sm text-base-content/60">
-					Showing <span class="font-medium text-base-content">{limit}</span> of
-					<span class="font-medium text-base-content"
-						>{totalCount.toLocaleString()}</span
-					>
-					transactions
-				</p>
-			</div>
-		{/if}
+		<p class="mt-4 text-sm text-base-content/60">
+			Showing
+			<span class="font-medium text-base-content">
+				{Math.min(transactions.length, totalCount)}
+			</span>
+			of
+			<span class="font-medium text-base-content">
+				{totalCount.toLocaleString()}
+			</span>
+			transactions
+		</p>
 	{:else}
 		<div class="py-12 text-center">
 			<div
