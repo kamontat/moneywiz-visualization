@@ -12,6 +12,7 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
+	import { filterOptionsStore } from '$lib/analytics/filters/init'
 	import { csvAPIs, csvUploading } from '$lib/csv'
 	import { component } from '$lib/loggers'
 	import {
@@ -21,7 +22,6 @@
 		extractTagCategories,
 		getTransactions,
 	} from '$lib/transactions'
-	import { filterOptionsStore } from '$lib/analytics/filters/init'
 
 	type Props = Omit<BaseProps, 'children'> &
 		Pick<ElementProps<'input'>, 'onchange'> &

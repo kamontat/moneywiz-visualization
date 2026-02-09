@@ -8,8 +8,8 @@
 	import TrashIcon from '@iconify-svelte/lucide/trash-2'
 
 	import Button from '$components/atoms/Button.svelte'
-	import { csvAPIs, csvStore } from '$lib/csv'
 	import { filterOptionsStore } from '$lib/analytics/filters/init'
+	import { csvAPIs, csvStore } from '$lib/csv'
 	import { clearTransactions } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
