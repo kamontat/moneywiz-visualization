@@ -5,6 +5,8 @@ export const STATE_THEME_V1 = 'mw_theme_v1' as const
 
 /** For localDB */
 export const STATE_CSV_V1 = 'mw_csv_v1' as const
+/** For localDB */
+export const STATE_FILTER_OPTIONS_V1 = 'mw_filter_options_v1' as const
 /** For indexDB */
 export const STATE_CSV_RAW_HEAD_V1 = 'mw_csv_raw_head_v1' as const
 /** For indexDB */

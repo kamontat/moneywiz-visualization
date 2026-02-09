@@ -4,7 +4,9 @@ import type {
 	ParsedAmount,
 	ParsedCategory,
 	ParsedTag,
+	ParsedTransaction,
 } from './models'
+import type { TagCategoryGroup } from './models/tag'
 import {
 	DEFAULT_CURRENCY,
 	INCOME_CATEGORY_PREFIXES,
@@ -217,11 +219,6 @@ export const isGiftCategory = (category: ParsedCategory): boolean => {
 	return isWindfallCategory(category) || isGiveawayCategory(category)
 }
 
-export interface TagCategoryGroup {
-	category: string
-	tags: string[]
-}
-
 export const extractTagCategories = (
 	transactions: { tags: ParsedTag[] }[]
 ): TagCategoryGroup[] => {
@@ -252,10 +249,11 @@ export const extractCategories = (
 
 	for (const trx of transactions) {
 		if (!trx.category) continue
-		const fullName = getCategoryFullName(trx.category)
-		categoryMap.set(fullName, trx.category)
-		categoryMap.set(trx.category.category, {
-			category: trx.category.category,
+		const category = trx.category
+		const fullName = getCategoryFullName(category)
+		categoryMap.set(fullName, category)
+		categoryMap.set(category.category, {
+			category: category.category,
 			subcategory: '',
 		})
 	}

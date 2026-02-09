@@ -5,7 +5,9 @@ import type {
 	STATE_CSV_RAW_ROWS_V1,
 	STATE_CSV_RAW_HEAD_V1,
 	STATE_TRX_V1,
+	STATE_FILTER_OPTIONS_V1,
 } from '../constants'
+import type { FilterOptions } from '$lib/analytics/filters/models'
 import type { CsvState, ParsedCsv } from '$lib/csv/models'
 import type { ParsedTheme } from '$lib/themes/models'
 import type { ParsedTransaction } from '$lib/transactions/models'
@@ -30,6 +32,11 @@ type CsvRawRowTableSchemaV1 = ISchemaTable<
 	[ISchemaState<number, ParsedCsv['rows'][number]>]
 >
 
+type FilterOptionsTableSchemaV1 = ISchemaTable<
+	typeof STATE_FILTER_OPTIONS_V1,
+	[ISchemaState<'default', FilterOptions | undefined>]
+>
+
 export type TransactionTableSchemaV1 = ISchemaTable<
 	typeof STATE_TRX_V1,
 	[
@@ -47,6 +54,7 @@ export type StoreSchema = ISchemaDB<{
 		CsvTableSchemaV1,
 		CsvRawHeadTableSchemaV1,
 		CsvRawRowTableSchemaV1,
+		FilterOptionsTableSchemaV1,
 		TransactionTableSchemaV1,
 	]
 }>

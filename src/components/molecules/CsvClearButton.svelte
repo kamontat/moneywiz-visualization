@@ -9,6 +9,7 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import { csvAPIs, csvStore } from '$lib/csv'
+	import { filterOptionsStore } from '$lib/analytics/filters/init'
 	import { clearTransactions } from '$lib/transactions'
 
 	type Props = Omit<BaseProps, 'children'> &
@@ -35,6 +36,7 @@
 			// Clear transactions first to avoid race condition with csvStore subscribers
 			await clearTransactions()
 			await csvAPIs.reset()
+			await filterOptionsStore.resetAsync()
 			onsuccess?.()
 		} catch (error) {
 			onfail?.(error as Error)

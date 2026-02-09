@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { FilterOptions } from '$lib/analytics/filters/models/options'
 	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
 	import type { CsvState } from '$lib/csv/models'
 	import type {
@@ -6,6 +7,7 @@
 		ParsedTransaction,
 	} from '$lib/transactions/models'
 	import { onMount } from 'svelte'
+	import { get } from 'svelte/store'
 
 	import AppBody from '$components/organisms/AppBody.svelte'
 	import BodyHeader from '$components/organisms/BodyHeader.svelte'
@@ -19,6 +21,7 @@
 		byTransactionType,
 		byTags,
 	} from '$lib/analytics/filters'
+	import { filterOptionsStore } from '$lib/analytics/filters/init'
 	import { emptyFilterState } from '$lib/analytics/filters/models/state'
 	import { bySummarize, transform } from '$lib/analytics/transforms'
 	import { csvStore, csvUploading } from '$lib/csv'
@@ -37,6 +40,7 @@
 	let totalCount = $state(0)
 	let availableCategories = $state(extractCategories([]))
 	let tagCategories = $state(extractTagCategories([]))
+	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
 	let fileInfo = $state<CsvState | undefined>(undefined)
 	let uploading = $state(false)
 	let filterState = $state<FilterState>({
@@ -48,11 +52,40 @@
 	const loadData = async () => {
 		totalCount = await getTransactionCount()
 		allTransactions = await getTransactions()
-		availableCategories = extractCategories(allTransactions)
+		const cached = cachedFilterOptions
+		const fileMatches =
+			cached?.fileName !== undefined &&
+			fileInfo?.fileName !== undefined &&
+			cached.fileName === fileInfo.fileName &&
+			cached.modifiedAt === fileInfo.modifiedAt
+		if (cached && (fileMatches || !fileInfo)) {
+			availableCategories = cached.categories
+			tagCategories = cached.tags
+			return
+		}
+
+		const categoryTransactions = allTransactions.filter(
+			(trx) => 'category' in trx
+		)
+		availableCategories = extractCategories(
+			categoryTransactions as { category?: ParsedCategory }[]
+		)
 		tagCategories = extractTagCategories(allTransactions)
+		if (fileInfo?.fileName && fileInfo?.modifiedAt) {
+			await filterOptionsStore.setAsync({
+				categories: availableCategories,
+				tags: tagCategories,
+				fileName: fileInfo.fileName,
+				modifiedAt: fileInfo.modifiedAt,
+			})
+		}
 	}
 
 	onMount(() => {
+		cachedFilterOptions = get(filterOptionsStore)
+		filterOptionsStore.subscribe((options: FilterOptions | undefined) => {
+			cachedFilterOptions = options
+		})
 		loadData()
 		csvStore.subscribe((state) => {
 			fileInfo = state

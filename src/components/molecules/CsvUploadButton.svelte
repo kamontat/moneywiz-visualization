@@ -7,6 +7,7 @@
 		ElementProps,
 	} from '$lib/components/models'
 	import type { ImportProgress } from '$lib/transactions'
+	import type { ParsedCategory } from '$lib/transactions/models'
 	import UploadIcon from '@iconify-svelte/lucide/upload'
 
 	import Button from '$components/atoms/Button.svelte'
@@ -16,7 +17,11 @@
 	import {
 		importTransactionsFromFile,
 		clearTransactions,
+		extractCategories,
+		extractTagCategories,
+		getTransactions,
 	} from '$lib/transactions'
+	import { filterOptionsStore } from '$lib/analytics/filters/init'
 
 	type Props = Omit<BaseProps, 'children'> &
 		Pick<ElementProps<'input'>, 'onchange'> &
@@ -70,6 +75,16 @@
 			})
 
 			await csvAPIs.parse(file)
+			const transactions = await getTransactions()
+			const categoryTransactions = transactions.filter(
+				(trx) => 'category' in trx
+			) as { category?: ParsedCategory }[]
+			await filterOptionsStore.setAsync({
+				categories: extractCategories(categoryTransactions),
+				tags: extractTagCategories(transactions),
+				fileName: file.name,
+				modifiedAt: file.lastModified,
+			})
 
 			onsuccess?.(count)
 		} catch (error) {
