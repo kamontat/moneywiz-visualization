@@ -43,7 +43,8 @@
 			onclick={() => onchange?.(tab.id)}
 		>
 			{#if tab.icon}
-				<svelte:component this={tab.icon} class="size-4" />
+				{@const Icon = tab.icon}
+				<Icon class="size-4" />
 			{/if}
 			{tab.label}
 		</button>
