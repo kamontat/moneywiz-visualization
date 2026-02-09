@@ -6,7 +6,6 @@
 		ParsedTransaction,
 	} from '$lib/transactions/models'
 	import { onMount } from 'svelte'
-	import { SvelteMap } from 'svelte/reactivity'
 
 	import FilterBar from '$components/organisms/FilterBar.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
@@ -24,11 +23,11 @@
 	import { bySummarize, transform } from '$lib/analytics/transforms'
 	import { csvStore, csvUploading } from '$lib/csv'
 	import {
+		extractCategories,
 		extractTagCategories,
 		getTransactionCount,
 		getTransactions,
 	} from '$lib/transactions'
-	import { getCategoryFullName } from '$lib/transactions/utils'
 
 	type FilterState = BaseFilterState & { categories: string[] }
 
@@ -36,6 +35,8 @@
 
 	let allTransactions = $state<ParsedTransaction[]>([])
 	let totalCount = $state(0)
+	let availableCategories = $state(extractCategories([]))
+	let tagCategories = $state(extractTagCategories([]))
 	let fileInfo = $state<CsvState | undefined>(undefined)
 	let uploading = $state(false)
 	let filterState = $state<FilterState>({
@@ -47,6 +48,8 @@
 	const loadData = async () => {
 		totalCount = await getTransactionCount()
 		allTransactions = await getTransactions()
+		availableCategories = extractCategories(allTransactions)
+		tagCategories = extractTagCategories(allTransactions)
 	}
 
 	onMount(() => {
@@ -57,23 +60,6 @@
 		})
 		csvUploading.subscribe((u: boolean) => {
 			uploading = u
-		})
-	})
-
-	const tagCategories = $derived(extractTagCategories(allTransactions))
-	const availableCategories = $derived.by(() => {
-		const categoryMap = new SvelteMap<string, ParsedCategory>()
-		for (const trx of allTransactions) {
-			if (!('category' in trx) || !trx.category) continue
-			const fullName = getCategoryFullName(trx.category)
-			categoryMap.set(fullName, trx.category)
-			categoryMap.set(trx.category.category, {
-				category: trx.category.category,
-				subcategory: '',
-			})
-		}
-		return Array.from(categoryMap.values()).sort((a, b) => {
-			return getCategoryFullName(a).localeCompare(getCategoryFullName(b))
 		})
 	})
 
