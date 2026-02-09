@@ -5,11 +5,12 @@
 	import ChartPieIcon from '@iconify-svelte/lucide/chart-pie'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
 
-	import Panel from '$components/atoms/Panel.svelte'
 	import Skeleton from '$components/atoms/Skeleton.svelte'
 	import UploadPrompt from '$components/atoms/UploadPrompt.svelte'
 	import TabSwitcher from '$components/molecules/TabSwitcher.svelte'
 	import TransactionPanel from '$components/molecules/TransactionPanel.svelte'
+	import AnalyticsPanel from '$components/organisms/AnalyticsPanel.svelte'
+	import CategoriesPanel from '$components/organisms/CategoriesPanel.svelte'
 	import { mergeClass } from '$lib/components'
 
 	type Props = BaseProps &
@@ -77,39 +78,11 @@
 			</div>
 		{:else if activeTab === 'analytics'}
 			<div class="p-4 sm:p-6">
-				<Panel title="Analytics">
-					<div class="py-12 text-center">
-						<div
-							class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-base-200"
-						>
-							<span class="text-2xl">📊</span>
-						</div>
-						<p class="text-lg font-semibold text-base-content">
-							Analytics coming soon
-						</p>
-						<p class="mt-1 text-sm text-base-content/60">
-							Charts and graphs will appear here
-						</p>
-					</div>
-				</Panel>
+				<AnalyticsPanel transactions={_allTransactions} />
 			</div>
 		{:else if activeTab === 'categories'}
 			<div class="p-4 sm:p-6">
-				<Panel title="Categories">
-					<div class="py-12 text-center">
-						<div
-							class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-base-200"
-						>
-							<span class="text-2xl">📁</span>
-						</div>
-						<p class="text-lg font-semibold text-base-content">
-							Categories coming soon
-						</p>
-						<p class="mt-1 text-sm text-base-content/60">
-							Category breakdown will appear here
-						</p>
-					</div>
-				</Panel>
+				<CategoriesPanel transactions={_allTransactions} />
 			</div>
 		{/if}
 	</div>
