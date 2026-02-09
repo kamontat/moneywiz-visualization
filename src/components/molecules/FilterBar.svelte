@@ -323,7 +323,7 @@
 		const options = query
 			? tagCategory.tags.filter((tag) => tag.toLowerCase().includes(query))
 			: tagCategory.tags
-		return options.slice(0, 8)
+		return options
 	}
 
 	const getTagMode = (categoryName: string): FilterTagMode => {
@@ -376,6 +376,8 @@
 		'd-badge-sm',
 		'text-[11px]',
 		'transition-all',
+		'w-full',
+		'justify-center',
 	]
 	const tagOptionInactiveClass =
 		'd-badge-outline text-base-content/70 hover:d-badge-primary'
@@ -396,7 +398,7 @@
 			<SearchIcon class="size-3 opacity-50" />
 		</label>
 		<div
-			class="flex max-h-[50vh] flex-wrap content-start gap-1.5 overflow-y-auto"
+			class="grid max-h-[50vh] grid-cols-2 content-start gap-1.5 overflow-y-auto sm:grid-cols-4 lg:grid-cols-6"
 		>
 			{#if categoryOptions.length > 0}
 				{#each categoryOptions as option (option.fullName)}
@@ -665,7 +667,7 @@
 							</button>
 						{/if}
 					</div>
-					<div class="flex flex-wrap gap-1.5">
+					<div class="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-6">
 						{#each transactionTypes as type (type)}
 							<button
 								type="button"
@@ -772,7 +774,9 @@
 							</label>
 
 							{#if tagOptions.length > 0}
-								<div class="flex flex-wrap gap-1.5">
+								<div
+									class="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-6"
+								>
 									{#each tagOptions as option (option)}
 										{@const isSelected = selectedTags.includes(option)}
 										<button
