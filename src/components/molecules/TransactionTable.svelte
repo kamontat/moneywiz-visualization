@@ -71,7 +71,9 @@
 							<td class="py-3">
 								<span
 									class="d-badge d-badge-sm font-medium"
+									class:d-badge-primary={trx.type === 'Buy'}
 									class:d-badge-error={trx.type === 'Expense'}
+									class:d-badge-secondary={trx.type === 'Sell'}
 									class:d-badge-success={trx.type === 'Income'}
 									class:d-badge-info={trx.type === 'Transfer'}
 									class:d-badge-warning={trx.type === 'Refund'}

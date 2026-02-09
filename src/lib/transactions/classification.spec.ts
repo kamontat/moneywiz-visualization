@@ -66,6 +66,42 @@ describe('Transaction Classification', () => {
 		})
 	})
 
+	describe('Investment Buy/Sell Detection', () => {
+		it('should classify as Sell when investment account has no category and amount > 0', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Account]: 'Broker Account (I)',
+				[CsvKey.Category]: '',
+				[CsvKey.Amount]: '1500.00',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Sell')
+		})
+
+		it('should classify as Buy when investment account has no category and amount < 0', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Account]: 'Broker Account (I)',
+				[CsvKey.Category]: '',
+				[CsvKey.Amount]: '-1500.00',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Buy')
+		})
+	})
+
 	describe('Income Detection', () => {
 		it('should classify as Income when amount > 0 AND category starts with Compensation', async () => {
 			const { parseTransactions } = await import('./parser')

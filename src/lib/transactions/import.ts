@@ -1,6 +1,7 @@
 import type { ParsedTransaction } from './models'
 import type {
 	ParsedBaseTransaction,
+	ParsedBuyTransaction,
 	ParsedDebtRepaymentTransaction,
 	ParsedDebtTransaction,
 	ParsedExpenseTransaction,
@@ -8,6 +9,7 @@ import type {
 	ParsedIncomeTransaction,
 	ParsedRefundTransaction,
 	ParsedTransferTransaction,
+	ParsedSellTransaction,
 	ParsedWindfallTransaction,
 } from './models/transaction'
 import type { ParsedCsvRow } from '$lib/csv/models'
@@ -73,6 +75,7 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 	const payee = getValue(row, CsvKey.Payee)
 	const category = parseCategory(categoryField)
 	const checkNumber = getValue(row, CsvKey.CheckNumber)
+	const hasCategory = categoryField && categoryField.trim() !== ''
 
 	if (isDebtCategory(category)) {
 		return {
@@ -118,7 +121,6 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 	// - Pure Transfer: Transfers field populated AND no Category
 	// - Transfer with Category: Classify as Income/Expense/Refund with transfer as payee
 	if (transferField) {
-		const hasCategory = categoryField && categoryField.trim() !== ''
 		if (hasCategory) {
 			const transferPayee = parseAccount(transferField).name
 
@@ -155,6 +157,25 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 			type: 'Transfer',
 			transfer: parseAccount(transferField),
 		} as ParsedTransferTransaction
+	}
+
+	if (account.type === 'Investment' && !hasCategory) {
+		if (amount.value > 0) {
+			return {
+				...base,
+				type: 'Sell',
+				payee,
+				checkNumber,
+			} as ParsedSellTransaction
+		}
+		if (amount.value < 0) {
+			return {
+				...base,
+				type: 'Buy',
+				payee,
+				checkNumber,
+			} as ParsedBuyTransaction
+		}
 	}
 
 	// Transaction classification per RULES.md:

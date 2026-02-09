@@ -9,6 +9,8 @@ export const bySummarize: TransformByFunc<[], Summarize> = () => {
 		let totalDebtRepayment = 0
 		let totalWindfall = 0
 		let totalGiveaway = 0
+		let totalBuy = 0
+		let totalSell = 0
 		let transactionCount = 0
 		let minDate = new Date(8640000000000000)
 		let maxDate = new Date(-8640000000000000)
@@ -39,6 +41,12 @@ export const bySummarize: TransformByFunc<[], Summarize> = () => {
 				case 'Giveaway':
 					totalGiveaway += Math.abs(t.amount.value)
 					break
+				case 'Buy':
+					totalBuy += Math.abs(t.amount.value)
+					break
+				case 'Sell':
+					totalSell += t.amount.value
+					break
 			}
 			transactionCount++
 		}
@@ -64,6 +72,8 @@ export const bySummarize: TransformByFunc<[], Summarize> = () => {
 			totalDebtRepayment,
 			totalWindfall,
 			totalGiveaway,
+			totalBuy,
+			totalSell,
 		}
 	}
 	by.type = 'bySummarize'

@@ -78,7 +78,11 @@
 		return categoryGroups
 			.map((group) => ({
 				...group,
-				options: group.options.filter((option) => option.subcategory.trim()),
+				options: group.options.filter(
+					(option) =>
+						option.subcategory.trim() ||
+						(!option.category.trim() && !option.subcategory.trim())
+				),
 			}))
 			.filter((group) => group.options.length > 0)
 	})

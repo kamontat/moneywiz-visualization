@@ -1,5 +1,6 @@
 import type {
 	ParsedBaseTransaction,
+	ParsedBuyTransaction,
 	ParsedDebtRepaymentTransaction,
 	ParsedDebtTransaction,
 	ParsedExpenseTransaction,
@@ -7,6 +8,7 @@ import type {
 	ParsedIncomeTransaction,
 	ParsedRefundTransaction,
 	ParsedTransaction,
+	ParsedSellTransaction,
 	ParsedTransferTransaction,
 	ParsedWindfallTransaction,
 } from './models'
@@ -69,6 +71,7 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 		const payee = getValue(row, CsvKey.Payee)
 		const category = parseCategory(categoryField)
 		const checkNumber = getValue(row, CsvKey.CheckNumber)
+		const hasCategory = categoryField && categoryField.trim() !== ''
 
 		// Special category classification FIRST (before transfer/income/expense checks)
 		// These categories override normal classification per RULES.md Section 1.5
@@ -113,7 +116,6 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 		}
 
 		if (transferField) {
-			const hasCategory = categoryField && categoryField.trim() !== ''
 			if (hasCategory) {
 				const transferPayee = parseAccount(transferField).name
 
@@ -150,6 +152,25 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 				type: 'Transfer',
 				transfer: parseAccount(transferField),
 			} as ParsedTransferTransaction
+		}
+
+		if (account.type === 'Investment' && !hasCategory) {
+			if (amount.value > 0) {
+				return {
+					...base,
+					type: 'Sell',
+					payee,
+					checkNumber,
+				} as ParsedSellTransaction
+			}
+			if (amount.value < 0) {
+				return {
+					...base,
+					type: 'Buy',
+					payee,
+					checkNumber,
+				} as ParsedBuyTransaction
+			}
 		}
 
 		if (amount.value > 0 && isIncomeCategory(category)) {

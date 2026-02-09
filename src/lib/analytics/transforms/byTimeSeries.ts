@@ -34,6 +34,8 @@ export const byTimeSeries: TransformByFunc<
 					debtRepayment: 0,
 					windfall: 0,
 					giveaway: 0,
+					buy: 0,
+					sell: 0,
 				})
 			}
 			const entry = map.get(key)!
@@ -59,6 +61,12 @@ export const byTimeSeries: TransformByFunc<
 					break
 				case 'Giveaway':
 					entry.giveaway += Math.abs(t.amount.value)
+					break
+				case 'Buy':
+					entry.buy += Math.abs(t.amount.value)
+					break
+				case 'Sell':
+					entry.sell += t.amount.value
 					break
 			}
 

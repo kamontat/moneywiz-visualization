@@ -22,10 +22,16 @@
 	}: Props = $props()
 
 	const transactionTypes: ParsedTransactionType[] = [
+		'Buy',
+		'Debt',
+		'DebtRepayment',
 		'Expense',
+		'Giveaway',
 		'Income',
 		'Refund',
+		'Sell',
 		'Transfer',
+		'Windfall',
 	]
 
 	const hasTypeFilter = $derived(filterState.transactionTypes.length > 0)

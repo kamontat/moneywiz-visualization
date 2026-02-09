@@ -10,6 +10,8 @@ export interface TimeSeriesPoint {
 	debtRepayment: number
 	windfall: number
 	giveaway: number
+	buy: number
+	sell: number
 }
 
 export type TimeSeriesMode = 'Daily' | 'Monthly'

@@ -16,4 +16,6 @@ export interface Summarize {
 	totalDebtRepayment: number
 	totalWindfall: number
 	totalGiveaway: number
+	totalBuy: number
+	totalSell: number
 }

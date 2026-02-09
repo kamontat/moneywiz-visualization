@@ -134,17 +134,19 @@ These rows contain account balances and must be skipped.
 
 Transactions are classified based on field values in this priority order:
 
-| Priority | Condition                                     | Type                            | Fields Present                  |
-| -------- | --------------------------------------------- | ------------------------------- | ------------------------------- |
-| 1        | Category = `Payment > Debt`                   | `Debt`                          | payee, category, checkNumber    |
-| 2        | Category = `Payment > Debt Repayment`         | `DebtRepayment`                 | payee, category, checkNumber    |
-| 3        | Category = `Payment > Windfall`               | `Windfall`                      | payee, category, checkNumber    |
-| 4        | Category = `Payment > Giveaways`              | `Giveaway`                      | payee, category, checkNumber    |
-| 5        | `Transfers` filled AND `Category` filled      | `Income` / `Expense` / `Refund` | payee (from Transfer), category |
-| 6        | `Transfers` filled AND `Category` empty       | `Transfer`                      | transfer                        |
-| 7        | `Amount > 0` AND category matches income list | `Income`                        | payee, category, checkNumber    |
-| 8        | `Amount < 0`                                  | `Expense`                       | payee, category, checkNumber    |
-| 9        | `Amount > 0` AND NOT income category          | `Refund`                        | payee, category, checkNumber    |
+| Priority | Condition                                                  | Type                            | Fields Present                  |
+| -------- | ---------------------------------------------------------- | ------------------------------- | ------------------------------- |
+| 1        | Category = `Payment > Debt`                                | `Debt`                          | payee, category, checkNumber    |
+| 2        | Category = `Payment > Debt Repayment`                      | `DebtRepayment`                 | payee, category, checkNumber    |
+| 3        | Category = `Payment > Windfall`                            | `Windfall`                      | payee, category, checkNumber    |
+| 4        | Category = `Payment > Giveaways`                           | `Giveaway`                      | payee, category, checkNumber    |
+| 5        | `Transfers` filled AND `Category` filled                   | `Income` / `Expense` / `Refund` | payee (from Transfer), category |
+| 6        | `Transfers` filled AND `Category` empty                    | `Transfer`                      | transfer                        |
+| 7        | Account = Investment AND `Category` empty AND `Amount > 0` | `Sell`                          | payee, checkNumber              |
+| 8        | Account = Investment AND `Category` empty AND `Amount < 0` | `Buy`                           | payee, checkNumber              |
+| 9        | `Amount > 0` AND category matches income list              | `Income`                        | payee, category, checkNumber    |
+| 10       | `Amount < 0`                                               | `Expense`                       | payee, category, checkNumber    |
+| 11       | `Amount > 0` AND NOT income category                       | `Refund`                        | payee, category, checkNumber    |
 
 **Special Category Transaction Types (Priority 1-4):**
 
@@ -175,6 +177,8 @@ Any transaction with `Amount > 0` AND a category starting with `Compensation` or
 - **Windfall**: Unexpected income or gifts received (Payment > Windfall category, tracked separately)
 - **Giveaway**: Money given as gifts (Payment > Giveaways category, tracked separately)
 - **Transfer**: Moving money between accounts without category (excluded from analysis)
+- **Buy**: Investment purchase (Investment account with no category and negative amount)
+- **Sell**: Investment sale (Investment account with no category and positive amount)
 - **Income**: Money received (positive amount with income category, or transfer with income category)
 - **Expense**: Money spent (negative amount, or transfer with category and negative amount)
 - **Refund**: Money returned (positive amount with non-income category)
