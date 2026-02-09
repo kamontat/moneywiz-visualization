@@ -9,6 +9,7 @@
 		ParsedCategory,
 		ParsedTransactionType,
 	} from '$lib/transactions/models'
+	import { SvelteMap } from 'svelte/reactivity'
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 	import ChevronDown from '@iconify-svelte/lucide/chevron-down'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
@@ -34,6 +35,11 @@
 		displayName: string
 		category: string
 		subcategory: string
+	}
+
+	type CategoryGroup = {
+		name: string
+		options: CategoryOption[]
 	}
 
 	type Props = BaseProps &
@@ -94,6 +100,29 @@
 		return options.filter((option) =>
 			option.displayName.toLowerCase().includes(query)
 		)
+	})
+
+	const categoryGroups = $derived.by(() => {
+		const groups = new SvelteMap<string, CategoryOption[]>()
+		for (const option of categoryOptions) {
+			const name = option.category.trim() ? option.category : 'Uncategorized'
+			const entries = groups.get(name) ?? []
+			entries.push(option)
+			groups.set(name, entries)
+		}
+		return Array.from(groups.entries(), ([name, options]) => ({
+			name,
+			options,
+		}))
+	})
+
+	const categorySubGroups = $derived.by(() => {
+		return categoryGroups
+			.map((group) => ({
+				...group,
+				options: group.options.filter((option) => option.subcategory.trim()),
+			}))
+			.filter((group) => group.options.length > 0)
 	})
 
 	// --- Date helpers ---
@@ -217,6 +246,34 @@
 		filterState = {
 			...filterState,
 			categories: updated,
+		}
+		onfilterchange?.(filterState)
+	}
+
+	const toggleCategoryGroup = (group: CategoryGroup) => {
+		const groupNames = group.options.map((option) => option.fullName)
+		if (groupNames.length === 0) return
+		const allSelected = groupNames.every((name) =>
+			filterState.categories.includes(name)
+		)
+		const updated = allSelected
+			? filterState.categories.filter((name) => !groupNames.includes(name))
+			: Array.from(new Set([...filterState.categories, ...groupNames]))
+		filterState = {
+			...filterState,
+			categories: updated,
+		}
+		onfilterchange?.(filterState)
+	}
+
+	const clearCategoryGroup = (group: CategoryGroup) => {
+		const groupNames = group.options.map((option) => option.fullName)
+		if (groupNames.length === 0) return
+		filterState = {
+			...filterState,
+			categories: filterState.categories.filter(
+				(name) => !groupNames.includes(name)
+			),
 		}
 		onfilterchange?.(filterState)
 	}
@@ -373,8 +430,15 @@
 	const tagOptionBase = [
 		'd-badge',
 		'cursor-pointer',
-		'd-badge-sm',
-		'text-[11px]',
+		'd-badge-md',
+		'text-sm',
+		'text-center',
+		'leading-snug',
+		'h-auto',
+		'min-h-6',
+		'whitespace-normal',
+		'break-words',
+		'py-1',
 		'transition-all',
 		'w-full',
 		'justify-center',
@@ -397,28 +461,93 @@
 			/>
 			<SearchIcon class="size-3 opacity-50" />
 		</label>
-		<div
-			class="grid max-h-[50vh] grid-cols-2 content-start gap-1.5 overflow-y-auto sm:grid-cols-4 lg:grid-cols-6"
-		>
-			{#if categoryOptions.length > 0}
-				{#each categoryOptions as option (option.fullName)}
-					<button
-						type="button"
-						class={mergeClass(
-							tagOptionBase,
-							filterState.categories.includes(option.fullName)
-								? tagOptionIncludeClass
-								: tagOptionInactiveClass
-						)}
-						onclick={() => toggleCategory(option.fullName)}
-					>
-						{option.displayName}
-					</button>
+		{#if categorySubGroups.length > 0}
+			<div class="flex max-h-[50vh] flex-col gap-3 overflow-y-auto">
+				{#each categorySubGroups as group (group.name)}
+					{@const groupNames = group.options.map((option) => option.fullName)}
+					{@const allSelected =
+						groupNames.length > 0 &&
+						groupNames.every((name) => filterState.categories.includes(name))}
+					{@const anySelected = groupNames.some((name) =>
+						filterState.categories.includes(name)
+					)}
+					<div class="flex flex-col gap-2">
+						<div class="flex items-center justify-between gap-2">
+							<span
+								class="text-[11px] font-semibold tracking-wider text-base-content/60 uppercase"
+							>
+								{group.name}
+							</span>
+							<div class="flex items-center gap-2">
+								<button
+									type="button"
+									class={mergeClass(
+										[
+											'text-[10px]',
+											'font-semibold',
+											'tracking-wider',
+											'uppercase',
+											'rounded-full',
+											'border',
+											'px-2',
+											'py-0.5',
+											'transition-colors',
+										],
+										allSelected
+											? 'border-primary/40 text-primary'
+											: 'border-base-300 text-base-content/50 hover:text-base-content'
+									)}
+									onclick={() => toggleCategoryGroup(group)}
+								>
+									All
+								</button>
+								<button
+									type="button"
+									class={mergeClass(
+										[
+											'text-[10px]',
+											'font-semibold',
+											'tracking-wider',
+											'uppercase',
+											'rounded-full',
+											'border',
+											'px-2',
+											'py-0.5',
+											'transition-colors',
+										],
+										anySelected
+											? 'border-base-300 text-base-content/70 hover:text-base-content'
+											: 'border-base-300 text-base-content/30'
+									)}
+									onclick={() => clearCategoryGroup(group)}
+									disabled={!anySelected}
+								>
+									Clear
+								</button>
+							</div>
+						</div>
+						<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+							{#each group.options as option (option.fullName)}
+								<button
+									type="button"
+									class={mergeClass(
+										tagOptionBase,
+										filterState.categories.includes(option.fullName)
+											? tagOptionIncludeClass
+											: tagOptionInactiveClass
+									)}
+									onclick={() => toggleCategory(option.fullName)}
+								>
+									{option.subcategory || option.displayName}
+								</button>
+							{/each}
+						</div>
+					</div>
 				{/each}
-			{:else}
-				<p class="text-xs text-base-content/50">No categories found</p>
-			{/if}
-		</div>
+			</div>
+		{:else}
+			<p class="text-xs text-base-content/50">No categories found</p>
+		{/if}
 	</div>
 {/snippet}
 
