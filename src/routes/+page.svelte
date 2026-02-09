@@ -7,10 +7,10 @@
 	} from '$lib/transactions/models'
 	import { onMount } from 'svelte'
 
-	import FilterBar from '$components/organisms/FilterBar.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
 	import BodyHeader from '$components/organisms/BodyHeader.svelte'
 	import Dashboard from '$components/organisms/Dashboard.svelte'
+	import FilterBar from '$components/organisms/FilterBar.svelte'
 	import QuickSummary from '$components/organisms/QuickSummary.svelte'
 	import {
 		filter,
