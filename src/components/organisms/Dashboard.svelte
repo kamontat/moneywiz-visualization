@@ -4,6 +4,7 @@
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
 	import ChartPieIcon from '@iconify-svelte/lucide/chart-pie'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
+	import TrendingUpIcon from '@iconify-svelte/lucide/trending-up'
 
 	import Skeleton from '$components/atoms/Skeleton.svelte'
 	import UploadPrompt from '$components/atoms/UploadPrompt.svelte'
@@ -36,12 +37,13 @@
 		...rest
 	}: Props = $props()
 
-	let activeTab = $state('transactions')
+	let activeTab = $state('analytics')
 
 	const tabs = [
-		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
 		{ id: 'analytics', label: 'Analytics', icon: ChartPieIcon },
+		{ id: 'stats', label: 'Stats', icon: TrendingUpIcon },
 		{ id: 'categories', label: 'Categories', icon: FolderIcon },
+		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
 	]
 </script>
 
@@ -79,6 +81,17 @@
 		{:else if activeTab === 'analytics'}
 			<div class="p-4 sm:p-6">
 				<AnalyticsPanel transactions={_allTransactions} />
+			</div>
+		{:else if activeTab === 'stats'}
+			<div class="p-4 sm:p-6">
+				<div
+					class="flex min-h-56 items-center justify-center rounded-box border border-dashed border-base-300 bg-base-200/30 p-8"
+				>
+					<div class="text-center">
+						<p class="text-lg font-semibold text-base-content">Stats</p>
+						<p class="text-sm text-base-content/60">Coming soon</p>
+					</div>
+				</div>
 			</div>
 		{:else if activeTab === 'categories'}
 			<div class="p-4 sm:p-6">
