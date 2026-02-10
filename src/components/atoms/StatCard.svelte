@@ -53,6 +53,8 @@
 
 	const baseClass = newTwClass([
 		'd-stat',
+		'w-full',
+		'min-w-0',
 		'rounded-box',
 		'p-4',
 		'transition-all',
@@ -72,7 +74,7 @@
 	<div class="d-stat-title text-base-content/70">{title}</div>
 	<div
 		class={mergeClass(
-			['d-stat-value', 'text-2xl', 'sm:text-3xl'],
+			['d-stat-value', 'min-w-0', 'text-xl', 'md:text-2xl', 'xl:text-3xl'],
 			valueClass(variant)
 		)}
 	>
