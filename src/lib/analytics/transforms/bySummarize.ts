@@ -37,9 +37,11 @@ export const bySummarize: TransformByFunc<[], Summarize> = () => {
 					break
 				case 'Windfall':
 					totalWindfall += t.amount.value
+					totalIncome += t.amount.value
 					break
 				case 'Giveaway':
 					totalGiveaway += Math.abs(t.amount.value)
+					grossExpenses += Math.abs(t.amount.value)
 					break
 				case 'Buy':
 					totalBuy += Math.abs(t.amount.value)
