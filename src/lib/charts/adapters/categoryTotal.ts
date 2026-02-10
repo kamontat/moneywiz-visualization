@@ -6,16 +6,46 @@ import type {
 import type { ParsedTransactionType } from '$lib/transactions/models'
 import { getCategoryPalette } from '../theme'
 
+const MAX_DOUGHNUT_ITEMS = 10
+const UNCATEGORIZED_LABEL = '(uncategorized)'
+
+type CategoryDoughnutOptions = {
+	parent?: string
+}
+
 export const toCategoryDoughnutData = (
-	data: Record<ParsedTransactionType, CategoryTotal>,
-	transactionType: ParsedTransactionType = 'Expense'
+	data: Partial<Record<ParsedTransactionType, CategoryTotal>>,
+	transactionType: ParsedTransactionType = 'Expense',
+	options: CategoryDoughnutOptions = {}
 ): ChartData<'doughnut'> => {
 	const typeData = data[transactionType]
 	if (!typeData) return { labels: [], datasets: [] }
 
+	if (options.parent) {
+		const parentData = typeData.parents[options.parent]
+		if (!parentData) return { labels: [], datasets: [] }
+
+		const children = Object.entries(parentData.children)
+			.sort(([, a], [, b]) => Math.abs(b) - Math.abs(a))
+			.slice(0, MAX_DOUGHNUT_ITEMS)
+
+		const colors = getCategoryPalette(children.length)
+
+		return {
+			labels: children.map(([name]) => name || UNCATEGORIZED_LABEL),
+			datasets: [
+				{
+					data: children.map(([, amount]) => Math.abs(amount)),
+					backgroundColor: colors,
+					borderWidth: 2,
+				},
+			],
+		}
+	}
+
 	const parents = Object.entries(typeData.parents)
 		.sort(([, a], [, b]) => Math.abs(b.total) - Math.abs(a.total))
-		.slice(0, 10)
+		.slice(0, MAX_DOUGHNUT_ITEMS)
 
 	const colors = getCategoryPalette(parents.length)
 

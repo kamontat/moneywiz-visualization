@@ -26,13 +26,7 @@
 	const categoryTotals = $derived(transform(transactions, byCategoryTotal))
 </script>
 
-<div
-	class={mergeClass(
-		['grid', 'grid-cols-1', 'gap-6', 'xl:grid-cols-2'],
-		className
-	)}
-	{...rest}
->
+<div class={mergeClass(['flex', 'flex-col', 'gap-6'], className)} {...rest}>
 	{#if transactions.length === 0}
 		<Panel>
 			<p class="py-12 text-center text-base-content/60">
@@ -40,20 +34,24 @@
 			</p>
 		</Panel>
 	{:else}
-		<Panel title="Income Breakdown">
-			<IncomeBreakdownChart categoryData={categoryTotals} />
-		</Panel>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+			<Panel title="Income Breakdown">
+				<IncomeBreakdownChart categoryData={categoryTotals} />
+			</Panel>
 
-		<Panel title="Expense Breakdown">
-			<ExpenseBreakdownChart categoryData={categoryTotals} />
-		</Panel>
+			<Panel title="Expense Breakdown">
+				<ExpenseBreakdownChart categoryData={categoryTotals} />
+			</Panel>
+		</div>
 
-		<Panel title="Income Categories">
-			<CategoryTreeView categoryTree={incomeTree} />
-		</Panel>
+		<div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+			<Panel title="Income Categories">
+				<CategoryTreeView categoryTree={incomeTree} />
+			</Panel>
 
-		<Panel title="Expense Categories">
-			<CategoryTreeView categoryTree={expenseTree} />
-		</Panel>
+			<Panel title="Expense Categories">
+				<CategoryTreeView categoryTree={expenseTree} />
+			</Panel>
+		</div>
 	{/if}
 </div>
