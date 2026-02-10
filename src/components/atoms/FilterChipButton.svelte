@@ -63,9 +63,7 @@
 	{@render icon?.()}
 	<span class="text-xs">{label}</span>
 	{#if count > 0}
-		<span
-			class="d-badge min-h-0 min-w-4 d-badge-xs text-[10px] d-badge-primary"
-		>
+		<span class="d-badge min-h-0 min-w-4 text-xs d-badge-xs d-badge-primary">
 			{count}
 		</span>
 	{/if}

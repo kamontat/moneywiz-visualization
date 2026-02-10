@@ -48,7 +48,7 @@
 			<Select
 				bind:value={selectedLimit}
 				values={pageSizeValues}
-				class="ml-auto w-auto min-w-[3.5rem] shrink-0 d-select-sm text-sm"
+				class="ml-auto w-auto min-w-14 shrink-0 d-select-sm text-sm"
 				onchange={() => onlimitchange?.(Number(selectedLimit))}
 			/>
 		{/if}

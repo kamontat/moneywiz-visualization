@@ -149,7 +149,7 @@
 				<div class="flex items-center gap-2">
 					<span
 						class={mergeClass(
-							['text-[10px]', 'font-bold', 'tracking-wide', 'uppercase'],
+							['text-xs', 'font-bold', 'tracking-wide', 'uppercase'],
 							tagMode === 'include' ? 'text-success' : 'text-error'
 						)}
 					>

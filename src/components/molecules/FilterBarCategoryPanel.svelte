@@ -167,7 +167,7 @@
 	}
 
 	const compactActionBase = [
-		'text-[10px]',
+		'text-xs',
 		'font-semibold',
 		'tracking-wider',
 		'rounded-full',
@@ -225,7 +225,7 @@
 					<div class="flex flex-col gap-2">
 						<div class="flex items-center justify-between gap-2">
 							<span
-								class="text-[11px] font-semibold tracking-wider text-base-content/60 uppercase"
+								class="text-xs font-semibold tracking-wider text-base-content/60 uppercase"
 							>
 								{group.name}
 							</span>
