@@ -66,6 +66,59 @@ describe('Transaction Classification', () => {
 		})
 	})
 
+	describe('New Balance Detection', () => {
+		it('should classify as NewBalance when category is empty and description is new balance', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Category]: '',
+				[CsvKey.Description]: 'New Balance',
+				[CsvKey.Amount]: '1200.00',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('NewBalance')
+		})
+
+		it('should classify as NewBalance with case-insensitive description', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Category]: '',
+				[CsvKey.Description]: '  new balance  ',
+				[CsvKey.Amount]: '-50.00',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('NewBalance')
+		})
+
+		it('should not classify as NewBalance when category exists', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Category]: 'Food > Restaurant',
+				[CsvKey.Description]: 'New Balance',
+				[CsvKey.Amount]: '-50.00',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Expense')
+		})
+	})
+
 	describe('Investment Buy/Sell Detection', () => {
 		it('should classify as Sell when investment account has no category and amount > 0', async () => {
 			const { parseTransactions } = await import('./parser')
@@ -186,6 +239,75 @@ describe('Transaction Classification', () => {
 			})
 
 			expect(result[0].type).toBe('Refund')
+		})
+	})
+
+	describe('Unknown Detection', () => {
+		it('should classify as Unknown when amount > 0 and category is empty', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '50.00',
+				[CsvKey.Category]: '',
+				[CsvKey.Description]: 'Balance adjustment',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Unknown')
+		})
+
+		it('should classify as Unknown when amount is zero and category is empty', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '0.00',
+				[CsvKey.Category]: '',
+				[CsvKey.Description]: 'Zero balance line',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Unknown')
+		})
+
+		it('should classify as Unknown when amount is zero and category is income category', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Amount]: '0.00',
+				[CsvKey.Category]: 'Compensation > Salary',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Unknown')
+		})
+
+		it('should classify transfer with zero amount and income category as Unknown', async () => {
+			const { parseTransactions } = await import('./parser')
+
+			const row = createRow({
+				[CsvKey.Transfers]: 'Other Account (A)',
+				[CsvKey.Amount]: '0.00',
+				[CsvKey.Category]: 'Compensation > Salary',
+			})
+
+			const result = parseTransactions({
+				headers: Object.keys(row),
+				rows: [row],
+			})
+
+			expect(result[0].type).toBe('Unknown')
 		})
 	})
 

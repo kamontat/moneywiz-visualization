@@ -5,6 +5,7 @@
 	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
 	import FilterOptionBadge from '$components/atoms/FilterOptionBadge.svelte'
 	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
+	import { formatTransactionType } from '$lib/formatters/transactionType'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -28,6 +29,7 @@
 		'Expense',
 		'Giveaway',
 		'Income',
+		'NewBalance',
 		'Refund',
 		'Sell',
 		'Transfer',
@@ -66,7 +68,7 @@
 				active={filterState.transactionTypes.includes(type)}
 				onclick={() => toggleTransactionType(type)}
 			>
-				{type}
+				{formatTransactionType(type)}
 			</FilterOptionBadge>
 		{/each}
 	</div>

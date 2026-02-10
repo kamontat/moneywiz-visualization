@@ -7,6 +7,7 @@ import {
 	isGiftCategory,
 	isGiveawayCategory,
 	isIncomeCategory,
+	isNewBalanceDescription,
 	isSpecialCategory,
 	isWindfallCategory,
 	parseAccount,
@@ -202,6 +203,26 @@ describe('isIncomeCategory', () => {
 		expect(
 			isIncomeCategory({ category: 'Other Expenses', subcategory: 'Debt' })
 		).toBe(false)
+	})
+})
+
+describe('isNewBalanceDescription', () => {
+	it('should return true for exact match', () => {
+		expect(isNewBalanceDescription('new balance')).toBe(true)
+	})
+
+	it('should return true case-insensitively', () => {
+		expect(isNewBalanceDescription('New Balance')).toBe(true)
+		expect(isNewBalanceDescription('NEW BALANCE')).toBe(true)
+	})
+
+	it('should return true with surrounding whitespace', () => {
+		expect(isNewBalanceDescription('  New Balance  ')).toBe(true)
+	})
+
+	it('should return false for other descriptions', () => {
+		expect(isNewBalanceDescription('balance adjustment')).toBe(false)
+		expect(isNewBalanceDescription('newbalance')).toBe(false)
 	})
 })
 

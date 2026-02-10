@@ -7,9 +7,11 @@ import type {
 	ParsedExpenseTransaction,
 	ParsedGiveawayTransaction,
 	ParsedIncomeTransaction,
+	ParsedNewBalanceTransaction,
 	ParsedRefundTransaction,
 	ParsedTransferTransaction,
 	ParsedSellTransaction,
+	ParsedUnknownTransaction,
 	ParsedWindfallTransaction,
 } from './models/transaction'
 import type { ParsedCsvRow } from '$lib/csv/models'
@@ -21,6 +23,7 @@ import {
 	isDebtRepaymentCategory,
 	isGiveawayCategory,
 	isIncomeCategory,
+	isNewBalanceDescription,
 	isWindfallCategory,
 	parseAccount,
 	parseAmount,
@@ -117,6 +120,15 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 		} as ParsedGiveawayTransaction
 	}
 
+	if (!hasCategory && isNewBalanceDescription(description)) {
+		return {
+			...base,
+			type: 'NewBalance',
+			payee,
+			checkNumber,
+		} as ParsedNewBalanceTransaction
+	}
+
 	// Transfer classification per RULES.md:
 	// - Pure Transfer: Transfers field populated AND no Category
 	// - Transfer with Category: Classify as Income/Expense/Refund with transfer as payee
@@ -142,6 +154,13 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 					category,
 					checkNumber,
 				} as ParsedExpenseTransaction
+			}
+
+			if (isIncomeCategory(category)) {
+				return {
+					...base,
+					type: 'Unknown',
+				} as ParsedUnknownTransaction
 			}
 
 			return {
@@ -181,7 +200,8 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 	// Transaction classification per RULES.md:
 	// - Income: Amount > 0 AND category starts with Compensation or Income
 	// - Expense: Amount < 0 AND NOT income category
-	// - Refund: Amount > 0 AND NOT income category (reduces expense totals)
+	// - Refund: requires category and NOT income category (reduces expense totals)
+	// - Unknown: fallback when category is missing
 	if (amount.value > 0 && isIncomeCategory(category)) {
 		return {
 			...base,
@@ -202,7 +222,21 @@ const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
 		} as ParsedExpenseTransaction
 	}
 
-	// Amount > 0 but not income category = Refund
+	if (!hasCategory) {
+		return {
+			...base,
+			type: 'Unknown',
+		} as ParsedUnknownTransaction
+	}
+
+	if (isIncomeCategory(category)) {
+		return {
+			...base,
+			type: 'Unknown',
+		} as ParsedUnknownTransaction
+	}
+
+	// Fallback with expense category = Refund
 	return {
 		...base,
 		type: 'Refund',

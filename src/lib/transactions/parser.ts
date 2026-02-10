@@ -6,10 +6,12 @@ import type {
 	ParsedExpenseTransaction,
 	ParsedGiveawayTransaction,
 	ParsedIncomeTransaction,
+	ParsedNewBalanceTransaction,
 	ParsedRefundTransaction,
 	ParsedTransaction,
 	ParsedSellTransaction,
 	ParsedTransferTransaction,
+	ParsedUnknownTransaction,
 	ParsedWindfallTransaction,
 } from './models'
 import type { ParsedCsv, ParsedCsvRow } from '$lib/csv/models'
@@ -19,6 +21,7 @@ import {
 	isDebtRepaymentCategory,
 	isGiveawayCategory,
 	isIncomeCategory,
+	isNewBalanceDescription,
 	isWindfallCategory,
 	parseAccount,
 	parseAmount,
@@ -115,6 +118,15 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 			} as ParsedGiveawayTransaction
 		}
 
+		if (!hasCategory && isNewBalanceDescription(description)) {
+			return {
+				...base,
+				type: 'NewBalance',
+				payee,
+				checkNumber,
+			} as ParsedNewBalanceTransaction
+		}
+
 		if (transferField) {
 			if (hasCategory) {
 				const transferPayee = parseAccount(transferField).name
@@ -137,6 +149,13 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 						category,
 						checkNumber,
 					} as ParsedExpenseTransaction
+				}
+
+				if (isIncomeCategory(category)) {
+					return {
+						...base,
+						type: 'Unknown',
+					} as ParsedUnknownTransaction
 				}
 
 				return {
@@ -191,6 +210,20 @@ export const parseTransactions = (csv: ParsedCsv): ParsedTransaction[] => {
 				category,
 				checkNumber,
 			} as ParsedExpenseTransaction
+		}
+
+		if (!hasCategory) {
+			return {
+				...base,
+				type: 'Unknown',
+			} as ParsedUnknownTransaction
+		}
+
+		if (isIncomeCategory(category)) {
+			return {
+				...base,
+				type: 'Unknown',
+			} as ParsedUnknownTransaction
 		}
 
 		return {

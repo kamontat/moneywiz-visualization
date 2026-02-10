@@ -3,6 +3,7 @@
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import { mergeClass, newTwClass } from '$lib/components'
 	import { formatDate } from '$lib/formatters/date'
+	import { formatTransactionType } from '$lib/formatters/transactionType'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -76,9 +77,10 @@
 									class:d-badge-secondary={trx.type === 'Sell'}
 									class:d-badge-success={trx.type === 'Income'}
 									class:d-badge-info={trx.type === 'Transfer'}
+									class:d-badge-accent={trx.type === 'NewBalance'}
 									class:d-badge-warning={trx.type === 'Refund'}
 								>
-									{trx.type}
+									{formatTransactionType(trx.type)}
 								</span>
 							</td>
 							<td class="py-3 text-sm whitespace-nowrap text-base-content/80"

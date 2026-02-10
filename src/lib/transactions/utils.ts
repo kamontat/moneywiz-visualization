@@ -4,7 +4,6 @@ import type {
 	ParsedAmount,
 	ParsedCategory,
 	ParsedTag,
-	ParsedTransaction,
 } from './models'
 import type { TagCategoryGroup } from './models/tag'
 import {
@@ -178,6 +177,10 @@ export const parseDate = (
 
 	// Create date (month is 0-indexed)
 	return new Date(year, month - 1, day, noNaN(hours), noNaN(minutes))
+}
+
+export const isNewBalanceDescription = (description: string): boolean => {
+	return description.trim().toLowerCase() === 'new balance'
 }
 
 export const isIncomeCategory = (category: ParsedCategory): boolean => {

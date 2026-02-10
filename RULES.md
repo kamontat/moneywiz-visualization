@@ -126,19 +126,21 @@ During import, each CSV row is classified before transaction parsing:
 
 Transactions are classified in this priority order:
 
-| Priority | Condition                                                  | Type                            |
-| -------- | ---------------------------------------------------------- | ------------------------------- |
-| 1        | Category = `Other Expenses > Debt`                         | `Debt`                          |
-| 2        | Category = `Other Incomes > Debt Repayment`                | `DebtRepayment`                 |
-| 3        | Category = `Other Incomes > Windfall`                      | `Windfall`                      |
-| 4        | Category = `Other Expenses > Giveaways`                    | `Giveaway`                      |
-| 5        | `Transfers` filled AND `Category` filled                   | `Income` / `Expense` / `Refund` |
-| 6        | `Transfers` filled AND `Category` empty                    | `Transfer`                      |
-| 7        | Account = Investment AND `Category` empty AND `Amount > 0` | `Sell`                          |
-| 8        | Account = Investment AND `Category` empty AND `Amount < 0` | `Buy`                           |
-| 9        | `Amount > 0` AND category parent is in income prefixes     | `Income`                        |
-| 10       | `Amount < 0`                                               | `Expense`                       |
-| 11       | `Amount > 0` AND category parent is NOT in income prefixes | `Refund`                        |
+| Priority | Condition                                                                       | Type                            |
+| -------- | ------------------------------------------------------------------------------- | ------------------------------- |
+| 1        | Category = `Other Expenses > Debt`                                              | `Debt`                          |
+| 2        | Category = `Other Incomes > Debt Repayment`                                     | `DebtRepayment`                 |
+| 3        | Category = `Other Incomes > Windfall`                                           | `Windfall`                      |
+| 4        | Category = `Other Expenses > Giveaways`                                         | `Giveaway`                      |
+| 5        | `Category` empty AND `Description` = `new balance` (CI)                         | `NewBalance`                    |
+| 6        | `Transfers` filled AND `Category` filled                                        | `Income` / `Expense` / `Refund` |
+| 7        | `Transfers` filled AND `Category` empty                                         | `Transfer`                      |
+| 8        | Account = Investment AND `Category` empty AND `Amount > 0`                      | `Sell`                          |
+| 9        | Account = Investment AND `Category` empty AND `Amount < 0`                      | `Buy`                           |
+| 10       | `Amount > 0` AND category parent is in income prefixes                          | `Income`                        |
+| 11       | `Amount < 0`                                                                    | `Expense`                       |
+| 12       | `Category` filled AND category parent NOT in income prefixes AND no prior match | `Refund`                        |
+| 13       | No prior match                                                                  | `Unknown`                       |
 
 **Income category prefixes:**
 
