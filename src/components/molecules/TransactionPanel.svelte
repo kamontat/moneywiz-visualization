@@ -30,21 +30,23 @@
 	let selectedLimit = $derived(String(limit))
 
 	const pageSizeValues = PAGE_SIZES.map((size) => ({
-		label: `${size} rows`,
+		label: String(size),
 		value: String(size),
 	}))
 </script>
 
 <Panel class={mergeClass([], className)} {...rest}>
-	<div class="mb-4 flex items-center justify-between">
+	<div class="mb-4 flex min-w-0 items-center gap-3">
 		{#if title}
-			<h3 class="text-lg font-semibold text-base-content">{title}</h3>
+			<h3 class="min-w-0 flex-1 truncate text-lg font-semibold text-base-content">
+				{title}
+			</h3>
 		{/if}
 		{#if transactions.length > 0}
 			<Select
 				bind:value={selectedLimit}
 				values={pageSizeValues}
-				class="d-select-sm text-sm"
+				class="d-select-sm ml-auto w-auto min-w-[3.5rem] shrink-0 text-sm"
 				onchange={() => onlimitchange?.(Number(selectedLimit))}
 			/>
 		{/if}
