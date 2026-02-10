@@ -11,8 +11,8 @@ lib/
 ├── analytics/          # Data transforms and filters for visualization
 │   ├── filters/        # Filter transactions (byCurrency, byDateRange, byTags)
 │   └── transforms/     # Aggregate data (byCategoryTotal, byTimeSeries, bySummarize)
-├── csv/                # CSV parsing and persistence via IndexedDB
-├── transactions/       # Transaction models, parsing, store
+├── csv/                # CSV metadata state/store APIs
+├── transactions/       # Transaction models, classification, import
 ├── themes/             # Theme state, store, DaisyUI theme switching
 ├── formatters/         # Amount, date, category display formatters
 ├── loggers/            # Debug logging with namespaced loggers
@@ -21,14 +21,14 @@ lib/
 
 ## WHERE TO LOOK
 
-| Task                 | Location                                         |
-| -------------------- | ------------------------------------------------ |
-| Parse CSV            | `csv/parser.ts` (PapaParse)                      |
-| Add filter           | `analytics/filters/` + export from `index.ts`    |
-| Add transform        | `analytics/transforms/` + export from `index.ts` |
-| Format display value | `formatters/`                                    |
-| Add theme            | `themes/models/constants.ts`                     |
-| Debug logging        | Import from `loggers/constants.ts`               |
+| Task                 | Location                                                |
+| -------------------- | ------------------------------------------------------- |
+| Parse CSV            | `transactions/import.ts` + `transactions/classifier.ts` |
+| Add filter           | `analytics/filters/` + export from `index.ts`           |
+| Add transform        | `analytics/transforms/` + export from `index.ts`        |
+| Format display value | `formatters/`                                           |
+| Add theme            | `themes/models/constants.ts`                            |
+| Debug logging        | Import from `loggers/constants.ts`                      |
 
 ## CONVENTIONS
 

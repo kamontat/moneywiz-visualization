@@ -1,36 +1,10 @@
+import type { ParseError } from 'papaparse'
 import type { ParsedTransaction } from './models'
-import type {
-	ParsedBaseTransaction,
-	ParsedBuyTransaction,
-	ParsedDebtRepaymentTransaction,
-	ParsedDebtTransaction,
-	ParsedExpenseTransaction,
-	ParsedGiveawayTransaction,
-	ParsedIncomeTransaction,
-	ParsedNewBalanceTransaction,
-	ParsedRefundTransaction,
-	ParsedTransferTransaction,
-	ParsedSellTransaction,
-	ParsedUnknownTransaction,
-	ParsedWindfallTransaction,
-} from './models/transaction'
 import type { ParsedCsvRow } from '$lib/csv/models'
 import papaparse from 'papaparse'
 
-import { CsvKey, getValue, isAccountHeaderRow } from './csv'
-import {
-	isDebtCategory,
-	isDebtRepaymentCategory,
-	isGiveawayCategory,
-	isIncomeCategory,
-	isNewBalanceDescription,
-	isWindfallCategory,
-	parseAccount,
-	parseAmount,
-	parseCategory,
-	parseDate,
-	parseTag,
-} from './utils'
+import { parseCsvRowToTransaction } from './classifier'
+import { isAccountHeaderRow } from './csv'
 
 import { transaction } from '$lib/loggers'
 import { indexDBV1, STATE_TRX_V1 } from '$utils/stores'
@@ -51,200 +25,22 @@ export interface ImportOptions {
 }
 
 const DEFAULT_BATCH_SIZE = 2000
+const DEFAULT_DELIMITER = ','
+const MAX_PROGRESS_PERCENTAGE = 99
+const PREAMBLE_READ_SIZE = 32 * 1024
 
-const parseRowToTransaction = (row: ParsedCsvRow): ParsedTransaction => {
-	const account = parseAccount(getValue(row, CsvKey.Account))
-	const amount = parseAmount(
-		getValue(row, CsvKey.Amount),
-		getValue(row, CsvKey.Currency)
-	)
-	const date = parseDate(getValue(row, CsvKey.Date), getValue(row, CsvKey.Time))
-	const description = getValue(row, CsvKey.Description)
-	const memo = getValue(row, CsvKey.Memo)
-	const tags = parseTag(getValue(row, CsvKey.Tags))
-
-	const base: ParsedBaseTransaction = {
-		account,
-		amount,
-		date,
-		description,
-		memo,
-		tags,
-		raw: row,
-	}
-
-	const transferField = getValue(row, CsvKey.Transfers)
-	const categoryField = getValue(row, CsvKey.Category)
-	const payee = getValue(row, CsvKey.Payee)
-	const category = parseCategory(categoryField)
-	const checkNumber = getValue(row, CsvKey.CheckNumber)
-	const hasCategory = categoryField && categoryField.trim() !== ''
-
-	if (isDebtCategory(category)) {
-		return {
-			...base,
-			type: 'Debt',
-			payee,
-			category,
-			checkNumber,
-		} as ParsedDebtTransaction
-	}
-
-	if (isDebtRepaymentCategory(category)) {
-		return {
-			...base,
-			type: 'DebtRepayment',
-			payee,
-			category,
-			checkNumber,
-		} as ParsedDebtRepaymentTransaction
-	}
-
-	if (isWindfallCategory(category)) {
-		return {
-			...base,
-			type: 'Windfall',
-			payee,
-			category,
-			checkNumber,
-		} as ParsedWindfallTransaction
-	}
-
-	if (isGiveawayCategory(category)) {
-		return {
-			...base,
-			type: 'Giveaway',
-			payee,
-			category,
-			checkNumber,
-		} as ParsedGiveawayTransaction
-	}
-
-	if (!hasCategory && isNewBalanceDescription(description)) {
-		return {
-			...base,
-			type: 'NewBalance',
-			payee,
-			checkNumber,
-		} as ParsedNewBalanceTransaction
-	}
-
-	// Transfer classification per RULES.md:
-	// - Pure Transfer: Transfers field populated AND no Category
-	// - Transfer with Category: Classify as Income/Expense/Refund with transfer as payee
-	if (transferField) {
-		if (hasCategory) {
-			const transferPayee = parseAccount(transferField).name
-
-			if (amount.value > 0 && isIncomeCategory(category)) {
-				return {
-					...base,
-					type: 'Income',
-					payee: transferPayee,
-					category,
-					checkNumber,
-				} as ParsedIncomeTransaction
-			}
-
-			if (amount.value < 0) {
-				return {
-					...base,
-					type: 'Expense',
-					payee: transferPayee,
-					category,
-					checkNumber,
-				} as ParsedExpenseTransaction
-			}
-
-			if (isIncomeCategory(category)) {
-				return {
-					...base,
-					type: 'Unknown',
-				} as ParsedUnknownTransaction
-			}
-
-			return {
-				...base,
-				type: 'Refund',
-				payee: transferPayee,
-				category,
-				checkNumber,
-			} as ParsedRefundTransaction
-		}
-		return {
-			...base,
-			type: 'Transfer',
-			transfer: parseAccount(transferField),
-		} as ParsedTransferTransaction
-	}
-
-	if (account.type === 'Investment' && !hasCategory) {
-		if (amount.value > 0) {
-			return {
-				...base,
-				type: 'Sell',
-				payee,
-				checkNumber,
-			} as ParsedSellTransaction
-		}
-		if (amount.value < 0) {
-			return {
-				...base,
-				type: 'Buy',
-				payee,
-				checkNumber,
-			} as ParsedBuyTransaction
-		}
-	}
-
-	// Transaction classification per RULES.md:
-	// - Income: Amount > 0 AND category starts with Compensation or Income
-	// - Expense: Amount < 0 AND NOT income category
-	// - Refund: requires category and NOT income category (reduces expense totals)
-	// - Unknown: fallback when category is missing
-	if (amount.value > 0 && isIncomeCategory(category)) {
-		return {
-			...base,
-			type: 'Income',
-			payee,
-			category,
-			checkNumber,
-		} as ParsedIncomeTransaction
-	}
-
-	if (amount.value < 0) {
-		return {
-			...base,
-			type: 'Expense',
-			payee,
-			category,
-			checkNumber,
-		} as ParsedExpenseTransaction
-	}
-
-	if (!hasCategory) {
-		return {
-			...base,
-			type: 'Unknown',
-		} as ParsedUnknownTransaction
-	}
-
-	if (isIncomeCategory(category)) {
-		return {
-			...base,
-			type: 'Unknown',
-		} as ParsedUnknownTransaction
-	}
-
-	// Fallback with expense category = Refund
-	return {
-		...base,
-		type: 'Refund',
-		payee,
-		category,
-		checkNumber,
-	} as ParsedRefundTransaction
+const toError = (error: unknown): Error => {
+	if (error instanceof Error) return error
+	return new Error(String(error))
 }
+
+const removeBom = (text: string): string => text.replace(/^\uFEFF/, '')
+
+const rowHasData = (row: ParsedCsvRow): boolean =>
+	Object.values(row).some((value) => String(value ?? '').trim() !== '')
+
+const toParseError = (errors: ParseError[]): Error =>
+	new Error(`CSV contains ${errors.length} errors`)
 
 const insertBatch = async (
 	transactions: ParsedTransaction[]
@@ -256,39 +52,43 @@ const insertBatch = async (
 	await trx.done
 }
 
-interface CsvPreprocess {
-	delimiter: string
-	content: string
-}
-
-const preprocessCsv = async (file: File): Promise<CsvPreprocess> => {
-	const text = await file.text()
-	// Remove BOM if present
-	const rawLines = text.replace(/^\uFEFF/, '').split(/\r?\n/)
+export const detectCsvDelimiter = async (file: File): Promise<string> => {
+	const prefix = removeBom(await file.slice(0, PREAMBLE_READ_SIZE).text())
+	const rawLines = prefix.split(/\r?\n/)
 
 	let startIndex = 0
-	let delimiter = ','
-
-	// Skip leading empty lines
 	while (startIndex < rawLines.length && rawLines[startIndex].trim() === '') {
 		startIndex += 1
 	}
 
-	// MoneyWiz exports include a "sep=," (or similar) preamble; detect and honor it
 	const firstLine = rawLines[startIndex]?.trim()
 	if (firstLine?.toLowerCase().startsWith('sep=')) {
-		delimiter = firstLine.slice(4, 5) || delimiter
-		log.debug('detected separator preamble: delimiter=%s', delimiter)
+		return firstLine.slice(4, 5) || DEFAULT_DELIMITER
+	}
+	return DEFAULT_DELIMITER
+}
+
+export const stripCsvPreamble = (chunk: string): string => {
+	const rawLines = removeBom(chunk).split(/\r?\n/)
+	let startIndex = 0
+
+	while (startIndex < rawLines.length && rawLines[startIndex].trim() === '') {
 		startIndex += 1
 	}
 
-	// Join remaining lines, filtering empty ones
-	const content = rawLines
-		.slice(startIndex)
-		.filter((line) => line.trim().length > 0)
-		.join('\n')
+	if (rawLines[startIndex]?.trim().toLowerCase().startsWith('sep=')) {
+		startIndex += 1
+	}
 
-	return { delimiter, content }
+	return rawLines.slice(startIndex).join('\n')
+}
+
+const toProgressPercentage = (cursor: number, totalBytes: number): number => {
+	if (totalBytes <= 0) return 0
+	return Math.min(
+		MAX_PROGRESS_PERCENTAGE,
+		Math.round((cursor / totalBytes) * 100)
+	)
 }
 
 export const importTransactionsFromFile = async (
@@ -296,7 +96,20 @@ export const importTransactionsFromFile = async (
 	options: ImportOptions = {}
 ): Promise<number> => {
 	const { batchSize = DEFAULT_BATCH_SIZE, onProgress } = options
-	const { delimiter, content } = await preprocessCsv(file)
+	if (file.size === 0) {
+		const error = new Error('File is empty')
+		onProgress?.({
+			phase: 'error',
+			processed: 0,
+			total: 0,
+			percentage: 0,
+			error,
+		})
+		throw error
+	}
+
+	const delimiter = await detectCsvDelimiter(file)
+	const normalizedBatchSize = Math.max(1, batchSize)
 
 	log.debug(
 		'starting import: %s (size=%d, delimiter=%s)',
@@ -305,79 +118,112 @@ export const importTransactionsFromFile = async (
 		delimiter
 	)
 
-	const allRows: ParsedCsvRow[] = []
+	onProgress?.({
+		phase: 'parsing',
+		processed: 0,
+		total: 0,
+		percentage: 0,
+	})
+
+	let scannedRows = 0
+	let processedRows = 0
+	let batch: ParsedTransaction[] = []
+	let failed = false
+	const totalBytes = file.size
+
+	const flushBatch = async () => {
+		if (batch.length === 0) return
+
+		const pending = batch
+		batch = []
+		await insertBatch(pending)
+		processedRows += pending.length
+
+		// Yield between chunk writes to keep UI responsive during large imports.
+		await new Promise((resolve) => setTimeout(resolve, 0))
+	}
 
 	await new Promise<void>((resolve, reject) => {
-		papaparse.parse<ParsedCsvRow>(content, {
-			delimiter,
-			skipEmptyLines: true,
-			header: true,
-			chunk: (results: papaparse.ParseResult<ParsedCsvRow>) => {
-				for (const row of results.data) {
-					if (row && Object.keys(row).length > 0) {
-						allRows.push(row)
-					}
-				}
+		const fail = (error: unknown) => {
+			if (failed) return
+			failed = true
+			const parsedError = toError(error)
 
-				onProgress?.({
-					phase: 'parsing',
-					processed: 0,
-					total: allRows.length,
-					percentage: 0,
+			onProgress?.({
+				phase: 'error',
+				processed: processedRows,
+				total: Math.max(scannedRows, processedRows),
+				percentage: 0,
+				error: parsedError,
+			})
+
+			reject(parsedError)
+		}
+
+		papaparse.parse<ParsedCsvRow>(file, {
+			delimiter,
+			header: true,
+			skipEmptyLines: true,
+			beforeFirstChunk: stripCsvPreamble,
+			chunk: (results, parser) => {
+				parser.pause()
+
+				void (async () => {
+					if (results.errors.length > 0) {
+						throw toParseError(results.errors)
+					}
+
+					for (const row of results.data) {
+						if (!row || !rowHasData(row)) continue
+						scannedRows += 1
+
+						if (isAccountHeaderRow(row)) continue
+
+						const trx = parseCsvRowToTransaction(row)
+						batch.push(trx)
+
+						if (batch.length >= normalizedBatchSize) {
+							await flushBatch()
+						}
+					}
+
+					onProgress?.({
+						phase: 'importing',
+						processed: processedRows,
+						total: Math.max(scannedRows, processedRows),
+						percentage: toProgressPercentage(
+							results.meta.cursor ?? 0,
+							totalBytes
+						),
+					})
+
+					parser.resume()
+				})().catch((error) => {
+					parser.abort()
+					fail(error)
 				})
 			},
-			complete: () => resolve(),
-			error: (error: Error) => reject(error),
+			complete: () => {
+				if (failed) return
+				void (async () => {
+					await flushBatch()
+
+					onProgress?.({
+						phase: 'complete',
+						processed: processedRows,
+						total: Math.max(scannedRows, processedRows),
+						percentage: 100,
+					})
+
+					resolve()
+				})().catch((error) => fail(error))
+			},
+			error: (error) => fail(error),
 		})
 	})
 
-	log.debug('parsed %d rows, starting import', allRows.length)
-
-	const total = allRows.length
-	let processed = 0
-	let batch: ParsedTransaction[] = []
-
-	for (let i = 0; i < allRows.length; i++) {
-		const row = allRows[i]
-
-		if (isAccountHeaderRow(row)) {
-			log.debug('skipping account header row: %o', row)
-			continue
-		}
-
-		const trx = parseRowToTransaction(row)
-		batch.push(trx)
-
-		if (batch.length >= batchSize) {
-			await insertBatch(batch)
-			processed += batch.length
-			batch = []
-
-			onProgress?.({
-				phase: 'importing',
-				processed,
-				total,
-				percentage: Math.round((processed / total) * 100),
-			})
-
-			await new Promise((r) => setTimeout(r, 0))
-		}
-	}
-
-	if (batch.length > 0) {
-		await insertBatch(batch)
-		processed += batch.length
-	}
-
-	onProgress?.({
-		phase: 'complete',
-		processed,
-		total,
-		percentage: 100,
-	})
-
-	log.debug('import complete: %d transactions', processed)
-	return processed
+	log.debug('import complete: %d transactions', processedRows)
+	return processedRows
 }
 
 export const clearTransactions = async (): Promise<void> => {

@@ -125,12 +125,11 @@ let {
 
 ## KNOWN ISSUES (TODOs in code)
 
-| Location                                       | Issue                               |
-| ---------------------------------------------- | ----------------------------------- |
-| `src/lib/csv/parser.ts`                        | TODO: Add streaming for large files |
-| `src/lib/transactions/store.ts`                | TODO: getAll missing fileName key   |
-| `src/lib/analytics/transforms/byTimeSeries.ts` | TODO: Expense sign ambiguity        |
-| `src/css/global.css`                           | FIXME: Waiting on daisyui#4373      |
+| Location                                       | Issue                             |
+| ---------------------------------------------- | --------------------------------- |
+| `src/lib/transactions/store.ts`                | TODO: getAll missing fileName key |
+| `src/lib/analytics/transforms/byTimeSeries.ts` | TODO: Expense sign ambiguity      |
+| `src/css/global.css`                           | FIXME: Waiting on daisyui#4373    |
 
 ## COMMANDS
 
