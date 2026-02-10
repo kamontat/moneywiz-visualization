@@ -1,4 +1,4 @@
-# MoneyWiz CSV Analyzer — Logic Summary
+# MoneyWiz CSV Analyzer - Logic Summary
 
 - [1. CSV Parsing Rules](#1-csv-parsing-rules)
   - [1.1 File Preprocessing](#11-file-preprocessing)
@@ -11,7 +11,7 @@
     - [Account Parsing](#account-parsing)
     - [Tag Parsing](#tag-parsing)
   - [1.5 Transaction Classification](#15-transaction-classification)
-- [2. Filter Chain (Applied in Order)](#2-filter-chain-applied-in-order)
+- [2. Filter Chain (Applied in UI)](#2-filter-chain-applied-in-ui)
   - [Tag Filter Logic](#tag-filter-logic)
   - [Category Filter Logic](#category-filter-logic)
 - [3. Special Category Handling](#3-special-category-handling)
@@ -23,13 +23,13 @@
 
 Before parsing, the CSV file is preprocessed:
 
-1. **BOM Removal**: Strip UTF-8 BOM (`\uFEFF`) if present
-2. **Line Splitting**: Split by `\r?\n` (handles both Unix and Windows line endings)
-3. **Empty Line Skipping**: Skip leading empty lines
-4. **Separator Preamble Detection**: MoneyWiz exports may start with `sep=,` — extract delimiter and skip this line
-5. **Empty Line Filtering**: Remove all empty lines from content
+1. **BOM removal**: Strip UTF-8 BOM (`\uFEFF`) if present
+2. **Line splitting**: Split by `\r?\n` (Unix and Windows line endings)
+3. **Empty line skipping**: Skip leading empty lines
+4. **Separator preamble detection**: MoneyWiz exports may start with `sep=,`
+5. **Empty line filtering**: Remove all empty lines from content
 
-**Separator Preamble Example:**
+**Separator preamble example:**
 
 ```csv
 sep=,
@@ -38,12 +38,12 @@ sep=,
 
 ### 1.2 CSV Structure
 
-MoneyWiz exports use these column headers (in order):
+MoneyWiz exports use these column headers:
 
 | Column          | CSV Key       | Description                        |
 | --------------- | ------------- | ---------------------------------- |
 | Name            | `Name`        | Account name (header rows only)    |
-| Current balance | —             | Account balance (header rows only) |
+| Current balance | -             | Account balance (header rows only) |
 | Account         | `Account`     | Account name for transaction       |
 | Transfers       | `Transfers`   | Target account for transfers       |
 | Description     | `Description` | Transaction description            |
@@ -56,54 +56,52 @@ MoneyWiz exports use these column headers (in order):
 | Currency        | `Currency`    | Currency code                      |
 | Check #         | `Check #`     | Check number                       |
 | Tags            | `Tags`        | Tag list                           |
-| Balance         | —             | Running balance (not parsed)       |
+| Balance         | -             | Running balance (not parsed)       |
 
 ### 1.3 Row Classification
 
-Each CSV row is classified before parsing:
+During import, each CSV row is classified before transaction parsing:
 
 | Condition                                  | Classification      | Action                   |
 | ------------------------------------------ | ------------------- | ------------------------ |
 | `Name` filled AND `Current balance` filled | **Account Header**  | Skip (not a transaction) |
-| `Name` empty (transaction row)             | **Transaction Row** | Parse as transaction     |
+| otherwise                                  | **Transaction Row** | Parse as transaction     |
 
-**Account Header Example:**
+**Account header example:**
 
 ```csv
 "Cash wallet [THB] (W)","1,380.00","THB","","","","","","","","","","","",""
 ```
 
-These rows contain account balances and must be skipped.
-
 ### 1.4 Field Parsing
 
 #### Date Parsing
 
-- **Format**: `DD/MM/YYYY` with optional `HH:MM` time
-- **Output**: JavaScript Date object
-- **Empty Date**: Returns `new Date(0)` (epoch)
+- **Format**: `DD/MM/YYYY` with optional `HH:MM`
+- **Output**: JavaScript `Date`
+- **Empty date**: Returns `new Date(0)`
 
 #### Amount Parsing
 
 - **Format**: `1,234.56` or `-1,234.56`
-- **Processing**: Strip commas, parse as float
-- **NaN Handling**: Returns `0` for invalid values
-- **Default Currency**: `THB` if not specified
+- **Processing**: Strip commas, parse float
+- **NaN handling**: Returns `0` for invalid values
+- **Default currency**: `THB` if not specified
 
 #### Category Parsing
 
-- **Format**: `Parent > Child` (hierarchical with `>` delimiter)
+- **Format**: `Parent > Child` or `Parent ► Child`
 - **Output**: `{ category: string, subcategory: string }`
-- **Single Level**: `{ category: "Food", subcategory: "" }`
-- **Two Levels**: `{ category: "Food", subcategory: "Restaurants" }`
+- **Single level**: `{ category: "Food", subcategory: "" }`
+- **Two levels**: `{ category: "Food", subcategory: "Restaurants" }`
 
 #### Account Parsing
 
 - **Format**: `<name> [<extra>] (<type>)`
 - **Components**:
-  - `name`: Account display name (required)
-  - `extra`: Optional metadata in square brackets (e.g., card last 4 digits)
-  - `type`: Account type code in parentheses
+  - `name`: account display name
+  - `extra`: optional metadata in `[]`
+  - `type`: account type code in `()`
 
 | Code | Account Type   |
 | ---- | -------------- |
@@ -115,112 +113,82 @@ These rows contain account balances and must be skipped.
 | `W`  | Wallet         |
 | `OW` | OnlineWallet   |
 | `CT` | Cryptocurrency |
-| —    | Unknown        |
-
-**Examples:**
-
-- `My Savings (A)` → `{ name: "My Savings", type: "Checking", extra: null }`
-- `Chase [1234] (C)` → `{ name: "Chase", type: "CreditCard", extra: "1234" }`
-- `Coinbase (CT)` → `{ name: "Coinbase", type: "Cryptocurrency", extra: null }`
+| -    | Unknown        |
 
 #### Tag Parsing
 
-- **Format**: `category: name; category2: name2` (semicolon-separated, colon-delimited)
+- **Format**: `category: name; category2: name2`
 - **Output**: `Array<{ category: string, name: string }>`
-- **Special Mapping**: `Zvent` → `Event` (legacy tag normalization)
-- **No Category**: `{ category: "", name: "tag" }`
+- **Special mapping**: `Zvent` -> `Event`
+- **No category**: `{ category: "", name: "tag" }`
 
 ### 1.5 Transaction Classification
 
-Transactions are classified based on field values in this priority order:
+Transactions are classified in this priority order:
 
-| Priority | Condition                                                  | Type                            | Fields Present                  |
-| -------- | ---------------------------------------------------------- | ------------------------------- | ------------------------------- |
-| 1        | Category = `Payment > Debt`                                | `Debt`                          | payee, category, checkNumber    |
-| 2        | Category = `Payment > Debt Repayment`                      | `DebtRepayment`                 | payee, category, checkNumber    |
-| 3        | Category = `Payment > Windfall`                            | `Windfall`                      | payee, category, checkNumber    |
-| 4        | Category = `Payment > Giveaways`                           | `Giveaway`                      | payee, category, checkNumber    |
-| 5        | `Transfers` filled AND `Category` filled                   | `Income` / `Expense` / `Refund` | payee (from Transfer), category |
-| 6        | `Transfers` filled AND `Category` empty                    | `Transfer`                      | transfer                        |
-| 7        | Account = Investment AND `Category` empty AND `Amount > 0` | `Sell`                          | payee, checkNumber              |
-| 8        | Account = Investment AND `Category` empty AND `Amount < 0` | `Buy`                           | payee, checkNumber              |
-| 9        | `Amount > 0` AND category matches income list              | `Income`                        | payee, category, checkNumber    |
-| 10       | `Amount < 0`                                               | `Expense`                       | payee, category, checkNumber    |
-| 11       | `Amount > 0` AND NOT income category                       | `Refund`                        | payee, category, checkNumber    |
+| Priority | Condition                                                         | Type                            |
+| -------- | ----------------------------------------------------------------- | ------------------------------- |
+| 1        | Category = `Other Expenses > Debt`                                | `Debt`                          |
+| 2        | Category = `Other Incomes > Debt Repayment`                       | `DebtRepayment`                 |
+| 3        | Category = `Other Incomes > Windfall`                             | `Windfall`                      |
+| 4        | Category = `Other Expenses > Giveaways`                           | `Giveaway`                      |
+| 5        | `Transfers` filled AND `Category` filled                          | `Income` / `Expense` / `Refund` |
+| 6        | `Transfers` filled AND `Category` empty                           | `Transfer`                      |
+| 7        | Account = Investment AND `Category` empty AND `Amount > 0`        | `Sell`                          |
+| 8        | Account = Investment AND `Category` empty AND `Amount < 0`        | `Buy`                           |
+| 9        | `Amount > 0` AND category parent is in income prefixes            | `Income`                        |
+| 10       | `Amount < 0`                                                      | `Expense`                       |
+| 11       | `Amount > 0` AND category parent is NOT in income prefixes        | `Refund`                        |
 
-**Special Category Transaction Types (Priority 1-4):**
+**Income category prefixes:**
 
-These categories are classified BEFORE any other logic and are tracked separately from normal income/expense:
+- `Compensation`
+- `Other Incomes`
 
-| Category                   | Type            | Description             |
-| -------------------------- | --------------- | ----------------------- |
-| `Payment > Debt`           | `Debt`          | Money lent to others    |
-| `Payment > Debt Repayment` | `DebtRepayment` | Money repaid to you     |
-| `Payment > Windfall`       | `Windfall`      | Unexpected income/gifts |
-| `Payment > Giveaways`      | `Giveaway`      | Money given as gifts    |
+## 2. Filter Chain (Applied in UI)
 
-**Income Category Detection (Category Name Prefix):**
+In `src/routes/+page.svelte`, filters are applied in this order when selected:
 
-Transactions are classified as income when their **category name** (the parent category, not subcategory) matches one of these prefixes:
-
-| Category Prefix | Description           |
-| --------------- | --------------------- |
-| `Compensation`  | Employment/investment |
-| `Other Incomes` | Other income sources  |
-
-Any transaction with `Amount > 0` AND a category starting with `Compensation` or `Other Incomes` is classified as `Income`.
-
-**Transaction Type Summary:**
-
-- **Debt**: Money lent to others (Payment > Debt category, tracked separately)
-- **DebtRepayment**: Money repaid by others (Payment > Debt Repayment category, tracked separately)
-- **Windfall**: Unexpected income or gifts received (Payment > Windfall category, tracked separately)
-- **Giveaway**: Money given as gifts (Payment > Giveaways category, tracked separately)
-- **Transfer**: Moving money between accounts without category (excluded from analysis)
-- **Buy**: Investment purchase (Investment account with no category and negative amount)
-- **Sell**: Investment sale (Investment account with no category and positive amount)
-- **Income**: Money received (positive amount with income category, or transfer with income category)
-- **Expense**: Money spent (negative amount, or transfer with category and negative amount)
-- **Refund**: Money returned (positive amount with non-income category)
-
-## 2. Filter Chain (Applied in Order)
-
-1. Date Filter (from/to month range)
-2. Tag Filter (per category: include OR exclude selected values)
-3. Category Filter (include OR exclude selected categories)
-4. Transfer Exclusion (see below)
-5. Special Category Exclusion (Debt/Gifts moved to separate sections)
-6. Analyzed Transactions
+1. Date range (`byDateRange`)
+2. Transaction type include filter (`byTransactionType`)
+3. Category include filter (`byCategory` with `mode: 'include'`)
+4. Tag filters (`byTags`)
 
 ### Tag Filter Logic
 
-- Multiple tag categories operate with **AND** logic (all must match)
-- Within a category, selected values operate with **OR** logic (any match)
-- Mode per category: `include` = must have tag, `exclude` = must NOT have tag
+- Multiple tag categories use **AND** logic
+- Values inside one tag category use **OR** logic
+- Mode per category: `include` or `exclude`
 
 ### Category Filter Logic
 
-- `include` mode: only transactions matching selected categories
-- `exclude` mode: all transactions EXCEPT selected categories
+- `byCategory` supports both `include` and `exclude`
+- Current page UI applies it in `include` mode
+- Matching includes exact category and descendants (`Parent > Child`)
 
 ## 3. Special Category Handling
 
-These categories are **excluded from main totals** but tracked separately:
+Special categories are classified first and get dedicated transaction types:
 
-| Category                   | Section          | Logic                        |
-| -------------------------- | ---------------- | ---------------------------- |
-| `Payment > Debt`           | Debt Tracking    | Amount = money lent out      |
-| `Payment > Debt Repayment` | Debt Tracking    | Amount = money repaid to you |
-| `Payment > Giveaways`      | Gifts & Windfall | Amount = gifts given         |
-| `Payment > Windfall`       | Gifts & Windfall | Amount = gifts received      |
+| Category                             | Type            |
+| ------------------------------------ | --------------- |
+| `Other Expenses > Debt`              | `Debt`          |
+| `Other Incomes > Debt Repayment`     | `DebtRepayment` |
+| `Other Expenses > Giveaways`         | `Giveaway`      |
+| `Other Incomes > Windfall`           | `Windfall`      |
 
-**Debt Balance:** `Lent − Repaid` (positive = they owe you)
-**Gift Balance:** `Received − Given` (positive = net gain)
+These are not globally auto-excluded by default filtering. They are surfaced
+as separate totals in summary/time-series transforms.
 
 ## 4. Category Tree Structure
 
-Categories are split by `>` and grouped hierarchically. Parent categories contain child subcategories.
+Category trees are built per transaction type (`Expense` and `Income` only):
 
-- Percentages at parent level = share of total expenses
-- Percentages at child level = share of parent total
-- Refunds reduce both parent and child totals
+- Transactions without categories are skipped
+- Child label defaults to `(uncategorized)` when empty
+- Parent total = sum of child absolute amounts
+- Parent percentage = parent total / grand total
+- Child percentage = child total / parent total
+
+Refunds are not part of the category tree because the tree is built only from
+`Expense` or `Income` transaction types.
