@@ -8,7 +8,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 	})
 
 	test('uploads CSV file and displays transactions', async ({ page }) => {
-		await expect(page.getByText('No transactions loaded')).toBeVisible()
+		await expect(page.getByText('Upload your data')).toBeVisible()
 
 		const csvContent = generateCsv([defaultRecord])
 
@@ -24,8 +24,9 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
 			timeout: 10000,
 		})
+		await page.getByRole('tab', { name: 'Transactions' }).click()
 		await expect(page.locator('table')).toBeVisible()
-		await expect(page.getByText('Total transactions:')).toBeVisible()
+		await expect(page.getByText(/Showing/i)).toBeVisible()
 	})
 
 	test('clears uploaded CSV and resets to empty state', async ({ page }) => {

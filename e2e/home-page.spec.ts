@@ -8,9 +8,9 @@ test.describe('Home Page', () => {
 	})
 
 	test('renders empty state initially', async ({ page }) => {
-		await expect(page.getByText('No transactions loaded')).toBeVisible()
+		await expect(page.getByText('Upload your data')).toBeVisible()
 		await expect(
-			page.getByText('Upload a MoneyWiz CSV file to get started')
+			page.getByText('import your MoneyWiz CSV export')
 		).toBeVisible()
 	})
 
@@ -30,8 +30,9 @@ test.describe('Home Page', () => {
 		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
 			timeout: 10000,
 		})
+		await page.getByRole('tab', { name: 'Transactions' }).click()
 		await expect(page.locator('table')).toBeVisible()
-		await expect(page.getByText('Total transactions:')).toBeVisible()
-		await expect(page.getByText('No transactions loaded')).not.toBeVisible()
+		await expect(page.getByText(/Showing/i)).toBeVisible()
+		await expect(page.getByText('Upload your data')).not.toBeVisible()
 	})
 })

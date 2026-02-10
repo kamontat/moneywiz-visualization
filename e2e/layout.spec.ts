@@ -18,6 +18,6 @@ test.describe('Layout', () => {
 			/github\.com\/kamontat\/moneywiz-visualization/
 		)
 
-		await expect(page.getByText('No transactions loaded')).toBeVisible()
+		await expect(page.getByText('Upload your data')).toBeVisible()
 	})
 })
