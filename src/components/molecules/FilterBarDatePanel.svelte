@@ -65,6 +65,11 @@
 		const now = new Date()
 		const year = now.getFullYear()
 		const month = now.getMonth()
+		const endOfToday = new Date(now)
+		endOfToday.setHours(23, 59, 59, 999)
+		const startOfLast365Days = new Date(now)
+		startOfLast365Days.setDate(startOfLast365Days.getDate() - 364)
+		startOfLast365Days.setHours(0, 0, 0, 0)
 
 		return [
 			{
@@ -81,6 +86,11 @@
 				label: 'This Year',
 				start: new Date(year, 0, 1),
 				end: new Date(year, 11, 31, 23, 59, 59, 999),
+			},
+			{
+				label: 'Last 365 Days',
+				start: startOfLast365Days,
+				end: endOfToday,
 			},
 			{
 				label: 'Last Year',
