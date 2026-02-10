@@ -1,6 +1,6 @@
 import type { ChartConfiguration, ChartData } from 'chart.js'
 import type { TimeSeries } from '$lib/analytics/transforms/models'
-import { getThemeColors } from '../theme'
+import { getThemeColors, withAlpha } from '../theme'
 
 export const toIncomeExpenseChartData = (
 	data: TimeSeries
@@ -14,7 +14,7 @@ export const toIncomeExpenseChartData = (
 				label: 'Income',
 				data: data.points.map((p) => p.income),
 				borderColor: colors.success,
-				backgroundColor: colors.success + '20',
+				backgroundColor: withAlpha(colors.success, 0.125, '#22c55e'),
 				tension: 0.3,
 				fill: true,
 			},
@@ -22,7 +22,7 @@ export const toIncomeExpenseChartData = (
 				label: 'Expenses',
 				data: data.points.map((p) => p.netExpense),
 				borderColor: colors.error,
-				backgroundColor: colors.error + '20',
+				backgroundColor: withAlpha(colors.error, 0.125, '#ef4444'),
 				tension: 0.3,
 				fill: true,
 			},
@@ -42,7 +42,7 @@ export const toCashFlowTrendChartData = (
 				label: 'Net Cash Flow',
 				data: data.points.map((p) => p.remaining),
 				borderColor: colors.primary,
-				backgroundColor: colors.primary + '20',
+				backgroundColor: withAlpha(colors.primary, 0.125, '#6366f1'),
 				tension: 0.4,
 				fill: true,
 			},
@@ -62,7 +62,7 @@ export const toIncomeExpenseComparisonChartData = (
 				type: 'bar' as const,
 				label: 'Income',
 				data: data.points.map((p) => p.income),
-				backgroundColor: colors.success + '80',
+				backgroundColor: withAlpha(colors.success, 0.5, '#22c55e'),
 				borderColor: colors.success,
 				borderWidth: 1,
 				order: 2,
@@ -71,7 +71,7 @@ export const toIncomeExpenseComparisonChartData = (
 				type: 'bar' as const,
 				label: 'Expenses',
 				data: data.points.map((p) => p.netExpense),
-				backgroundColor: colors.error + '80',
+				backgroundColor: withAlpha(colors.error, 0.5, '#ef4444'),
 				borderColor: colors.error,
 				borderWidth: 1,
 				order: 2,
@@ -81,7 +81,7 @@ export const toIncomeExpenseComparisonChartData = (
 				label: 'Difference',
 				data: data.points.map((p) => p.income - p.netExpense),
 				borderColor: colors.info,
-				backgroundColor: colors.info + '20',
+				backgroundColor: withAlpha(colors.info, 0.125, '#3b82f6'),
 				borderWidth: 2,
 				tension: 0.3,
 				fill: false,

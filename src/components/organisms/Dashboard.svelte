@@ -15,6 +15,7 @@
 	import CategoriesPanel from '$components/organisms/CategoriesPanel.svelte'
 	import ExperimentsPanel from '$components/organisms/ExperimentsPanel.svelte'
 	import { mergeClass } from '$lib/components'
+	import { themeStore } from '$lib/themes'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -56,56 +57,58 @@
 	{/if}
 
 	<div class="rounded-box bg-base-100 shadow-sm">
-		{#if uploading}
-			<div class="flex flex-col gap-4 p-4 sm:p-6">
-				<div class="flex flex-col gap-4">
-					<Skeleton variant="text" class="h-6 w-48" />
-					<div class="flex flex-col gap-2">
-						<Skeleton variant="text" />
-						<Skeleton variant="text" />
-						<Skeleton variant="text" />
-						<Skeleton variant="text" class="w-3/4" />
-					</div>
-					<Skeleton variant="rectangle" class="h-48" />
-				</div>
-			</div>
-		{:else if !hasData}
-			<div class="p-4 sm:p-6">
-				<UploadPrompt />
-			</div>
-		{:else if activeTab === 'transactions'}
-			<div class="p-4 sm:p-6">
-				<TransactionPanel
-					{transactions}
-					{totalCount}
-					{limit}
-					{onlimitchange}
-					title="Transactions"
-				/>
-			</div>
-		{:else if activeTab === 'analytics'}
-			<div class="p-4 sm:p-6">
-				<AnalyticsPanel transactions={_allTransactions} />
-			</div>
-		{:else if activeTab === 'experiments'}
-			<div class="p-4 sm:p-6">
-				<ExperimentsPanel transactions={_allTransactions} />
-			</div>
-		{:else if activeTab === 'stats'}
-			<div class="p-4 sm:p-6">
-				<div
-					class="flex min-h-56 items-center justify-center rounded-box border border-dashed border-base-300 bg-base-200/30 p-8"
-				>
-					<div class="text-center">
-						<p class="text-lg font-semibold text-base-content">Stats</p>
-						<p class="text-sm text-base-content/60">Coming soon</p>
+		{#key `${$themeStore.theme.name}:${activeTab}:${hasData}:${uploading}`}
+			{#if uploading}
+				<div class="flex flex-col gap-4 p-4 sm:p-6">
+					<div class="flex flex-col gap-4">
+						<Skeleton variant="text" class="h-6 w-48" />
+						<div class="flex flex-col gap-2">
+							<Skeleton variant="text" />
+							<Skeleton variant="text" />
+							<Skeleton variant="text" />
+							<Skeleton variant="text" class="w-3/4" />
+						</div>
+						<Skeleton variant="rectangle" class="h-48" />
 					</div>
 				</div>
-			</div>
-		{:else if activeTab === 'categories'}
-			<div class="p-4 sm:p-6">
-				<CategoriesPanel transactions={_allTransactions} />
-			</div>
-		{/if}
+			{:else if !hasData}
+				<div class="p-4 sm:p-6">
+					<UploadPrompt />
+				</div>
+			{:else if activeTab === 'transactions'}
+				<div class="p-4 sm:p-6">
+					<TransactionPanel
+						{transactions}
+						{totalCount}
+						{limit}
+						{onlimitchange}
+						title="Transactions"
+					/>
+				</div>
+			{:else if activeTab === 'analytics'}
+				<div class="p-4 sm:p-6">
+					<AnalyticsPanel transactions={_allTransactions} />
+				</div>
+			{:else if activeTab === 'experiments'}
+				<div class="p-4 sm:p-6">
+					<ExperimentsPanel transactions={_allTransactions} />
+				</div>
+			{:else if activeTab === 'stats'}
+				<div class="p-4 sm:p-6">
+					<div
+						class="flex min-h-56 items-center justify-center rounded-box border border-dashed border-base-300 bg-base-200/30 p-8"
+					>
+						<div class="text-center">
+							<p class="text-lg font-semibold text-base-content">Stats</p>
+							<p class="text-sm text-base-content/60">Coming soon</p>
+						</div>
+					</div>
+				</div>
+			{:else if activeTab === 'categories'}
+				<div class="p-4 sm:p-6">
+					<CategoriesPanel transactions={_allTransactions} />
+				</div>
+			{/if}
+		{/key}
 	</div>
 </div>

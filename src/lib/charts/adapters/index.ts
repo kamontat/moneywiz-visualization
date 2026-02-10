@@ -6,7 +6,6 @@ export {
 } from './timeSeries'
 export {
 	toCalendarHeatmapData,
-	toCashflowSankeyData,
 	toCategoryBubbleData,
 	toCategoryVolatilityData,
 	toCumulativeSavingsData,
@@ -14,5 +13,4 @@ export {
 	toOutlierTimelineData,
 	toRefundImpactData,
 	toRegimeTimelineData,
-	toTreemapData,
 } from './experiments'

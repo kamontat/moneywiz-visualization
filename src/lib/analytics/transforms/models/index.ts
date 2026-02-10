@@ -18,11 +18,9 @@ export type {
 	CategoryBubblePoint,
 	CategoryVolatilityPoint,
 	CumulativeSavingsPoint,
-	FlowLink,
 	OutlierPoint,
 	RefundImpactPoint,
 	RegimeSegment,
 	RegimeType,
-	TreemapNode,
 	WaterfallStep,
 } from './experiments'

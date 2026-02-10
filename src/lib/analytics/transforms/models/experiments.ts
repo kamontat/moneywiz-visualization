@@ -1,9 +1,3 @@
-export interface FlowLink {
-	from: string
-	to: string
-	flow: number
-}
-
 export interface WaterfallStep {
 	label: string
 	income: number
@@ -43,12 +37,6 @@ export interface CumulativeSavingsPoint {
 	net: number
 	cumulative: number
 	target: number
-}
-
-export interface TreemapNode {
-	name: string
-	path: string[]
-	value: number
 }
 
 export interface RefundImpactPoint {

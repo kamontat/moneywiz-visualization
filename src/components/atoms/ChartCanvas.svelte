@@ -16,9 +16,7 @@
 		| 'pie'
 		| 'scatter'
 		| 'bubble'
-		| 'sankey'
 		| 'matrix'
-		| 'treemap'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -42,25 +40,11 @@
 		}
 
 		chartRegistrationPromise = (async () => {
-			const [
-				{ MatrixController, MatrixElement },
-				{ SankeyController, Flow },
-				{ TreemapController, TreemapElement },
-			] = await Promise.all([
+			const [{ MatrixController, MatrixElement }] = await Promise.all([
 				import('chartjs-chart-matrix'),
-				import('chartjs-chart-sankey'),
-				import('chartjs-chart-treemap'),
 			])
 
-			Chart.register(
-				...registerables,
-				MatrixController,
-				MatrixElement,
-				SankeyController,
-				Flow,
-				TreemapController,
-				TreemapElement
-			)
+			Chart.register(...registerables, MatrixController, MatrixElement)
 			;(globalThis as Record<string, unknown>)[chartPluginRegistryFlag] = true
 		})()
 

@@ -1,5 +1,5 @@
 import type { ChartOptions } from 'chart.js'
-import { getThemeColors } from '../theme'
+import { getThemeColors, withAlpha } from '../theme'
 
 const themePlugin = () => {
 	const colors = getThemeColors()
@@ -21,12 +21,12 @@ const themeScales = () => {
 	return {
 		x: {
 			ticks: { color: colors.baseContentMuted },
-			grid: { color: colors.baseContentMuted + '20' },
+			grid: { color: withAlpha(colors.baseContentMuted, 0.125, '#1f2937') },
 		},
 		y: {
 			beginAtZero: true,
 			ticks: { color: colors.baseContentMuted },
-			grid: { color: colors.baseContentMuted + '20' },
+			grid: { color: withAlpha(colors.baseContentMuted, 0.125, '#1f2937') },
 		},
 	}
 }
@@ -56,7 +56,7 @@ export const horizontalBarChartOptions = (): ChartOptions<'bar'> => {
 			x: {
 				beginAtZero: true,
 				ticks: { color: colors.baseContentMuted },
-				grid: { color: colors.baseContentMuted + '20' },
+				grid: { color: withAlpha(colors.baseContentMuted, 0.125, '#1f2937') },
 			},
 			y: {
 				ticks: { color: colors.baseContentMuted },
@@ -95,12 +95,16 @@ export const stackedBarChartOptions = (): ChartOptions<'bar'> => ({
 		x: {
 			stacked: true,
 			ticks: { color: getThemeColors().baseContentMuted },
-			grid: { color: getThemeColors().baseContentMuted + '20' },
+			grid: {
+				color: withAlpha(getThemeColors().baseContentMuted, 0.125, '#1f2937'),
+			},
 		},
 		y: {
 			stacked: true,
 			ticks: { color: getThemeColors().baseContentMuted },
-			grid: { color: getThemeColors().baseContentMuted + '20' },
+			grid: {
+				color: withAlpha(getThemeColors().baseContentMuted, 0.125, '#1f2937'),
+			},
 		},
 	},
 })
@@ -125,17 +129,6 @@ export const matrixChartOptions = (): ChartOptions<'matrix'> => ({
 					['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][+value] ?? '',
 			},
 			grid: { display: false },
-		},
-	},
-})
-
-export const treemapChartOptions = (): ChartOptions<'treemap'> => ({
-	responsive: true,
-	maintainAspectRatio: true,
-	plugins: {
-		...themePlugin(),
-		legend: {
-			display: false,
 		},
 	},
 })

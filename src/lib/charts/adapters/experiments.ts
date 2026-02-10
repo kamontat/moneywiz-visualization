@@ -4,37 +4,12 @@ import type {
 	CategoryBubblePoint,
 	CategoryVolatilityPoint,
 	CumulativeSavingsPoint,
-	FlowLink,
 	OutlierPoint,
 	RefundImpactPoint,
 	RegimeSegment,
-	TreemapNode,
 	WaterfallStep,
 } from '$lib/analytics/transforms/models'
-import { getCategoryPalette, getThemeColors } from '../theme'
-
-const SANKEY_FROM_COLOR = '#6366f1'
-const SANKEY_TO_COLOR = '#3b82f6'
-
-export const toCashflowSankeyData = (
-	links: FlowLink[]
-): ChartConfiguration['data'] => {
-	return {
-		datasets: [
-			{
-				label: 'Cash Flow',
-				data: links.map((link) => ({
-					from: link.from,
-					to: link.to,
-					flow: link.flow,
-				})),
-				colorFrom: () => SANKEY_FROM_COLOR,
-				colorTo: () => SANKEY_TO_COLOR,
-				colorMode: 'gradient',
-			},
-		],
-	}
-}
+import { getCategoryPalette, getThemeColors, withAlpha } from '../theme'
 
 export const toMonthlyWaterfallData = (
 	steps: WaterfallStep[]
@@ -47,25 +22,25 @@ export const toMonthlyWaterfallData = (
 			{
 				label: 'Income',
 				data: steps.map((step) => step.income),
-				backgroundColor: colors.success + '90',
+				backgroundColor: withAlpha(colors.success, 0.56, '#22c55e'),
 				stack: 'flow',
 			},
 			{
 				label: 'Expense',
 				data: steps.map((step) => -step.expense),
-				backgroundColor: colors.error + '90',
+				backgroundColor: withAlpha(colors.error, 0.56, '#ef4444'),
 				stack: 'flow',
 			},
 			{
 				label: 'Debt',
 				data: steps.map((step) => -step.debt),
-				backgroundColor: colors.warning + '90',
+				backgroundColor: withAlpha(colors.warning, 0.56, '#f59e0b'),
 				stack: 'flow',
 			},
 			{
 				label: 'Buy/Sell',
 				data: steps.map((step) => step.buySell),
-				backgroundColor: colors.secondary + '90',
+				backgroundColor: withAlpha(colors.secondary, 0.56, '#a855f7'),
 				stack: 'flow',
 			},
 			{
@@ -73,7 +48,7 @@ export const toMonthlyWaterfallData = (
 				label: 'End Balance',
 				data: steps.map((step) => step.endBalance),
 				borderColor: colors.info,
-				backgroundColor: colors.info + '20',
+				backgroundColor: withAlpha(colors.info, 0.125, '#3b82f6'),
 				pointRadius: 2,
 				tension: 0.2,
 			},
@@ -97,13 +72,23 @@ export const toCalendarHeatmapData = (
 				},
 				backgroundColor: (ctx: { raw?: unknown }) => {
 					const raw = ctx.raw as CalendarCell | undefined
-					if (!raw) return colors.neutral + '20'
+					if (!raw) return withAlpha(colors.neutral, 0.125, '#6b7280')
 					if (raw.value < 0) {
-						return `${colors.error}${['20', '35', '50', '70', '90'][raw.bucket]}`
+						const errorAlphas = [0.125, 0.21, 0.31, 0.44, 0.56]
+						return withAlpha(
+							colors.error,
+							errorAlphas[raw.bucket] ?? 0.125,
+							'#ef4444'
+						)
 					}
-					return `${colors.success}${['20', '35', '50', '70', '90'][raw.bucket]}`
+					const successAlphas = [0.125, 0.21, 0.31, 0.44, 0.56]
+					return withAlpha(
+						colors.success,
+						successAlphas[raw.bucket] ?? 0.125,
+						'#22c55e'
+					)
 				},
-				borderColor: colors.baseContentMuted + '30',
+				borderColor: withAlpha(colors.baseContentMuted, 0.19, '#1f2937'),
 				borderWidth: 1,
 				width: ({ chart }: { chart?: { chartArea?: { width?: number } } }) => {
 					const width = chart?.chartArea?.width ?? 700
@@ -131,7 +116,7 @@ export const toCategoryVolatilityData = (
 				})),
 				pointRadius: 5,
 				pointHoverRadius: 7,
-				backgroundColor: colors.warning + 'aa',
+				backgroundColor: withAlpha(colors.warning, 0.67, '#f59e0b'),
 				borderColor: colors.warning,
 			},
 		],
@@ -153,7 +138,9 @@ export const toCategoryBubbleData = (
 					r: Math.max(4, Math.min(24, point.avgTicket / 150)),
 					category: point.category,
 				})),
-				backgroundColor: points.map((_, index) => palette[index] + 'aa'),
+				backgroundColor: points.map((_, index) =>
+					withAlpha(palette[index], 0.67, '#6366f1')
+				),
 			},
 		],
 	}
@@ -172,7 +159,7 @@ export const toCumulativeSavingsData = (
 				label: 'Cumulative Savings',
 				data: points.map((point) => point.cumulative),
 				borderColor: colors.success,
-				backgroundColor: colors.success + '20',
+				backgroundColor: withAlpha(colors.success, 0.125, '#22c55e'),
 				tension: 0.2,
 			},
 			{
@@ -183,40 +170,6 @@ export const toCumulativeSavingsData = (
 				borderDash: [6, 6],
 				pointRadius: 0,
 				tension: 0,
-			},
-		],
-	}
-}
-
-export const toTreemapData = (
-	nodes: TreemapNode[]
-): ChartConfiguration['data'] => {
-	const palette = getCategoryPalette(12)
-	const colorByParent = new Map<string, string>()
-
-	return {
-		datasets: [
-			{
-				label: 'Category Treemap',
-				data: [],
-				tree: nodes.map((node) => ({
-					value: node.value,
-					category: node.path[0],
-					subcategory: node.path[1],
-				})),
-				key: 'value',
-				groups: ['category', 'subcategory'],
-				borderWidth: 1,
-				spacing: 0.5,
-				backgroundColor: (ctx: { raw?: unknown }) => {
-					const raw = ctx.raw as { _data?: { category?: string } } | undefined
-					const category = raw?._data?.category ?? 'Unknown'
-					if (!colorByParent.has(category)) {
-						const color = palette[colorByParent.size % palette.length]
-						colorByParent.set(category, color)
-					}
-					return colorByParent.get(category) + 'bb'
-				},
 			},
 		],
 	}
@@ -233,17 +186,17 @@ export const toRefundImpactData = (
 			{
 				label: 'Gross Expense',
 				data: points.map((point) => point.grossExpense),
-				backgroundColor: colors.error + '80',
+				backgroundColor: withAlpha(colors.error, 0.5, '#ef4444'),
 			},
 			{
 				label: 'Refund',
 				data: points.map((point) => point.refund),
-				backgroundColor: colors.success + '80',
+				backgroundColor: withAlpha(colors.success, 0.5, '#22c55e'),
 			},
 			{
 				label: 'Net Expense',
 				data: points.map((point) => point.netExpense),
-				backgroundColor: colors.warning + '80',
+				backgroundColor: withAlpha(colors.warning, 0.5, '#f59e0b'),
 			},
 		],
 	}
@@ -286,7 +239,7 @@ export const toOutlierTimelineData = (
 				label: 'Daily Magnitude',
 				data: points.map((point) => point.value),
 				borderColor: colors.primary,
-				backgroundColor: colors.primary + '20',
+				backgroundColor: withAlpha(colors.primary, 0.125, '#6366f1'),
 				tension: 0.2,
 			},
 			{

@@ -10,6 +10,8 @@ export interface ChartThemeColors {
 	baseContentMuted: string
 }
 
+const colorAlphaCache = new Map<string, string>()
+
 const FALLBACK_COLORS: ChartThemeColors = {
 	success: '#22c55e',
 	error: '#ef4444',
@@ -46,6 +48,44 @@ export const getThemeColors = (): ChartThemeColors => {
 			FALLBACK_COLORS.baseContentMuted
 		),
 	}
+}
+
+const toRgbColor = (color: string, fallback: string): string => {
+	if (typeof document === 'undefined') return fallback
+
+	const el = document.createElement('span')
+	el.style.color = fallback
+	el.style.color = color
+	el.style.display = 'none'
+	document.body.appendChild(el)
+	const resolved = getComputedStyle(el).color || fallback
+	document.body.removeChild(el)
+	return resolved
+}
+
+export const withAlpha = (
+	color: string,
+	alpha: number,
+	fallback = '#000000'
+): string => {
+	const safeAlpha = Math.max(0, Math.min(1, alpha))
+	const cacheKey = `${color}:${safeAlpha}:${fallback}`
+	const cached = colorAlphaCache.get(cacheKey)
+	if (cached) return cached
+
+	const rgb = toRgbColor(color, fallback)
+	const match = rgb.match(
+		/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*[\d.]+)?\s*\)/
+	)
+
+	if (!match) {
+		colorAlphaCache.set(cacheKey, fallback)
+		return fallback
+	}
+
+	const result = `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${safeAlpha})`
+	colorAlphaCache.set(cacheKey, result)
+	return result
 }
 
 const CATEGORY_PALETTE = [

@@ -5,7 +5,6 @@ export {
 	toCashFlowTrendChartData,
 	toIncomeExpenseComparisonChartData,
 	toCalendarHeatmapData,
-	toCashflowSankeyData,
 	toCategoryBubbleData,
 	toCategoryVolatilityData,
 	toCumulativeSavingsData,
@@ -13,7 +12,6 @@ export {
 	toOutlierTimelineData,
 	toRefundImpactData,
 	toRegimeTimelineData,
-	toTreemapData,
 } from './adapters'
 
 export {
@@ -25,7 +23,6 @@ export {
 	matrixChartOptions,
 	scatterChartOptions,
 	stackedBarChartOptions,
-	treemapChartOptions,
 } from './config/defaults'
 
 export { getThemeColors, getCategoryPalette } from './theme'
