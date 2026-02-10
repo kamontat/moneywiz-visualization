@@ -25,6 +25,7 @@
 	import { emptyFilterState } from '$lib/analytics/filters/models/state'
 	import { bySummarize, transform } from '$lib/analytics/transforms'
 	import { csvStore, csvUploading } from '$lib/csv'
+	import { analytic } from '$lib/loggers'
 	import {
 		extractCategories,
 		extractTagCategories,
@@ -35,6 +36,13 @@
 	type FilterState = BaseFilterState & { categories: string[] }
 
 	const DEFAULT_LIMIT = 20
+	const DATE_FILTER_STORAGE_KEY = 'moneywiz:filters:date-range:v1'
+	const log = analytic.extends('routes.page')
+
+	type PersistedDateRange = {
+		start?: number
+		end?: number
+	}
 
 	let allTransactions = $state<ParsedTransaction[]>([])
 	let totalCount = $state(0)
@@ -48,6 +56,45 @@
 		categories: [],
 	})
 	let limit = $state(DEFAULT_LIMIT)
+	let didHydrateDateFilter = $state(false)
+
+	const loadPersistedDateRange = () => {
+		if (typeof window === 'undefined') return undefined
+		try {
+			const raw = window.localStorage.getItem(DATE_FILTER_STORAGE_KEY)
+			if (!raw) return undefined
+			const parsed = JSON.parse(raw) as PersistedDateRange
+			return {
+				start:
+					typeof parsed.start === 'number' ? new Date(parsed.start) : undefined,
+				end: typeof parsed.end === 'number' ? new Date(parsed.end) : undefined,
+			}
+		} catch (error) {
+			log.warn('failed to load persisted date range', { error })
+			return undefined
+		}
+	}
+
+	const persistDateRange = (dateRange: FilterState['dateRange']) => {
+		if (typeof window === 'undefined') return
+		try {
+			if (!dateRange.start && !dateRange.end) {
+				window.localStorage.removeItem(DATE_FILTER_STORAGE_KEY)
+				return
+			}
+
+			const value: PersistedDateRange = {
+				start: dateRange.start?.getTime(),
+				end: dateRange.end?.getTime(),
+			}
+			window.localStorage.setItem(
+				DATE_FILTER_STORAGE_KEY,
+				JSON.stringify(value)
+			)
+		} catch (error) {
+			log.warn('failed to persist date range', { error })
+		}
+	}
 
 	const loadData = async () => {
 		totalCount = await getTransactionCount()
@@ -82,6 +129,15 @@
 	}
 
 	onMount(() => {
+		const persistedDateRange = loadPersistedDateRange()
+		if (persistedDateRange) {
+			filterState = {
+				...filterState,
+				dateRange: persistedDateRange,
+			}
+		}
+		didHydrateDateFilter = true
+
 		cachedFilterOptions = get(filterOptionsStore)
 		filterOptionsStore.subscribe((options: FilterOptions | undefined) => {
 			cachedFilterOptions = options
@@ -94,6 +150,11 @@
 		csvUploading.subscribe((u: boolean) => {
 			uploading = u
 		})
+	})
+
+	$effect(() => {
+		if (!didHydrateDateFilter) return
+		persistDateRange(filterState.dateRange)
 	})
 
 	const filteredTransactions = $derived.by(() => {
