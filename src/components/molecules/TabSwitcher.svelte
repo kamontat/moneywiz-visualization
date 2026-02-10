@@ -1,15 +1,12 @@
 <script lang="ts">
-	import type {
-		AnyComponent,
-		BaseProps,
-		CustomProps,
-	} from '$lib/components/models'
+	import type { ComponentType } from 'svelte'
+	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import { mergeClass } from '$lib/components'
 
 	type Tab = {
 		id: string
 		label: string
-		icon?: AnyComponent
+		icon?: ComponentType
 	}
 
 	type Props = BaseProps &

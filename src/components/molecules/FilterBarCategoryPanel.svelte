@@ -87,6 +87,27 @@
 			.filter((group) => group.options.length > 0)
 	})
 
+	const allSelectableCategoryNames = $derived.by(() => {
+		return Array.from(
+			new Set(
+				availableCategories
+					.filter(
+						(cat) =>
+							cat.subcategory.trim() ||
+							(!cat.category.trim() && !cat.subcategory.trim())
+					)
+					.map((cat) => getCategoryFullName(cat))
+			)
+		)
+	})
+
+	const allCategoriesSelected = $derived.by(() => {
+		if (allSelectableCategoryNames.length === 0) return false
+		return allSelectableCategoryNames.every((name) =>
+			filterState.categories.includes(name)
+		)
+	})
+
 	const toggleCategory = (category: string) => {
 		const current = filterState.categories
 		const updated = current.includes(category)
@@ -135,6 +156,15 @@
 		onfilterchange?.(filterState)
 	}
 
+	const selectAllCategories = () => {
+		if (allSelectableCategoryNames.length === 0) return
+		filterState = {
+			...filterState,
+			categories: allSelectableCategoryNames,
+		}
+		onfilterchange?.(filterState)
+	}
+
 	const tagOptionBase = [
 		'd-badge',
 		'cursor-pointer',
@@ -164,15 +194,39 @@
 			>
 				Category
 			</span>
-			{#if hasCategoryFilter}
+			<div class="flex items-center gap-2">
 				<button
 					type="button"
-					class="text-xs text-base-content/60 transition-colors hover:text-base-content"
-					onclick={clearCategoryFilter}
+					class={mergeClass(
+						[
+							'text-[10px]',
+							'font-semibold',
+							'tracking-wider',
+							'rounded-full',
+							'border',
+							'px-2',
+							'py-0.5',
+							'transition-colors',
+						],
+						allCategoriesSelected
+							? 'border-primary/40 text-primary'
+							: 'border-base-300 text-base-content/50 hover:text-base-content'
+					)}
+					onclick={selectAllCategories}
+					disabled={allCategoriesSelected}
 				>
-					Clear
+					All
 				</button>
-			{/if}
+				{#if hasCategoryFilter}
+					<button
+						type="button"
+						class="text-xs text-base-content/60 transition-colors hover:text-base-content"
+						onclick={clearCategoryFilter}
+					>
+						Clear
+					</button>
+				{/if}
+			</div>
 		</div>
 
 		<div class="flex flex-col gap-2">
@@ -212,7 +266,6 @@
 												'text-[10px]',
 												'font-semibold',
 												'tracking-wider',
-												'uppercase',
 												'rounded-full',
 												'border',
 												'px-2',
@@ -234,7 +287,6 @@
 												'text-[10px]',
 												'font-semibold',
 												'tracking-wider',
-												'uppercase',
 												'rounded-full',
 												'border',
 												'px-2',

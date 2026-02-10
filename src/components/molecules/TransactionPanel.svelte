@@ -38,7 +38,9 @@
 <Panel class={mergeClass([], className)} {...rest}>
 	<div class="mb-4 flex min-w-0 items-center gap-3">
 		{#if title}
-			<h3 class="min-w-0 flex-1 truncate text-lg font-semibold text-base-content">
+			<h3
+				class="min-w-0 flex-1 truncate text-lg font-semibold text-base-content"
+			>
 				{title}
 			</h3>
 		{/if}
@@ -46,7 +48,7 @@
 			<Select
 				bind:value={selectedLimit}
 				values={pageSizeValues}
-				class="d-select-sm ml-auto w-auto min-w-[3.5rem] shrink-0 text-sm"
+				class="ml-auto w-auto min-w-[3.5rem] shrink-0 d-select-sm text-sm"
 				onchange={() => onlimitchange?.(Number(selectedLimit))}
 			/>
 		{/if}

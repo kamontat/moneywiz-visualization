@@ -9,3 +9,5 @@ bun.lockb
 /static/
 
 /.agentic/
+/.agents/skills/
+/.claude/settings.local.json
