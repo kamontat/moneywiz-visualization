@@ -2,7 +2,9 @@
 
 ## OVERVIEW
 
-Schema-first persistence layer: IndexedDB + localStorage with cross-tab sync via storage events. Svelte stores backed by DB.
+Schema-first persistence layer: IndexedDB + localStorage with cross-tab
+sync via storage events. Svelte stores are backed by DB adapters and
+typed schema definitions.
 
 ## STRUCTURE
 
@@ -13,9 +15,11 @@ utils/
 │   ├── localdb.ts      # localStorage implementation (sync)
 │   ├── models/         # Database interfaces and schema types
 │   └── utils.ts        # Helpers (parseDBFullName, parseChangedData)
+├── apis/               # API wrapper factory for store-backed modules
 ├── stores/             # Svelte stores with persistence
 │   ├── store.ts        # newStore: writable + DB persistence
 │   ├── db.ts           # Concrete DB instances (localDBV1, indexDBV1)
+│   ├── constants.ts    # Names for DB/table/state keys
 │   └── models/         # Store types and StoreSchema
 ├── states/             # State management primitives
 │   ├── state.ts        # newState: creates State with normalize/equal/merge
@@ -25,7 +29,7 @@ utils/
 │   ├── keys.ts         # ObjKeyArray
 │   ├── keyval.ts       # ToKVs, AnyKeyVal
 │   └── promise.ts      # PromiseOrVal, WithPromiseLike
-└── apis/               # API wrapper factory
+└── AGENTS.md           # This guide
 ```
 
 ## WHERE TO LOOK
@@ -35,6 +39,7 @@ utils/
 | Add new persisted store | See "Adding a Store" below              |
 | Add DB table            | `stores/models/schema.ts` (StoreSchema) |
 | Create IndexedDB store  | `stores/db.ts` (upgrade callback)       |
+| Change DB key names      | `stores/constants.ts`                   |
 | Type utilities          | `types/`                                |
 
 ## CONVENTIONS
@@ -91,9 +96,17 @@ export const myStore = newStore(indexDBV1, myState, {
 - Format: `v{version}:{name}` (e.g., `v1:csv`)
 - Parsed by `parseDBFullName()`
 
+### Current v1 Schema Tables
+
+- `mw_theme_v1`: persisted theme settings
+- `mw_csv_v1`: uploaded CSV metadata
+- `mw_filter_options_v1`: filter panel selections
+- `mw_transaction_v1`: parsed transactions + indexes (`date`, `type`, `account`)
+
 ## ANTI-PATTERNS
 
 - Don't use localStorage directly; use DB abstraction
 - Don't skip `normalize` when creating state (prevents invalid data)
 - Don't call `db.set` without going through store (breaks change tracking)
 - Don't put UI logic here; this is data layer only
+- Don't import types from non-`models` paths

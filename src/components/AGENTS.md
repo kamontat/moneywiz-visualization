@@ -2,15 +2,18 @@
 
 ## OVERVIEW
 
-Atomic Design structure: atoms (primitives) → molecules (compositions) → organisms (page sections).
+Atomic Design structure: atoms (primitives) -> molecules (compositions)
+-> organisms (page sections).
 
 ## STRUCTURE
 
 ```
 components/
-├── atoms/              # Single-purpose primitives (Button, Input, Text, Panel)
-├── molecules/          # Small compositions (CsvUploadButton, ThemeSelect)
-└── organisms/          # Page-level assemblies (AppHeader, AppBody, AppFooter)
+├── atoms/              # Primitives (Button, Input, Select, Icon, ChartCanvas, etc.)
+├── molecules/          # Compositions (upload/filter/charts/table/header blocks)
+│   └── models/         # Molecule-specific type models
+├── organisms/          # Page-level assemblies (dashboard, panels, app shell)
+└── AGENTS.md           # This guide
 ```
 
 ## WHERE TO LOOK
@@ -20,6 +23,8 @@ components/
 | Add button/input/text | `atoms/`                   |
 | Compose atoms         | `molecules/`               |
 | Add page section      | `organisms/`               |
+| Add analytics chart   | `molecules/*Chart.svelte`  |
+| Update filter UI      | `organisms/FilterBar.svelte` + `molecules/FilterBar*.svelte` |
 | Style utilities       | `$lib/components/class.ts` |
 | Prop types            | `$lib/components/models/`  |
 
@@ -83,6 +88,7 @@ components/
 - DaisyUI classes prefixed `d-`
 - `variant='plain'` returns empty base class
 - Always accept `class` prop and merge it
+- For chart components, render through `ChartCanvas.svelte`
 
 ### Children
 
@@ -95,9 +101,16 @@ components/
 - Use `CustomProps<{ onsuccess?: () => void }>` pattern
 - Call directly: `onsuccess?.()`
 
+### Data Flow
+
+- Atoms: presentational only, no domain store access
+- Molecules: may connect to domain APIs/stores for composed behavior
+- Organisms: orchestrate page-level layout and cross-molecule state
+
 ## ANTI-PATTERNS
 
 - Don't use inline styles; use class utilities
 - Don't access stores directly in atoms; pass via props
 - Don't skip `mergeClass` for the `class` prop
 - Don't use `svelte:element` unless truly polymorphic (see `Icon.svelte`)
+- Don't define shared TS types here; place reusable types in `$lib/components/models`

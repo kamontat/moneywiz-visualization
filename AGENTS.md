@@ -1,12 +1,14 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-07
-**Commit:** 75de207
+**Generated:** 2026-02-10
+**Commit:** db5c576
 **Branch:** main
 
 ## OVERVIEW
 
-SvelteKit 2 + Svelte 5 static site for visualizing MoneyWiz CSV exports. Uses Tailwind CSS 4 + DaisyUI 5, IndexedDB persistence, and Chart.js for analytics.
+SvelteKit 2 + Svelte 5 static site for visualizing MoneyWiz CSV exports.
+Uses Tailwind CSS 4 + DaisyUI 5, IndexedDB persistence, and Chart.js
+for analytics and dashboard charts.
 
 ## STRUCTURE
 
@@ -15,7 +17,7 @@ moneywiz-visualization/
 ├── src/
 │   ├── routes/           # SvelteKit file-based routing (+page.svelte, +layout.svelte)
 │   ├── components/       # Atomic Design: atoms/molecules/organisms (see AGENTS.md)
-│   ├── lib/              # Domain modules: csv, transactions, analytics, themes (see AGENTS.md)
+│   ├── lib/              # Domain modules: analytics/csv/charts/themes/transactions/etc.
 │   ├── utils/            # Data layer: db, stores, states, types (see AGENTS.md)
 │   └── css/              # Global styles (Tailwind + DaisyUI config)
 ├── e2e/                  # Playwright E2E tests
@@ -29,8 +31,9 @@ moneywiz-visualization/
 | ------------------ | --------------------------------------------- | --------------------------------------------------------- |
 | Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load     |
 | Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                      |
-| Add business logic | `src/lib/{domain}/`                           | csv, transactions, analytics, themes, formatters, loggers |
+| Add business logic | `src/lib/{domain}/`                           | analytics, charts, csv, themes, transactions, formatters  |
 | Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                         |
+| Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                 |
 | Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                         |
 | Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                             |
 
@@ -125,11 +128,10 @@ let {
 
 ## KNOWN ISSUES (TODOs in code)
 
-| Location                                       | Issue                             |
-| ---------------------------------------------- | --------------------------------- |
-| `src/lib/transactions/store.ts`                | TODO: getAll missing fileName key |
-| `src/lib/analytics/transforms/byTimeSeries.ts` | TODO: Expense sign ambiguity      |
-| `src/css/global.css`                           | FIXME: Waiting on daisyui#4373    |
+| Location                     | Issue                                                      |
+| ---------------------------- | ---------------------------------------------------------- |
+| `src/lib/transactions/db.ts` | TODO: implement transaction storage initialization          |
+| `src/css/global.css`         | FIXME: remove workaround after daisyui PR `#4373` is merged |
 
 ## COMMANDS
 
@@ -144,6 +146,7 @@ bun run fix              # Auto-fix format + lint
 
 # Testing
 bun run test:unit        # Vitest unit tests
+bun run test:coverage    # Vitest with coverage
 bun run test:e2e         # Playwright E2E (builds first)
 bun run test             # Both
 
@@ -158,6 +161,7 @@ bun run preview          # Preview production build
 - **Component tests**: `*.svelte.spec.ts`, run in browser via Playwright provider
 - **E2E tests**: `e2e/*.spec.ts`, Playwright with auto webServer
 - Config split: `vite.config.ts` defines `server` (Node) and `client` (browser) projects
+- E2E config: `playwright.config.ts` runs `bun run build && bun run preview` on port `4173`
 
 ## DEPLOYMENT
 
