@@ -12,6 +12,19 @@ export const byCategoryTree: TransformByFunc<
 	CategoryTree
 > = (transactionType) => {
 	const by: TransformBy<CategoryTree> = (trx) => {
+		const normalizeCategory = (
+			category: string,
+			subcategory: string
+		): { parent: string; child: string } => {
+			const parent = category.trim()
+			const child = subcategory.trim()
+
+			if (parent) return { parent, child }
+			if (child) return { parent: child, child: '' }
+
+			return { parent: 'Uncategorized', child: '' }
+		}
+
 		const parentMap: Record<
 			string,
 			{ total: number; children: Record<string, number> }
@@ -22,17 +35,20 @@ export const byCategoryTree: TransformByFunc<
 			if (!('category' in t) || t.type !== transactionType) continue
 
 			const amount = Math.abs(t.amount.value)
-			const parent = t.category.category
-			const child = t.category.subcategory || '(uncategorized)'
+			const { parent, child } = normalizeCategory(
+				t.category.category,
+				t.category.subcategory
+			)
+			const normalizedChild = child || '(uncategorized)'
 
 			if (!parentMap[parent]) {
 				parentMap[parent] = { total: 0, children: {} }
 			}
-			if (!parentMap[parent].children[child]) {
-				parentMap[parent].children[child] = 0
+			if (!parentMap[parent].children[normalizedChild]) {
+				parentMap[parent].children[normalizedChild] = 0
 			}
 
-			parentMap[parent].children[child] += amount
+			parentMap[parent].children[normalizedChild] += amount
 			parentMap[parent].total += amount
 			grandTotal += amount
 		}
