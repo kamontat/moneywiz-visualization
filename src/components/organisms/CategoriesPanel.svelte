@@ -3,7 +3,13 @@
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import Panel from '$components/atoms/Panel.svelte'
 	import CategoryTreeView from '$components/molecules/CategoryTreeView.svelte'
-	import { byCategoryTree, transform } from '$lib/analytics/transforms'
+	import ExpenseBreakdownChart from '$components/molecules/ExpenseBreakdownChart.svelte'
+	import IncomeBreakdownChart from '$components/molecules/IncomeBreakdownChart.svelte'
+	import {
+		byCategoryTotal,
+		byCategoryTree,
+		transform,
+	} from '$lib/analytics/transforms'
 	import { mergeClass } from '$lib/components'
 
 	type Props = BaseProps &
@@ -17,6 +23,7 @@
 		transform(transactions, byCategoryTree('Expense'))
 	)
 	const incomeTree = $derived(transform(transactions, byCategoryTree('Income')))
+	const categoryTotals = $derived(transform(transactions, byCategoryTotal))
 </script>
 
 <div
@@ -33,12 +40,20 @@
 			</p>
 		</Panel>
 	{:else}
-		<Panel title="Expense Categories">
-			<CategoryTreeView categoryTree={expenseTree} />
+		<Panel title="Income Breakdown">
+			<IncomeBreakdownChart categoryData={categoryTotals} />
+		</Panel>
+
+		<Panel title="Expense Breakdown">
+			<ExpenseBreakdownChart categoryData={categoryTotals} />
 		</Panel>
 
 		<Panel title="Income Categories">
 			<CategoryTreeView categoryTree={incomeTree} />
+		</Panel>
+
+		<Panel title="Expense Categories">
+			<CategoryTreeView categoryTree={expenseTree} />
 		</Panel>
 	{/if}
 </div>
