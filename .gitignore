@@ -29,4 +29,5 @@ static/data/*.csv
 
 /.old/
 /.sisyphus/
+/output/playwright/*.png
 /*.png
