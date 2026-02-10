@@ -6,6 +6,7 @@
 
 	import StatCard from '$components/atoms/StatCard.svelte'
 	import { mergeClass } from '$lib/components'
+	import { formatCurrency } from '$lib/formatters/amount'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -21,15 +22,11 @@
 	})
 
 	const dailyAvgIncome = $derived(
-		(summary.totalIncome / dayCount).toLocaleString('th-TH', {
-			minimumFractionDigits: 2,
-		})
+		formatCurrency(summary.totalIncome / dayCount)
 	)
 
 	const dailyAvgExpense = $derived(
-		(summary.netExpenses / dayCount).toLocaleString('th-TH', {
-			minimumFractionDigits: 2,
-		})
+		formatCurrency(summary.netExpenses / dayCount)
 	)
 </script>
 

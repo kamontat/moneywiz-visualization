@@ -2,6 +2,7 @@
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import { mergeClass, newTwClass } from '$lib/components'
+	import { formatAmount } from '$lib/formatters/amount'
 	import { formatDate } from '$lib/formatters/date'
 	import { formatTransactionType } from '$lib/formatters/transactionType'
 
@@ -110,13 +111,7 @@
 									class:text-error={trx.amount.value < 0}
 									class:text-success={trx.amount.value > 0}
 								>
-									{trx.amount.value.toLocaleString('th-TH', {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2,
-									})}
-								</span>
-								<span class="ml-1 text-xs text-base-content/60">
-									{trx.amount.currency}
+									{formatAmount(trx.amount)}
 								</span>
 							</td>
 							<td class="py-3">

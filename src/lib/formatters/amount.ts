@@ -9,3 +9,17 @@ export const formatAmount = (amount: ParsedAmount): string => {
 		...amount.format,
 	}).format(amount.value)
 }
+
+export const formatCurrency = (
+	value: number,
+	currency = 'THB',
+	locale = 'th-TH',
+	format?: Intl.NumberFormatOptions
+): string => {
+	return formatAmount({
+		value,
+		currency,
+		locale,
+		format,
+	})
+}

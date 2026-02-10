@@ -31,7 +31,8 @@
 
 <div class={mergeClass(['flex', 'flex-col', 'gap-4'], className)} {...rest}>
 	<label class="d-form-control w-full max-w-xs">
-		<span class="d-label-text text-sm text-base-content/70">Monthly target</span
+		<span class="d-label-text text-sm text-base-content/70"
+			>Monthly target (฿)</span
 		>
 		<input
 			type="number"

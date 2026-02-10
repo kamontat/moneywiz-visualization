@@ -8,6 +8,7 @@
 
 	import StatCard from '$components/atoms/StatCard.svelte'
 	import { mergeClass } from '$lib/components'
+	import { formatCurrency } from '$lib/formatters/amount'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -16,17 +17,9 @@
 
 	let { summary, class: className, ...rest }: Props = $props()
 
-	const income = $derived(
-		summary.totalIncome.toLocaleString('th-TH', { minimumFractionDigits: 2 })
-	)
-	const expenses = $derived(
-		summary.netExpenses.toLocaleString('th-TH', {
-			minimumFractionDigits: 2,
-		})
-	)
-	const net = $derived(
-		summary.netCashFlow.toLocaleString('th-TH', { minimumFractionDigits: 2 })
-	)
+	const income = $derived(formatCurrency(summary.totalIncome))
+	const expenses = $derived(formatCurrency(summary.netExpenses))
+	const net = $derived(formatCurrency(summary.netCashFlow))
 	const savings = $derived(
 		summary.savingsRate.toLocaleString('th-TH', { minimumFractionDigits: 2 }) +
 			'%'

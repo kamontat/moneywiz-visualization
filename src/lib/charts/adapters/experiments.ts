@@ -13,11 +13,12 @@ import type {
 } from '$lib/analytics/transforms/models'
 import { getCategoryPalette, getThemeColors } from '../theme'
 
+const SANKEY_FROM_COLOR = '#6366f1'
+const SANKEY_TO_COLOR = '#3b82f6'
+
 export const toCashflowSankeyData = (
 	links: FlowLink[]
 ): ChartConfiguration['data'] => {
-	const colors = getThemeColors()
-
 	return {
 		datasets: [
 			{
@@ -27,8 +28,8 @@ export const toCashflowSankeyData = (
 					to: link.to,
 					flow: link.flow,
 				})),
-				colorFrom: () => colors.primary,
-				colorTo: () => colors.info,
+				colorFrom: () => SANKEY_FROM_COLOR,
+				colorTo: () => SANKEY_TO_COLOR,
 				colorMode: 'gradient',
 			},
 		],

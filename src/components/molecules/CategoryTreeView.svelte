@@ -5,6 +5,7 @@
 	import { SvelteSet } from 'svelte/reactivity'
 
 	import { mergeClass } from '$lib/components'
+	import { formatCurrency } from '$lib/formatters/amount'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -23,8 +24,7 @@
 		}
 	}
 
-	const formatAmount = (value: number): string =>
-		value.toLocaleString('th-TH', { minimumFractionDigits: 2 })
+	const formatAmount = (value: number): string => formatCurrency(value)
 </script>
 
 <div class={mergeClass(['flex', 'flex-col', 'gap-1'], className)} {...rest}>
