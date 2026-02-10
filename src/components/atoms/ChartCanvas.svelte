@@ -7,6 +7,7 @@
 	import { mergeClass } from '$lib/components'
 
 	const chartPluginRegistryFlag = '__moneywizChartPluginsRegistered__'
+	let chartRegistrationPromise: Promise<void> | undefined
 
 	type ChartType =
 		| 'line'
@@ -30,36 +31,58 @@
 
 	let canvas: HTMLCanvasElement | undefined = $state()
 	let chartInstance: Chart | undefined = $state()
+	let isChartReady = $state(false)
 
-	onMount(async () => {
+	const ensureChartRegistered = async () => {
 		if ((globalThis as Record<string, unknown>)[chartPluginRegistryFlag]) {
 			return
 		}
+		if (chartRegistrationPromise) {
+			return chartRegistrationPromise
+		}
 
-		const [
-			{ MatrixController, MatrixElement },
-			{ SankeyController, Flow },
-			{ TreemapController, TreemapElement },
-		] = await Promise.all([
-			import('chartjs-chart-matrix'),
-			import('chartjs-chart-sankey'),
-			import('chartjs-chart-treemap'),
-		])
+		chartRegistrationPromise = (async () => {
+			const [
+				{ MatrixController, MatrixElement },
+				{ SankeyController, Flow },
+				{ TreemapController, TreemapElement },
+			] = await Promise.all([
+				import('chartjs-chart-matrix'),
+				import('chartjs-chart-sankey'),
+				import('chartjs-chart-treemap'),
+			])
 
-		Chart.register(
-			...registerables,
-			MatrixController,
-			MatrixElement,
-			SankeyController,
-			Flow,
-			TreemapController,
-			TreemapElement
-		)
-		;(globalThis as Record<string, unknown>)[chartPluginRegistryFlag] = true
+			Chart.register(
+				...registerables,
+				MatrixController,
+				MatrixElement,
+				SankeyController,
+				Flow,
+				TreemapController,
+				TreemapElement
+			)
+			;(globalThis as Record<string, unknown>)[chartPluginRegistryFlag] = true
+		})()
+
+		return chartRegistrationPromise
+	}
+
+	onMount(() => {
+		let isActive = true
+
+		void ensureChartRegistered().then(() => {
+			if (isActive) {
+				isChartReady = true
+			}
+		})
+
+		return () => {
+			isActive = false
+		}
 	})
 
 	$effect(() => {
-		if (!canvas) return
+		if (!canvas || !isChartReady) return
 
 		if (chartInstance) {
 			chartInstance.data = data as ChartConfiguration['data']
