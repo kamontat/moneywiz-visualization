@@ -27,15 +27,15 @@ moneywiz-visualization/
 
 ## WHERE TO LOOK
 
-| Task               | Location                                      | Notes                                                     |
-| ------------------ | --------------------------------------------- | --------------------------------------------------------- |
-| Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load     |
-| Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                      |
-| Add business logic | `src/lib/{domain}/`                           | analytics, charts, csv, themes, transactions, formatters  |
-| Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                         |
-| Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                 |
-| Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                         |
-| Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                             |
+| Task               | Location                                      | Notes                                                    |
+| ------------------ | --------------------------------------------- | -------------------------------------------------------- |
+| Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load    |
+| Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                     |
+| Add business logic | `src/lib/{domain}/`                           | analytics, charts, csv, themes, transactions, formatters |
+| Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                        |
+| Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                |
+| Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                        |
+| Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                            |
 
 ## CONVENTIONS
 
@@ -128,8 +128,8 @@ let {
 
 ## KNOWN ISSUES (TODOs in code)
 
-| Location                     | Issue                                                      |
-| ---------------------------- | ---------------------------------------------------------- |
+| Location                     | Issue                                                       |
+| ---------------------------- | ----------------------------------------------------------- |
 | `src/lib/transactions/db.ts` | TODO: implement transaction storage initialization          |
 | `src/css/global.css`         | FIXME: remove workaround after daisyui PR `#4373` is merged |
 

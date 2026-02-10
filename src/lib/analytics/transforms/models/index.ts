@@ -13,3 +13,16 @@ export type {
 export type { Summarize, SummarizeDateRange } from './summarize'
 export type { TopCategoryTotal } from './topCategoryTotal'
 export type { TimeSeries, TimeSeriesMode, TimeSeriesPoint } from './timeSeries'
+export type {
+	CalendarCell,
+	CategoryBubblePoint,
+	CategoryVolatilityPoint,
+	CumulativeSavingsPoint,
+	FlowLink,
+	OutlierPoint,
+	RefundImpactPoint,
+	RegimeSegment,
+	RegimeType,
+	TreemapNode,
+	WaterfallStep,
+} from './experiments'

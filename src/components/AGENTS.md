@@ -18,15 +18,15 @@ components/
 
 ## WHERE TO LOOK
 
-| Task                  | Location                   |
-| --------------------- | -------------------------- |
-| Add button/input/text | `atoms/`                   |
-| Compose atoms         | `molecules/`               |
-| Add page section      | `organisms/`               |
-| Add analytics chart   | `molecules/*Chart.svelte`  |
+| Task                  | Location                                                     |
+| --------------------- | ------------------------------------------------------------ |
+| Add button/input/text | `atoms/`                                                     |
+| Compose atoms         | `molecules/`                                                 |
+| Add page section      | `organisms/`                                                 |
+| Add analytics chart   | `molecules/*Chart.svelte`                                    |
 | Update filter UI      | `organisms/FilterBar.svelte` + `molecules/FilterBar*.svelte` |
-| Style utilities       | `$lib/components/class.ts` |
-| Prop types            | `$lib/components/models/`  |
+| Style utilities       | `$lib/components/class.ts`                                   |
+| Prop types            | `$lib/components/models/`                                    |
 
 ## CONVENTIONS
 

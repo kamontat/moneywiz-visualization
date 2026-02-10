@@ -72,3 +72,70 @@ export const doughnutChartOptions = (): ChartOptions<'doughnut'> => ({
 	cutout: '60%',
 	plugins: themePlugin(),
 })
+
+export const scatterChartOptions = (): ChartOptions<'scatter'> => ({
+	responsive: true,
+	maintainAspectRatio: true,
+	plugins: themePlugin(),
+	scales: themeScales(),
+})
+
+export const bubbleChartOptions = (): ChartOptions<'bubble'> => ({
+	responsive: true,
+	maintainAspectRatio: true,
+	plugins: themePlugin(),
+	scales: themeScales(),
+})
+
+export const stackedBarChartOptions = (): ChartOptions<'bar'> => ({
+	responsive: true,
+	maintainAspectRatio: true,
+	plugins: themePlugin(),
+	scales: {
+		x: {
+			stacked: true,
+			ticks: { color: getThemeColors().baseContentMuted },
+			grid: { color: getThemeColors().baseContentMuted + '20' },
+		},
+		y: {
+			stacked: true,
+			ticks: { color: getThemeColors().baseContentMuted },
+			grid: { color: getThemeColors().baseContentMuted + '20' },
+		},
+	},
+})
+
+export const matrixChartOptions = (): ChartOptions<'matrix'> => ({
+	responsive: true,
+	maintainAspectRatio: true,
+	plugins: themePlugin(),
+	scales: {
+		x: {
+			type: 'linear',
+			offset: false,
+			ticks: { color: getThemeColors().baseContentMuted },
+			grid: { display: false },
+		},
+		y: {
+			type: 'linear',
+			reverse: true,
+			ticks: {
+				color: getThemeColors().baseContentMuted,
+				callback: (value) =>
+					['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][+value] ?? '',
+			},
+			grid: { display: false },
+		},
+	},
+})
+
+export const treemapChartOptions = (): ChartOptions<'treemap'> => ({
+	responsive: true,
+	maintainAspectRatio: true,
+	plugins: {
+		...themePlugin(),
+		legend: {
+			display: false,
+		},
+	},
+})

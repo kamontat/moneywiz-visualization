@@ -39,7 +39,7 @@ utils/
 | Add new persisted store | See "Adding a Store" below              |
 | Add DB table            | `stores/models/schema.ts` (StoreSchema) |
 | Create IndexedDB store  | `stores/db.ts` (upgrade callback)       |
-| Change DB key names      | `stores/constants.ts`                   |
+| Change DB key names     | `stores/constants.ts`                   |
 | Type utilities          | `types/`                                |
 
 ## CONVENTIONS

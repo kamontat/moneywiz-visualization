@@ -6,13 +6,24 @@
 
 	import { mergeClass } from '$lib/components'
 
-	type ChartType = 'line' | 'bar' | 'doughnut' | 'pie'
+	const chartPluginRegistryFlag = '__moneywizChartPluginsRegistered__'
+
+	type ChartType =
+		| 'line'
+		| 'bar'
+		| 'doughnut'
+		| 'pie'
+		| 'scatter'
+		| 'bubble'
+		| 'sankey'
+		| 'matrix'
+		| 'treemap'
 
 	type Props = BaseProps &
 		CustomProps<{
 			type: ChartType
-			data: ChartConfiguration['data']
-			options?: ChartConfiguration['options']
+			data: unknown
+			options?: unknown
 		}>
 
 	let { type, data, options, class: className, ...rest }: Props = $props()
@@ -20,26 +31,53 @@
 	let canvas: HTMLCanvasElement | undefined = $state()
 	let chartInstance: Chart | undefined = $state()
 
-	onMount(() => {
-		Chart.register(...registerables)
+	onMount(async () => {
+		if ((globalThis as Record<string, unknown>)[chartPluginRegistryFlag]) {
+			return
+		}
+
+		const [
+			{ MatrixController, MatrixElement },
+			{ SankeyController, Flow },
+			{ TreemapController, TreemapElement },
+		] = await Promise.all([
+			import('chartjs-chart-matrix'),
+			import('chartjs-chart-sankey'),
+			import('chartjs-chart-treemap'),
+		])
+
+		Chart.register(
+			...registerables,
+			MatrixController,
+			MatrixElement,
+			SankeyController,
+			Flow,
+			TreemapController,
+			TreemapElement
+		)
+		;(globalThis as Record<string, unknown>)[chartPluginRegistryFlag] = true
 	})
 
 	$effect(() => {
 		if (!canvas) return
 
 		if (chartInstance) {
-			chartInstance.data = data
-			if (options) chartInstance.options = options
+			chartInstance.data = data as ChartConfiguration['data']
+			if (options) {
+				chartInstance.options = options as NonNullable<
+					ChartConfiguration['options']
+				>
+			}
 			chartInstance.update()
 		} else {
 			chartInstance = new Chart(canvas, {
 				type,
-				data,
+				data: data as ChartConfiguration['data'],
 				options: {
 					responsive: true,
 					maintainAspectRatio: true,
-					...options,
-				},
+					...(options as Record<string, unknown> | undefined),
+				} as ChartConfiguration['options'],
 			})
 		}
 	})

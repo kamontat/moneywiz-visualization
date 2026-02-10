@@ -23,17 +23,17 @@ lib/
 
 ## WHERE TO LOOK
 
-| Task                 | Location                                                |
-| -------------------- | ------------------------------------------------------- |
-| Parse CSV rows       | `transactions/csv.ts` + `transactions/import.ts`           |
-| Classify transaction | `transactions/classifier.ts`                               |
-| Add filter           | `analytics/filters/` + export from `analytics/filters/index.ts` |
+| Task                 | Location                                                              |
+| -------------------- | --------------------------------------------------------------------- |
+| Parse CSV rows       | `transactions/csv.ts` + `transactions/import.ts`                      |
+| Classify transaction | `transactions/classifier.ts`                                          |
+| Add filter           | `analytics/filters/` + export from `analytics/filters/index.ts`       |
 | Add transform        | `analytics/transforms/` + export from `analytics/transforms/index.ts` |
-| Add chart adapter    | `charts/adapters/` + export from `charts/adapters/index.ts` |
-| Tune chart options   | `charts/config/defaults.ts`                                |
-| Format display value | `formatters/`                                              |
-| Add theme            | `themes/models/constants.ts`                               |
-| Debug logging        | Import from `loggers/constants.ts`                         |
+| Add chart adapter    | `charts/adapters/` + export from `charts/adapters/index.ts`           |
+| Tune chart options   | `charts/config/defaults.ts`                                           |
+| Format display value | `formatters/`                                                         |
+| Add theme            | `themes/models/constants.ts`                                          |
+| Debug logging        | Import from `loggers/constants.ts`                                    |
 
 ## CONVENTIONS
 

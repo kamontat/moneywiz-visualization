@@ -4,6 +4,16 @@ export {
 	toIncomeExpenseChartData,
 	toCashFlowTrendChartData,
 	toIncomeExpenseComparisonChartData,
+	toCalendarHeatmapData,
+	toCashflowSankeyData,
+	toCategoryBubbleData,
+	toCategoryVolatilityData,
+	toCumulativeSavingsData,
+	toMonthlyWaterfallData,
+	toOutlierTimelineData,
+	toRefundImpactData,
+	toRegimeTimelineData,
+	toTreemapData,
 } from './adapters'
 
 export {
@@ -11,6 +21,11 @@ export {
 	barChartOptions,
 	horizontalBarChartOptions,
 	doughnutChartOptions,
+	bubbleChartOptions,
+	matrixChartOptions,
+	scatterChartOptions,
+	stackedBarChartOptions,
+	treemapChartOptions,
 } from './config/defaults'
 
 export { getThemeColors, getCategoryPalette } from './theme'

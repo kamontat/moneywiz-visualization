@@ -3,6 +3,7 @@
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
 	import ChartPieIcon from '@iconify-svelte/lucide/chart-pie'
+	import FlaskConicalIcon from '@iconify-svelte/lucide/flask-conical'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
 	import TrendingUpIcon from '@iconify-svelte/lucide/trending-up'
 
@@ -12,6 +13,7 @@
 	import TransactionPanel from '$components/molecules/TransactionPanel.svelte'
 	import AnalyticsPanel from '$components/organisms/AnalyticsPanel.svelte'
 	import CategoriesPanel from '$components/organisms/CategoriesPanel.svelte'
+	import ExperimentsPanel from '$components/organisms/ExperimentsPanel.svelte'
 	import { mergeClass } from '$lib/components'
 
 	type Props = BaseProps &
@@ -41,14 +43,17 @@
 
 	const tabs = [
 		{ id: 'analytics', label: 'Analytics', icon: ChartPieIcon },
-		{ id: 'stats', label: 'Stats', icon: TrendingUpIcon },
 		{ id: 'categories', label: 'Categories', icon: FolderIcon },
+		{ id: 'stats', label: 'Stats', icon: TrendingUpIcon },
 		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
+		{ id: 'experiments', label: 'Experiments', icon: FlaskConicalIcon },
 	]
 </script>
 
 <div class={mergeClass(['flex flex-col gap-6'], className)} {...rest}>
-	<TabSwitcher {tabs} {activeTab} onchange={(id) => (activeTab = id)} />
+	{#if hasData}
+		<TabSwitcher {tabs} {activeTab} onchange={(id) => (activeTab = id)} />
+	{/if}
 
 	<div class="rounded-box bg-base-100 shadow-sm">
 		{#if uploading}
@@ -81,6 +86,10 @@
 		{:else if activeTab === 'analytics'}
 			<div class="p-4 sm:p-6">
 				<AnalyticsPanel transactions={_allTransactions} />
+			</div>
+		{:else if activeTab === 'experiments'}
+			<div class="p-4 sm:p-6">
+				<ExperimentsPanel transactions={_allTransactions} />
 			</div>
 		{:else if activeTab === 'stats'}
 			<div class="p-4 sm:p-6">
