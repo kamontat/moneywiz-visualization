@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
+	import type { FilterState } from '$components/molecules/models/filterBar'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
+	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
 	import { mergeClass } from '$lib/components'
-
-	type FilterState = BaseFilterState & { categories: string[] }
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -126,60 +126,47 @@
 	}
 </script>
 
-{#if openPanel === 'date'}
-	<div class={mergeClass(['flex', 'flex-col', 'gap-4'], className)} {...rest}>
-		<div class="flex items-center justify-between">
-			<span
-				class="text-xs font-semibold tracking-wider text-base-content/70 uppercase"
-			>
-				Date Range
-			</span>
-			{#if hasDateFilter}
+<CollapsiblePanel open={openPanel === 'date'} class={className} {...rest}>
+	<FilterPanelHeader
+		title="Date Range"
+		showClear={hasDateFilter}
+		onclear={clearDateRange}
+	/>
+
+	<div class="flex flex-col gap-3">
+		<div class="flex flex-wrap items-center gap-2">
+			<input
+				id="start-date"
+				type="date"
+				class="d-input-bordered d-input d-input-sm opacity-80 transition-opacity hover:opacity-100 focus:opacity-100"
+				value={formatDate(filterState.dateRange.start)}
+				onchange={handleStartDateChange}
+			/>
+			<span class="text-xs text-base-content/50">to</span>
+			<input
+				id="end-date"
+				type="date"
+				class="d-input-bordered d-input d-input-sm opacity-80 transition-opacity hover:opacity-100 focus:opacity-100"
+				value={formatDate(filterState.dateRange.end)}
+				onchange={handleEndDateChange}
+			/>
+		</div>
+
+		<div class="flex flex-wrap gap-1.5">
+			{#each getDatePresets() as preset (preset.label)}
 				<button
 					type="button"
-					class="text-xs text-base-content/60 transition-colors hover:text-base-content"
-					onclick={clearDateRange}
+					class={mergeClass(
+						['d-badge', 'd-badge-md', 'cursor-pointer', 'transition-all'],
+						isPresetActive(preset)
+							? 'd-badge-primary'
+							: 'hover:d-badge-primary/50 d-badge-ghost'
+					)}
+					onclick={() => applyDatePreset(preset)}
 				>
-					Clear
+					{preset.label}
 				</button>
-			{/if}
-		</div>
-
-		<div class="flex flex-col gap-3">
-			<div class="flex flex-wrap items-center gap-2">
-				<input
-					id="start-date"
-					type="date"
-					class="d-input-bordered d-input d-input-sm opacity-80 transition-opacity hover:opacity-100 focus:opacity-100"
-					value={formatDate(filterState.dateRange.start)}
-					onchange={handleStartDateChange}
-				/>
-				<span class="text-xs text-base-content/50">to</span>
-				<input
-					id="end-date"
-					type="date"
-					class="d-input-bordered d-input d-input-sm opacity-80 transition-opacity hover:opacity-100 focus:opacity-100"
-					value={formatDate(filterState.dateRange.end)}
-					onchange={handleEndDateChange}
-				/>
-			</div>
-
-			<div class="flex flex-wrap gap-1.5">
-				{#each getDatePresets() as preset (preset.label)}
-					<button
-						type="button"
-						class={mergeClass(
-							['d-badge', 'd-badge-md', 'cursor-pointer', 'transition-all'],
-							isPresetActive(preset)
-								? 'd-badge-primary'
-								: 'hover:d-badge-primary/50 d-badge-ghost'
-						)}
-						onclick={() => applyDatePreset(preset)}
-					>
-						{preset.label}
-					</button>
-				{/each}
-			</div>
+			{/each}
 		</div>
 	</div>
-{/if}
+</CollapsiblePanel>

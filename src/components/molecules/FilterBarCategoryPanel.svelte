@@ -1,14 +1,15 @@
 <script lang="ts">
-	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
+	import type { FilterState } from '$components/molecules/models/filterBar'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedCategory } from '$lib/transactions/models'
-	import SearchIcon from '@iconify-svelte/lucide/search'
 	import { SvelteMap } from 'svelte/reactivity'
 
+	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
+	import FilterOptionBadge from '$components/atoms/FilterOptionBadge.svelte'
+	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
+	import FilterSearchInput from '$components/atoms/FilterSearchInput.svelte'
 	import { mergeClass } from '$lib/components'
 	import { getCategoryFullName } from '$lib/transactions/utils'
-
-	type FilterState = BaseFilterState & { categories: string[] }
 
 	type CategoryOption = {
 		fullName: string
@@ -165,167 +166,112 @@
 		onfilterchange?.(filterState)
 	}
 
-	const tagOptionBase = [
-		'd-badge',
-		'cursor-pointer',
-		'd-badge-md',
-		'text-sm',
-		'text-center',
-		'leading-snug',
-		'h-auto',
-		'min-h-6',
-		'whitespace-normal',
-		'break-words',
-		'py-1',
-		'transition-all',
-		'w-full',
-		'justify-center',
+	const compactActionBase = [
+		'text-[10px]',
+		'font-semibold',
+		'tracking-wider',
+		'rounded-full',
+		'border',
+		'px-2',
+		'py-0.5',
+		'transition-colors',
 	]
-	const tagOptionInactiveClass =
-		'd-badge-outline text-base-content/70 hover:d-badge-primary'
-	const tagOptionIncludeClass = 'border-info/30 bg-info/10 text-info'
+	const compactActionAllActiveClass = 'border-primary/40 text-primary'
+	const compactActionAllInactiveClass =
+		'border-base-300 text-base-content/50 hover:text-base-content'
+	const compactActionClearActiveClass =
+		'border-base-300 text-base-content/70 hover:text-base-content'
+	const compactActionClearInactiveClass = 'border-base-300 text-base-content/30'
 </script>
 
-{#if openPanel === 'category'}
-	<div class={mergeClass(['flex', 'flex-col', 'gap-4'], className)} {...rest}>
-		<div class="flex items-center justify-between">
-			<span
-				class="text-xs font-semibold tracking-wider text-base-content/70 uppercase"
+<CollapsiblePanel open={openPanel === 'category'} class={className} {...rest}>
+	<FilterPanelHeader
+		title="Category"
+		showClear={hasCategoryFilter}
+		onclear={clearCategoryFilter}
+	>
+		{#snippet actions()}
+			<button
+				type="button"
+				class={mergeClass(
+					compactActionBase,
+					allCategoriesSelected
+						? compactActionAllActiveClass
+						: compactActionAllInactiveClass
+				)}
+				onclick={selectAllCategories}
+				disabled={allCategoriesSelected}
 			>
-				Category
-			</span>
-			<div class="flex items-center gap-2">
-				<button
-					type="button"
-					class={mergeClass(
-						[
-							'text-[10px]',
-							'font-semibold',
-							'tracking-wider',
-							'rounded-full',
-							'border',
-							'px-2',
-							'py-0.5',
-							'transition-colors',
-						],
-						allCategoriesSelected
-							? 'border-primary/40 text-primary'
-							: 'border-base-300 text-base-content/50 hover:text-base-content'
-					)}
-					onclick={selectAllCategories}
-					disabled={allCategoriesSelected}
-				>
-					All
-				</button>
-				{#if hasCategoryFilter}
-					<button
-						type="button"
-						class="text-xs text-base-content/60 transition-colors hover:text-base-content"
-						onclick={clearCategoryFilter}
-					>
-						Clear
-					</button>
-				{/if}
-			</div>
-		</div>
+				All
+			</button>
+		{/snippet}
+	</FilterPanelHeader>
 
-		<div class="flex flex-col gap-2">
-			<label
-				class="d-input-bordered d-input d-input-sm flex items-center gap-2"
-			>
-				<input
-					type="text"
-					class="grow"
-					placeholder="Search categories..."
-					bind:value={categoryQuery}
-				/>
-				<SearchIcon class="size-3 opacity-50" />
-			</label>
-			{#if categorySubGroups.length > 0}
-				<div class="flex max-h-[50vh] flex-col gap-3 overflow-y-auto">
-					{#each categorySubGroups as group (group.name)}
-						{@const groupNames = group.options.map((option) => option.fullName)}
-						{@const allSelected =
-							groupNames.length > 0 &&
-							groupNames.every((name) => filterState.categories.includes(name))}
-						{@const anySelected = groupNames.some((name) =>
-							filterState.categories.includes(name)
-						)}
-						<div class="flex flex-col gap-2">
-							<div class="flex items-center justify-between gap-2">
-								<span
-									class="text-[11px] font-semibold tracking-wider text-base-content/60 uppercase"
+	<div class="flex flex-col gap-2">
+		<FilterSearchInput
+			placeholder="Search categories..."
+			bind:value={categoryQuery}
+		/>
+		{#if categorySubGroups.length > 0}
+			<div class="flex max-h-[50vh] flex-col gap-3 overflow-y-auto">
+				{#each categorySubGroups as group (group.name)}
+					{@const groupNames = group.options.map((option) => option.fullName)}
+					{@const allSelected =
+						groupNames.length > 0 &&
+						groupNames.every((name) => filterState.categories.includes(name))}
+					{@const anySelected = groupNames.some((name) =>
+						filterState.categories.includes(name)
+					)}
+					<div class="flex flex-col gap-2">
+						<div class="flex items-center justify-between gap-2">
+							<span
+								class="text-[11px] font-semibold tracking-wider text-base-content/60 uppercase"
+							>
+								{group.name}
+							</span>
+							<div class="flex items-center gap-2">
+								<button
+									type="button"
+									class={mergeClass(
+										compactActionBase,
+										allSelected
+											? compactActionAllActiveClass
+											: compactActionAllInactiveClass
+									)}
+									onclick={() => toggleCategoryGroup(group)}
 								>
-									{group.name}
-								</span>
-								<div class="flex items-center gap-2">
-									<button
-										type="button"
-										class={mergeClass(
-											[
-												'text-[10px]',
-												'font-semibold',
-												'tracking-wider',
-												'rounded-full',
-												'border',
-												'px-2',
-												'py-0.5',
-												'transition-colors',
-											],
-											allSelected
-												? 'border-primary/40 text-primary'
-												: 'border-base-300 text-base-content/50 hover:text-base-content'
-										)}
-										onclick={() => toggleCategoryGroup(group)}
-									>
-										All
-									</button>
-									<button
-										type="button"
-										class={mergeClass(
-											[
-												'text-[10px]',
-												'font-semibold',
-												'tracking-wider',
-												'rounded-full',
-												'border',
-												'px-2',
-												'py-0.5',
-												'transition-colors',
-											],
-											anySelected
-												? 'border-base-300 text-base-content/70 hover:text-base-content'
-												: 'border-base-300 text-base-content/30'
-										)}
-										onclick={() => clearCategoryGroup(group)}
-										disabled={!anySelected}
-									>
-										Clear
-									</button>
-								</div>
-							</div>
-							<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-								{#each group.options as option (option.fullName)}
-									<button
-										type="button"
-										class={mergeClass(
-											tagOptionBase,
-											filterState.categories.includes(option.fullName)
-												? tagOptionIncludeClass
-												: tagOptionInactiveClass
-										)}
-										onclick={() => toggleCategory(option.fullName)}
-									>
-										{option.subcategory || option.displayName}
-									</button>
-								{/each}
+									All
+								</button>
+								<button
+									type="button"
+									class={mergeClass(
+										compactActionBase,
+										anySelected
+											? compactActionClearActiveClass
+											: compactActionClearInactiveClass
+									)}
+									onclick={() => clearCategoryGroup(group)}
+									disabled={!anySelected}
+								>
+									Clear
+								</button>
 							</div>
 						</div>
-					{/each}
-				</div>
-			{:else}
-				<p class="text-xs text-base-content/50">No categories found</p>
-			{/if}
-		</div>
+						<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+							{#each group.options as option (option.fullName)}
+								<FilterOptionBadge
+									active={filterState.categories.includes(option.fullName)}
+									onclick={() => toggleCategory(option.fullName)}
+								>
+									{option.subcategory || option.displayName}
+								</FilterOptionBadge>
+							{/each}
+						</div>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<p class="text-xs text-base-content/50">No categories found</p>
+		{/if}
 	</div>
-{/if}
+</CollapsiblePanel>

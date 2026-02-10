@@ -1,5 +1,8 @@
 <script lang="ts">
-	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
+	import type {
+		FilterState,
+		TagCategory,
+	} from '$components/molecules/models/filterBar'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedCategory } from '$lib/transactions/models'
 	import FilterBarCategoryPanel from '../molecules/FilterBarCategoryPanel.svelte'
@@ -9,13 +12,6 @@
 	import FilterBarTypesPanel from '../molecules/FilterBarTypesPanel.svelte'
 
 	import { mergeClass } from '$lib/components'
-
-	type FilterState = BaseFilterState & { categories: string[] }
-
-	type TagCategory = {
-		category: string
-		tags: string[]
-	}
 
 	type Props = BaseProps &
 		CustomProps<{

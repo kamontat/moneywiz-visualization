@@ -1,20 +1,16 @@
 <script lang="ts">
 	import type {
-		FilterState as BaseFilterState,
-		TagFilter,
-	} from '$lib/analytics/filters/models/state'
+		FilterState,
+		TagCategory,
+	} from '$components/molecules/models/filterBar'
+	import type { TagFilter } from '$lib/analytics/filters/models/state'
 	import type { FilterTagMode } from '$lib/analytics/filters/models/tags'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import SearchIcon from '@iconify-svelte/lucide/search'
-
+	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
+	import FilterOptionBadge from '$components/atoms/FilterOptionBadge.svelte'
+	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
+	import FilterSearchInput from '$components/atoms/FilterSearchInput.svelte'
 	import { mergeClass } from '$lib/components'
-
-	type FilterState = BaseFilterState & { categories: string[] }
-
-	type TagCategory = {
-		category: string
-		tags: string[]
-	}
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -133,127 +129,83 @@
 		onfilterchange?.(filterState)
 	}
 
-	const tagOptionBase = [
-		'd-badge',
-		'cursor-pointer',
-		'd-badge-md',
-		'text-sm',
-		'text-center',
-		'leading-snug',
-		'h-auto',
-		'min-h-6',
-		'whitespace-normal',
-		'break-words',
-		'py-1',
-		'transition-all',
-		'w-full',
-		'justify-center',
-	]
-	const tagOptionInactiveClass =
-		'd-badge-outline text-base-content/70 hover:d-badge-primary'
-	const tagOptionIncludeClass = 'border-info/30 bg-info/10 text-info'
-	const tagOptionExcludeClass =
-		'border-error/30 bg-error/10 text-error line-through opacity-80'
-
 	const selectedTags = $derived(getSelectedTags(tagCategory.category))
 	const tagMode = $derived(getTagMode(tagCategory.category))
 	const tagOptions = $derived(getTagOptions(tagCategory))
 </script>
 
-{#if openPanel === tagCategory.category}
-	<div class={mergeClass(['flex', 'flex-col', 'gap-4'], className)} {...rest}>
-		<div class="flex items-center justify-between">
-			<span
-				class="text-xs font-semibold tracking-wider text-base-content/70 uppercase"
-			>
-				{tagCategory.category}
-			</span>
-			<div class="flex items-center gap-3">
-				{#if selectedTags.length > 0}
-					<div class="flex items-center gap-2">
-						<span
-							class={mergeClass(
-								['text-[10px]', 'font-bold', 'tracking-wide', 'uppercase'],
-								tagMode === 'include' ? 'text-success' : 'text-error'
-							)}
-						>
-							{tagMode}
-						</span>
-						<input
-							type="checkbox"
-							class="d-toggle d-toggle-xs"
-							class:d-toggle-success={tagMode === 'include'}
-							class:d-toggle-error={tagMode === 'exclude'}
-							class:text-success={tagMode === 'include'}
-							class:text-error={tagMode === 'exclude'}
-							checked={tagMode === 'include'}
-							onclick={() => toggleTagMode(tagCategory.category)}
-						/>
-					</div>
-					<button
-						type="button"
-						class="text-xs text-base-content/60 transition-colors hover:text-base-content"
-						onclick={() => clearTagCategory(tagCategory.category)}
+<CollapsiblePanel
+	open={openPanel === tagCategory.category}
+	class={className}
+	{...rest}
+>
+	<FilterPanelHeader
+		title={tagCategory.category}
+		showClear={selectedTags.length > 0}
+		onclear={() => clearTagCategory(tagCategory.category)}
+	>
+		{#snippet actions()}
+			{#if selectedTags.length > 0}
+				<div class="flex items-center gap-2">
+					<span
+						class={mergeClass(
+							['text-[10px]', 'font-bold', 'tracking-wide', 'uppercase'],
+							tagMode === 'include' ? 'text-success' : 'text-error'
+						)}
 					>
-						Clear
-					</button>
-				{/if}
-			</div>
-		</div>
-
-		<div class="flex flex-col gap-2">
-			<label
-				class="d-input-bordered d-input d-input-sm flex items-center gap-2"
-			>
-				<input
-					type="text"
-					class="grow"
-					placeholder={`Search ${tagCategory.category.toLowerCase()} tags...`}
-					value={tagQuery}
-					oninput={(event) => {
-						const input = event.target as HTMLInputElement
-						tagQuery = input.value
-					}}
-					onkeydown={(event) => {
-						if (event.key !== 'Enter') return
-						event.preventDefault()
-						const nextOption = tagOptions.find(
-							(option) => !selectedTags.includes(option)
-						)
-						if (!nextOption) return
-						handleTagChange(tagCategory.category, nextOption)
-						tagQuery = ''
-					}}
-				/>
-				<SearchIcon class="size-3 opacity-50" />
-			</label>
-
-			{#if tagOptions.length > 0}
-				<div class="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-6">
-					{#each tagOptions as option (option)}
-						{@const isSelected = selectedTags.includes(option)}
-						<button
-							type="button"
-							class={mergeClass(
-								tagOptionBase,
-								isSelected
-									? tagMode === 'include'
-										? tagOptionIncludeClass
-										: tagOptionExcludeClass
-									: tagOptionInactiveClass
-							)}
-							onclick={() => {
-								handleTagChange(tagCategory.category, option)
-								tagQuery = ''
-							}}
-						>
-							{option}
-						</button>
-					{/each}
+						{tagMode}
+					</span>
+					<input
+						type="checkbox"
+						class="d-toggle d-toggle-xs"
+						class:d-toggle-success={tagMode === 'include'}
+						class:d-toggle-error={tagMode === 'exclude'}
+						class:text-success={tagMode === 'include'}
+						class:text-error={tagMode === 'exclude'}
+						checked={tagMode === 'include'}
+						onclick={() => toggleTagMode(tagCategory.category)}
+					/>
 				</div>
-			{:else}
-				<p class="text-xs text-base-content/50">No tags match your search</p>
 			{/if}
-		</div>
+		{/snippet}
+	</FilterPanelHeader>
+
+	<div class="flex flex-col gap-2">
+		<FilterSearchInput
+			placeholder={`Search ${tagCategory.category.toLowerCase()} tags...`}
+			bind:value={tagQuery}
+			onkeydown={(event) => {
+				if (event.key !== 'Enter') return
+				event.preventDefault()
+				const nextOption = tagOptions.find(
+					(option) => !selectedTags.includes(option)
+				)
+				if (!nextOption) return
+				handleTagChange(tagCategory.category, nextOption)
+				tagQuery = ''
+			}}
+		/>
+
+		{#if tagOptions.length > 0}
+			<div
+				class="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+			>
+				{#each tagOptions as option (option)}
+					{@const isSelected = selectedTags.includes(option)}
+					<FilterOptionBadge
+						variant={tagMode}
+						active={isSelected}
+						onclick={() => {
+							handleTagChange(tagCategory.category, option)
+							tagQuery = ''
+						}}
+					>
+						{option}
+					</FilterOptionBadge>
+				{/each}
+			</div>
+		{:else}
+			<p class="text-xs text-base-content/50">No tags match your search</p>
+		{/if}
 	</div>
-{/if}
+</CollapsiblePanel>

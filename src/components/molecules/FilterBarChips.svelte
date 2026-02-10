@@ -1,23 +1,19 @@
 <script lang="ts">
-	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
+	import type {
+		FilterState,
+		TagCategory,
+	} from '$components/molecules/models/filterBar'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
-	import ChevronDown from '@iconify-svelte/lucide/chevron-down'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
 	import HashIcon from '@iconify-svelte/lucide/hash'
 	import ListFilterIcon from '@iconify-svelte/lucide/list-filter'
 	import X from '@iconify-svelte/lucide/x'
 
 	import Button from '$components/atoms/Button.svelte'
+	import FilterChipButton from '$components/atoms/FilterChipButton.svelte'
 	import { hasActiveFilters } from '$lib/analytics/filters/models/state'
 	import { mergeClass } from '$lib/components'
-
-	type FilterState = BaseFilterState & { categories: string[] }
-
-	type TagCategory = {
-		category: string
-		tags: string[]
-	}
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -50,26 +46,6 @@
 		)
 		return tagFilter?.values.length ?? 0
 	}
-
-	const chipBase = [
-		'd-btn',
-		'd-btn-sm',
-		'gap-1.5',
-		'rounded-full',
-		'border',
-		'bg-base-100',
-		'font-medium',
-		'shadow-sm',
-		'transition-all',
-		'hover:shadow-md',
-		'min-h-0',
-		'h-8',
-	]
-
-	const chipActiveClass =
-		'border-primary/40 text-primary hover:border-primary/60'
-	const chipInactiveClass =
-		'border-base-300 text-base-content/70 hover:border-base-content/30'
 </script>
 
 <div
@@ -88,104 +64,58 @@
 	)}
 	{...rest}
 >
-	<button
-		type="button"
-		class={mergeClass(
-			chipBase,
-			hasDateFilter ? chipActiveClass : chipInactiveClass
-		)}
+	<FilterChipButton
+		label="Date"
+		active={hasDateFilter}
+		expanded={openPanel === 'date'}
 		aria-expanded={openPanel === 'date'}
 		onclick={() => ontogglepanel?.('date')}
 	>
-		<CalendarIcon class="size-3.5" />
-		<span class="text-xs">Date</span>
-		<ChevronDown
-			class={mergeClass(
-				['size-3', 'transition-transform', 'duration-200'],
-				openPanel === 'date' ? 'rotate-180' : undefined
-			)}
-		/>
-	</button>
+		{#snippet icon()}
+			<CalendarIcon class="size-3.5" />
+		{/snippet}
+	</FilterChipButton>
 
-	<button
-		type="button"
-		class={mergeClass(
-			chipBase,
-			hasTypeFilter ? chipActiveClass : chipInactiveClass
-		)}
+	<FilterChipButton
+		label="Types"
+		active={hasTypeFilter}
+		expanded={openPanel === 'types'}
+		count={filterState.transactionTypes.length}
 		aria-expanded={openPanel === 'types'}
 		onclick={() => ontogglepanel?.('types')}
 	>
-		<ListFilterIcon class="size-3.5" />
-		<span class="text-xs">Types</span>
-		{#if hasTypeFilter}
-			<span
-				class="d-badge min-h-0 min-w-4 d-badge-xs text-[10px] d-badge-primary"
-			>
-				{filterState.transactionTypes.length}
-			</span>
-		{/if}
-		<ChevronDown
-			class={mergeClass(
-				['size-3', 'transition-transform', 'duration-200'],
-				openPanel === 'types' ? 'rotate-180' : undefined
-			)}
-		/>
-	</button>
+		{#snippet icon()}
+			<ListFilterIcon class="size-3.5" />
+		{/snippet}
+	</FilterChipButton>
 
-	<button
-		type="button"
-		class={mergeClass(
-			chipBase,
-			hasCategoryFilter ? chipActiveClass : chipInactiveClass
-		)}
+	<FilterChipButton
+		label="Category"
+		active={hasCategoryFilter}
+		expanded={openPanel === 'category'}
+		count={filterState.categories.length}
 		aria-expanded={openPanel === 'category'}
 		onclick={() => ontogglepanel?.('category')}
 	>
-		<FolderIcon class="size-3.5" />
-		<span class="text-xs">Category</span>
-		{#if hasCategoryFilter}
-			<span
-				class="d-badge min-h-0 min-w-4 d-badge-xs text-[10px] d-badge-primary"
-			>
-				{filterState.categories.length}
-			</span>
-		{/if}
-		<ChevronDown
-			class={mergeClass(
-				['size-3', 'transition-transform', 'duration-200'],
-				openPanel === 'category' ? 'rotate-180' : undefined
-			)}
-		/>
-	</button>
+		{#snippet icon()}
+			<FolderIcon class="size-3.5" />
+		{/snippet}
+	</FilterChipButton>
 
 	{#each availableTagCategories as tagCategory (tagCategory.category)}
 		{@const activeCount = getCategoryActiveCount(tagCategory.category)}
-		<button
-			type="button"
-			class={mergeClass(
-				chipBase,
-				activeCount > 0 ? chipActiveClass : chipInactiveClass
-			)}
+		<FilterChipButton
+			label={tagCategory.category}
+			active={activeCount > 0}
+			expanded={openPanel === tagCategory.category}
+			count={activeCount}
 			aria-expanded={openPanel === tagCategory.category}
 			onclick={() => ontogglepanel?.(tagCategory.category)}
 		>
-			<HashIcon class="size-3.5" />
-			<span class="text-xs">{tagCategory.category}</span>
-			{#if activeCount > 0}
-				<span
-					class="d-badge min-h-0 min-w-4 d-badge-xs text-[10px] d-badge-primary"
-				>
-					{activeCount}
-				</span>
-			{/if}
-			<ChevronDown
-				class={mergeClass(
-					['size-3', 'transition-transform', 'duration-200'],
-					openPanel === tagCategory.category ? 'rotate-180' : undefined
-				)}
-			/>
-		</button>
+			{#snippet icon()}
+				<HashIcon class="size-3.5" />
+			{/snippet}
+		</FilterChipButton>
 	{/each}
 
 	<div class="flex-1"></div>
