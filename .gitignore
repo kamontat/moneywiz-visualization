@@ -10,6 +10,12 @@ node_modules
 /.svelte-kit/
 /build/
 
+# AI output
+/.playwright-mcp/
+/output/playwright/*.png
+/.sisyphus/
+/*.png
+
 # OS
 .DS_Store
 Thumbs.db
@@ -24,10 +30,9 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-static/data/*.csv
-/.playwright-mcp/
+# Example data
+/static/data/*.csv
+/static/database/
 
+# Backup files
 /.old/
-/.sisyphus/
-/output/playwright/*.png
-/*.png
