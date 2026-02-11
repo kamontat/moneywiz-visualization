@@ -30,3 +30,19 @@ export type {
 	RegimeType,
 	WaterfallStep,
 } from './experiments'
+export type {
+	StatsCadence,
+	StatsConcentration,
+	StatsConcentrationItem,
+	StatsCurrencyMeta,
+	StatsDashboard,
+	StatsDashboardOptions,
+	StatsDelta,
+	StatsDeltaDirection,
+	StatsDeltaMetric,
+	StatsFlowMixItem,
+	StatsKpiItem,
+	StatsRange,
+	StatsTrend,
+	StatsWeekdaySpend,
+} from './stats'

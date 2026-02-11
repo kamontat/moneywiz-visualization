@@ -15,3 +15,9 @@ export { byOutlierTimeline } from './byOutlierTimeline'
 export { byRefundImpact } from './byRefundImpact'
 export { byRegimeTimeline } from './byRegimeTimeline'
 export { byPayeeSpend } from './byPayeeSpend'
+export { byStatsDashboard } from './byStatsDashboard'
+export {
+	deriveBaselineRange,
+	deriveCurrentRange,
+	sliceByDateRange,
+} from './statsPeriod'

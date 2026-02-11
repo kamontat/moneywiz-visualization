@@ -23,7 +23,13 @@
 	} from '$lib/analytics/filters'
 	import { filterOptionsStore } from '$lib/analytics/filters/init'
 	import { emptyFilterState } from '$lib/analytics/filters/models/state'
-	import { bySummarize, transform } from '$lib/analytics/transforms'
+	import {
+		bySummarize,
+		deriveBaselineRange,
+		deriveCurrentRange,
+		sliceByDateRange,
+		transform,
+	} from '$lib/analytics/transforms'
 	import { csvStore, csvUploading } from '$lib/csv'
 	import { analytic } from '$lib/loggers'
 	import {
@@ -152,19 +158,11 @@
 		persistDateRange(filterState.dateRange)
 	})
 
-	const filteredTransactions = $derived.by(() => {
-		let result = allTransactions
+	const applyNonDateFilters = (
+		transactions: ParsedTransaction[]
+	): ParsedTransaction[] => {
+		let result = transactions
 		const filters = []
-
-		if (filterState.dateRange.start && filterState.dateRange.end) {
-			filters.push(
-				byDateRange(filterState.dateRange.start, filterState.dateRange.end)
-			)
-		} else if (filterState.dateRange.start) {
-			filters.push(byDateRange(filterState.dateRange.start, new Date()))
-		} else if (filterState.dateRange.end) {
-			filters.push(byDateRange(new Date(0), filterState.dateRange.end))
-		}
 
 		if (filterState.transactionTypes.length > 0) {
 			filters.push(
@@ -197,11 +195,54 @@
 		}
 
 		if (filters.length > 0) {
-			result = filter(result, ...filters)
+			result = filter(transactions, ...filters)
+		}
+
+		return result
+	}
+
+	const nonDateFilteredTransactions = $derived(
+		applyNonDateFilters(allTransactions)
+	)
+
+	const filteredTransactions = $derived.by(() => {
+		let result = nonDateFilteredTransactions
+		const dateFilters = []
+
+		if (filterState.dateRange.start && filterState.dateRange.end) {
+			dateFilters.push(
+				byDateRange(filterState.dateRange.start, filterState.dateRange.end)
+			)
+		} else if (filterState.dateRange.start) {
+			dateFilters.push(byDateRange(filterState.dateRange.start, new Date()))
+		} else if (filterState.dateRange.end) {
+			dateFilters.push(byDateRange(new Date(0), filterState.dateRange.end))
+		}
+
+		if (dateFilters.length > 0) {
+			result = filter(result, ...dateFilters)
 		}
 
 		return result
 	})
+
+	const statsCurrentRange = $derived(
+		deriveCurrentRange(
+			nonDateFilteredTransactions,
+			filterState.dateRange.start,
+			filterState.dateRange.end
+		)
+	)
+
+	const statsBaselineRange = $derived(deriveBaselineRange(statsCurrentRange))
+
+	const statsCurrentTransactions = $derived(
+		sliceByDateRange(nonDateFilteredTransactions, statsCurrentRange)
+	)
+
+	const statsBaselineTransactions = $derived(
+		sliceByDateRange(nonDateFilteredTransactions, statsBaselineRange)
+	)
 
 	const filteredSummary = $derived.by(() => {
 		if (filteredTransactions.length > 0) {
@@ -243,6 +284,10 @@
 	<Dashboard
 		transactions={displayTransactions}
 		allTransactions={filteredTransactions}
+		statsTransactions={statsCurrentTransactions}
+		{statsBaselineTransactions}
+		{statsCurrentRange}
+		{statsBaselineRange}
 		totalCount={filteredCount}
 		{uploading}
 		{limit}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { StatsRange } from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
@@ -14,6 +15,7 @@
 	import AnalyticsPanel from '$components/organisms/AnalyticsPanel.svelte'
 	import CategoriesPanel from '$components/organisms/CategoriesPanel.svelte'
 	import ExperimentsPanel from '$components/organisms/ExperimentsPanel.svelte'
+	import StatsPanel from '$components/organisms/StatsPanel.svelte'
 	import { mergeClass } from '$lib/components'
 	import { themeStore } from '$lib/themes'
 
@@ -25,6 +27,10 @@
 			limit?: number
 			hasData?: boolean
 			uploading?: boolean
+			statsTransactions?: ParsedTransaction[]
+			statsBaselineTransactions?: ParsedTransaction[]
+			statsCurrentRange?: StatsRange | null
+			statsBaselineRange?: StatsRange | null
 			onlimitchange?: (limit: number) => void
 		}>
 
@@ -35,6 +41,10 @@
 		limit = 0,
 		hasData = false,
 		uploading = false,
+		statsTransactions = [],
+		statsBaselineTransactions = [],
+		statsCurrentRange = null,
+		statsBaselineRange = null,
 		onlimitchange,
 		class: className,
 		...rest
@@ -95,14 +105,12 @@
 				</div>
 			{:else if activeTab === 'stats'}
 				<div class="p-4 sm:p-6">
-					<div
-						class="flex min-h-56 items-center justify-center rounded-box border border-dashed border-base-300 bg-base-200/30 p-8"
-					>
-						<div class="text-center">
-							<p class="text-lg font-semibold text-base-content">Stats</p>
-							<p class="text-sm text-base-content/60">Coming soon</p>
-						</div>
-					</div>
+					<StatsPanel
+						transactions={statsTransactions}
+						baselineTransactions={statsBaselineTransactions}
+						currentRange={statsCurrentRange}
+						baselineRange={statsBaselineRange}
+					/>
 				</div>
 			{:else if activeTab === 'categories'}
 				<div class="p-4 sm:p-6">
