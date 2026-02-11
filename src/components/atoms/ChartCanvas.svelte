@@ -136,7 +136,7 @@
 
 <div
 	bind:this={container}
-	class={mergeClass(['relative', 'w-full'], className)}
+	class={mergeClass(['relative', 'mx-auto', 'w-full', 'max-w-5xl'], className)}
 	{...rest}
 >
 	<canvas bind:this={canvas}></canvas>
