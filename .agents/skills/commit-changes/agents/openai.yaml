@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit Changes"
+  short_description: "Create conventional commits by functionality"
+  default_prompt: "Use $commit-changes to group my diff by functionality and create one or more conventional commits."
