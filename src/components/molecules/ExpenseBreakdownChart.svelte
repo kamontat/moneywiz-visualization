@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { ActiveElement, Chart, ChartEvent } from 'chart.js'
+	import type { ActiveElement, Chart, ChartEvent, TooltipItem } from 'chart.js'
 	import type { CategoryTotal } from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransactionType } from '$lib/transactions/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import { toCategoryDoughnutData, doughnutChartOptions } from '$lib/charts'
 	import { mergeClass } from '$lib/components'
+	import { formatCurrency } from '$lib/formatters/amount'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -15,6 +16,19 @@
 	let { categoryData, class: className, ...rest }: Props = $props()
 
 	let selectedParent = $state<string | undefined>()
+
+	const toNumber = (value: unknown): number => {
+		if (typeof value === 'number' && Number.isFinite(value)) {
+			return value
+		}
+
+		if (typeof value === 'string') {
+			const parsed = Number(value)
+			return Number.isFinite(parsed) ? parsed : 0
+		}
+
+		return 0
+	}
 
 	const chartData = $derived(
 		toCategoryDoughnutData(categoryData, 'Expense', {
@@ -87,6 +101,20 @@
 		...doughnutChartOptions(),
 		plugins: {
 			...doughnutChartOptions().plugins,
+			tooltip: {
+				...doughnutChartOptions().plugins?.tooltip,
+				callbacks: {
+					label: (context: TooltipItem<'doughnut'>) => {
+						const value = Math.abs(toNumber(context.raw ?? context.parsed))
+						const total = context.dataset.data.reduce(
+							(sum, datum) => sum + Math.abs(toNumber(datum)),
+							0
+						)
+						const percentage = total > 0 ? (value / total) * 100 : 0
+						return `${formatCurrency(value)} (${percentage.toFixed(1)}%)`
+					},
+				},
+			},
 			legend: {
 				display: false,
 			},

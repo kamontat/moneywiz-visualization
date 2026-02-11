@@ -2,6 +2,7 @@ import type { ParsedTransaction } from '$lib/transactions/models'
 import { describe, expect, it } from 'vitest'
 
 import {
+	byCalendarHeatmap,
 	byCategoryBubble,
 	byMonthlyWaterfall,
 	byOutlierTimeline,
@@ -95,5 +96,34 @@ describe('experiment transforms', () => {
 
 		expect(flagged.length).toBeGreaterThan(0)
 		expect(flagged.at(-1)?.value).toBeGreaterThan(100)
+	})
+
+	it('fills missing days and keeps weekday/week coordinates aligned', () => {
+		const cells = transform(
+			[income(100, '2025-01-05T12:00:00'), expense(40, '2025-01-07T12:00:00')],
+			byCalendarHeatmap
+		)
+
+		expect(cells).toHaveLength(7)
+
+		const sunday = cells.find((cell) => cell.day === '2025-01-05')
+		const monday = cells.find((cell) => cell.day === '2025-01-06')
+		const tuesday = cells.find((cell) => cell.day === '2025-01-07')
+
+		expect(sunday).toMatchObject({
+			x: 0,
+			y: 0,
+			value: 100,
+		})
+		expect(monday).toMatchObject({
+			x: 0,
+			y: 1,
+			value: 0,
+		})
+		expect(tuesday).toMatchObject({
+			x: 0,
+			y: 2,
+			value: -40,
+		})
 	})
 })

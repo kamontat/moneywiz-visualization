@@ -2,6 +2,10 @@ import type { CalendarCell, TransformBy } from './models'
 import { formatDate } from '$lib/formatters/date'
 
 const oneDayMs = 24 * 60 * 60 * 1000
+const parseDayKey = (day: string): Date => {
+	const [year, month, date] = day.split('-').map(Number)
+	return new Date(year, (month ?? 1) - 1, date ?? 1)
+}
 
 export const byCalendarHeatmap: TransformBy<CalendarCell[]> = (trx) => {
 	const dayMap = new Map<string, number>()
@@ -39,26 +43,38 @@ export const byCalendarHeatmap: TransformBy<CalendarCell[]> = (trx) => {
 
 	if (entries.length === 0) return []
 
-	const firstDate = new Date(entries[0][0])
+	const firstDate = parseDayKey(entries[0][0])
+	const lastDate = parseDayKey(entries[entries.length - 1][0])
 	const start = new Date(firstDate)
 	start.setDate(firstDate.getDate() - firstDate.getDay())
+	const end = new Date(lastDate)
+	end.setDate(lastDate.getDate() + (6 - lastDate.getDay()))
 
-	return entries.map(([day, value]) => {
-		const date = new Date(day)
+	const cells: CalendarCell[] = []
+
+	for (
+		const date = new Date(start);
+		date.getTime() <= end.getTime();
+		date.setDate(date.getDate() + 1)
+	) {
+		const day = formatDate(date, 'YYYY-MM-DD')
+		const value = dayMap.get(day) ?? 0
 		const diffDays = Math.floor((date.getTime() - start.getTime()) / oneDayMs)
 		const x = Math.floor(diffDays / 7)
 		const y = date.getDay()
 		const ratio = maxAbs === 0 ? 0 : Math.abs(value) / maxAbs
 		const bucket = Math.min(4, Math.floor(ratio * 5))
 
-		return {
+		cells.push({
 			x,
 			y,
 			day,
 			value,
 			bucket,
-		}
-	})
+		})
+	}
+
+	return cells
 }
 
 byCalendarHeatmap.type = 'byCalendarHeatmap'

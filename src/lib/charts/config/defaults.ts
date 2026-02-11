@@ -1,5 +1,41 @@
-import type { ChartOptions } from 'chart.js'
+import type { ChartOptions, TooltipItem } from 'chart.js'
+import type { CalendarCell } from '$lib/analytics/transforms/models'
 import { getThemeColors, withAlpha } from '../theme'
+
+import { formatCurrency } from '$lib/formatters/amount'
+
+const toNumber = (value: unknown): number => {
+	if (typeof value === 'number' && Number.isFinite(value)) {
+		return value
+	}
+
+	if (typeof value === 'string') {
+		const parsed = Number(value)
+		return Number.isFinite(parsed) ? parsed : 0
+	}
+
+	return 0
+}
+
+const getDoughnutTooltipLabel = (context: TooltipItem<'doughnut'>): string => {
+	const dataset = context.dataset.data
+	const value = Math.abs(toNumber(context.raw ?? context.parsed))
+	const total = dataset.reduce(
+		(sum, datum) => sum + Math.abs(toNumber(datum)),
+		0
+	)
+	const percentage = total > 0 ? (value / total) * 100 : 0
+	const label = context.label ? `${context.label}: ` : ''
+
+	return `${label}${formatCurrency(value)} (${percentage.toFixed(1)}%)`
+}
+
+const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const getCalendarCell = (raw: unknown): CalendarCell | undefined => {
+	if (!raw || typeof raw !== 'object') return undefined
+	if (!('day' in raw) || !('value' in raw) || !('y' in raw)) return undefined
+	return raw as CalendarCell
+}
 
 const themePlugin = () => {
 	const colors = getThemeColors()
@@ -66,12 +102,23 @@ export const horizontalBarChartOptions = (): ChartOptions<'bar'> => {
 	}
 }
 
-export const doughnutChartOptions = (): ChartOptions<'doughnut'> => ({
-	responsive: true,
-	maintainAspectRatio: true,
-	cutout: '60%',
-	plugins: themePlugin(),
-})
+export const doughnutChartOptions = (): ChartOptions<'doughnut'> => {
+	const plugins = themePlugin()
+	return {
+		responsive: true,
+		maintainAspectRatio: true,
+		cutout: '60%',
+		plugins: {
+			...plugins,
+			tooltip: {
+				...plugins.tooltip,
+				callbacks: {
+					label: getDoughnutTooltipLabel,
+				},
+			},
+		},
+	}
+}
 
 export const scatterChartOptions = (): ChartOptions<'scatter'> => ({
 	responsive: true,
@@ -112,7 +159,28 @@ export const stackedBarChartOptions = (): ChartOptions<'bar'> => ({
 export const matrixChartOptions = (): ChartOptions<'matrix'> => ({
 	responsive: true,
 	maintainAspectRatio: true,
-	plugins: themePlugin(),
+	plugins: {
+		...themePlugin(),
+		tooltip: {
+			mode: 'nearest',
+			intersect: true,
+			callbacks: {
+				title: (items) => {
+					const raw = getCalendarCell(items[0]?.raw)
+					if (!raw) return ''
+					return `${raw.day} (${weekdayLabels[raw.y] ?? ''})`
+				},
+				label: (item) => {
+					const raw = getCalendarCell(item.raw)
+					if (!raw) return ''
+					const absValue = formatCurrency(Math.abs(raw.value))
+					if (raw.value > 0) return `Daily Net Flow: +${absValue}`
+					if (raw.value < 0) return `Daily Net Flow: -${absValue}`
+					return `Daily Net Flow: ${formatCurrency(0)}`
+				},
+			},
+		},
+	},
 	scales: {
 		x: {
 			type: 'linear',

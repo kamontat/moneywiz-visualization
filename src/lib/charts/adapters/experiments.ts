@@ -73,6 +73,9 @@ export const toCalendarHeatmapData = (
 				backgroundColor: (ctx: { raw?: unknown }) => {
 					const raw = ctx.raw as CalendarCell | undefined
 					if (!raw) return withAlpha(colors.neutral, 0.125, '#6b7280')
+					if (raw.value === 0) {
+						return withAlpha(colors.neutral, 0.21, '#6b7280')
+					}
 					if (raw.value < 0) {
 						const errorAlphas = [0.125, 0.21, 0.31, 0.44, 0.56]
 						return withAlpha(
