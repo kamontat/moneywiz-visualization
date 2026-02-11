@@ -31,9 +31,11 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Example data
-/static/data/*.csv
 /static/*.zip
-/static/database/
+/static/data/**
+!/static/data/AGENTS.md
+/static/database/**
+!/static/database/AGENTS.md
 
 # Backup files
 /.old/

@@ -114,3 +114,5 @@ components/
 - Don't skip `mergeClass` for the `class` prop
 - Don't use `svelte:element` unless truly polymorphic (see `Icon.svelte`)
 - Don't define shared TS types here; place reusable types in `$lib/components/models`
+- Don't rely on `static/data` or `static/database`; those folders are
+  gitignored and unavailable in CI.

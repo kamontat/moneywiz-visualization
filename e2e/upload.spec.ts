@@ -34,6 +34,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 	}) => {
 		test.setTimeout(120000)
 		const runtimeErrors: string[] = []
+		const csvContent = generateCsv([defaultRecord])
 
 		page.on('console', (message) => {
 			if (message.type() === 'error') {
@@ -46,7 +47,11 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
-		await fileInput.setInputFiles('static/data/report.csv')
+		await fileInput.setInputFiles({
+			name: 'report.csv',
+			mimeType: 'text/csv',
+			buffer: Buffer.from(csvContent),
+		})
 
 		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
 			timeout: 60000,

@@ -1,5 +1,12 @@
 # MoneyWiz CSV Analyzer - Logic Summary
 
+## Repository Constraint
+
+- `static/data/` and `static/database/` are gitignored local folders.
+- Do not use them as runtime/test data sources or as required inputs for docs.
+- For tests, generate fixtures inline (for example with
+  `e2e/utils/csv-generator.ts`).
+
 - [1. CSV Parsing Rules](#1-csv-parsing-rules)
   - [1.1 File Preprocessing](#11-file-preprocessing)
   - [1.2 CSV Structure](#12-csv-structure)

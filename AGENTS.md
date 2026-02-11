@@ -21,21 +21,36 @@ moneywiz-visualization/
 │   ├── utils/            # Data layer: db, stores, states, types (see AGENTS.md)
 │   └── css/              # Global styles (Tailwind + DaisyUI config)
 ├── e2e/                  # Playwright E2E tests
-├── static/               # Static assets, demo data
+├── static/               # Static web assets only (no test/dev fixtures)
 └── .github/workflows/    # GitHub Pages deployment
 ```
 
+## CI DATA CONSTRAINT
+
+- `static/data/` and `static/database/` are local-only and gitignored.
+- Never load runtime data, test fixtures, or docs source inputs from those
+  folders.
+- For tests, generate fixtures in code (see `e2e/utils/csv-generator.ts`).
+
+## REFERENCE DOCS (REQUIRED)
+
+- For any read/write/modify/condition change related to CSV behavior, consult
+  [RULES.md](RULES.md).
+- For any read/write/modify/condition change related to SQLite/database
+  behavior, consult [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md).
+
 ## WHERE TO LOOK
 
-| Task               | Location                                      | Notes                                                    |
-| ------------------ | --------------------------------------------- | -------------------------------------------------------- |
-| Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load    |
-| Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                     |
-| Add business logic | `src/lib/{domain}/`                           | analytics, charts, csv, themes, transactions, formatters |
-| Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                        |
-| Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                |
-| Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                        |
-| Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                            |
+| Task               | Location                                      | Notes                                                                |
+| ------------------ | --------------------------------------------- | -------------------------------------------------------------------- |
+| Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load                |
+| Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                                 |
+| Add business logic | `src/lib/{domain}/`                           | analytics, charts, csv, themes, transactions, formatters             |
+| Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                                    |
+| Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                            |
+| Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                                    |
+| Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                                        |
+| Test fixture data  | `e2e/utils/csv-generator.ts`                  | Generate in test code; never read `static/data` or `static/database` |
 
 ## CONVENTIONS
 
@@ -119,12 +134,13 @@ let {
 
 ## ANTI-PATTERNS
 
-| Pattern                      | Why Forbidden                              |
-| ---------------------------- | ------------------------------------------ |
-| `as any`, `@ts-ignore`       | Type safety; fix the type instead          |
-| Empty `catch(e) {}`          | Always handle or log errors                |
-| Direct localStorage for data | Use `src/utils/stores` with DB abstraction |
-| Editing `.svelte-kit/*`      | Generated; changes overwritten             |
+| Pattern                                         | Why Forbidden                                             |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| `as any`, `@ts-ignore`                          | Type safety; fix the type instead                         |
+| Empty `catch(e) {}`                             | Always handle or log errors                               |
+| Direct localStorage for data                    | Use `src/utils/stores` with DB abstraction                |
+| Editing `.svelte-kit/*`                         | Generated; changes overwritten                            |
+| Loading from `static/data` or `static/database` | Gitignored local-only data; unavailable on GitHub Actions |
 
 ## KNOWN ISSUES (TODOs in code)
 
@@ -176,3 +192,5 @@ bun run preview          # Preview production build
 - **Prerendered**: All routes have `prerender = true`
 - **Thai locale default**: Amount formatting uses `th-TH` locale
 - **Verification workflow**: Always run `bun run fix` then `bun run check` for full validation (format → lint → svelte-check)
+- **Fixture policy**: Never depend on `static/data` or `static/database`; CI
+  does not have these folders.

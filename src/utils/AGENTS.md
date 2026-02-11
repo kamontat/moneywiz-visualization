@@ -110,3 +110,12 @@ export const myStore = newStore(indexDBV1, myState, {
 - Don't call `db.set` without going through store (breaks change tracking)
 - Don't put UI logic here; this is data layer only
 - Don't import types from non-`models` paths
+- Don't use `static/data` or `static/database` as data sources; they are
+  local-only and not present in GitHub Actions.
+
+## REFERENCE DOCS (REQUIRED)
+
+- For any read/write/modify/condition change related to CSV behavior, consult
+  [RULES.md](../../RULES.md).
+- For any read/write/modify/condition change related to SQLite/database
+  behavior, consult [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).

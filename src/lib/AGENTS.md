@@ -84,6 +84,15 @@ export const byX: TransformByFunc<Args, Output> = (
 - Don't access IndexedDB directly (use store APIs from `csv/apis.ts`)
 - Don't put UI-specific code in transforms/filters
 - Don't export types from domain `index.ts` files (use `models/`)
+- Don't load fixtures or source data from `static/data` or
+  `static/database`; CI workflows do not include those paths.
+
+## REFERENCE DOCS (REQUIRED)
+
+- For any read/write/modify/condition change related to CSV behavior, consult
+  [RULES.md](../../RULES.md).
+- For any read/write/modify/condition change related to SQLite/database
+  behavior, consult [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).
 
 ## MONEYWIZ CSV FORMAT
 
