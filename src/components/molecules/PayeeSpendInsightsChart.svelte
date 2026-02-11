@@ -111,11 +111,11 @@
 									? (payee.netSpend / analysis.totalNetSpend) * 100
 									: 0
 
-								return [
-									`Transactions: ${payee.transactionCount.toLocaleString()}`,
-									`Average: ${formatCurrency(payee.avgTicket)}`,
-									`Share: ${share.toFixed(1)}%`,
-								]
+							return [
+								`Transactions: ${payee.transactionCount.toLocaleString()}`,
+								`Average: ${formatCurrency(payee.avgTicket)}`,
+								`Share: ${share.toFixed(1)}%`,
+							]
 						},
 					},
 				},

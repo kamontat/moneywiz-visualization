@@ -28,8 +28,23 @@
 	let { type, data, options, class: className, ...rest }: Props = $props()
 
 	let canvas: HTMLCanvasElement | undefined = $state()
+	let container: HTMLDivElement | undefined = $state()
 	let chartInstance: Chart | undefined = $state()
 	let isChartReady = $state(false)
+	let resizeFrame: number | undefined = $state()
+
+	const queueResize = () => {
+		if (typeof window === 'undefined') return
+
+		if (resizeFrame !== undefined) {
+			window.cancelAnimationFrame(resizeFrame)
+		}
+
+		resizeFrame = window.requestAnimationFrame(() => {
+			resizeFrame = undefined
+			chartInstance?.resize()
+		})
+	}
 
 	const ensureChartRegistered = async () => {
 		if ((globalThis as Record<string, unknown>)[chartPluginRegistryFlag]) {
@@ -53,6 +68,22 @@
 
 	onMount(() => {
 		let isActive = true
+		let resizeObserver: ResizeObserver | undefined
+
+		const onWindowResize = () => {
+			queueResize()
+		}
+
+		if (typeof window !== 'undefined') {
+			window.addEventListener('resize', onWindowResize)
+		}
+
+		if (typeof ResizeObserver !== 'undefined' && container) {
+			resizeObserver = new ResizeObserver(() => {
+				queueResize()
+			})
+			resizeObserver.observe(container)
+		}
 
 		void ensureChartRegistered().then(() => {
 			if (isActive) {
@@ -62,6 +93,14 @@
 
 		return () => {
 			isActive = false
+			if (typeof window !== 'undefined') {
+				window.removeEventListener('resize', onWindowResize)
+				if (resizeFrame !== undefined) {
+					window.cancelAnimationFrame(resizeFrame)
+					resizeFrame = undefined
+				}
+			}
+			resizeObserver?.disconnect()
 		}
 	})
 
@@ -86,6 +125,7 @@
 					...(options as Record<string, unknown> | undefined),
 				} as ChartConfiguration['options'],
 			})
+			queueResize()
 		}
 	})
 
@@ -94,6 +134,10 @@
 	})
 </script>
 
-<div class={mergeClass(['relative', 'w-full'], className)} {...rest}>
+<div
+	bind:this={container}
+	class={mergeClass(['relative', 'w-full'], className)}
+	{...rest}
+>
 	<canvas bind:this={canvas}></canvas>
 </div>
