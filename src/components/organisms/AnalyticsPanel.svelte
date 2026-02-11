@@ -3,8 +3,10 @@
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import Panel from '$components/atoms/Panel.svelte'
 	import AnalyticsStats from '$components/molecules/AnalyticsStats.svelte'
+	import ExperimentMonthlyWaterfall from '$components/molecules/ExperimentMonthlyWaterfall.svelte'
 	import IncomeExpenseComparisonChart from '$components/molecules/IncomeExpenseComparisonChart.svelte'
 	import {
+		byMonthlyWaterfall,
 		bySummarize,
 		byTimeSeries,
 		transform,
@@ -19,6 +21,7 @@
 	let { transactions, class: className, ...rest }: Props = $props()
 
 	const summary = $derived(transform(transactions, bySummarize()))
+	const waterfall = $derived(transform(transactions, byMonthlyWaterfall))
 	const timeSeries = $derived(
 		transform(
 			transactions,
@@ -36,6 +39,13 @@
 		</Panel>
 	{:else}
 		<AnalyticsStats {summary} />
+
+		<Panel title="Monthly Waterfall">
+			<p class="mb-3 text-sm text-base-content/70">
+				Breaks monthly deltas into income, spending, debt, and buy/sell impact.
+			</p>
+			<ExperimentMonthlyWaterfall steps={waterfall} />
+		</Panel>
 
 		<Panel title="Income vs Expenses">
 			<IncomeExpenseComparisonChart {timeSeries} />

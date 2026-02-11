@@ -7,7 +7,6 @@
 	import ExperimentCalendarHeatmap from '$components/molecules/ExperimentCalendarHeatmap.svelte'
 	import ExperimentCategoryBubble from '$components/molecules/ExperimentCategoryBubble.svelte'
 	import ExperimentCategoryVolatility from '$components/molecules/ExperimentCategoryVolatility.svelte'
-	import ExperimentMonthlyWaterfall from '$components/molecules/ExperimentMonthlyWaterfall.svelte'
 	import ExperimentOutlierTimeline from '$components/molecules/ExperimentOutlierTimeline.svelte'
 	import ExperimentRefundImpact from '$components/molecules/ExperimentRefundImpact.svelte'
 	import ExperimentRegimeTimeline from '$components/molecules/ExperimentRegimeTimeline.svelte'
@@ -17,7 +16,6 @@
 		byCategoryBubble,
 		byCategoryVolatility,
 		byCumulativeSavings,
-		byMonthlyWaterfall,
 		byOutlierTimeline,
 		byRefundImpact,
 		byRegimeTimeline,
@@ -36,7 +34,6 @@
 	let monthlyTarget = $state(0)
 	let hydrated = $state(false)
 
-	const waterfall = $derived(transform(transactions, byMonthlyWaterfall))
 	const heatmap = $derived(transform(transactions, byCalendarHeatmap))
 	const volatility = $derived(transform(transactions, byCategoryVolatility))
 	const bubbles = $derived(transform(transactions, byCategoryBubble))
@@ -48,7 +45,7 @@
 	)
 
 	const defaultTarget = $derived.by(() => {
-		const nets = waterfall.map((point) => point.net)
+		const nets = savings.map((point) => point.net)
 		if (nets.length === 0) return 0
 		const sample = nets
 			.slice(-6)
@@ -97,35 +94,28 @@
 	)}
 	{...rest}
 >
-	<Panel title="1) Monthly Waterfall">
-		<p class="mb-3 text-sm text-base-content/70">
-			Breaks monthly deltas into income, spending, debt, and buy/sell impact.
-		</p>
-		<ExperimentMonthlyWaterfall steps={waterfall} />
-	</Panel>
-
-	<Panel title="2) Calendar Heatmap">
+	<Panel title="1) Calendar Heatmap">
 		<p class="mb-3 text-sm text-base-content/70">
 			Shows daily net flow intensity to reveal streaks and spikes.
 		</p>
 		<ExperimentCalendarHeatmap cells={heatmap} />
 	</Panel>
 
-	<Panel title="3) Category Volatility">
+	<Panel title="2) Category Volatility">
 		<p class="mb-3 text-sm text-base-content/70">
 			Compares average spend vs variability to surface unstable categories.
 		</p>
 		<ExperimentCategoryVolatility points={volatility} />
 	</Panel>
 
-	<Panel title="4) Category Bubble">
+	<Panel title="3) Category Bubble">
 		<p class="mb-3 text-sm text-base-content/70">
 			Highlights transaction frequency, total spend, and average ticket size.
 		</p>
 		<ExperimentCategoryBubble points={bubbles} />
 	</Panel>
 
-	<Panel title="5) Savings vs Target">
+	<Panel title="4) Savings vs Target">
 		<p class="mb-3 text-sm text-base-content/70">
 			Compares cumulative savings against your editable monthly target line.
 		</p>
@@ -136,21 +126,21 @@
 		/>
 	</Panel>
 
-	<Panel title="6) Refund Impact">
+	<Panel title="5) Refund Impact">
 		<p class="mb-3 text-sm text-base-content/70">
 			Shows how refunds change gross expenses into net expenses.
 		</p>
 		<ExperimentRefundImpact points={refundImpact} />
 	</Panel>
 
-	<Panel title="7) Regime Timeline">
+	<Panel title="6) Regime Timeline">
 		<p class="mb-3 text-sm text-base-content/70">
 			Classifies each month as stable, stressed, or deficit.
 		</p>
 		<ExperimentRegimeTimeline segments={regimes} />
 	</Panel>
 
-	<Panel title="8) Outlier Timeline">
+	<Panel title="7) Outlier Timeline">
 		<p class="mb-3 text-sm text-base-content/70">
 			Marks unusually large days against a rolling baseline.
 		</p>
