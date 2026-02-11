@@ -5,7 +5,9 @@
 	import AnalyticsStats from '$components/molecules/AnalyticsStats.svelte'
 	import ExperimentMonthlyWaterfall from '$components/molecules/ExperimentMonthlyWaterfall.svelte'
 	import IncomeExpenseComparisonChart from '$components/molecules/IncomeExpenseComparisonChart.svelte'
+	import PayeeSpendInsightsChart from '$components/molecules/PayeeSpendInsightsChart.svelte'
 	import {
+		byPayeeSpend,
 		byMonthlyWaterfall,
 		bySummarize,
 		byTimeSeries,
@@ -28,6 +30,7 @@
 			byTimeSeries(summary.dateRange.start, summary.dateRange.end)
 		)
 	)
+	const payeeSpend = $derived(transform(transactions, byPayeeSpend(20)))
 </script>
 
 <div class={mergeClass(['flex', 'flex-col', 'gap-6'], className)} {...rest}>
@@ -49,6 +52,14 @@
 
 		<Panel title="Income vs Expenses">
 			<IncomeExpenseComparisonChart {timeSeries} />
+		</Panel>
+
+		<Panel title="Payee Spend Insights">
+			<p class="mb-3 text-sm text-base-content/70">
+				Ranks payees by net spend (expenses + giveaway - refunds). Click a payee
+				to inspect trend.
+			</p>
+			<PayeeSpendInsightsChart analysis={payeeSpend} />
 		</Panel>
 	{/if}
 </div>

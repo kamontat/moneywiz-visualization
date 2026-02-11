@@ -14,6 +14,12 @@ export type { Summarize, SummarizeDateRange } from './summarize'
 export type { TopCategoryTotal } from './topCategoryTotal'
 export type { TimeSeries, TimeSeriesMode, TimeSeriesPoint } from './timeSeries'
 export type {
+	PayeeSpendAnalysis,
+	PayeeSpendPoint,
+	PayeeSpendSeries,
+	PayeeSpendTotal,
+} from './payee'
+export type {
 	CalendarCell,
 	CategoryBubblePoint,
 	CategoryVolatilityPoint,

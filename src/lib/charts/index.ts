@@ -1,6 +1,8 @@
 export {
 	toCategoryDoughnutData,
 	toTopCategoriesBarData,
+	toPayeeSpendBarData,
+	toPayeeSpendTrendData,
 	toIncomeExpenseChartData,
 	toCashFlowTrendChartData,
 	toIncomeExpenseComparisonChartData,
