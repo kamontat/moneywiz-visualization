@@ -1,7 +1,10 @@
 <script lang="ts">
+	import HardDriveIcon from '@iconify-svelte/lucide/hard-drive'
+
 	import Alert, { type Variant } from '$components/atoms/Alert.svelte'
 	import Container from '$components/atoms/Container.svelte'
 	import Header from '$components/atoms/Header.svelte'
+	import Link from '$components/atoms/Link.svelte'
 	import CsvClearButton from '$components/molecules/CsvClearButton.svelte'
 	import CsvUploadButton from '$components/molecules/CsvUploadButton.svelte'
 	import NameHeader from '$components/molecules/NameHeader.svelte'
@@ -62,6 +65,14 @@
 <Header>
 	<NameHeader />
 	<Container class="items-stretch gap-x-2">
+		<Link
+			href="/storage"
+			class="d-btn gap-2 px-2 d-btn-ghost d-btn-sm sm:px-3"
+			aria-label="Open storage usage page"
+		>
+			<HardDriveIcon class="h-4 w-4" aria-hidden="true" />
+			<span class="hidden sm:inline">Storage</span>
+		</Link>
 		<CsvClearButton
 			{uploading}
 			onsuccess={onClearSuccess}
