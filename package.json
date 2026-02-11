@@ -24,7 +24,8 @@
 		"chart.js": "4.5.1",
 		"chartjs-chart-matrix": "3.0.0",
 		"debug": "4.4.3",
-		"papaparse": "5.5.3"
+		"papaparse": "5.5.3",
+		"sql.js": "1.13.0"
 	},
 	"devDependencies": {
 		"@eslint/compat": "2.0.2",
