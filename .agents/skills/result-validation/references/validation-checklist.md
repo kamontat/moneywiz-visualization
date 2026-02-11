@@ -13,8 +13,11 @@ Use this checklist when running `$result-validation`.
 ## Command Sequence
 
 ```bash
-./.agents/skills/result-validation/scripts/check_automation_coverage.sh
-./.agents/skills/result-validation/scripts/run_quality_gate.sh
+bash ./.agents/skills/result-validation/scripts/check_automation_coverage.sh
+bun run fix
+bun run check
+bun run build
+bun run test:unit
 ```
 
 ## Targeted Commands
@@ -22,6 +25,8 @@ Use this checklist when running `$result-validation`.
 ```bash
 bun run test:unit <path-to-spec>
 bun run test:e2e -- <path-to-e2e-spec>
+# or full suite
+bun run test:e2e
 ```
 
 ## Playwright Validation Notes

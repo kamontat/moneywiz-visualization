@@ -15,7 +15,7 @@ bun run check
 echo "[3/4] bun run build"
 bun run build
 
-echo "[4/4] bun run test"
-bun run test
+echo "[4/4] bun run test:unit"
+bun run test:unit
 
-echo "Quality gate passed"
+echo "Quality gate passed (E2E is intentionally manual)"

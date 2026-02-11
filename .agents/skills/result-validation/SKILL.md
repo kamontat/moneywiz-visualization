@@ -1,6 +1,6 @@
 ---
 name: result-validation
-description: Validate feature and bug-fix changes before commit in Bun/Svelte projects. Use when asked to verify a result end-to-end, confirm tests/build quality gates, or prove a UI bug fix via Playwright. This skill enforces fix/check/build/test, verifies automated test coverage for changed behavior, and performs targeted Playwright validation.
+description: Validate feature and bug-fix changes before commit in Bun/Svelte projects. Use when asked to verify a result end-to-end, confirm tests/build quality gates, or prove a UI bug fix via Playwright. This skill enforces fix/check/build + unit tests, verifies automated test coverage for changed behavior, and performs targeted Playwright validation.
 ---
 
 # Result Validation
@@ -35,31 +35,35 @@ bun run test:unit <path-to-spec>
 bun run test:e2e -- <path-to-e2e-spec>
 ```
 
-5. Use `scripts/check_automation_coverage.sh` for a fast coverage hint.
+5. Use `./.agents/skills/result-validation/scripts/check_automation_coverage.sh`
+   for a fast coverage hint.
 
-## 3) Run repository quality gates
+## 3) Run repository quality gates (direct commands)
 
-Run:
+Run directly (no helper script):
 
 ```bash
-./scripts/run_quality_gate.sh
+bun run fix
+bun run check
+bun run build
+bun run test:unit
 ```
-
-This executes in order:
-
-1. `bun run fix`
-2. `bun run check`
-3. `bun run build`
-4. `bun run test`
 
 ## 4) Validate behavior with Playwright
 
 Run Playwright verification for user-visible changes:
 
 1. Execute targeted E2E spec(s) when available.
-2. Reproduce the changed flow in a real browser.
-3. Confirm the fixed behavior or new feature is visible and correct.
-4. Capture evidence (`screenshot` or trace) for the verification report.
+2. Run E2E directly (no helper script):
+
+```bash
+bun run test:e2e -- <path-to-e2e-spec>
+# or full suite
+bun run test:e2e
+```
+3. Reproduce the changed flow in a real browser.
+4. Confirm the fixed behavior or new feature is visible and correct.
+5. Capture evidence (`screenshot` or trace) for the verification report.
 
 Use `$playwright` when interactive browser steps are needed.
 
