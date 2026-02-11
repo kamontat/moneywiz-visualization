@@ -65,11 +65,9 @@
 		const now = new Date()
 		const year = now.getFullYear()
 		const month = now.getMonth()
-		const endOfToday = new Date(now)
-		endOfToday.setHours(23, 59, 59, 999)
-		const startOfLast365Days = new Date(now)
-		startOfLast365Days.setDate(startOfLast365Days.getDate() - 364)
-		startOfLast365Days.setHours(0, 0, 0, 0)
+		const day = now.getDate()
+		const endOfToday = new Date(year, month, day, 23, 59, 59, 999)
+		const startOfLast365Days = new Date(year, month, day - 364, 0, 0, 0, 0)
 
 		return [
 			{
