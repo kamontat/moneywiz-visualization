@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { FilterState } from '$components/molecules/models/filterBar'
+	import type { FilterCategoryMode } from '$lib/analytics/filters/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedCategory } from '$lib/transactions/models'
 	import { SvelteMap } from 'svelte/reactivity'
@@ -43,6 +44,7 @@
 	let categoryQuery = $state('')
 
 	const hasCategoryFilter = $derived(filterState.categories.length > 0)
+	const categoryMode = $derived(filterState.categoryMode)
 
 	const categoryOptions = $derived.by(() => {
 		const options: CategoryOption[] = availableCategories.map((cat) => {
@@ -88,37 +90,34 @@
 			.filter((group) => group.options.length > 0)
 	})
 
-	const allSelectableCategoryNames = $derived.by(() => {
-		return Array.from(
-			new Set(
-				availableCategories
-					.filter(
-						(cat) =>
-							cat.subcategory.trim() ||
-							(!cat.category.trim() && !cat.subcategory.trim())
-					)
-					.map((cat) => getCategoryFullName(cat))
-			)
-		)
-	})
+	const updateCategories = (categories: string[]) => {
+		filterState = {
+			...filterState,
+			categories,
+			categoryMode:
+				categories.length > 0 ? filterState.categoryMode : 'include',
+		}
+		onfilterchange?.(filterState)
+	}
 
-	const allCategoriesSelected = $derived.by(() => {
-		if (allSelectableCategoryNames.length === 0) return false
-		return allSelectableCategoryNames.every((name) =>
-			filterState.categories.includes(name)
-		)
-	})
+	const toggleCategoryMode = () => {
+		if (!hasCategoryFilter) return
+
+		const nextMode: FilterCategoryMode =
+			filterState.categoryMode === 'include' ? 'exclude' : 'include'
+		filterState = {
+			...filterState,
+			categoryMode: nextMode,
+		}
+		onfilterchange?.(filterState)
+	}
 
 	const toggleCategory = (category: string) => {
 		const current = filterState.categories
 		const updated = current.includes(category)
 			? current.filter((c: string) => c !== category)
 			: [...current, category]
-		filterState = {
-			...filterState,
-			categories: updated,
-		}
-		onfilterchange?.(filterState)
+		updateCategories(updated)
 	}
 
 	const toggleCategoryGroup = (group: CategoryGroup) => {
@@ -130,38 +129,22 @@
 		const updated = allSelected
 			? filterState.categories.filter((name) => !groupNames.includes(name))
 			: Array.from(new Set([...filterState.categories, ...groupNames]))
-		filterState = {
-			...filterState,
-			categories: updated,
-		}
-		onfilterchange?.(filterState)
+		updateCategories(updated)
 	}
 
 	const clearCategoryGroup = (group: CategoryGroup) => {
 		const groupNames = group.options.map((option) => option.fullName)
 		if (groupNames.length === 0) return
-		filterState = {
-			...filterState,
-			categories: filterState.categories.filter(
-				(name) => !groupNames.includes(name)
-			),
-		}
-		onfilterchange?.(filterState)
+		updateCategories(
+			filterState.categories.filter((name) => !groupNames.includes(name))
+		)
 	}
 
 	const clearCategoryFilter = () => {
 		filterState = {
 			...filterState,
 			categories: [],
-		}
-		onfilterchange?.(filterState)
-	}
-
-	const selectAllCategories = () => {
-		if (allSelectableCategoryNames.length === 0) return
-		filterState = {
-			...filterState,
-			categories: allSelectableCategoryNames,
+			categoryMode: 'include',
 		}
 		onfilterchange?.(filterState)
 	}
@@ -191,19 +174,28 @@
 		onclear={clearCategoryFilter}
 	>
 		{#snippet actions()}
-			<button
-				type="button"
-				class={mergeClass(
-					compactActionBase,
-					allCategoriesSelected
-						? compactActionAllActiveClass
-						: compactActionAllInactiveClass
-				)}
-				onclick={selectAllCategories}
-				disabled={allCategoriesSelected}
-			>
-				All
-			</button>
+			{#if hasCategoryFilter}
+				<div class="flex items-center gap-2">
+					<span
+						class={mergeClass(
+							['text-xs', 'font-bold', 'tracking-wide', 'uppercase'],
+							categoryMode === 'include' ? 'text-success' : 'text-error'
+						)}
+					>
+						{categoryMode}
+					</span>
+					<input
+						type="checkbox"
+						class="d-toggle d-toggle-xs"
+						class:d-toggle-success={categoryMode === 'include'}
+						class:d-toggle-error={categoryMode === 'exclude'}
+						class:text-success={categoryMode === 'include'}
+						class:text-error={categoryMode === 'exclude'}
+						checked={categoryMode === 'include'}
+						onclick={toggleCategoryMode}
+					/>
+				</div>
+			{/if}
 		{/snippet}
 	</FilterPanelHeader>
 
@@ -260,6 +252,7 @@
 						<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
 							{#each group.options as option (option.fullName)}
 								<FilterOptionBadge
+									variant={categoryMode}
 									active={filterState.categories.includes(option.fullName)}
 									onclick={() => toggleCategory(option.fullName)}
 								>

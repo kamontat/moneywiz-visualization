@@ -46,14 +46,13 @@ test.describe('Experiments tab', () => {
 		await page.getByRole('tab', { name: 'Experiments' }).click()
 
 		for (const title of [
-			'1) Monthly Waterfall',
-			'2) Calendar Heatmap',
-			'3) Category Volatility',
-			'4) Category Bubble',
-			'5) Savings vs Target',
-			'6) Refund Impact',
-			'7) Regime Timeline',
-			'8) Outlier Timeline',
+			'1) Calendar Heatmap',
+			'2) Category Volatility',
+			'3) Category Bubble',
+			'4) Savings vs Target',
+			'5) Refund Impact',
+			'6) Regime Timeline',
+			'7) Outlier Timeline',
 		]) {
 			await expect(page.getByText(title)).toBeVisible()
 		}

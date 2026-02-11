@@ -1,12 +1,5 @@
-import type { FilterBy, FilterByFunc } from './models'
+import type { FilterBy, FilterByFunc, FilterCategory } from './models'
 import { getCategoryFullName } from '$lib/transactions/utils'
-
-export type FilterCategoryMode = 'include' | 'exclude'
-
-export interface FilterCategory {
-	categories: string[]
-	mode: FilterCategoryMode
-}
 
 export const byCategory: FilterByFunc<[FilterCategory]> = (filter) => {
 	const by: FilterBy = (trx) => {

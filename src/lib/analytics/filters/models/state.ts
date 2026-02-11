@@ -1,3 +1,4 @@
+import type { FilterCategoryMode } from './category'
 import type { FilterTagMode as TagMode } from './tags'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 
@@ -8,6 +9,7 @@ export interface FilterState {
 	}
 	transactionTypes: ParsedTransactionType[]
 	categories: string[]
+	categoryMode: FilterCategoryMode
 	tags: TagFilter[]
 }
 
@@ -24,6 +26,7 @@ export const emptyFilterState = (): FilterState => ({
 	},
 	transactionTypes: [],
 	categories: [],
+	categoryMode: 'include',
 	tags: [],
 })
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FilterOptions } from '$lib/analytics/filters/models/options'
-	import type { FilterState as BaseFilterState } from '$lib/analytics/filters/models/state'
+	import type { FilterState } from '$lib/analytics/filters/models/state'
 	import type { CsvState } from '$lib/csv/models'
 	import type {
 		ParsedCategory,
@@ -33,8 +33,6 @@
 		getTransactions,
 	} from '$lib/transactions'
 
-	type FilterState = BaseFilterState & { categories: string[] }
-
 	const DEFAULT_LIMIT = 20
 	const DATE_FILTER_STORAGE_KEY = 'moneywiz:filters:date-range:v1'
 	const log = analytic.extends('routes.page')
@@ -51,10 +49,7 @@
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
 	let fileInfo = $state<CsvState | undefined>(undefined)
 	let uploading = $state(false)
-	let filterState = $state<FilterState>({
-		...emptyFilterState(),
-		categories: [],
-	})
+	let filterState = $state<FilterState>(emptyFilterState())
 	let limit = $state(DEFAULT_LIMIT)
 	let didHydrateDateFilter = $state(false)
 
@@ -184,7 +179,7 @@
 			filters.push(
 				byCategory({
 					categories: filterState.categories,
-					mode: 'include',
+					mode: filterState.categoryMode,
 				})
 			)
 		}

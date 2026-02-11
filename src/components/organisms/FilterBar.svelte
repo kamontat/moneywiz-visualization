@@ -37,6 +37,7 @@
 			dateRange: { start: undefined, end: undefined },
 			transactionTypes: [],
 			categories: [],
+			categoryMode: 'include',
 			tags: [],
 		}
 		onfilterchange?.(filterState)
