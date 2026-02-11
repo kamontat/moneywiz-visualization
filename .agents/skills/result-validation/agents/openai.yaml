@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Result Validation'
+  short_description: 'Validate fixes with tests, build, and Playwright'
+  default_prompt: 'Use $result-validation to validate this change end-to-end before commit.'
