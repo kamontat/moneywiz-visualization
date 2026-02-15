@@ -1,0 +1,8 @@
+sep=,
+"Name","Current balance","Account","Transfers","Description","Payee","Category","Date","Time","Memo","Amount","Currency","Check #","Tags"
+"Broken Header Row"
+"","","Account Missing Name","","Valid Desc","","","15/02/2026","12:00","","-100.00","THB","",""
+"","","Valid Account","","Invalid Date","","","2026-02-15","12:00","","-100.00","THB","",""
+"","","Valid Account","","Invalid Amount","","","15/02/2026","12:00","","not-a-number","THB","",""
+"","","Valid Account","","Missing Columns"
+"","","Valid Account","","Mixed Types","","","15/02/2026","12:00","","-100.00","THB","",""
