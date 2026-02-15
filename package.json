@@ -21,11 +21,11 @@
 		"test:e2e": "playwright test"
 	},
 	"dependencies": {
+		"@sqlite.org/sqlite-wasm": "3.51.2-build6",
 		"chart.js": "4.5.1",
 		"chartjs-chart-matrix": "3.0.0",
 		"debug": "4.4.3",
-		"papaparse": "5.5.3",
-		"sql.js": "1.13.0"
+		"papaparse": "5.5.3"
 	},
 	"devDependencies": {
 		"@eslint/compat": "2.0.2",
