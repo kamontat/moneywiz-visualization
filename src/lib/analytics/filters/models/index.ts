@@ -1,4 +1,6 @@
 export type { FilterBy, FilterByFunc } from './filter'
+export type { FilterType } from './constants'
+export { FILTER_TYPES } from './constants'
 export type { FilterCategory, FilterCategoryMode } from './category'
 export type { FilterOptions } from './options'
 export type { FilterTags, FilterTagMode } from './tags'

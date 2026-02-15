@@ -1,7 +1,8 @@
+import type { FilterType } from './constants'
 import type { ParsedTransaction } from '$lib/transactions/models'
 
 export type FilterBy = {
-	type: string;
+	type: FilterType;
 	(trx: ParsedTransaction): boolean
 }
 

@@ -1,4 +1,6 @@
 import type { FilterBy, FilterByFunc } from './models'
+import { FILTER_TYPES } from './models'
+
 import {
 	isDebtCategory,
 	isDebtRepaymentCategory,
@@ -38,6 +40,6 @@ export const bySpecialCategory: FilterByFunc<[SpecialCategoryFilterMode]> = (
 				return true
 		}
 	}
-	by.type = 'bySpecialCategory'
+	by.type = FILTER_TYPES.SPECIAL_CATEGORY
 	return by
 }

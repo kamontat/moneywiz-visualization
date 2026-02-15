@@ -1,5 +1,7 @@
 import type { FilterByFunc, FilterBy } from './models'
 import type { ParsedTransaction } from '$lib/transactions/models'
+import { FILTER_TYPES } from './models'
+
 import { analytic } from '$lib/loggers/constants'
 
 export const byAND: FilterByFunc<FilterBy[]> = (...bys): FilterBy => {
@@ -9,7 +11,7 @@ export const byAND: FilterByFunc<FilterBy[]> = (...bys): FilterBy => {
 		}
 		return true
 	}
-	by.type = 'AND'
+	by.type = FILTER_TYPES.AND
 	return by
 }
 export const byOR: FilterByFunc<FilterBy[]> = (...bys): FilterBy => {
@@ -19,12 +21,12 @@ export const byOR: FilterByFunc<FilterBy[]> = (...bys): FilterBy => {
 		}
 		return false
 	}
-	by.type = 'OR'
+	by.type = FILTER_TYPES.OR
 	return by
 }
 export const byNOT: FilterByFunc<[FilterBy]> = (by): FilterBy => {
 	const notBy: FilterBy = (trx) => !by(trx)
-	notBy.type = 'NOT'
+	notBy.type = FILTER_TYPES.NOT
 	return notBy
 }
 

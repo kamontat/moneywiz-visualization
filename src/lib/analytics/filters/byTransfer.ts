@@ -1,4 +1,5 @@
 import type { FilterBy, FilterByFunc } from './models'
+import { FILTER_TYPES } from './models'
 
 export type TransferFilterMode = 'exclude' | 'only'
 
@@ -13,6 +14,6 @@ export const byTransfer: FilterByFunc<[TransferFilterMode]> = (mode) => {
 				return true
 		}
 	}
-	by.type = 'byTransfer'
+	by.type = FILTER_TYPES.TRANSFER
 	return by
 }

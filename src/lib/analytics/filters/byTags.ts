@@ -1,5 +1,6 @@
 import type { FilterBy, FilterByFunc, FilterTags } from './models'
 import type { ParsedTag } from '$lib/transactions/models'
+import { FILTER_TYPES } from './models'
 
 export const byTags: FilterByFunc<FilterTags[]> = (...tags) => {
 	const by: FilterBy = (trx) => {
@@ -14,6 +15,6 @@ export const byTags: FilterByFunc<FilterTags[]> = (...tags) => {
 			return true
 		})
 	}
-	by.type = 'byDateRange'
+	by.type = FILTER_TYPES.TAGS
 	return by
 }

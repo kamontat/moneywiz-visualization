@@ -1,4 +1,6 @@
 import type { FilterBy, FilterByFunc, FilterCategory } from './models'
+import { FILTER_TYPES } from './models'
+
 import { getCategoryFullName } from '$lib/transactions/utils'
 
 export const byCategory: FilterByFunc<[FilterCategory]> = (filter) => {
@@ -15,6 +17,6 @@ export const byCategory: FilterByFunc<[FilterCategory]> = (filter) => {
 		if (filter.mode === 'include') return matches
 		return !matches
 	}
-	by.type = 'byCategory'
+	by.type = FILTER_TYPES.CATEGORY
 	return by
 }

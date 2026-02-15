@@ -1,5 +1,6 @@
 import type { FilterBy, FilterByFunc } from './models'
 import type { ParsedTransactionType } from '$lib/transactions/models'
+import { FILTER_TYPES } from './models'
 
 export type TransactionTypeFilterMode = 'include' | 'exclude'
 
@@ -17,6 +18,6 @@ export const byTransactionType: FilterByFunc<[TransactionTypeFilter]> = (
 		if (filter.mode === 'include') return matches
 		return !matches
 	}
-	by.type = 'byTransactionType'
+	by.type = FILTER_TYPES.TRANSACTION_TYPE
 	return by
 }
