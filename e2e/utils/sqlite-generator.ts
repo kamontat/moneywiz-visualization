@@ -1,35 +1,29 @@
-import type { SqlJsStatic } from 'sql.js/dist/sql-wasm.js'
-import { createRequire } from 'node:module'
+import type { Sqlite3Static } from '@sqlite.org/sqlite-wasm'
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm'
 
-import initSqlJs from 'sql.js/dist/sql-wasm.js'
-
-const require = createRequire(import.meta.url)
 const appleReferenceEpochMs = Date.UTC(2001, 0, 1, 0, 0, 0)
 
-let sqlEnginePromise: Promise<SqlJsStatic> | undefined
+let sqlite3Promise: Promise<Sqlite3Static> | undefined
 
 interface SQLiteFixtureOptions {
 	transactions?: number
 }
 
-const getSqlEngine = async (): Promise<SqlJsStatic> => {
-	if (!sqlEnginePromise) {
-		const wasmPath = require.resolve('sql.js/dist/sql-wasm.wasm')
-		sqlEnginePromise = initSqlJs({
-			locateFile: () => wasmPath,
-		})
+const getSqlite3 = (): Promise<Sqlite3Static> => {
+	if (!sqlite3Promise) {
+		sqlite3Promise = sqlite3InitModule()
 	}
-	return sqlEnginePromise
+	return sqlite3Promise
 }
 
 export const generateSQLite = async (
 	options: SQLiteFixtureOptions = {}
 ): Promise<Buffer> => {
 	const transactionCount = Math.max(1, Math.trunc(options.transactions ?? 25))
-	const sql = await getSqlEngine()
-	const db = new sql.Database()
+	const sqlite3 = await getSqlite3()
+	const db = new sqlite3.oo1.DB()
 
-	db.run(`
+	db.exec(`
 		CREATE TABLE Z_PRIMARYKEY (
 			Z_ENT INTEGER,
 			Z_NAME TEXT
@@ -104,7 +98,7 @@ export const generateSQLite = async (
 		);
 	`)
 
-	db.run(
+	db.exec(
 		`INSERT INTO Z_PRIMARYKEY (Z_ENT, Z_NAME) VALUES
 			(10, 'BankChequeAccount'),
 			(19, 'Category'),
@@ -113,7 +107,7 @@ export const generateSQLite = async (
 			(47, 'WithdrawTransaction')`
 	)
 
-	db.run(
+	db.exec(
 		`INSERT INTO ZSYNCOBJECT (
 			Z_PK,
 			Z_ENT,
@@ -122,27 +116,27 @@ export const generateSQLite = async (
 			ZCURRENCYNAME
 		) VALUES (100, 10, 0, 'Wallet A', 'THB')`
 	)
-	db.run(
+	db.exec(
 		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES
 			(200, 19, 'Food and Beverage')`
 	)
-	db.run(
+	db.exec(
 		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2, ZPARENTCATEGORY) VALUES
 			(201, 19, 'Food', 200)`
 	)
-	db.run(
+	db.exec(
 		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES
 			(300, 28, 'Local Shop')`
 	)
-	db.run(
+	db.exec(
 		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES
 			(400, 35, 'Group: Test')`
 	)
-	db.run(
+	db.exec(
 		`INSERT INTO ZUSER (Z_PK, Z_ENT, ZSYNCUSERID, ZAPPSETTINGS, ZSYNCLOGIN)
 		VALUES (1, 49, 1, NULL, 'fixture@example.com')`
 	)
-	db.run(`INSERT INTO ZCOMMONSETTINGS (ZCURRENTUSER) VALUES (1)`)
+	db.exec(`INSERT INTO ZCOMMONSETTINGS (ZCURRENTUSER) VALUES (1)`)
 
 	const baseDateSeconds = Math.floor(
 		(Date.UTC(2026, 0, 1, 0, 0, 0) - appleReferenceEpochMs) / 1000
@@ -176,25 +170,27 @@ export const generateSQLite = async (
 		const date = baseDateSeconds + index * 86400
 		const amount = -100 - index
 
-		trxStatement.run([
-			id,
-			date,
-			amount,
-			amount,
-			`Lunch ${index + 1}`,
-			`Memo ${index + 1}`,
-		])
-		categoryStatement.run([id])
+		trxStatement
+			.bind([
+				id,
+				date,
+				amount,
+				amount,
+				`Lunch ${index + 1}`,
+				`Memo ${index + 1}`,
+			])
+			.stepReset()
+		categoryStatement.bind([id]).stepReset()
 		if (index % 2 === 0) {
-			tagStatement.run([id])
+			tagStatement.bind([id]).stepReset()
 		}
 	}
 
-	trxStatement.free()
-	categoryStatement.free()
-	tagStatement.free()
+	trxStatement.finalize()
+	categoryStatement.finalize()
+	tagStatement.finalize()
 
-	const bytes = db.export()
+	const bytes = sqlite3.capi.sqlite3_js_db_export(db)
 	db.close()
 	return Buffer.from(bytes)
 }

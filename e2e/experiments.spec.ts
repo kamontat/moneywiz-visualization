@@ -10,8 +10,6 @@ test.describe('Experiments tab', () => {
 	test('renders all experiment panels and updates target input', async ({
 		page,
 	}) => {
-		test.setTimeout(120000)
-
 		const csvContent = generateCsv([
 			{
 				Payee: 'Salary',
@@ -43,9 +41,7 @@ test.describe('Experiments tab', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
-			timeout: 60000,
-		})
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
 		await page.getByRole('tab', { name: 'Experiments' }).click()
 

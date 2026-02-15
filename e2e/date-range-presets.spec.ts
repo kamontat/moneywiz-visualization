@@ -10,8 +10,6 @@ test.describe('Date range quick presets', () => {
 	test('excludes current month for Last 12 Months', async ({
 		page,
 	}, testInfo) => {
-		test.setTimeout(120000)
-
 		const csvContent = generateCsv([defaultRecord])
 		const [fileChooser] = await Promise.all([
 			page.waitForEvent('filechooser'),
@@ -24,9 +22,7 @@ test.describe('Date range quick presets', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
-			timeout: 60000,
-		})
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
 		await page.getByRole('button', { name: 'Date' }).click()
 

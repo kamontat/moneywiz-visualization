@@ -7,8 +7,7 @@ test.describe('SQLite Experiment page', () => {
 		await page.goto('/sqlite')
 	})
 
-	test('loads sqlite data and renders paged JSON', async ({ page }) => {
-		test.setTimeout(120000)
+	test('loads sqlite data and renders paged JSON', async ({ page }, testInfo) => {
 		const sqliteBuffer = await generateSQLite({ transactions: 205 })
 		const transactionsPreview = page.locator('pre', {
 			hasText: '"section": "transactions"',
@@ -25,9 +24,8 @@ test.describe('SQLite Experiment page', () => {
 			buffer: sqliteBuffer,
 		})
 
-		await expect(transactionsPreview).toContainText(
-			'"section": "transactions"'
-		)
+		await page.getByText('Transactions', { exact: true }).first().click()
+		await expect(transactionsPreview).toContainText('"section": "transactions"')
 		await expect(transactionsPreview).toContainText('"page": 1')
 		await expect(transactionsPreview).toContainText(
 			'"description": "Lunch 205"'
@@ -36,17 +34,15 @@ test.describe('SQLite Experiment page', () => {
 		await page.getByRole('button', { name: 'Next' }).click()
 		await expect(transactionsPreview).toContainText('"page": 2')
 
-		await page.getByText('Accounts').first().click()
-		await expect(accountsPreview).toContainText(
-			'"section": "accounts"'
-		)
-		await expect(accountsPreview).toContainText(
-			'"name": "Wallet A"'
-		)
+		await page.getByText('Accounts', { exact: true }).first().click()
+		await expect(accountsPreview).toContainText('"section": "accounts"')
+		await expect(accountsPreview).toContainText('"name": "Wallet A"')
 
-		await page.screenshot({
-			path: 'test-results/sqlite-page-validation.png',
-			fullPage: true,
+		const screenshotPath = testInfo.outputPath('sqlite-page-validation.png')
+		await page.screenshot({ path: screenshotPath, fullPage: true })
+		await testInfo.attach('sqlite-page-validation', {
+			path: screenshotPath,
+			contentType: 'image/png',
 		})
 	})
 })

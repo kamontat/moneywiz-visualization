@@ -21,9 +21,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
-			timeout: 60000,
-		})
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 		await page.getByRole('tab', { name: 'Transactions' }).click()
 		await expect(page.locator('table')).toBeVisible()
 		await expect(page.getByText(/Showing/i)).toBeVisible()
@@ -32,7 +30,6 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 	test('does not throw category scale console error on upload', async ({
 		page,
 	}) => {
-		test.setTimeout(120000)
 		const runtimeErrors: string[] = []
 		const csvContent = generateCsv([defaultRecord])
 
@@ -53,9 +50,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
-			timeout: 60000,
-		})
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
 		const allErrors = runtimeErrors.join('\n')
 		expect(allErrors).not.toContain('category" is not a registered scale')
@@ -74,9 +69,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
-			timeout: 60000,
-		})
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
 		const clearButton = page.getByRole('button', { name: 'Clear loaded CSV' })
 		await expect(clearButton).toBeVisible()
