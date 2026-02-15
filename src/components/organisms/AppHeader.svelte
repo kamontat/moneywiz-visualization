@@ -67,7 +67,7 @@
 	<Container class="items-stretch gap-x-2">
 		<Link
 			href="/storage"
-			class="d-btn gap-2 px-2 d-btn-ghost d-btn-sm sm:px-3"
+			class="d-btn gap-2 px-2 sm:px-3"
 			aria-label="Open storage usage page"
 		>
 			<HardDriveIcon class="h-4 w-4" aria-hidden="true" />
