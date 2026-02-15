@@ -91,7 +91,7 @@
 
 	function createPanelStates(): Record<SQLiteSection, SectionPanelState> {
 		return {
-			transactions: createPanelState(true),
+			transactions: createPanelState(),
 			accounts: createPanelState(),
 			payees: createPanelState(),
 			categories: createPanelState(),
@@ -313,7 +313,9 @@
 					<div class="d-stat">
 						<div class="d-stat-title">Parsed Time</div>
 						<div class="d-stat-value text-lg">
-							{new Date(overview.meta.parsedAt).toLocaleString()}
+							{overview.meta.parseDurationMs >= 1000
+								? `${(overview.meta.parseDurationMs / 1000).toFixed(2)} s`
+								: `${overview.meta.parseDurationMs} ms`}
 						</div>
 					</div>
 				</div>
