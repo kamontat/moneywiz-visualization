@@ -68,6 +68,8 @@ export const newStore = <
 							ctx.log.warn('failed to persist state on %s:', db.type, err)
 							rej(err)
 						})
+				} else {
+					res()
 				}
 				return next
 			})
