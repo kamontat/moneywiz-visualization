@@ -1,4 +1,4 @@
-import type { SqlDatabase, SqlJsStatic } from 'sql.js/dist/sql-wasm.js'
+import type { Database } from '@sqlite.org/sqlite-wasm'
 import type {
 	SQLiteAccount,
 	SQLiteCategory,
@@ -21,8 +21,8 @@ import {
 	SQLITE_ACCOUNT_ENTITY_RANGE,
 	SQLITE_CORE_ENTITY_IDS,
 } from './constants'
+import { getSqlite3, openDatabase, readRows, forEachRow } from './engine'
 import {
-	type SqlRow,
 	NAME_COLUMNS,
 	getNumberValue,
 	getTextValue,
@@ -36,7 +36,6 @@ import {
 const SQLITE_IMPORT_DB_NAME = 'moneywiz-sqlite-import'
 const SQLITE_IMPORT_DB_VERSION = 1
 const MAX_PAGE_LIMIT = 1000
-const BATCH_SIZE = 1000
 
 type SQLiteStoreName =
 	| 'meta'
@@ -118,7 +117,7 @@ interface SQLiteImportDBSchema extends DBSchema {
 }
 
 interface SQLiteExtractionContext {
-	db: SqlDatabase
+	db: Database
 	entityNameById: Map<number, string>
 	onProgress?: (progress: SQLiteParseProgress) => void
 	idb: IDBPDatabase<SQLiteImportDBSchema>
@@ -127,61 +126,6 @@ interface SQLiteExtractionContext {
 interface SQLiteExtractor {
 	phase: SQLiteParseProgress['phase']
 	run: (ctx: SQLiteExtractionContext) => Promise<void>
-}
-
-let sqlEnginePromise: Promise<SqlJsStatic> | undefined
-
-const getSqlEngine = async (): Promise<SqlJsStatic> => {
-	if (!sqlEnginePromise) {
-		sqlEnginePromise = (async () => {
-			const [{ default: initSqlJs }, { default: wasmUrl }] = await Promise.all([
-				import('sql.js/dist/sql-wasm.js'),
-				import('sql.js/dist/sql-wasm.wasm?url'),
-			])
-			return initSqlJs({ locateFile: () => wasmUrl })
-		})()
-	}
-
-	return sqlEnginePromise
-}
-
-const readRows = (
-	db: SqlDatabase,
-	query: string,
-	params: unknown[] = []
-): SqlRow[] => {
-	const statement = db.prepare(query, params)
-	const rows: SqlRow[] = []
-	try {
-		while (statement.step()) {
-			rows.push(statement.getAsObject() as SqlRow)
-		}
-	} finally {
-		statement.free()
-	}
-	return rows
-}
-
-const forEachRow = async (
-	db: SqlDatabase,
-	query: string,
-	onRow: (row: SqlRow) => void,
-	params: unknown[] = []
-): Promise<number> => {
-	const statement = db.prepare(query, params)
-	let processed = 0
-	try {
-		while (statement.step()) {
-			onRow(statement.getAsObject() as SqlRow)
-			processed += 1
-			if (processed % BATCH_SIZE === 0) {
-				await new Promise((resolve) => setTimeout(resolve, 0))
-			}
-		}
-	} finally {
-		statement.free()
-	}
-	return processed
 }
 
 const openImportDB = async (): Promise<IDBPDatabase<SQLiteImportDBSchema>> => {
@@ -306,7 +250,7 @@ const createSQLiteExtractionFactory = (extractors: SQLiteExtractor[]) => {
 }
 
 const parseEntityLookups = (
-	db: SqlDatabase
+	db: Database
 ): {
 	entityNameById: Map<number, string>
 	entities: SQLiteOverview['entities']
@@ -465,15 +409,15 @@ export const createSQLiteSession = async (
 ): Promise<SQLiteSession> => {
 	emitProgress(options.onProgress, 'loading', 0)
 	const startedAt = performance.now()
-	const [sqlEngine, fileBuffer, idb] = await Promise.all([
-		getSqlEngine(),
+	const [sqlite3, fileBuffer, idb] = await Promise.all([
+		getSqlite3(),
 		file.arrayBuffer(),
 		openImportDB(),
 	])
 
 	await clearImportStores(idb)
 
-	const db = new sqlEngine.Database(new Uint8Array(fileBuffer))
+	const db = openDatabase(sqlite3, fileBuffer)
 
 	try {
 		emitProgress(options.onProgress, 'lookups', 0)
@@ -794,7 +738,7 @@ export const createSQLiteSession = async (
 					})
 					transactionTotal += 1
 				},
-				transactionEntityIds
+				{ params: transactionEntityIds }
 			)
 		}
 

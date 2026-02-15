@@ -1,4 +1,3 @@
-import type { SqlDatabase, SqlJsStatic } from 'sql.js/dist/sql-wasm.js'
 import type {
 	ParseSQLiteOptions,
 	SQLiteAccount,
@@ -17,8 +16,8 @@ import {
 	SQLITE_ACCOUNT_ENTITY_RANGE,
 	SQLITE_CORE_ENTITY_IDS,
 } from './constants'
+import { getSqlite3, openDatabase, readRows, forEachRow } from './engine'
 import {
-	type SqlRow,
 	CURRENCY_COLUMNS,
 	NAME_COLUMNS,
 	getNumberValue,
@@ -32,83 +31,11 @@ import {
 	toPayeeRef,
 } from './helpers'
 
-const ROW_YIELD_INTERVAL = 500
-
-let sqlEnginePromise: Promise<SqlJsStatic> | undefined
-
-const nextTick = async (): Promise<void> =>
-	new Promise((resolve) => setTimeout(resolve, 0))
-
 const emitProgress = (
 	options: ParseSQLiteOptions,
 	progress: SQLiteParseProgress
 ) => {
 	options.onProgress?.(progress)
-}
-
-const getSqlEngine = async (): Promise<SqlJsStatic> => {
-	if (!sqlEnginePromise) {
-		sqlEnginePromise = (async () => {
-			const [{ default: initSqlJs }, { default: wasmUrl }] = await Promise.all([
-				import('sql.js/dist/sql-wasm.js'),
-				import('sql.js/dist/sql-wasm.wasm?url'),
-			])
-
-			return initSqlJs({
-				locateFile: () => wasmUrl,
-			})
-		})()
-	}
-
-	return sqlEnginePromise
-}
-
-const readRows = (
-	db: SqlDatabase,
-	query: string,
-	params: unknown[] = []
-): SqlRow[] => {
-	const statement = db.prepare(query, params)
-	const rows: SqlRow[] = []
-	try {
-		while (statement.step()) {
-			rows.push(statement.getAsObject() as SqlRow)
-		}
-	} finally {
-		statement.free()
-	}
-	return rows
-}
-
-const forEachRow = async (
-	db: SqlDatabase,
-	query: string,
-	onRow: (row: SqlRow) => void,
-	options: {
-		params?: unknown[]
-		yieldEvery?: number
-		onProgress?: (processed: number) => void
-	} = {}
-): Promise<number> => {
-	const { params = [], yieldEvery = ROW_YIELD_INTERVAL, onProgress } = options
-	const statement = db.prepare(query, params)
-	let processed = 0
-
-	try {
-		while (statement.step()) {
-			onRow(statement.getAsObject() as SqlRow)
-			processed += 1
-			onProgress?.(processed)
-
-			if (processed % yieldEvery === 0) {
-				await nextTick()
-			}
-		}
-	} finally {
-		statement.free()
-	}
-
-	return processed
 }
 
 export const parseSQLiteFile = async (
@@ -118,13 +45,12 @@ export const parseSQLiteFile = async (
 	const startedAt = performance.now()
 	emitProgress(options, { phase: 'loading', processed: 0 })
 
-	const [sqlEngine, fileBuffer] = await Promise.all([
-		getSqlEngine(),
+	const [sqlite3, fileBuffer] = await Promise.all([
+		getSqlite3(),
 		file.arrayBuffer(),
 	])
 
-	const data = new Uint8Array(fileBuffer)
-	const db = new sqlEngine.Database(data)
+	const db = openDatabase(sqlite3, fileBuffer)
 
 	try {
 		emitProgress(options, { phase: 'lookups', processed: 0 })

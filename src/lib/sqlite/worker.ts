@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 
-import type { SqlDatabase, SqlJsStatic } from 'sql.js/dist/sql-wasm.js'
+import type { BindingSpec, Database } from '@sqlite.org/sqlite-wasm'
+import type { SqlRow } from './helpers'
 import type {
 	SQLiteAccount,
 	SQLiteCategory,
@@ -18,15 +19,12 @@ import type {
 	SQLiteWorkerRequest,
 	SQLiteWorkerResponse,
 } from './models'
-import initSqlJs from 'sql.js/dist/sql-wasm.js'
-import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
-
 import {
 	SQLITE_ACCOUNT_ENTITY_RANGE,
 	SQLITE_CORE_ENTITY_IDS,
 } from './constants'
+import { getSqlite3, openDatabase, readRows } from './engine'
 import {
-	type SqlRow,
 	NAME_COLUMNS,
 	getNumberValue,
 	getTextValue,
@@ -44,7 +42,7 @@ const RELATION_PROGRESS_INTERVAL = 1000
 const MAX_PAGE_LIMIT = 1000
 
 interface SQLiteRuntime {
-	db: SqlDatabase
+	db: Database
 	entityNameById: Map<number, string>
 	entities: SQLiteEntityCount[]
 	accounts: SQLiteAccount[]
@@ -61,7 +59,6 @@ interface SQLiteRuntime {
 	overview: SQLiteOverview
 }
 
-let sqlEnginePromise: Promise<SqlJsStatic> | undefined
 let runtime: SQLiteRuntime | undefined
 
 const closeRuntime = (): void => {
@@ -74,34 +71,8 @@ const postResponse = (payload: SQLiteWorkerResponse): void => {
 	workerScope.postMessage(payload)
 }
 
-const readRows = (
-	db: SqlDatabase,
-	query: string,
-	params: unknown[] = []
-): SqlRow[] => {
-	const statement = db.prepare(query, params)
-	const rows: SqlRow[] = []
-	try {
-		while (statement.step()) {
-			rows.push(statement.getAsObject() as SqlRow)
-		}
-	} finally {
-		statement.free()
-	}
-	return rows
-}
-
-const getSqlEngine = async (): Promise<SqlJsStatic> => {
-	if (!sqlEnginePromise) {
-		sqlEnginePromise = initSqlJs({
-			locateFile: () => wasmUrl,
-		})
-	}
-	return sqlEnginePromise
-}
-
 const parseBaseLookups = (
-	db: SqlDatabase
+	db: Database
 ): {
 	entityNameById: Map<number, string>
 	entities: SQLiteEntityCount[]
@@ -305,7 +276,7 @@ const parseBaseLookups = (
 
 const buildRelationMaps = (
 	requestId: string,
-	db: SqlDatabase,
+	db: Database,
 	categories: SQLiteCategory[],
 	tags: SQLiteTag[]
 ): {
@@ -324,7 +295,7 @@ const buildRelationMaps = (
 	let categoryProcessed = 0
 	try {
 		while (categoryStatement.step()) {
-			const row = categoryStatement.getAsObject() as SqlRow
+			const row = categoryStatement.get({}) as SqlRow
 			const transactionId = toInteger(getNumberValue(row, ['ZTRANSACTION']))
 			const categoryId = toInteger(getNumberValue(row, ['ZCATEGORY']))
 			if (transactionId === undefined || categoryId === undefined) continue
@@ -352,7 +323,7 @@ const buildRelationMaps = (
 			}
 		}
 	} finally {
-		categoryStatement.free()
+		categoryStatement.finalize()
 	}
 
 	const tagsByTransaction = new Map<number, SQLiteTagRef[]>()
@@ -362,7 +333,7 @@ const buildRelationMaps = (
 	let tagProcessed = 0
 	try {
 		while (tagStatement.step()) {
-			const row = tagStatement.getAsObject() as SqlRow
+			const row = tagStatement.get({}) as SqlRow
 			const transactionId = toInteger(getNumberValue(row, ['Z_36TRANSACTIONS']))
 			const tagId = toInteger(getNumberValue(row, ['Z_35TAGS']))
 			if (transactionId === undefined || tagId === undefined) continue
@@ -388,7 +359,7 @@ const buildRelationMaps = (
 			}
 		}
 	} finally {
-		tagStatement.free()
+		tagStatement.finalize()
 	}
 
 	return {
@@ -453,14 +424,14 @@ const loadTransactionsPage = (
 		FROM ZSYNCOBJECT
 		WHERE Z_ENT IN (${placeholders})
 		ORDER BY COALESCE(ZDATE1, ZDATE) DESC, Z_PK DESC
-		LIMIT ? OFFSET ?`,
-		[...state.transactionEntityIds, limit, offset]
+		LIMIT ? OFFSET ?`
 	)
+	statement.bind([...state.transactionEntityIds, limit, offset] as BindingSpec)
 
 	const transactions: SQLiteTransaction[] = []
 	try {
 		while (statement.step()) {
-			const row = statement.getAsObject() as SqlRow
+			const row = statement.get({}) as SqlRow
 			const id = toInteger(getNumberValue(row, ['Z_PK']))
 			const entityId = toInteger(getNumberValue(row, ['Z_ENT']))
 			if (id === undefined || entityId === undefined) continue
@@ -537,7 +508,7 @@ const loadTransactionsPage = (
 			})
 		}
 	} finally {
-		statement.free()
+		statement.finalize()
 	}
 
 	return {
@@ -621,8 +592,8 @@ const openRuntime = async (
 		},
 	})
 
-	const sqlEngine = await getSqlEngine()
-	const db = new sqlEngine.Database(new Uint8Array(payload.buffer))
+	const sqlite3 = await getSqlite3()
+	const db = openDatabase(sqlite3, payload.buffer)
 
 	postResponse({
 		id: requestId,
