@@ -14,12 +14,17 @@ import type {
 	SQLiteTag,
 	SQLiteTagRef,
 	SQLiteTransaction,
+	SQLiteUser,
 	SQLiteWorkerRequest,
 	SQLiteWorkerResponse,
 } from './models'
 import initSqlJs from 'sql.js/dist/sql-wasm.js'
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
 
+import {
+	SQLITE_ACCOUNT_ENTITY_RANGE,
+	SQLITE_CORE_ENTITY_IDS,
+} from './constants'
 import {
 	type SqlRow,
 	NAME_COLUMNS,
@@ -46,6 +51,7 @@ interface SQLiteRuntime {
 	payees: SQLitePayee[]
 	categories: SQLiteCategory[]
 	tags: SQLiteTag[]
+	users: SQLiteUser[]
 	accountsById: Map<number, SQLiteAccount>
 	payeesById: Map<number, SQLitePayee>
 	categoriesByTransaction: Map<number, SQLiteCategoryRef[]>
@@ -103,6 +109,7 @@ const parseBaseLookups = (
 	payees: SQLitePayee[]
 	categories: SQLiteCategory[]
 	tags: SQLiteTag[]
+	users: SQLiteUser[]
 } => {
 	const entityRows = readRows(
 		db,
@@ -146,9 +153,11 @@ const parseBaseLookups = (
 			ZCURRENCYNAME,
 			ZCURRENCYNAME1,
 			ZCURRENCYNAME2,
-			ZCURRENCYNAME3
+			ZCURRENCYNAME3,
+			ZARCHIVED
 		FROM ZSYNCOBJECT
-		WHERE Z_ENT BETWEEN 10 AND 16
+		WHERE Z_ENT BETWEEN ${SQLITE_ACCOUNT_ENTITY_RANGE.min}
+			AND ${SQLITE_ACCOUNT_ENTITY_RANGE.max}
 		ORDER BY Z_PK`
 	)
 		.map((row) => {
@@ -169,6 +178,7 @@ const parseBaseLookups = (
 				entityName: toEntityName(entityNameById, entityId),
 				name: getTextValue(row, NAME_COLUMNS) ?? `Account #${id}`,
 				currency,
+				isArchived: toBoolean(getNumberValue(row, ['ZARCHIVED'])) ?? false,
 			} as SQLiteAccount
 		})
 		.filter((row): row is SQLiteAccount => row !== undefined)
@@ -185,7 +195,7 @@ const parseBaseLookups = (
 			ZNAME5,
 			ZNAME6
 		FROM ZSYNCOBJECT
-		WHERE Z_ENT = 28
+		WHERE Z_ENT = ${SQLITE_CORE_ENTITY_IDS.payee}
 		ORDER BY Z_PK`
 	)
 		.map((row) => {
@@ -211,7 +221,7 @@ const parseBaseLookups = (
 			ZNAME5,
 			ZNAME6
 		FROM ZSYNCOBJECT
-		WHERE Z_ENT = 19
+		WHERE Z_ENT = ${SQLITE_CORE_ENTITY_IDS.category}
 		ORDER BY Z_PK`
 	)
 		.map((row) => {
@@ -245,7 +255,7 @@ const parseBaseLookups = (
 			ZNAME5,
 			ZNAME6
 		FROM ZSYNCOBJECT
-		WHERE Z_ENT = 35
+		WHERE Z_ENT = ${SQLITE_CORE_ENTITY_IDS.tag}
 		ORDER BY Z_PK`
 	)
 		.map((row) => {
@@ -258,6 +268,30 @@ const parseBaseLookups = (
 		})
 		.filter((row): row is SQLiteTag => row !== undefined)
 
+	const userRows = readRows(
+		db,
+		'SELECT Z_PK, Z_ENT, ZSYNCUSERID, ZAPPSETTINGS FROM ZUSER ORDER BY Z_PK'
+	)
+	const activeUserId = toInteger(
+		getNumberValue(
+			readRows(db, 'SELECT ZCURRENTUSER FROM ZCOMMONSETTINGS LIMIT 1')[0] ?? {},
+			['ZCURRENTUSER']
+		)
+	)
+	const users = userRows
+		.map((row) => {
+			const id = toInteger(getNumberValue(row, ['Z_PK']))
+			if (id === undefined) return undefined
+			return {
+				id,
+				entityId: toInteger(getNumberValue(row, ['Z_ENT'])),
+				syncUserId: toInteger(getNumberValue(row, ['ZSYNCUSERID'])),
+				appSettingsId: toInteger(getNumberValue(row, ['ZAPPSETTINGS'])),
+				isActive: id === activeUserId,
+			} as SQLiteUser
+		})
+		.filter((row): row is SQLiteUser => row !== undefined)
+
 	return {
 		entityNameById,
 		entities,
@@ -265,6 +299,7 @@ const parseBaseLookups = (
 		payees,
 		categories,
 		tags,
+		users,
 	}
 }
 
@@ -556,6 +591,14 @@ const loadPage = (request: SQLitePageRequest): SQLiteSectionPage => {
 				total: runtime.tags.length,
 				items: runtime.tags.slice(offset, offset + limit),
 			}
+		case 'users':
+			return {
+				section,
+				offset,
+				limit,
+				total: runtime.users.length,
+				items: runtime.users.slice(offset, offset + limit),
+			}
 		case 'transactions':
 			return loadTransactionsPage(runtime, offset, limit)
 	}
@@ -621,9 +664,11 @@ const openRuntime = async (
 			payees: base.payees.length,
 			categories: base.categories.length,
 			tags: base.tags.length,
+			users: base.users.length,
 			transactions: transactionTotal,
 		},
 		entities: base.entities,
+		activeUser: base.users.find((user) => user.isActive),
 	}
 
 	runtime = {
@@ -634,6 +679,7 @@ const openRuntime = async (
 		payees: base.payees,
 		categories: base.categories,
 		tags: base.tags,
+		users: base.users,
 		accountsById: new Map(
 			base.accounts.map((account) => [account.id, account])
 		),

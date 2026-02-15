@@ -12,6 +12,7 @@ export interface SQLiteParseCounts {
 	payees: number
 	categories: number
 	tags: number
+	users: number
 	transactions: number
 }
 
@@ -27,6 +28,7 @@ export interface SQLiteAccount {
 	entityName: string
 	name: string
 	currency?: string
+	isArchived: boolean
 }
 
 export interface SQLitePayee {
@@ -44,6 +46,15 @@ export interface SQLiteCategory {
 	name: string
 	parentId?: number
 	parentName?: string
+}
+
+export interface SQLiteUser {
+	id: number
+	email?: string
+	entityId?: number
+	syncUserId?: number
+	appSettingsId?: number
+	isActive: boolean
 }
 
 export interface SQLiteAccountRef {
@@ -111,6 +122,7 @@ export interface SQLiteOverview {
 	meta: SQLiteParseMeta
 	counts: SQLiteParseCounts
 	entities: SQLiteEntityCount[]
+	activeUser?: SQLiteUser
 }
 
 export type SQLiteSection =
@@ -118,6 +130,7 @@ export type SQLiteSection =
 	| 'payees'
 	| 'categories'
 	| 'tags'
+	| 'users'
 	| 'transactions'
 
 export interface SQLitePageRequest {
@@ -153,6 +166,11 @@ export interface SQLiteTagsPage extends SQLitePageBase {
 	items: SQLiteTag[]
 }
 
+export interface SQLiteUsersPage extends SQLitePageBase {
+	section: 'users'
+	items: SQLiteUser[]
+}
+
 export interface SQLiteTransactionsPage extends SQLitePageBase {
 	section: 'transactions'
 	items: SQLiteTransaction[]
@@ -163,6 +181,7 @@ export type SQLiteSectionPage =
 	| SQLitePayeesPage
 	| SQLiteCategoriesPage
 	| SQLiteTagsPage
+	| SQLiteUsersPage
 	| SQLiteTransactionsPage
 
 export interface SQLiteParseResult {
@@ -173,5 +192,7 @@ export interface SQLiteParseResult {
 	payees: SQLitePayee[]
 	categories: SQLiteCategory[]
 	tags: SQLiteTag[]
+	users: SQLiteUser[]
+	activeUser?: SQLiteUser
 	transactions: SQLiteTransaction[]
 }

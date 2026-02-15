@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
+import { SQLITE_ENTITY_ID } from './constants'
+
 /**
  * Contract tests for SQLite entity mapping invariants from DATABASE_SCHEMA.md.
  * These validate that the hardcoded entity IDs and query patterns in parser.ts
@@ -13,70 +15,17 @@ import { describe, it, expect } from 'vitest'
  *   Transaction:      Z_ENT = 36+ (all entity names ending in 'Transaction')
  */
 
-const ENTITY_MAP = {
-	AccountBudgetLink: 1,
-	CategoryAssigment: 2,
-	CommonSettings: 3,
-	Image: 4,
-	InvestmentAccountTotalValue: 5,
-	StringHistoryItem: 6,
-	SyncCommand: 7,
-	SyncObject: 8,
-	Account: 9,
-	BankChequeAccount: 10,
-	BankSavingAccount: 11,
-	CashAccount: 12,
-	CreditCardAccount: 13,
-	LoanAccount: 14,
-	InvestmentAccount: 15,
-	ForexAccount: 16,
-	AppSettings: 17,
-	Budget: 18,
-	Category: 19,
-	CustomFormsOption: 20,
-	CustomReport: 21,
-	Group: 22,
-	InfoCard: 23,
-	InvestmentHolding: 24,
-	OnlineBank: 25,
-	OnlineBankAccount: 26,
-	OnlineBankUser: 27,
-	Payee: 28,
-	PaymentPlan: 29,
-	PaymentPlanItem: 30,
-	ScheduledTransactionHandler: 31,
-	ScheduledDepositTransactionHandler: 32,
-	ScheduledTransferTransactionHandler: 33,
-	ScheduledWithdrawTransactionHandler: 34,
-	Tag: 35,
-	Transaction: 36,
-	DepositTransaction: 37,
-	InvestmentExchangeTransaction: 38,
-	InvestmentTransaction: 39,
-	InvestmentBuyTransaction: 40,
-	InvestmentSellTransaction: 41,
-	ReconcileTransaction: 42,
-	RefundTransaction: 43,
-	TransferBudgetTransaction: 44,
-	TransferDepositTransaction: 45,
-	TransferWithdrawTransaction: 46,
-	WithdrawTransaction: 47,
-	TransactionBudgetLink: 48,
-	User: 49,
-	WithdrawRefundTransactionLink: 50,
-} as const
-
 describe('DATABASE_SCHEMA.md entity mapping contracts', () => {
 	describe('Account entity range', () => {
 		it('account subtypes should span Z_ENT 10..16 (used in SQL WHERE Z_ENT BETWEEN 10 AND 16)', () => {
 			const accountSubtypes = [
-				ENTITY_MAP.BankChequeAccount,
-				ENTITY_MAP.BankSavingAccount,
-				ENTITY_MAP.CashAccount,
-				ENTITY_MAP.CreditCardAccount,
-				ENTITY_MAP.LoanAccount,
-				ENTITY_MAP.InvestmentAccount,
-				ENTITY_MAP.ForexAccount,
+				SQLITE_ENTITY_ID.BankChequeAccount,
+				SQLITE_ENTITY_ID.BankSavingAccount,
+				SQLITE_ENTITY_ID.CashAccount,
+				SQLITE_ENTITY_ID.CreditCardAccount,
+				SQLITE_ENTITY_ID.LoanAccount,
+				SQLITE_ENTITY_ID.InvestmentAccount,
+				SQLITE_ENTITY_ID.ForexAccount,
 			]
 
 			expect(Math.min(...accountSubtypes)).toBe(10)
@@ -89,32 +38,32 @@ describe('DATABASE_SCHEMA.md entity mapping contracts', () => {
 		})
 
 		it('Account base entity (Z_ENT=9) should NOT be in the account subtype range', () => {
-			expect(ENTITY_MAP.Account).toBe(9)
-			expect(ENTITY_MAP.Account).toBeLessThan(10)
+			expect(SQLITE_ENTITY_ID.Account).toBe(9)
+			expect(SQLITE_ENTITY_ID.Account).toBeLessThan(10)
 		})
 	})
 
 	describe('Category entity', () => {
 		it('should use Z_ENT = 19 (used in SQL WHERE Z_ENT = 19)', () => {
-			expect(ENTITY_MAP.Category).toBe(19)
+			expect(SQLITE_ENTITY_ID.Category).toBe(19)
 		})
 	})
 
 	describe('Payee entity', () => {
 		it('should use Z_ENT = 28 (used in SQL WHERE Z_ENT = 28)', () => {
-			expect(ENTITY_MAP.Payee).toBe(28)
+			expect(SQLITE_ENTITY_ID.Payee).toBe(28)
 		})
 	})
 
 	describe('Tag entity', () => {
 		it('should use Z_ENT = 35 (used in SQL WHERE Z_ENT = 35)', () => {
-			expect(ENTITY_MAP.Tag).toBe(35)
+			expect(SQLITE_ENTITY_ID.Tag).toBe(35)
 		})
 	})
 
 	describe('Transaction entity family', () => {
 		it('all transaction entity names should end with Transaction', () => {
-			const transactionEntities = Object.entries(ENTITY_MAP)
+			const transactionEntities = Object.entries(SQLITE_ENTITY_ID)
 				.filter(([, id]) => id >= 36 && id <= 47)
 				.map(([name]) => name)
 
@@ -124,7 +73,7 @@ describe('DATABASE_SCHEMA.md entity mapping contracts', () => {
 		})
 
 		it('transaction entity IDs should be contiguous from 36..47', () => {
-			const transactionEntityIds = Object.entries(ENTITY_MAP)
+			const transactionEntityIds = Object.entries(SQLITE_ENTITY_ID)
 				.filter(([name]) => name.endsWith('Transaction'))
 				.filter(([, id]) => id >= 36)
 				.map(([, id]) => id)
@@ -136,23 +85,23 @@ describe('DATABASE_SCHEMA.md entity mapping contracts', () => {
 		})
 
 		it('ScheduledTransactionHandler subtypes should NOT be in transaction range', () => {
-			expect(ENTITY_MAP.ScheduledTransactionHandler).toBe(31)
-			expect(ENTITY_MAP.ScheduledDepositTransactionHandler).toBe(32)
-			expect(ENTITY_MAP.ScheduledTransferTransactionHandler).toBe(33)
-			expect(ENTITY_MAP.ScheduledWithdrawTransactionHandler).toBe(34)
+			expect(SQLITE_ENTITY_ID.ScheduledTransactionHandler).toBe(31)
+			expect(SQLITE_ENTITY_ID.ScheduledDepositTransactionHandler).toBe(32)
+			expect(SQLITE_ENTITY_ID.ScheduledTransferTransactionHandler).toBe(33)
+			expect(SQLITE_ENTITY_ID.ScheduledWithdrawTransactionHandler).toBe(34)
 		})
 	})
 
 	describe('Relation table contracts', () => {
 		it('ZCATEGORYASSIGMENT links transactions (Z_ENT=36+) to categories (Z_ENT=19)', () => {
-			expect(ENTITY_MAP.CategoryAssigment).toBe(2)
-			expect(ENTITY_MAP.Transaction).toBe(36)
-			expect(ENTITY_MAP.Category).toBe(19)
+			expect(SQLITE_ENTITY_ID.CategoryAssigment).toBe(2)
+			expect(SQLITE_ENTITY_ID.Transaction).toBe(36)
+			expect(SQLITE_ENTITY_ID.Category).toBe(19)
 		})
 
 		it('Z_36TAGS links transactions to tags (Z_ENT=35)', () => {
-			expect(ENTITY_MAP.Transaction).toBe(36)
-			expect(ENTITY_MAP.Tag).toBe(35)
+			expect(SQLITE_ENTITY_ID.Transaction).toBe(36)
+			expect(SQLITE_ENTITY_ID.Tag).toBe(35)
 		})
 	})
 

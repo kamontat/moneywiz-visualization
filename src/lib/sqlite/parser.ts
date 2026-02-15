@@ -11,7 +11,12 @@ import type {
 	SQLiteTag,
 	SQLiteTagRef,
 	SQLiteTransaction,
+	SQLiteUser,
 } from './models'
+import {
+	SQLITE_ACCOUNT_ENTITY_RANGE,
+	SQLITE_CORE_ENTITY_IDS,
+} from './constants'
 import {
 	type SqlRow,
 	CURRENCY_COLUMNS,
@@ -168,9 +173,11 @@ export const parseSQLiteFile = async (
 				ZCURRENCYNAME,
 				ZCURRENCYNAME1,
 				ZCURRENCYNAME2,
-				ZCURRENCYNAME3
+				ZCURRENCYNAME3,
+				ZARCHIVED
 			FROM ZSYNCOBJECT
-			WHERE Z_ENT BETWEEN 10 AND 16
+			WHERE Z_ENT BETWEEN ${SQLITE_ACCOUNT_ENTITY_RANGE.min}
+				AND ${SQLITE_ACCOUNT_ENTITY_RANGE.max}
 			ORDER BY Z_PK`
 		)
 		const accounts: SQLiteAccount[] = accountRows
@@ -184,6 +191,7 @@ export const parseSQLiteFile = async (
 					entityName: toEntityName(entityNameById, entityId),
 					name: getTextValue(row, NAME_COLUMNS) ?? `Account #${id}`,
 					currency: getTextValue(row, CURRENCY_COLUMNS),
+					isArchived: toBoolean(getNumberValue(row, ['ZARCHIVED'])) ?? false,
 				} as SQLiteAccount
 			})
 			.filter((account): account is SQLiteAccount => account !== undefined)
@@ -200,7 +208,7 @@ export const parseSQLiteFile = async (
 				ZNAME5,
 				ZNAME6
 			FROM ZSYNCOBJECT
-			WHERE Z_ENT = 28
+			WHERE Z_ENT = ${SQLITE_CORE_ENTITY_IDS.payee}
 			ORDER BY Z_PK`
 		)
 		const payees: SQLitePayee[] = payeeRows
@@ -226,7 +234,7 @@ export const parseSQLiteFile = async (
 				ZNAME5,
 				ZNAME6
 			FROM ZSYNCOBJECT
-			WHERE Z_ENT = 35
+			WHERE Z_ENT = ${SQLITE_CORE_ENTITY_IDS.tag}
 			ORDER BY Z_PK`
 		)
 		const tags: SQLiteTag[] = tagRows
@@ -253,7 +261,7 @@ export const parseSQLiteFile = async (
 				ZNAME5,
 				ZNAME6
 			FROM ZSYNCOBJECT
-			WHERE Z_ENT = 19
+			WHERE Z_ENT = ${SQLITE_CORE_ENTITY_IDS.category}
 			ORDER BY Z_PK`
 		)
 		const categories: SQLiteCategory[] = categoryRows
@@ -284,6 +292,33 @@ export const parseSQLiteFile = async (
 		const tagsById = new Map<number, SQLiteTag>(
 			tags.map((tag) => [tag.id, tag])
 		)
+
+		const userRows = readRows(
+			db,
+			'SELECT Z_PK, Z_ENT, ZSYNCUSERID, ZAPPSETTINGS, ZSYNCLOGIN FROM ZUSER ORDER BY Z_PK'
+		)
+		const activeUserId = toInteger(
+			getNumberValue(
+				readRows(db, 'SELECT ZCURRENTUSER FROM ZCOMMONSETTINGS LIMIT 1')[0] ??
+					{},
+				['ZCURRENTUSER']
+			)
+		)
+		const users: SQLiteUser[] = userRows
+			.map((row) => {
+				const id = toInteger(getNumberValue(row, ['Z_PK']))
+				if (id === undefined) return undefined
+				return {
+					id,
+					email: getTextValue(row, ['ZSYNCLOGIN']),
+					entityId: toInteger(getNumberValue(row, ['Z_ENT'])),
+					syncUserId: toInteger(getNumberValue(row, ['ZSYNCUSERID'])),
+					appSettingsId: toInteger(getNumberValue(row, ['ZAPPSETTINGS'])),
+					isActive: id === activeUserId,
+				} as SQLiteUser
+			})
+			.filter((user): user is SQLiteUser => user !== undefined)
+		const activeUser = users.find((user) => user.isActive)
 
 		emitProgress(options, { phase: 'categories', processed: 0 })
 		const categoriesByTransaction = new Map<number, SQLiteCategoryRef[]>()
@@ -522,6 +557,7 @@ export const parseSQLiteFile = async (
 				payees: payees.length,
 				categories: categories.length,
 				tags: tags.length,
+				users: users.length,
 				transactions: transactions.length,
 			},
 			entities,
@@ -529,6 +565,8 @@ export const parseSQLiteFile = async (
 			payees,
 			categories,
 			tags,
+			users,
+			activeUser,
 			transactions,
 		}
 
