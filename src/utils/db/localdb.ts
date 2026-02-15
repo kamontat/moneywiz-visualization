@@ -1,7 +1,6 @@
 import type {
 	AnySchemaDB,
 	AnySchemaTable,
-	ChangedTriggerData,
 	ChangedTriggerDataAction,
 	Database,
 	DatabaseCRUD,
@@ -15,7 +14,13 @@ import type {
 	OnChangeCallback,
 } from './models'
 import type { ToKey, WithPromiseLike } from '$utils/types'
-import { emptyDB, parseChangedData, parseDBFullName } from './utils'
+import {
+	type TriggerContext,
+	fireTrigger,
+	listenForChanges,
+	listenForChangesByKey,
+} from './trigger'
+import { emptyDB, parseDBFullName } from './utils'
 
 import { browser } from '$app/environment'
 import { db } from '$lib/loggers'
@@ -59,50 +64,33 @@ export class LocalDB<Name extends DBFullName, Schema extends AnySchemaTable>
 		)
 	}
 
+	private get triggerCtx(): TriggerContext<Name, Schema> {
+		return {
+			name: this.name,
+			version: this.version,
+			triggerName: this.triggerName,
+			log: this.log,
+			readValue: (table, key) =>
+				Promise.resolve(this.get(table, key) as GetAnySchemaValue<Schema>),
+		}
+	}
+
 	trigger<
 		T extends GetSchemaTableName<Schema>,
 		K extends GetSchemaTableKey<Schema, T>,
 	>(action: ChangedTriggerDataAction, table: T, key: K, value: string) {
-		const trigger = `${this.triggerName}:${table}:${key}`
-		const data: ChangedTriggerData<Name, Schema, T, K> = {
-			db: this.name,
-			version: this.version,
-			table,
-			key,
-			action,
-			value,
-		}
-
-		this.storage.setItem(trigger, JSON.stringify(data))
+		fireTrigger(this.triggerCtx, action, table, key, value)
 	}
 
 	onChange(callback: OnChangeCallback<Name, Schema>) {
-		window.addEventListener('storage', (event) => {
-			if (event.key?.startsWith(this.triggerName)) {
-				const data = parseChangedData<Name, Schema>(
-					this.log,
-					event.newValue,
-					(data) => {
-						return this.get(data.table, data.key) as Promise<
-							GetAnySchemaValue<Schema>
-						>
-					}
-				)
-
-				callback(event, data)
-			}
-		})
+		listenForChanges(this.triggerCtx, callback)
 	}
 
 	onChangeByKey<
 		T extends GetSchemaTableName<Schema>,
 		K extends GetSchemaTableKey<Schema, T>,
 	>(table: T, key: K, callback: OnChangeCallback<Name, Schema, T, K>) {
-		this.onChange((event, data) => {
-			if (data?.table === table && data?.key === key) {
-				callback(event, data)
-			}
-		})
+		listenForChangesByKey(this.triggerCtx, table, key, callback)
 	}
 
 	get<T extends ToKey<Schema>, K extends ToKey<Schema, T>>(
