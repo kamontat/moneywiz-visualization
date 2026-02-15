@@ -37,6 +37,7 @@ export const generateSQLite = async (
 		CREATE TABLE ZSYNCOBJECT (
 			Z_PK INTEGER PRIMARY KEY,
 			Z_ENT INTEGER,
+			ZARCHIVED INTEGER,
 			ZNAME TEXT,
 			ZNAME1 TEXT,
 			ZNAME2 TEXT,
@@ -87,6 +88,16 @@ export const generateSQLite = async (
 			ZTRANSACTION INTEGER,
 			ZCATEGORY INTEGER
 		);
+		CREATE TABLE ZUSER (
+			Z_PK INTEGER PRIMARY KEY,
+			Z_ENT INTEGER,
+			ZSYNCUSERID INTEGER,
+			ZAPPSETTINGS INTEGER,
+			ZSYNCLOGIN TEXT
+		);
+		CREATE TABLE ZCOMMONSETTINGS (
+			ZCURRENTUSER INTEGER
+		);
 		CREATE TABLE Z_36TAGS (
 			Z_36TRANSACTIONS INTEGER,
 			Z_35TAGS INTEGER
@@ -103,8 +114,13 @@ export const generateSQLite = async (
 	)
 
 	db.run(
-		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME, ZCURRENCYNAME) VALUES
-			(100, 10, 'Wallet A', 'THB')`
+		`INSERT INTO ZSYNCOBJECT (
+			Z_PK,
+			Z_ENT,
+			ZARCHIVED,
+			ZNAME,
+			ZCURRENCYNAME
+		) VALUES (100, 10, 0, 'Wallet A', 'THB')`
 	)
 	db.run(
 		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES
@@ -122,6 +138,11 @@ export const generateSQLite = async (
 		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES
 			(400, 35, 'Group: Test')`
 	)
+	db.run(
+		`INSERT INTO ZUSER (Z_PK, Z_ENT, ZSYNCUSERID, ZAPPSETTINGS, ZSYNCLOGIN)
+		VALUES (1, 49, 1, NULL, 'fixture@example.com')`
+	)
+	db.run(`INSERT INTO ZCOMMONSETTINGS (ZCURRENTUSER) VALUES (1)`)
 
 	const baseDateSeconds = Math.floor(
 		(Date.UTC(2026, 0, 1, 0, 0, 0) - appleReferenceEpochMs) / 1000

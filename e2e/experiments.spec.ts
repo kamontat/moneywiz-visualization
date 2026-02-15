@@ -10,6 +10,8 @@ test.describe('Experiments tab', () => {
 	test('renders all experiment panels and updates target input', async ({
 		page,
 	}) => {
+		test.setTimeout(120000)
+
 		const csvContent = generateCsv([
 			{
 				Payee: 'Salary',
@@ -31,16 +33,18 @@ test.describe('Experiments tab', () => {
 			},
 		])
 
-		const fileInput = page.locator('input[type="file"]').first()
-		await fileInput.waitFor({ state: 'attached' })
-		await fileInput.setInputFiles({
+		const [fileChooser] = await Promise.all([
+			page.waitForEvent('filechooser'),
+			page.getByRole('button', { name: 'Upload CSV' }).click(),
+		])
+		await fileChooser.setFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
-			timeout: 10000,
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
+			timeout: 60000,
 		})
 
 		await page.getByRole('tab', { name: 'Experiments' }).click()

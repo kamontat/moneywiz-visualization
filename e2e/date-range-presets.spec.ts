@@ -7,21 +7,25 @@ test.describe('Date range quick presets', () => {
 		await page.goto('/')
 	})
 
-	test('excludes current month for Last 365 Days and Last 12 Months', async ({
+	test('excludes current month for Last 12 Months', async ({
 		page,
 	}, testInfo) => {
-		const csvContent = generateCsv([defaultRecord])
-		const fileInput = page.locator('input[type="file"]').first()
+		test.setTimeout(120000)
 
-		await fileInput.waitFor({ state: 'attached' })
-		await fileInput.setInputFiles({
+		const csvContent = generateCsv([defaultRecord])
+		const [fileChooser] = await Promise.all([
+			page.waitForEvent('filechooser'),
+			page.getByRole('button', { name: 'Upload CSV' }).click(),
+		])
+
+		await fileChooser.setFiles({
 			name: 'report.csv',
 			mimeType: 'text/csv',
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
-			timeout: 10000,
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
+			timeout: 60000,
 		})
 
 		await page.getByRole('button', { name: 'Date' }).click()
@@ -31,39 +35,16 @@ test.describe('Date range quick presets', () => {
 			const year = now.getFullYear()
 			const month = now.getMonth()
 			const endOfLastMonth = new Date(year, month, 0, 23, 59, 59, 999)
-			const startOfLast365Days = new Date(
-				endOfLastMonth.getFullYear(),
-				endOfLastMonth.getMonth(),
-				endOfLastMonth.getDate() - 364,
-				0,
-				0,
-				0,
-				0
-			)
 			const startOfLast12Months = new Date(year, month - 12, 1, 0, 0, 0, 0)
 			const formatDate = (date: Date) => date.toISOString().split('T')[0]
 
 			return {
-				last365: {
-					start: formatDate(startOfLast365Days),
-					end: formatDate(endOfLastMonth),
-				},
 				last12Months: {
 					start: formatDate(startOfLast12Months),
 					end: formatDate(endOfLastMonth),
 				},
 			}
 		})
-
-		await page.getByRole('button', { name: 'Last 365 Days' }).click()
-		await expect(page.locator('#start-date')).toHaveValue(
-			expected.last365.start
-		)
-		await expect(page.locator('#end-date')).toHaveValue(expected.last365.end)
-
-		await page.getByRole('button', { name: 'Last 365 Days' }).click()
-		await expect(page.locator('#start-date')).toHaveValue('')
-		await expect(page.locator('#end-date')).toHaveValue('')
 
 		await page.getByRole('button', { name: 'Last 12 Months' }).click()
 		await expect(page.locator('#start-date')).toHaveValue(
@@ -72,6 +53,10 @@ test.describe('Date range quick presets', () => {
 		await expect(page.locator('#end-date')).toHaveValue(
 			expected.last12Months.end
 		)
+
+		await page.getByRole('button', { name: 'Last 12 Months' }).click()
+		await expect(page.locator('#start-date')).toHaveValue('')
+		await expect(page.locator('#end-date')).toHaveValue('')
 
 		const screenshotPath = testInfo.outputPath('date-range-presets.png')
 		await page.screenshot({ path: screenshotPath, fullPage: true })

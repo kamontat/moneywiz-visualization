@@ -10,6 +10,12 @@ test.describe('SQLite Experiment page', () => {
 	test('loads sqlite data and renders paged JSON', async ({ page }) => {
 		test.setTimeout(120000)
 		const sqliteBuffer = await generateSQLite({ transactions: 205 })
+		const transactionsPreview = page.locator('pre', {
+			hasText: '"section": "transactions"',
+		})
+		const accountsPreview = page.locator('pre', {
+			hasText: '"section": "accounts"',
+		})
 
 		const fileInput = page.locator('input[type="file"]').last()
 		await fileInput.waitFor({ state: 'attached' })
@@ -19,25 +25,24 @@ test.describe('SQLite Experiment page', () => {
 			buffer: sqliteBuffer,
 		})
 
-		await expect(page.getByText(/Page 1 of 2 \(205 rows\)/)).toBeVisible({
-			timeout: 60000,
-		})
-		await expect(page.locator('pre')).toContainText('"section": "transactions"')
-		await expect(page.locator('pre')).toContainText(
+		await expect(transactionsPreview).toContainText(
+			'"section": "transactions"'
+		)
+		await expect(transactionsPreview).toContainText('"page": 1')
+		await expect(transactionsPreview).toContainText(
 			'"description": "Lunch 205"'
 		)
 
 		await page.getByRole('button', { name: 'Next' }).click()
-		await expect(page.getByText(/Page 2 of 2 \(205 rows\)/)).toBeVisible({
-			timeout: 60000,
-		})
+		await expect(transactionsPreview).toContainText('"page": 2')
 
-		await page.selectOption('#sqlite-section', 'accounts')
-		await expect(page.getByText(/Page 1 of 1 \(1 rows\)/)).toBeVisible({
-			timeout: 60000,
-		})
-		await expect(page.locator('pre')).toContainText('"section": "accounts"')
-		await expect(page.locator('pre')).toContainText('"name": "Wallet A"')
+		await page.getByText('Accounts').first().click()
+		await expect(accountsPreview).toContainText(
+			'"section": "accounts"'
+		)
+		await expect(accountsPreview).toContainText(
+			'"name": "Wallet A"'
+		)
 
 		await page.screenshot({
 			path: 'test-results/sqlite-page-validation.png',

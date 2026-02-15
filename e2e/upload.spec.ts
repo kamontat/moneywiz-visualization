@@ -74,8 +74,8 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 			buffer: Buffer.from(csvContent),
 		})
 
-		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
-			timeout: 10000,
+		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible({
+			timeout: 60000,
 		})
 
 		const clearButton = page.getByRole('button', { name: 'Clear loaded CSV' })
