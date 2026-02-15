@@ -1,7 +1,3 @@
-// WIP: Transaction store implementation
-// Currently disabled - see transactions/index.ts
-// import type { ParsedTransaction } from '$lib/transactions'
-// import { store } from '$lib/loggers'
-// import { newStore, indexDBV1, STATE_TRX_V1 } from '$utils/stores'
-
+// Placeholder: Transaction store not yet implemented.
+// When needed, follow the store pattern documented in src/utils/AGENTS.md.
 export {}

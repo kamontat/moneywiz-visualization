@@ -5,6 +5,4 @@ export {
 	getTransactionCount,
 	getTransactions,
 } from './import'
-export type { ImportProgress, ImportOptions } from './import'
 export { extractCategories, extractTagCategories } from './utils'
-export type { TagCategoryGroup } from './models'

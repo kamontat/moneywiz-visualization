@@ -1,5 +1,5 @@
 import type { ParseError } from 'papaparse'
-import type { ParsedTransaction } from './models'
+import type { ImportOptions, ParsedTransaction } from './models'
 import type { ParsedCsvRow } from '$lib/csv/models'
 import papaparse from 'papaparse'
 
@@ -10,19 +10,6 @@ import { transaction } from '$lib/loggers'
 import { indexDBV1, STATE_TRX_V1 } from '$utils/stores'
 
 const log = transaction.extends('import')
-
-export interface ImportProgress {
-	phase: 'parsing' | 'importing' | 'complete' | 'error'
-	processed: number
-	total: number
-	percentage: number
-	error?: Error
-}
-
-export interface ImportOptions {
-	batchSize?: number
-	onProgress?: (progress: ImportProgress) => void
-}
 
 const DEFAULT_BATCH_SIZE = 2000
 const DEFAULT_DELIMITER = ','

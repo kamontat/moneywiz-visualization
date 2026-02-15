@@ -8,6 +8,5 @@ export { byTransfer } from './byTransfer'
 export { byTransactionType } from './byTransactionType'
 
 export { filterOptionsStore, filterOptionsState } from './init'
-export type { FilterOptions } from './models'
 export { initFilterOptionsState } from './state'
 export { initFilterOptionsStore } from './store'

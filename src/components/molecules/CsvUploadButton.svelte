@@ -6,7 +6,7 @@
 		CustomProps,
 		ElementProps,
 	} from '$lib/components/models'
-	import type { ImportProgress } from '$lib/transactions'
+	import type { ImportProgress } from '$lib/transactions/models'
 	import UploadIcon from '@iconify-svelte/lucide/upload'
 
 	import Button from '$components/atoms/Button.svelte'

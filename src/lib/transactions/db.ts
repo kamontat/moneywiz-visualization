@@ -1,7 +1,3 @@
-import { db } from '$lib/loggers'
-
-export const initTransactionStorage = () => {
-	const log = db.extends('transactions')
-	// TODO: implement transaction storage initialization
-	log.debug('transaction storage initialized')
-}
+// Placeholder: Transaction DB initialization not yet implemented.
+// When needed, follow the DB pattern documented in src/utils/AGENTS.md.
+export {}
