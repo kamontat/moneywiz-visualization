@@ -12,10 +12,16 @@ export { byCategoryVolatility } from './byCategoryVolatility'
 export { byCumulativeSavings } from './byCumulativeSavings'
 export { byMonthlyWaterfall } from './byMonthlyWaterfall'
 export { byOutlierTimeline } from './byOutlierTimeline'
+export { byDebt } from './byDebt'
+export { byGiveaway } from './byGiveaway'
+export { byPayeeCashFlow } from './byPayeeCashFlow'
 export { byRefundImpact } from './byRefundImpact'
 export { byRegimeTimeline } from './byRegimeTimeline'
+export { byWindfall } from './byWindfall'
+export { byWindfallGiveaway } from './byWindfallGiveaway'
 export { byPayeeSpend } from './byPayeeSpend'
 export { byStatsDashboard } from './byStatsDashboard'
+export { byTopPayeesPerCategory } from './byTopPayeesPerCategory'
 export {
 	deriveBaselineRange,
 	deriveCurrentRange,

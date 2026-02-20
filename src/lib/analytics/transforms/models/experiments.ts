@@ -63,3 +63,36 @@ export interface OutlierPoint {
 	zScore: number
 	isOutlier: boolean
 }
+
+export interface DebtMonthPoint {
+	label: string
+	taken: number
+	repaid: number
+	netDebt: number
+}
+
+export interface WindfallPoint {
+	label: string
+	windfall: number
+	regularIncome: number
+}
+
+export interface GiveawayPoint {
+	label: string
+	giveaway: number
+	regularExpense: number
+}
+
+export interface WindfallGiveawayPoint {
+	label: string
+	windfall: number
+	giveaway: number
+}
+
+export interface PayeeCashFlowEntry {
+	payee: string
+	debt: number
+	debtRepayment: number
+	windfall: number
+	giveaway: number
+}

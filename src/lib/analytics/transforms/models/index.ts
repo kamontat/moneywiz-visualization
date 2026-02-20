@@ -24,12 +24,22 @@ export type {
 	CategoryBubblePoint,
 	CategoryVolatilityPoint,
 	CumulativeSavingsPoint,
+	DebtMonthPoint,
+	GiveawayPoint,
 	OutlierPoint,
+	PayeeCashFlowEntry,
 	RefundImpactPoint,
 	RegimeSegment,
 	RegimeType,
 	WaterfallStep,
+	WindfallGiveawayPoint,
+	WindfallPoint,
 } from './experiments'
+export type {
+	TopPayeeEntry,
+	TopPayeesCategoryGroup,
+	TopPayeesPerCategoryResult,
+} from './topPayeesPerCategory'
 export type {
 	StatsCadence,
 	StatsConcentration,
