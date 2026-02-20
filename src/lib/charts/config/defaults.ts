@@ -134,6 +134,31 @@ export const bubbleChartOptions = (): ChartOptions<'bubble'> => ({
 	scales: themeScales(),
 })
 
+export const zeroCenteredBarChartOptions = (): ChartOptions<'bar'> => {
+	const colors = getThemeColors()
+	return {
+		responsive: true,
+		maintainAspectRatio: true,
+		plugins: themePlugin(),
+		scales: {
+			x: {
+				ticks: { color: colors.baseContentMuted },
+				grid: { color: withAlpha(colors.baseContentMuted, 0.125, '#1f2937') },
+			},
+			y: {
+				beginAtZero: false,
+				ticks: { color: colors.baseContentMuted },
+				grid: {
+					color: (ctx) =>
+						ctx.tick.value === 0
+							? withAlpha(colors.baseContentMuted, 0.5, '#1f2937')
+							: withAlpha(colors.baseContentMuted, 0.125, '#1f2937'),
+				},
+			},
+		},
+	}
+}
+
 export const stackedBarChartOptions = (): ChartOptions<'bar'> => ({
 	responsive: true,
 	maintainAspectRatio: true,

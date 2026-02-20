@@ -10,10 +10,17 @@ export {
 	toCategoryBubbleData,
 	toCategoryVolatilityData,
 	toCumulativeSavingsData,
+	toDebtData,
+	toGiveawayData,
 	toMonthlyWaterfallData,
 	toOutlierTimelineData,
+	toPayeeDebtData,
+	toPayeeGiveawayData,
+	toPayeeWindfallData,
 	toRefundImpactData,
 	toRegimeTimelineData,
+	toWindfallData,
+	toWindfallGiveawayData,
 } from './adapters'
 
 export {
@@ -25,6 +32,7 @@ export {
 	matrixChartOptions,
 	scatterChartOptions,
 	stackedBarChartOptions,
+	zeroCenteredBarChartOptions,
 } from './config/defaults'
 
 export { getThemeColors, getCategoryPalette } from './theme'
