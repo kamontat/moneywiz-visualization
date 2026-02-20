@@ -8,6 +8,7 @@
 	import FilterBarCategoryPanel from '../molecules/FilterBarCategoryPanel.svelte'
 	import FilterBarChips from '../molecules/FilterBarChips.svelte'
 	import FilterBarDatePanel from '../molecules/FilterBarDatePanel.svelte'
+	import FilterBarPayeePanel from '../molecules/FilterBarPayeePanel.svelte'
 	import FilterBarTagPanel from '../molecules/FilterBarTagPanel.svelte'
 	import FilterBarTypesPanel from '../molecules/FilterBarTypesPanel.svelte'
 
@@ -18,6 +19,7 @@
 			filterState: FilterState
 			availableCategories: ParsedCategory[]
 			availableTagCategories: TagCategory[]
+			availablePayees?: string[]
 			onfilterchange?: (state: FilterState) => void
 		}>
 
@@ -25,6 +27,7 @@
 		filterState = $bindable(),
 		availableCategories = [],
 		availableTagCategories = [],
+		availablePayees = [],
 		onfilterchange,
 		class: className,
 		...rest
@@ -39,6 +42,7 @@
 			categories: [],
 			categoryMode: 'include',
 			tags: [],
+			payees: [],
 		}
 		onfilterchange?.(filterState)
 		openPanel = null
@@ -73,6 +77,12 @@
 				{onfilterchange}
 			/>
 			<FilterBarTypesPanel bind:filterState {openPanel} {onfilterchange} />
+			<FilterBarPayeePanel
+				bind:filterState
+				{availablePayees}
+				{openPanel}
+				{onfilterchange}
+			/>
 			{#each availableTagCategories as tagCategory (tagCategory.category)}
 				<FilterBarTagPanel
 					bind:filterState

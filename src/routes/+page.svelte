@@ -18,6 +18,7 @@
 		filter,
 		byDateRange,
 		byCategory,
+		byPayee,
 		byTransactionType,
 		byTags,
 	} from '$lib/analytics/filters'
@@ -37,6 +38,7 @@
 	import { databaseStore, databaseUploading } from '$lib/database'
 	import {
 		extractCategories,
+		extractPayees,
 		extractTagCategories,
 		getTransactionCount,
 		getTransactions,
@@ -47,6 +49,7 @@
 	let allTransactions = $state<ParsedTransaction[]>([])
 	let totalCount = $state(0)
 	let availableCategories = $state(extractCategories([]))
+	let availablePayees = $state<string[]>([])
 	let tagCategories = $state(extractTagCategories([]))
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
 	let fileInfo = $state<DatabaseState | undefined>(undefined)
@@ -76,6 +79,7 @@
 		availableCategories = extractCategories(
 			categoryTransactions as { category?: ParsedCategory }[]
 		)
+		availablePayees = extractPayees(allTransactions as { payee?: string }[])
 		tagCategories = extractTagCategories(allTransactions)
 		if (fileInfo?.fileName && fileInfo?.modifiedAt) {
 			await filterOptionsStore.setAsync({
@@ -160,6 +164,10 @@
 			)
 		}
 
+		if (filterState.payees.length > 0) {
+			filters.push(byPayee({ payees: filterState.payees }))
+		}
+
 		if (filters.length > 0) {
 			result = filter(transactions, ...filters)
 		}
@@ -238,6 +246,7 @@
 		<FilterBar
 			bind:filterState
 			{availableCategories}
+			{availablePayees}
 			availableTagCategories={tagCategories}
 			class="mt-4"
 		/>

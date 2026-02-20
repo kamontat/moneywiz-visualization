@@ -8,6 +8,7 @@
 	import FolderIcon from '@iconify-svelte/lucide/folder'
 	import HashIcon from '@iconify-svelte/lucide/hash'
 	import ListFilterIcon from '@iconify-svelte/lucide/list-filter'
+	import UserIcon from '@iconify-svelte/lucide/user'
 	import X from '@iconify-svelte/lucide/x'
 
 	import Button from '$components/atoms/Button.svelte'
@@ -40,6 +41,7 @@
 	)
 	const hasTypeFilter = $derived(filterState.transactionTypes.length > 0)
 	const hasCategoryFilter = $derived(filterState.categories.length > 0)
+	const hasPayeeFilter = $derived(filterState.payees.length > 0)
 	const getCategoryActiveCount = (categoryName: string): number => {
 		const tagFilter = filterState.tags.find(
 			(tag) => tag.category === categoryName
@@ -99,6 +101,19 @@
 	>
 		{#snippet icon()}
 			<FolderIcon class="size-3.5" />
+		{/snippet}
+	</FilterChipButton>
+
+	<FilterChipButton
+		label="Payee"
+		active={hasPayeeFilter}
+		expanded={openPanel === 'payee'}
+		count={filterState.payees.length}
+		aria-expanded={openPanel === 'payee'}
+		onclick={() => ontogglepanel?.('payee')}
+	>
+		{#snippet icon()}
+			<UserIcon class="size-3.5" />
 		{/snippet}
 	</FilterChipButton>
 
