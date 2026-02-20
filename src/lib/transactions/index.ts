@@ -5,4 +5,4 @@ export {
 	getTransactionCount,
 	getTransactions,
 } from './import'
-export { extractCategories, extractTagCategories } from './utils'
+export { extractCategories, extractPayees, extractTagCategories } from './utils'

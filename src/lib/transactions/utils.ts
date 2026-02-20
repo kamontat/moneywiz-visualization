@@ -245,6 +245,16 @@ export const extractTagCategories = (
 		.sort((a, b) => a.category.localeCompare(b.category))
 }
 
+export const extractPayees = (transactions: { payee?: string }[]): string[] => {
+	const payeeSet = new Set<string>()
+	for (const trx of transactions) {
+		if (trx.payee !== undefined && trx.payee !== '') {
+			payeeSet.add(trx.payee)
+		}
+	}
+	return Array.from(payeeSet).sort((a, b) => a.localeCompare(b))
+}
+
 export const extractCategories = (
 	transactions: { category?: ParsedCategory }[]
 ): ParsedCategory[] => {
