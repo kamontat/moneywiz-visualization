@@ -6,6 +6,7 @@ export const FILTER_TYPES = {
 	CURRENCY: 'byCurrency',
 	TRANSFER: 'byTransfer',
 	SPECIAL_CATEGORY: 'bySpecialCategory',
+	PAYEE: 'byPayee',
 	AND: 'AND',
 	OR: 'OR',
 	NOT: 'NOT',

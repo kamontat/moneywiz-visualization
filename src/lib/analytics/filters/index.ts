@@ -6,6 +6,7 @@ export { bySpecialCategory } from './bySpecialCategory'
 export { byTags } from './byTags'
 export { byTransfer } from './byTransfer'
 export { byTransactionType } from './byTransactionType'
+export { byPayee } from './byPayee'
 
 export { filterOptionsStore, filterOptionsState } from './init'
 export { initFilterOptionsState } from './state'

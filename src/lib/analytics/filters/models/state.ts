@@ -11,6 +11,7 @@ export interface FilterState {
 	categories: string[]
 	categoryMode: FilterCategoryMode
 	tags: TagFilter[]
+	payees: string[]
 }
 
 export interface TagFilter {
@@ -28,6 +29,7 @@ export const emptyFilterState = (): FilterState => ({
 	categories: [],
 	categoryMode: 'include',
 	tags: [],
+	payees: [],
 })
 
 export const hasActiveFilters = (state: FilterState): boolean => {
@@ -36,7 +38,8 @@ export const hasActiveFilters = (state: FilterState): boolean => {
 		state.dateRange.end !== undefined ||
 		state.transactionTypes.length > 0 ||
 		state.categories.length > 0 ||
-		state.tags.some((t) => t.values.length > 0)
+		state.tags.some((t) => t.values.length > 0) ||
+		state.payees.length > 0
 	)
 }
 
