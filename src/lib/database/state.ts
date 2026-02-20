@@ -1,19 +1,19 @@
 import type { GetSchemaValue } from '$utils/db/models'
 import type { StateEqualFn, StateNormalizeFn } from '$utils/states/models'
-import type { STATE_CSV_V1 } from '$utils/stores'
+import type { STATE_DB_V1 } from '$utils/stores'
 import type { StoreSchema } from '$utils/stores/models'
-import { csv } from '$lib/loggers'
+import { database } from '$lib/loggers'
 import { newEmptyState, newState } from '$utils/states'
 
-export type CsvState = GetSchemaValue<
+export type DatabaseState = GetSchemaValue<
 	StoreSchema['v1:app-db'],
-	typeof STATE_CSV_V1,
+	typeof STATE_DB_V1,
 	'default'
 >
 
-const log = csv.extends('state')
+const log = database.extends('state')
 
-const normalize: StateNormalizeFn<CsvState> = (state) => {
+const normalize: StateNormalizeFn<DatabaseState> = (state) => {
 	if (!state) {
 		log.debug('normalize empty state to undefined')
 		return undefined
@@ -30,16 +30,16 @@ const normalize: StateNormalizeFn<CsvState> = (state) => {
 		log.debug('normalize empty modifiedAt to undefined')
 		return undefined
 	}
-	return state as CsvState
+	return state as DatabaseState
 }
 
-const equal: StateEqualFn<CsvState> = (a, b) =>
+const equal: StateEqualFn<DatabaseState> = (a, b) =>
 	a?.fileName === b?.fileName &&
 	a?.size === b?.size &&
 	a?.modifiedAt === b?.modifiedAt
 
-export const initCsvState = () => {
-	const empty = newEmptyState<CsvState>(undefined)
+export const initDatabaseState = () => {
+	const empty = newEmptyState<DatabaseState>(undefined)
 	return newState(empty, {
 		normalize,
 		equal,

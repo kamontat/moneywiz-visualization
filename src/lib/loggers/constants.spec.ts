@@ -20,7 +20,7 @@ describe('Logger Constants', () => {
 	it('should export defined loggers', () => {
 		// Test that core library loggers are under 'moneywiz:libs:*'
 		const libsLoggers = [
-			'csv',
+			'database',
 			'transaction',
 			'analytic',
 			'component',
