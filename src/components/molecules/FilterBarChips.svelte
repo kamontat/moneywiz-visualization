@@ -9,6 +9,7 @@
 	import HashIcon from '@iconify-svelte/lucide/hash'
 	import ListFilterIcon from '@iconify-svelte/lucide/list-filter'
 	import UserIcon from '@iconify-svelte/lucide/user'
+	import WalletIcon from '@iconify-svelte/lucide/wallet'
 	import X from '@iconify-svelte/lucide/x'
 
 	import Button from '$components/atoms/Button.svelte'
@@ -42,6 +43,7 @@
 	const hasTypeFilter = $derived(filterState.transactionTypes.length > 0)
 	const hasCategoryFilter = $derived(filterState.categories.length > 0)
 	const hasPayeeFilter = $derived(filterState.payees.length > 0)
+	const hasAccountFilter = $derived(filterState.accounts.length > 0)
 	const getCategoryActiveCount = (categoryName: string): number => {
 		const tagFilter = filterState.tags.find(
 			(tag) => tag.category === categoryName
@@ -111,9 +113,24 @@
 		count={filterState.payees.length}
 		aria-expanded={openPanel === 'payee'}
 		onclick={() => ontogglepanel?.('payee')}
+		data-testid="filter-payee-chip"
 	>
 		{#snippet icon()}
 			<UserIcon class="size-3.5" />
+		{/snippet}
+	</FilterChipButton>
+
+	<FilterChipButton
+		label="Account"
+		active={hasAccountFilter}
+		expanded={openPanel === 'account'}
+		count={filterState.accounts.length}
+		aria-expanded={openPanel === 'account'}
+		onclick={() => ontogglepanel?.('account')}
+		data-testid="filter-account-chip"
+	>
+		{#snippet icon()}
+			<WalletIcon class="size-3.5" />
 		{/snippet}
 	</FilterChipButton>
 

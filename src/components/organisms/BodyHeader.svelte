@@ -1,5 +1,9 @@
 <script lang="ts">
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type {
+		BaseProps,
+		CustomProps,
+		ElementProps,
+	} from '$lib/components/models'
 	import SubtitleHead from '$components/molecules/SubtitleHead.svelte'
 	import TitleHead from '$components/molecules/TitleHead.svelte'
 
@@ -10,7 +14,8 @@
 			endDate?: Date
 			totalRows?: number
 			filteredRows?: number
-		}>
+		}> &
+		ElementProps<'div'>
 
 	let {
 		fileName = 'No file loaded',

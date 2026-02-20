@@ -30,12 +30,15 @@
 	<span class="flex items-center gap-1.5">
 		<FileTextIcon class="h-4 w-4" />
 		{#if hasFilter}
-			<span class="font-medium text-base-content"
-				>{filtered?.toLocaleString()}</span
+			<span
+				class="font-medium text-base-content"
+				data-testid="transaction-count">{filtered?.toLocaleString()}</span
 			>
 			of {total.toLocaleString()} transactions
 		{:else}
-			<span class="font-medium text-base-content">{total.toLocaleString()}</span
+			<span
+				class="font-medium text-base-content"
+				data-testid="transaction-count">{total.toLocaleString()}</span
 			>
 			transactions
 		{/if}

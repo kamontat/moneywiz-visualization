@@ -77,7 +77,12 @@
 	const noResults = $derived(showSearchResults && searchResults.length === 0)
 </script>
 
-<CollapsiblePanel open={openPanel === 'payee'} class={className} {...rest}>
+<CollapsiblePanel
+	open={openPanel === 'payee'}
+	class={className}
+	{...rest}
+	data-testid="filter-payee-panel"
+>
 	<FilterPanelHeader
 		title="Payee"
 		showClear={hasPayeeFilter}
@@ -89,6 +94,7 @@
 			placeholder="Search payees..."
 			value={payeeQuery}
 			oninput={(e) => onQueryInput((e.target as HTMLInputElement).value)}
+			data-testid="payee-search-input"
 		/>
 
 		{#if selectedPayees.length > 0}
@@ -104,6 +110,7 @@
 							variant="include"
 							active={true}
 							onclick={() => togglePayee(payee)}
+							data-testid="selected-payee"
 						>
 							{payee || 'Unknown'}
 						</FilterOptionBadge>
@@ -136,6 +143,7 @@
 								variant="include"
 								active={selectedSet.has(payee)}
 								onclick={() => togglePayee(payee)}
+								data-testid="payee-option"
 							>
 								{payee || 'Unknown'}
 							</FilterOptionBadge>
@@ -144,7 +152,7 @@
 				{/if}
 			</div>
 		{:else if !hasPayeeFilter}
-			<p class="text-xs text-base-content/50">
+			<p class="text-xs text-base-content/50" data-testid="payee-count-text">
 				Type to search among {availablePayees.length} payees
 			</p>
 		{/if}

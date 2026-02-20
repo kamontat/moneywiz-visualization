@@ -5,6 +5,7 @@
 	} from '$components/molecules/models/filterBar'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedCategory } from '$lib/transactions/models'
+	import FilterBarAccountPanel from '../molecules/FilterBarAccountPanel.svelte'
 	import FilterBarCategoryPanel from '../molecules/FilterBarCategoryPanel.svelte'
 	import FilterBarChips from '../molecules/FilterBarChips.svelte'
 	import FilterBarDatePanel from '../molecules/FilterBarDatePanel.svelte'
@@ -20,6 +21,7 @@
 			availableCategories: ParsedCategory[]
 			availableTagCategories: TagCategory[]
 			availablePayees?: string[]
+			availableAccounts?: string[]
 			onfilterchange?: (state: FilterState) => void
 		}>
 
@@ -28,6 +30,7 @@
 		availableCategories = [],
 		availableTagCategories = [],
 		availablePayees = [],
+		availableAccounts = [],
 		onfilterchange,
 		class: className,
 		...rest
@@ -43,6 +46,7 @@
 			categoryMode: 'include',
 			tags: [],
 			payees: [],
+			accounts: [],
 		}
 		onfilterchange?.(filterState)
 		openPanel = null
@@ -54,7 +58,11 @@
 	}
 </script>
 
-<div class={mergeClass(['w-full'], className)} {...rest}>
+<div
+	class={mergeClass(['w-full'], className)}
+	{...rest}
+	data-testid="filter-bar"
+>
 	<!-- Horizontal Filter Chips Row -->
 	<FilterBarChips
 		{filterState}
@@ -80,6 +88,12 @@
 			<FilterBarPayeePanel
 				bind:filterState
 				{availablePayees}
+				{openPanel}
+				{onfilterchange}
+			/>
+			<FilterBarAccountPanel
+				bind:filterState
+				{availableAccounts}
 				{openPanel}
 				{onfilterchange}
 			/>
