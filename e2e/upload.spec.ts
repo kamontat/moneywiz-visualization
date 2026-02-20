@@ -1,24 +1,24 @@
 import { test, expect } from '@playwright/test'
 
-import { generateCsv, defaultRecord } from './utils/csv-generator'
+import { generateSQLite, defaultRecord } from './utils/sqlite-generator'
 
-test.describe('CSV Upload - MoneyWiz file', () => {
+test.describe('Database Upload - MoneyWiz file', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/')
 	})
 
-	test('uploads CSV file and displays transactions', async ({ page }) => {
+	test('uploads SQLite file and displays transactions', async ({ page }) => {
 		await expect(page.getByText('Upload your data')).toBeVisible()
 
-		const csvContent = generateCsv([defaultRecord])
+		const buffer = generateSQLite({ transactions: [defaultRecord] })
 
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
 
 		await fileInput.setInputFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
@@ -31,7 +31,7 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		page,
 	}) => {
 		const runtimeErrors: string[] = []
-		const csvContent = generateCsv([defaultRecord])
+		const buffer = generateSQLite({ transactions: [defaultRecord] })
 
 		page.on('console', (message) => {
 			if (message.type() === 'error') {
@@ -45,9 +45,9 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
 		await fileInput.setInputFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
@@ -57,30 +57,34 @@ test.describe('CSV Upload - MoneyWiz file', () => {
 		expect(allErrors).not.toContain('category is not a registered scale')
 	})
 
-	test('clears uploaded CSV and resets to empty state', async ({ page }) => {
-		const csvContent = generateCsv([defaultRecord])
+	test('clears uploaded database and resets to empty state', async ({
+		page,
+	}) => {
+		const buffer = generateSQLite({ transactions: [defaultRecord] })
 
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
 
 		await fileInput.setInputFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
-		const clearButton = page.getByRole('button', { name: 'Clear loaded CSV' })
+		const clearButton = page.getByRole('button', {
+			name: 'Clear loaded database',
+		})
 		await expect(clearButton).toBeVisible()
 
 		await clearButton.click()
 
-		await expect(page.getByText('CSV data cleared successfully')).toBeVisible({
+		await expect(page.getByText('Database cleared successfully')).toBeVisible({
 			timeout: 5000,
 		})
 		await expect(
-			page.getByRole('button', { name: 'Clear loaded CSV' })
+			page.getByRole('button', { name: 'Clear loaded database' })
 		).not.toBeVisible()
 	})
 })

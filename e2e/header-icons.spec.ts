@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-import { generateCsv, defaultRecord } from './utils/csv-generator'
+import { generateSQLite, defaultRecord } from './utils/sqlite-generator'
 
 test.describe('Header Icons', () => {
 	test.beforeEach(async ({ page }) => {
@@ -8,8 +8,7 @@ test.describe('Header Icons', () => {
 	})
 
 	test('upload button has visible icon', async ({ page }) => {
-		// The default text is "Upload CSV"
-		const uploadBtn = page.getByRole('button', { name: /Upload CSV/ })
+		const uploadBtn = page.getByRole('button', { name: /Upload/ })
 		await expect(uploadBtn).toBeVisible()
 
 		// Check for SVG inside button
@@ -22,18 +21,18 @@ test.describe('Header Icons', () => {
 		// Upload a file to make Clear button appear
 		const fileInput = page.locator('input[type="file"]').first()
 
-		const csvContent = generateCsv([defaultRecord])
+		const buffer = generateSQLite({ transactions: [defaultRecord] })
 		await fileInput.setInputFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({
 			timeout: 10000,
 		})
 
-		const clearBtn = page.getByRole('button', { name: 'Clear loaded CSV' })
+		const clearBtn = page.getByRole('button', { name: 'Clear loaded database' })
 		await expect(clearBtn).toBeVisible()
 
 		const icon = clearBtn.locator('svg')

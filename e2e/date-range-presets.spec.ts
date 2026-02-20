@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { defaultRecord, generateCsv } from './utils/csv-generator'
+import { defaultRecord, generateSQLite } from './utils/sqlite-generator'
 
 test.describe('Date range quick presets', () => {
 	test.beforeEach(async ({ page }) => {
@@ -10,16 +10,16 @@ test.describe('Date range quick presets', () => {
 	test('excludes current month for Last 12 Months', async ({
 		page,
 	}, testInfo) => {
-		const csvContent = generateCsv([defaultRecord])
+		const buffer = generateSQLite({ transactions: [defaultRecord] })
 		const [fileChooser] = await Promise.all([
 			page.waitForEvent('filechooser'),
-			page.getByRole('button', { name: 'Upload CSV' }).click(),
+			page.getByRole('button', { name: 'Upload' }).click(),
 		])
 
 		await fileChooser.setFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()

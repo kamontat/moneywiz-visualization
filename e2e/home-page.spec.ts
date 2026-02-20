@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-import { generateCsv, defaultRecord } from './utils/csv-generator'
+import { generateSQLite, defaultRecord } from './utils/sqlite-generator'
 
 test.describe('Home Page', () => {
 	test.beforeEach(async ({ page }) => {
@@ -10,21 +10,23 @@ test.describe('Home Page', () => {
 	test('renders empty state initially', async ({ page }) => {
 		await expect(page.getByText('Upload your data')).toBeVisible()
 		await expect(
-			page.getByText('import your MoneyWiz CSV export')
+			page.getByText('import your MoneyWiz SQLite database')
 		).toBeVisible()
 	})
 
-	test('renders transaction table after uploading csv', async ({ page }) => {
-		const csvContent = generateCsv([defaultRecord])
+	test('renders transaction table after uploading database', async ({
+		page,
+	}) => {
+		const buffer = generateSQLite({ transactions: [defaultRecord] })
 
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
-		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible()
+		await expect(page.getByRole('button', { name: 'Upload' })).toBeVisible()
 
 		await fileInput.setInputFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({

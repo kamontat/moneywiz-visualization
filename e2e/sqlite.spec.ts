@@ -7,7 +7,9 @@ test.describe('SQLite Experiment page', () => {
 		await page.goto('/sqlite')
 	})
 
-	test('loads sqlite data and renders paged JSON', async ({ page }, testInfo) => {
+	test('loads sqlite data and renders paged JSON', async ({
+		page,
+	}, testInfo) => {
 		const sqliteBuffer = await generateSQLite({ transactions: 205 })
 		const transactionsPreview = page.locator('pre', {
 			hasText: '"section": "transactions"',

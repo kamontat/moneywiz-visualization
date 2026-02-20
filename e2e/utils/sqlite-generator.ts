@@ -1,27 +1,38 @@
-import type { Sqlite3Static } from '@sqlite.org/sqlite-wasm'
-import sqlite3InitModule from '@sqlite.org/sqlite-wasm'
+import { Database } from 'bun:sqlite'
 
-const appleReferenceEpochMs = Date.UTC(2001, 0, 1, 0, 0, 0)
+const APPLE_REFERENCE_EPOCH_MS = Date.UTC(2001, 0, 1, 0, 0, 0)
 
-let sqlite3Promise: Promise<Sqlite3Static> | undefined
-
-interface SQLiteFixtureOptions {
-	transactions?: number
+export interface MoneyWizRecord {
+	payee?: string
+	category?: string
+	parentCategory?: string
+	description?: string
+	date?: Date
+	amount?: number
+	currency?: string
+	isIncome?: boolean
 }
 
-const getSqlite3 = (): Promise<Sqlite3Static> => {
-	if (!sqlite3Promise) {
-		sqlite3Promise = sqlite3InitModule()
-	}
-	return sqlite3Promise
+export interface SQLiteFixtureOptions {
+	transactions?: MoneyWizRecord[]
 }
 
-export const generateSQLite = async (
-	options: SQLiteFixtureOptions = {}
-): Promise<Buffer> => {
-	const transactionCount = Math.max(1, Math.trunc(options.transactions ?? 25))
-	const sqlite3 = await getSqlite3()
-	const db = new sqlite3.oo1.DB()
+const toCoreDataTimestamp = (date: Date): number =>
+	(date.getTime() - APPLE_REFERENCE_EPOCH_MS) / 1000
+
+export const defaultRecord: MoneyWizRecord = {
+	payee: 'Local Shop',
+	category: 'Food',
+	parentCategory: 'Food and Beverage',
+	description: 'Lunch 1',
+	date: new Date(Date.UTC(2026, 0, 1)),
+	amount: -100,
+	currency: 'THB',
+}
+
+export const generateSQLite = (options: SQLiteFixtureOptions = {}): Buffer => {
+	const records = options.transactions ?? [defaultRecord]
+	const db = new Database(':memory:')
 
 	db.exec(`
 		CREATE TABLE Z_PRIMARYKEY (
@@ -98,99 +109,109 @@ export const generateSQLite = async (
 		);
 	`)
 
-	db.exec(
-		`INSERT INTO Z_PRIMARYKEY (Z_ENT, Z_NAME) VALUES
+	db.exec(`
+		INSERT INTO Z_PRIMARYKEY (Z_ENT, Z_NAME) VALUES
 			(10, 'BankChequeAccount'),
 			(19, 'Category'),
 			(28, 'Payee'),
 			(35, 'Tag'),
-			(47, 'WithdrawTransaction')`
-	)
+			(37, 'DepositTransaction'),
+			(47, 'WithdrawTransaction');
+		INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZARCHIVED, ZNAME, ZCURRENCYNAME)
+			VALUES (100, 10, 0, 'Wallet A', 'THB');
+		INSERT INTO ZUSER (Z_PK, Z_ENT, ZSYNCUSERID, ZAPPSETTINGS, ZSYNCLOGIN)
+			VALUES (1, 49, 1, NULL, 'fixture@example.com');
+		INSERT INTO ZCOMMONSETTINGS (ZCURRENTUSER) VALUES (1);
+	`)
 
-	db.exec(
+	const payeeIds = new Map<string, number>()
+	const categoryIds = new Map<string, number>()
+	const parentCategoryIds = new Map<string, number>()
+	let nextId = 200
+
+	const getOrCreatePayee = (name: string): number => {
+		if (payeeIds.has(name)) return payeeIds.get(name)!
+		const id = nextId++
+		db.run('INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES (?, 28, ?)', [
+			id,
+			name,
+		])
+		payeeIds.set(name, id)
+		return id
+	}
+
+	const getOrCreateCategory = (name: string, parentName?: string): number => {
+		const key = parentName ? `${parentName}>${name}` : name
+		if (categoryIds.has(key)) return categoryIds.get(key)!
+
+		let parentId: number | undefined
+		if (parentName) {
+			if (!parentCategoryIds.has(parentName)) {
+				const pid = nextId++
+				db.run(
+					'INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES (?, 19, ?)',
+					[pid, parentName]
+				)
+				parentCategoryIds.set(parentName, pid)
+			}
+			parentId = parentCategoryIds.get(parentName)
+		}
+
+		const id = nextId++
+		if (parentId !== undefined) {
+			db.run(
+				'INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2, ZPARENTCATEGORY) VALUES (?, 19, ?, ?)',
+				[id, name, parentId]
+			)
+		} else {
+			db.run(
+				'INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES (?, 19, ?)',
+				[id, name]
+			)
+		}
+		categoryIds.set(key, id)
+		return id
+	}
+
+	const insertTrx = db.prepare(
 		`INSERT INTO ZSYNCOBJECT (
-			Z_PK,
-			Z_ENT,
-			ZARCHIVED,
-			ZNAME,
-			ZCURRENCYNAME
-		) VALUES (100, 10, 0, 'Wallet A', 'THB')`
+			Z_PK, Z_ENT, ZDATE1, ZAMOUNT1, ZORIGINALAMOUNT, ZORIGINALCURRENCY,
+			ZACCOUNT2, ZPAYEE2, ZDESC2, ZNOTES1, ZSTATUS1, ZRECONCILED
+		) VALUES (?, ?, ?, ?, ?, ?, 100, ?, ?, '', 2, 1)`
 	)
-	db.exec(
-		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES
-			(200, 19, 'Food and Beverage')`
-	)
-	db.exec(
-		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2, ZPARENTCATEGORY) VALUES
-			(201, 19, 'Food', 200)`
-	)
-	db.exec(
-		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES
-			(300, 28, 'Local Shop')`
-	)
-	db.exec(
-		`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES
-			(400, 35, 'Group: Test')`
-	)
-	db.exec(
-		`INSERT INTO ZUSER (Z_PK, Z_ENT, ZSYNCUSERID, ZAPPSETTINGS, ZSYNCLOGIN)
-		VALUES (1, 49, 1, NULL, 'fixture@example.com')`
-	)
-	db.exec(`INSERT INTO ZCOMMONSETTINGS (ZCURRENTUSER) VALUES (1)`)
-
-	const baseDateSeconds = Math.floor(
-		(Date.UTC(2026, 0, 1, 0, 0, 0) - appleReferenceEpochMs) / 1000
+	const insertCat = db.prepare(
+		'INSERT INTO ZCATEGORYASSIGMENT (ZTRANSACTION, ZCATEGORY) VALUES (?, ?)'
 	)
 
-	const trxStatement = db.prepare(
-		`INSERT INTO ZSYNCOBJECT (
-			Z_PK,
-			Z_ENT,
-			ZDATE1,
-			ZAMOUNT1,
-			ZORIGINALAMOUNT,
-			ZORIGINALCURRENCY,
-			ZACCOUNT2,
-			ZPAYEE2,
-			ZDESC2,
-			ZNOTES1,
-			ZSTATUS1,
-			ZRECONCILED
-		) VALUES (?, 47, ?, ?, ?, 'THB', 100, 300, ?, ?, 2, 1)`
-	)
-	const categoryStatement = db.prepare(
-		`INSERT INTO ZCATEGORYASSIGMENT (ZTRANSACTION, ZCATEGORY) VALUES (?, 201)`
-	)
-	const tagStatement = db.prepare(
-		`INSERT INTO Z_36TAGS (Z_36TRANSACTIONS, Z_35TAGS) VALUES (?, 400)`
-	)
+	for (let i = 0; i < records.length; i++) {
+		const rec = records[i]
+		const id = nextId++
+		const date = toCoreDataTimestamp(
+			rec.date ?? new Date(Date.UTC(2026, 0, i + 1))
+		)
+		const amount = rec.amount ?? -100
+		const currency = rec.currency ?? 'THB'
+		const entityId = amount >= 0 ? 37 : 47
+		const payeeId = getOrCreatePayee(rec.payee ?? 'Test Payee')
 
-	for (let index = 0; index < transactionCount; index += 1) {
-		const id = 500 + index
-		const date = baseDateSeconds + index * 86400
-		const amount = -100 - index
+		insertTrx.run(
+			id,
+			entityId,
+			date,
+			amount,
+			amount,
+			currency,
+			payeeId,
+			rec.description ?? `Transaction ${i + 1}`
+		)
 
-		trxStatement
-			.bind([
-				id,
-				date,
-				amount,
-				amount,
-				`Lunch ${index + 1}`,
-				`Memo ${index + 1}`,
-			])
-			.stepReset()
-		categoryStatement.bind([id]).stepReset()
-		if (index % 2 === 0) {
-			tagStatement.bind([id]).stepReset()
+		if (rec.category) {
+			const catId = getOrCreateCategory(rec.category, rec.parentCategory)
+			insertCat.run(id, catId)
 		}
 	}
 
-	trxStatement.finalize()
-	categoryStatement.finalize()
-	tagStatement.finalize()
-
-	const bytes = sqlite3.capi.sqlite3_js_db_export(db)
+	const bytes = db.serialize()
 	db.close()
 	return Buffer.from(bytes)
 }

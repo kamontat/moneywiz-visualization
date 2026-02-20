@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-import { generateCsv } from './utils/csv-generator'
+import { generateSQLite } from './utils/sqlite-generator'
 
 test.describe('Stats dashboard', () => {
 	test.beforeEach(async ({ page }) => {
@@ -10,33 +10,38 @@ test.describe('Stats dashboard', () => {
 	test('renders stats panels without numeric title prefixes', async ({
 		page,
 	}, testInfo) => {
-		const csvContent = generateCsv([
-			{
-				Payee: 'Salary',
-				Category: 'Compensation > Salary',
-				Date: '01/01/2026',
-				Amount: '3000.00',
-			},
-			{
-				Payee: 'Rent',
-				Category: 'Housing > Rent',
-				Date: '01/02/2026',
-				Amount: '-1200.00',
-			},
-			{
-				Payee: 'Groceries',
-				Category: 'Food > Groceries',
-				Date: '01/03/2026',
-				Amount: '-200.00',
-			},
-		])
+		const buffer = generateSQLite({
+			transactions: [
+				{
+					payee: 'Salary',
+					category: 'Salary',
+					parentCategory: 'Compensation',
+					date: new Date(Date.UTC(2026, 0, 1)),
+					amount: 3000,
+				},
+				{
+					payee: 'Rent',
+					category: 'Rent',
+					parentCategory: 'Housing',
+					date: new Date(Date.UTC(2026, 0, 2)),
+					amount: -1200,
+				},
+				{
+					payee: 'Groceries',
+					category: 'Groceries',
+					parentCategory: 'Food',
+					date: new Date(Date.UTC(2026, 0, 3)),
+					amount: -200,
+				},
+			],
+		})
 
 		const fileInput = page.locator('input[type="file"]').first()
 		await fileInput.waitFor({ state: 'attached' })
 		await fileInput.setInputFiles({
-			name: 'report.csv',
-			mimeType: 'text/csv',
-			buffer: Buffer.from(csvContent),
+			name: 'report.sqlite',
+			mimeType: 'application/x-sqlite3',
+			buffer,
 		})
 
 		await expect(page.getByText(/Imported \d+ transactions/)).toBeVisible({

@@ -7,7 +7,7 @@ test.describe('Layout', () => {
 		await expect(
 			page.locator('header').getByText('MoneyWiz Report')
 		).toBeVisible()
-		await expect(page.getByRole('button', { name: 'Upload CSV' })).toBeVisible()
+		await expect(page.getByRole('button', { name: 'Upload' })).toBeVisible()
 
 		const sourceLink = page.getByRole('link', {
 			name: 'Go to source code repository',
