@@ -12,7 +12,7 @@ export interface ParsedBaseTransaction {
 	date: Date
 	memo: string
 	tags: ParsedTag[]
-	raw: Record<string, string>
+	raw: Record<string, unknown>
 }
 
 export interface ParsedExpenseTransaction extends ParsedBaseTransaction {

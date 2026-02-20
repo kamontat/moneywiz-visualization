@@ -1,4 +1,4 @@
-import type { ParsedTransaction } from './models'
+import type { ParsedAccount, ParsedAmount, ParsedTransaction } from './models'
 import type {
 	ParsedBaseTransaction,
 	ParsedBuyTransaction,
@@ -14,8 +14,8 @@ import type {
 	ParsedUnknownTransaction,
 	ParsedWindfallTransaction,
 } from './models/transaction'
-import type { ParsedCsvRow } from '$lib/csv/models'
-import { CsvKey, getValue } from './csv'
+import type { SQLiteTransaction } from '$lib/sqlite/models'
+import { DEFAULT_CURRENCY } from './constants'
 import {
 	isDebtCategory,
 	isDebtRepaymentCategory,
@@ -23,25 +23,107 @@ import {
 	isIncomeCategory,
 	isNewBalanceDescription,
 	isWindfallCategory,
-	parseAccount,
-	parseAmount,
 	parseCategory,
-	parseDate,
 	parseTag,
 } from './utils'
 
-export const parseCsvRowToTransaction = (
-	row: ParsedCsvRow
+import { SQLITE_ENTITY_ID } from '$lib/sqlite/constants'
+
+const toAccount = (ref: SQLiteTransaction['account']): ParsedAccount => {
+	if (!ref) return { type: 'Unknown', name: 'Unknown', extra: null }
+	return { type: 'Unknown', name: ref.name, extra: null }
+}
+
+const toAccountFromEntity = (
+	ref: SQLiteTransaction['account'],
+	entityId: number
+): ParsedAccount => {
+	const name = ref?.name ?? 'Unknown'
+	const entityName = ref?.entityName
+
+	switch (entityId) {
+		case SQLITE_ENTITY_ID.CashAccount:
+			return { type: 'Wallet', name, extra: null }
+		case SQLITE_ENTITY_ID.BankChequeAccount:
+			return { type: 'Checking', name, extra: null }
+		case SQLITE_ENTITY_ID.BankSavingAccount:
+			return { type: 'Checking', name, extra: null }
+		case SQLITE_ENTITY_ID.CreditCardAccount:
+			return { type: 'CreditCard', name, extra: null }
+		case SQLITE_ENTITY_ID.LoanAccount:
+			return { type: 'Loan', name, extra: null }
+		case SQLITE_ENTITY_ID.InvestmentAccount:
+			return { type: 'Investment', name, extra: null }
+		case SQLITE_ENTITY_ID.ForexAccount:
+			return { type: 'Unknown', name, extra: null }
+		default: {
+			if (entityName === 'CashAccount')
+				return { type: 'Wallet', name, extra: null }
+			if (entityName === 'BankChequeAccount')
+				return { type: 'Checking', name, extra: null }
+			if (entityName === 'BankSavingAccount')
+				return { type: 'Checking', name, extra: null }
+			if (entityName === 'CreditCardAccount')
+				return { type: 'CreditCard', name, extra: null }
+			if (entityName === 'LoanAccount')
+				return { type: 'Loan', name, extra: null }
+			if (entityName === 'InvestmentAccount')
+				return { type: 'Investment', name, extra: null }
+			return { type: 'Unknown', name, extra: null }
+		}
+	}
+}
+
+const toAmount = (row: SQLiteTransaction): ParsedAmount => ({
+	value: row.amount ?? 0,
+	currency: row.currency ?? DEFAULT_CURRENCY,
+})
+
+const toDate = (row: SQLiteTransaction): Date => {
+	if (!row.date) return new Date(0)
+	const parsed = new Date(row.date)
+	return isNaN(parsed.getTime()) ? new Date(0) : parsed
+}
+
+const toTags = (row: SQLiteTransaction) =>
+	row.tags.flatMap((tag) => parseTag(tag.name))
+
+const toCategoryString = (row: SQLiteTransaction): string => {
+	if (row.categories.length === 0) return ''
+	const cat = row.categories[0]
+	if (cat.parentName) return `${cat.parentName} > ${cat.name}`
+	return cat.name
+}
+
+const isTransferEntity = (entityId: number): boolean =>
+	entityId === SQLITE_ENTITY_ID.TransferDepositTransaction ||
+	entityId === SQLITE_ENTITY_ID.TransferWithdrawTransaction ||
+	entityId === SQLITE_ENTITY_ID.TransferBudgetTransaction
+
+const isInvestmentBuyEntity = (entityId: number): boolean =>
+	entityId === SQLITE_ENTITY_ID.InvestmentBuyTransaction
+
+const isInvestmentSellEntity = (entityId: number): boolean =>
+	entityId === SQLITE_ENTITY_ID.InvestmentSellTransaction
+
+const isReconcileEntity = (entityId: number): boolean =>
+	entityId === SQLITE_ENTITY_ID.ReconcileTransaction
+
+const isRefundEntity = (entityId: number): boolean =>
+	entityId === SQLITE_ENTITY_ID.RefundTransaction
+
+export const classifySQLiteTransaction = (
+	row: SQLiteTransaction
 ): ParsedTransaction => {
-	const account = parseAccount(getValue(row, CsvKey.Account))
-	const amount = parseAmount(
-		getValue(row, CsvKey.Amount),
-		getValue(row, CsvKey.Currency)
-	)
-	const date = parseDate(getValue(row, CsvKey.Date), getValue(row, CsvKey.Time))
-	const description = getValue(row, CsvKey.Description)
-	const memo = getValue(row, CsvKey.Memo)
-	const tags = parseTag(getValue(row, CsvKey.Tags))
+	const account = row.account
+		? toAccountFromEntity(row.account, row.account.entityId ?? 0)
+		: toAccount(row.account)
+	const amount = toAmount(row)
+	const date = toDate(row)
+	const description = row.description
+	const memo = row.memo
+	const tags = toTags(row)
+	const payee = row.payee?.name ?? ''
 
 	const base: ParsedBaseTransaction = {
 		account,
@@ -50,15 +132,13 @@ export const parseCsvRowToTransaction = (
 		description,
 		memo,
 		tags,
-		raw: row,
+		raw: { ...row },
 	}
 
-	const transferField = getValue(row, CsvKey.Transfers)
-	const categoryField = getValue(row, CsvKey.Category)
-	const payee = getValue(row, CsvKey.Payee)
+	const categoryField = toCategoryString(row)
 	const category = parseCategory(categoryField)
-	const checkNumber = getValue(row, CsvKey.CheckNumber)
-	const hasCategory = categoryField && categoryField.trim() !== ''
+	const hasCategory = categoryField.trim() !== ''
+	const checkNumber = ''
 
 	if (isDebtCategory(category)) {
 		return {
@@ -100,6 +180,15 @@ export const parseCsvRowToTransaction = (
 		} as ParsedGiveawayTransaction
 	}
 
+	if (isReconcileEntity(row.entityId)) {
+		return {
+			...base,
+			type: 'NewBalance',
+			payee,
+			checkNumber,
+		} as ParsedNewBalanceTransaction
+	}
+
 	if (!hasCategory && isNewBalanceDescription(description)) {
 		return {
 			...base,
@@ -109,18 +198,16 @@ export const parseCsvRowToTransaction = (
 		} as ParsedNewBalanceTransaction
 	}
 
-	// Transfer classification per RULES.md:
-	// - Pure Transfer: Transfers field populated AND no Category
-	// - Transfer with Category: Classify as Income/Expense/Refund with transfer as payee
-	if (transferField) {
+	// Transfer classification:
+	// SQLite entity types TransferDeposit/TransferWithdraw/TransferBudget
+	// or presence of senderAccount + recipientAccount
+	if (isTransferEntity(row.entityId)) {
 		if (hasCategory) {
-			const transferPayee = parseAccount(transferField).name
-
 			if (amount.value > 0 && isIncomeCategory(category)) {
 				return {
 					...base,
 					type: 'Income',
-					payee: transferPayee,
+					payee,
 					category,
 					checkNumber,
 				} as ParsedIncomeTransaction
@@ -130,7 +217,7 @@ export const parseCsvRowToTransaction = (
 				return {
 					...base,
 					type: 'Expense',
-					payee: transferPayee,
+					payee,
 					category,
 					checkNumber,
 				} as ParsedExpenseTransaction
@@ -146,16 +233,46 @@ export const parseCsvRowToTransaction = (
 			return {
 				...base,
 				type: 'Refund',
-				payee: transferPayee,
+				payee,
 				category,
 				checkNumber,
 			} as ParsedRefundTransaction
 		}
+
+		const transferAccount = row.recipientAccount ?? row.senderAccount
 		return {
 			...base,
 			type: 'Transfer',
-			transfer: parseAccount(transferField),
+			transfer: toAccount(transferAccount),
 		} as ParsedTransferTransaction
+	}
+
+	if (isRefundEntity(row.entityId)) {
+		return {
+			...base,
+			type: 'Refund',
+			payee,
+			category,
+			checkNumber,
+		} as ParsedRefundTransaction
+	}
+
+	if (isInvestmentBuyEntity(row.entityId)) {
+		return {
+			...base,
+			type: 'Buy',
+			payee,
+			checkNumber,
+		} as ParsedBuyTransaction
+	}
+
+	if (isInvestmentSellEntity(row.entityId)) {
+		return {
+			...base,
+			type: 'Sell',
+			payee,
+			checkNumber,
+		} as ParsedSellTransaction
 	}
 
 	if (account.type === 'Investment' && !hasCategory) {
@@ -177,10 +294,10 @@ export const parseCsvRowToTransaction = (
 		}
 	}
 
-	// Transaction classification per RULES.md:
+	// Standard classification:
 	// - Income: Amount > 0 AND category starts with Compensation or Income
 	// - Expense: Amount < 0 AND NOT income category
-	// - Refund: requires category and NOT income category (reduces expense totals)
+	// - Refund: requires category and NOT income category
 	// - Unknown: fallback when category is missing
 	if (amount.value > 0 && isIncomeCategory(category)) {
 		return {

@@ -1,4 +1,4 @@
-export { getValue, CsvKey } from './csv'
+export { classifySQLiteTransaction } from './classifier'
 export {
 	importTransactionsFromFile,
 	clearTransactions,

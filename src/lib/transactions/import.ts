@@ -1,33 +1,14 @@
-import type { ParseError } from 'papaparse'
 import type { ImportOptions, ParsedTransaction } from './models'
-import type { ParsedCsvRow } from '$lib/csv/models'
-import papaparse from 'papaparse'
-
-import { parseCsvRowToTransaction } from './classifier'
-import { isAccountHeaderRow } from './csv'
+import type { SQLiteParseProgress } from '$lib/sqlite/models'
+import { classifySQLiteTransaction } from './classifier'
 
 import { transaction } from '$lib/loggers'
+import { parseSQLiteFile } from '$lib/sqlite'
 import { indexDBV1, STATE_TRX_V1 } from '$utils/stores'
 
 const log = transaction.extends('import')
 
 const DEFAULT_BATCH_SIZE = 2000
-const DEFAULT_DELIMITER = ','
-const MAX_PROGRESS_PERCENTAGE = 99
-const PREAMBLE_READ_SIZE = 32 * 1024
-
-const toError = (error: unknown): Error => {
-	if (error instanceof Error) return error
-	return new Error(String(error))
-}
-
-const removeBom = (text: string): string => text.replace(/^\uFEFF/, '')
-
-const rowHasData = (row: ParsedCsvRow): boolean =>
-	Object.values(row).some((value) => String(value ?? '').trim() !== '')
-
-const toParseError = (errors: ParseError[]): Error =>
-	new Error(`CSV contains ${errors.length} errors`)
 
 const insertBatch = async (
 	transactions: ParsedTransaction[]
@@ -39,43 +20,9 @@ const insertBatch = async (
 	await trx.done
 }
 
-export const detectCsvDelimiter = async (file: File): Promise<string> => {
-	const prefix = removeBom(await file.slice(0, PREAMBLE_READ_SIZE).text())
-	const rawLines = prefix.split(/\r?\n/)
-
-	let startIndex = 0
-	while (startIndex < rawLines.length && rawLines[startIndex].trim() === '') {
-		startIndex += 1
-	}
-
-	const firstLine = rawLines[startIndex]?.trim()
-	if (firstLine?.toLowerCase().startsWith('sep=')) {
-		return firstLine.slice(4, 5) || DEFAULT_DELIMITER
-	}
-	return DEFAULT_DELIMITER
-}
-
-export const stripCsvPreamble = (chunk: string): string => {
-	const rawLines = removeBom(chunk).split(/\r?\n/)
-	let startIndex = 0
-
-	while (startIndex < rawLines.length && rawLines[startIndex].trim() === '') {
-		startIndex += 1
-	}
-
-	if (rawLines[startIndex]?.trim().toLowerCase().startsWith('sep=')) {
-		startIndex += 1
-	}
-
-	return rawLines.slice(startIndex).join('\n')
-}
-
-const toProgressPercentage = (cursor: number, totalBytes: number): number => {
-	if (totalBytes <= 0) return 0
-	return Math.min(
-		MAX_PROGRESS_PERCENTAGE,
-		Math.round((cursor / totalBytes) * 100)
-	)
+const toImportPercentage = (progress: SQLiteParseProgress): number => {
+	if (!progress.total || progress.total <= 0) return 0
+	return Math.min(99, Math.round((progress.processed / progress.total) * 100))
 }
 
 export const importTransactionsFromFile = async (
@@ -95,15 +42,7 @@ export const importTransactionsFromFile = async (
 		throw error
 	}
 
-	const delimiter = await detectCsvDelimiter(file)
-	const normalizedBatchSize = Math.max(1, batchSize)
-
-	log.debug(
-		'starting import: %s (size=%d, delimiter=%s)',
-		file.name,
-		file.size,
-		delimiter
-	)
+	log.debug('starting import: %s (size=%d)', file.name, file.size)
 
 	onProgress?.({
 		phase: 'parsing',
@@ -112,11 +51,21 @@ export const importTransactionsFromFile = async (
 		percentage: 0,
 	})
 
-	let scannedRows = 0
+	const result = await parseSQLiteFile(file, {
+		onProgress: (progress) => {
+			onProgress?.({
+				phase: 'parsing',
+				processed: progress.processed,
+				total: progress.total ?? 0,
+				percentage: toImportPercentage(progress),
+			})
+		},
+	})
+
+	const normalizedBatchSize = Math.max(1, batchSize)
+	const total = result.transactions.length
 	let processedRows = 0
 	let batch: ParsedTransaction[] = []
-	let failed = false
-	const totalBytes = file.size
 
 	const flushBatch = async () => {
 		if (batch.length === 0) return
@@ -130,83 +79,35 @@ export const importTransactionsFromFile = async (
 		await new Promise((resolve) => setTimeout(resolve, 0))
 	}
 
-	await new Promise<void>((resolve, reject) => {
-		const fail = (error: unknown) => {
-			if (failed) return
-			failed = true
-			const parsedError = toError(error)
+	onProgress?.({
+		phase: 'importing',
+		processed: 0,
+		total,
+		percentage: 0,
+	})
 
+	for (const sqliteTransaction of result.transactions) {
+		const trx = classifySQLiteTransaction(sqliteTransaction)
+		batch.push(trx)
+
+		if (batch.length >= normalizedBatchSize) {
+			await flushBatch()
 			onProgress?.({
-				phase: 'error',
+				phase: 'importing',
 				processed: processedRows,
-				total: Math.max(scannedRows, processedRows),
-				percentage: 0,
-				error: parsedError,
+				total,
+				percentage: Math.min(99, Math.round((processedRows / total) * 100)),
 			})
-
-			reject(parsedError)
 		}
+	}
 
-		papaparse.parse<ParsedCsvRow>(file, {
-			delimiter,
-			header: true,
-			skipEmptyLines: true,
-			beforeFirstChunk: stripCsvPreamble,
-			chunk: (results, parser) => {
-				parser.pause()
+	await flushBatch()
 
-				void (async () => {
-					if (results.errors.length > 0) {
-						throw toParseError(results.errors)
-					}
-
-					for (const row of results.data) {
-						if (!row || !rowHasData(row)) continue
-						scannedRows += 1
-
-						if (isAccountHeaderRow(row)) continue
-
-						const trx = parseCsvRowToTransaction(row)
-						batch.push(trx)
-
-						if (batch.length >= normalizedBatchSize) {
-							await flushBatch()
-						}
-					}
-
-					onProgress?.({
-						phase: 'importing',
-						processed: processedRows,
-						total: Math.max(scannedRows, processedRows),
-						percentage: toProgressPercentage(
-							results.meta.cursor ?? 0,
-							totalBytes
-						),
-					})
-
-					parser.resume()
-				})().catch((error) => {
-					parser.abort()
-					fail(error)
-				})
-			},
-			complete: () => {
-				if (failed) return
-				void (async () => {
-					await flushBatch()
-
-					onProgress?.({
-						phase: 'complete',
-						processed: processedRows,
-						total: Math.max(scannedRows, processedRows),
-						percentage: 100,
-					})
-
-					resolve()
-				})().catch((error) => fail(error))
-			},
-			error: (error) => fail(error),
-		})
+	onProgress?.({
+		phase: 'complete',
+		processed: processedRows,
+		total,
+		percentage: 100,
 	})
 
 	log.debug('import complete: %d transactions', processedRows)

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
 import {
+	extractTagCategories,
 	getCategoryFullName,
 	isDebtCategory,
 	isDebtRepaymentCategory,
@@ -375,5 +376,65 @@ describe('isGiftCategory', () => {
 		expect(
 			isGiftCategory({ category: 'Other Expenses', subcategory: 'Debt' })
 		).toBe(false)
+	})
+})
+
+describe('extractTagCategories', () => {
+	it('should group tags by category', () => {
+		const transactions = [
+			{ tags: [{ category: 'Group', name: 'KcNt' }] },
+			{ tags: [{ category: 'Group', name: 'Family' }] },
+			{ tags: [{ category: 'Location', name: 'Home Sena' }] },
+		]
+		const result = extractTagCategories(transactions)
+		expect(result).toHaveLength(2)
+		expect(result.find((r) => r.category === 'Group')?.tags).toEqual([
+			'Family',
+			'KcNt',
+		])
+		expect(result.find((r) => r.category === 'Location')?.tags).toEqual([
+			'Home Sena',
+		])
+	})
+
+	it('should skip tags with empty name', () => {
+		const transactions = [
+			{ tags: [{ category: 'Group', name: '' }] },
+			{ tags: [{ category: 'Group', name: 'KcNt' }] },
+		]
+		const result = extractTagCategories(transactions)
+		expect(result).toHaveLength(1)
+		expect(result[0].tags).toEqual(['KcNt'])
+	})
+
+	it('should skip tags with empty category', () => {
+		const transactions = [{ tags: [{ category: '', name: 'SomeTag' }] }]
+		const result = extractTagCategories(transactions)
+		expect(result).toHaveLength(0)
+	})
+
+	it('should deduplicate tag values within a category', () => {
+		const transactions = [
+			{ tags: [{ category: 'Group', name: 'KcNt' }] },
+			{ tags: [{ category: 'Group', name: 'KcNt' }] },
+		]
+		const result = extractTagCategories(transactions)
+		expect(result[0].tags).toEqual(['KcNt'])
+	})
+
+	it('should sort categories and tags alphabetically', () => {
+		const transactions = [
+			{ tags: [{ category: 'Location', name: 'Sena' }] },
+			{ tags: [{ category: 'Event', name: '002 Prang Birthday' }] },
+			{ tags: [{ category: 'Event', name: '001 ChiangMai' }] },
+		]
+		const result = extractTagCategories(transactions)
+		expect(result.map((r) => r.category)).toEqual(['Event', 'Location'])
+		expect(result[0].tags).toEqual(['001 ChiangMai', '002 Prang Birthday'])
+	})
+
+	it('should return empty array for transactions with no tags', () => {
+		const result = extractTagCategories([{ tags: [] }, { tags: [] }])
+		expect(result).toHaveLength(0)
 	})
 })
