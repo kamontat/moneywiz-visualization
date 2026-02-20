@@ -7,6 +7,7 @@ export const FILTER_TYPES = {
 	TRANSFER: 'byTransfer',
 	SPECIAL_CATEGORY: 'bySpecialCategory',
 	PAYEE: 'byPayee',
+	ACCOUNT: 'byAccount',
 	AND: 'AND',
 	OR: 'OR',
 	NOT: 'NOT',
