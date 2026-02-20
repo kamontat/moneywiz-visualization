@@ -37,7 +37,7 @@
 	{#if transactions.length === 0}
 		<Panel>
 			<p class="py-12 text-center text-base-content/60">
-				No transactions to analyze. Upload a CSV file to get started.
+				No transactions to analyze. Upload a database file to get started.
 			</p>
 		</Panel>
 	{:else}

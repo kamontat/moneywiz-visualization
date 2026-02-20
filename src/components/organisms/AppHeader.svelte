@@ -5,8 +5,8 @@
 	import Container from '$components/atoms/Container.svelte'
 	import Header from '$components/atoms/Header.svelte'
 	import Link from '$components/atoms/Link.svelte'
-	import CsvClearButton from '$components/molecules/CsvClearButton.svelte'
-	import CsvUploadButton from '$components/molecules/CsvUploadButton.svelte'
+	import DatabaseClearButton from '$components/molecules/DatabaseClearButton.svelte'
+	import DatabaseUploadButton from '$components/molecules/DatabaseUploadButton.svelte'
 	import NameHeader from '$components/molecules/NameHeader.svelte'
 	import ThemeSelect from '$components/molecules/ThemeSelect.svelte'
 	import { component } from '$lib/loggers'
@@ -25,7 +25,7 @@
 		messages.unshift({
 			id: `C${len + 1}`,
 			variant: 'success',
-			text: 'CSV data cleared successfully',
+			text: 'Database cleared successfully',
 		})
 	}
 	const onClearError = (err: Error) => {
@@ -33,7 +33,7 @@
 		messages.unshift({
 			id: `C${len + 1}`,
 			variant: 'error',
-			text: `CSV clear failed: ${err.message}`,
+			text: `Database clear failed: ${err.message}`,
 		})
 	}
 	const onUploadLoading = (loading: boolean) => {
@@ -52,7 +52,7 @@
 		messages.unshift({
 			id: `U${len + 1}`,
 			variant: 'error',
-			text: `CSV upload failed: ${err.message}`,
+			text: `Database upload failed: ${err.message}`,
 		})
 	}
 
@@ -73,12 +73,12 @@
 			<HardDriveIcon class="h-4 w-4" aria-hidden="true" />
 			<span class="hidden sm:inline">Storage</span>
 		</Link>
-		<CsvClearButton
+		<DatabaseClearButton
 			{uploading}
 			onsuccess={onClearSuccess}
 			onfail={onClearError}
 		/>
-		<CsvUploadButton
+		<DatabaseUploadButton
 			onsuccess={onUploadSuccess}
 			onfail={onUploadError}
 			onloadingchange={onUploadLoading}

@@ -64,6 +64,52 @@
 
 	const formatPercent = (value: number): string => `${value.toFixed(1)}%`
 
+	let resetting = $state(false)
+	let resetError = $state<string | undefined>(undefined)
+	let resetSuccess = $state(false)
+	let showConfirm = $state(false)
+
+	const resetAllData = async () => {
+		resetting = true
+		resetError = undefined
+		resetSuccess = false
+		try {
+			localStorage.clear()
+
+			const idbDatabases = await indexedDB.databases()
+			await Promise.all(
+				idbDatabases.map(
+					({ name }) =>
+						new Promise<void>((resolve, reject) => {
+							if (!name) return resolve()
+							const req = indexedDB.deleteDatabase(name)
+							req.onsuccess = () => resolve()
+							req.onerror = () => reject(req.error)
+							req.onblocked = () => resolve()
+						})
+				)
+			)
+
+			if (typeof caches !== 'undefined') {
+				const keys = await caches.keys()
+				await Promise.all(keys.map((k) => caches.delete(k)))
+			}
+
+			if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
+				const registrations = await navigator.serviceWorker.getRegistrations()
+				await Promise.all(registrations.map((r) => r.unregister()))
+			}
+
+			resetSuccess = true
+			showConfirm = false
+			await refreshUsage()
+		} catch (thrown) {
+			resetError = thrown instanceof Error ? thrown.message : String(thrown)
+		} finally {
+			resetting = false
+		}
+	}
+
 	const refreshUsage = async () => {
 		if (
 			typeof navigator === 'undefined' ||
@@ -138,16 +184,25 @@
 			{/if}
 		</div>
 
-		<Button
-			variant="secondary"
-			onclick={() => void refreshUsage()}
-			disabled={loading || !supported}
-		>
-			{#if loading}
-				<span class="d-loading d-loading-sm d-loading-spinner"></span>
-			{/if}
-			Refresh
-		</Button>
+		<div class="flex gap-2">
+			<Button
+				variant="secondary"
+				onclick={() => void refreshUsage()}
+				disabled={loading || !supported}
+			>
+				{#if loading}
+					<span class="d-loading d-loading-sm d-loading-spinner"></span>
+				{/if}
+				Refresh
+			</Button>
+			<Button
+				variant="danger"
+				onclick={() => (showConfirm = true)}
+				disabled={resetting}
+			>
+				Reset All Data
+			</Button>
+		</div>
 	</div>
 
 	{#if !supported}
@@ -161,6 +216,58 @@
 	{#if error}
 		<div class="mb-4 d-alert text-sm d-alert-error">
 			<span>Failed to read storage usage: {error}</span>
+		</div>
+	{/if}
+
+	{#if resetSuccess}
+		<div class="mb-4 d-alert text-sm d-alert-success">
+			<span>All browser storage data has been cleared successfully.</span>
+		</div>
+	{/if}
+
+	{#if resetError}
+		<div class="mb-4 d-alert text-sm d-alert-error">
+			<span>Failed to reset storage: {resetError}</span>
+		</div>
+	{/if}
+
+	{#if showConfirm}
+		<div class="d-modal-open d-modal">
+			<div class="d-modal-box">
+				<h3 class="text-lg font-bold">Reset All Data</h3>
+				<p class="py-4 text-sm text-base-content/80">
+					This will permanently delete all browser storage for this app,
+					including localStorage, IndexedDB, caches, and service worker
+					registrations. This action cannot be undone.
+				</p>
+				<div class="d-modal-action">
+					<Button
+						variant="secondary"
+						onclick={() => (showConfirm = false)}
+						disabled={resetting}
+					>
+						Cancel
+					</Button>
+					<Button
+						variant="danger"
+						onclick={() => void resetAllData()}
+						disabled={resetting}
+					>
+						{#if resetting}
+							<span class="d-loading d-loading-sm d-loading-spinner"></span>
+						{/if}
+						Yes, Reset Everything
+					</Button>
+				</div>
+			</div>
+			<div
+				class="d-modal-backdrop"
+				role="button"
+				tabindex="0"
+				aria-label="Close dialog"
+				onclick={() => (showConfirm = false)}
+				onkeydown={(e) => e.key === 'Escape' && (showConfirm = false)}
+			></div>
 		</div>
 	{/if}
 

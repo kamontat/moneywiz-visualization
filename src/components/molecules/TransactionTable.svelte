@@ -153,7 +153,7 @@
 			</div>
 			<p class="text-lg font-semibold text-base-content">No transactions</p>
 			<p class="mt-1 text-sm text-base-content/60">
-				Upload a MoneyWiz CSV file to get started
+				Upload a MoneyWiz database file to get started
 			</p>
 		</div>
 	{/if}

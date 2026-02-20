@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { FilterOptions } from '$lib/analytics/filters/models/options'
 	import type { FilterState } from '$lib/analytics/filters/models/state'
-	import type { CsvState } from '$lib/csv/models'
+	import type { DatabaseState } from '$lib/database/models'
 	import type {
 		ParsedCategory,
 		ParsedTransaction,
@@ -34,7 +34,7 @@
 		sliceByDateRange,
 		transform,
 	} from '$lib/analytics/transforms'
-	import { csvStore, csvUploading } from '$lib/csv'
+	import { databaseStore, databaseUploading } from '$lib/database'
 	import {
 		extractCategories,
 		extractTagCategories,
@@ -49,7 +49,7 @@
 	let availableCategories = $state(extractCategories([]))
 	let tagCategories = $state(extractTagCategories([]))
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
-	let fileInfo = $state<CsvState | undefined>(undefined)
+	let fileInfo = $state<DatabaseState | undefined>(undefined)
 	let uploading = $state(false)
 	let filterState = $state<FilterState>(emptyFilterState())
 	let limit = $state(DEFAULT_LIMIT)
@@ -104,18 +104,18 @@
 			}
 		)
 		loadData()
-		const unsubCsvStore = csvStore.subscribe((state) => {
+		const unsubDatabaseStore = databaseStore.subscribe((state) => {
 			fileInfo = state
 			loadData()
 		})
-		const unsubCsvUploading = csvUploading.subscribe((u: boolean) => {
+		const unsubDatabaseUploading = databaseUploading.subscribe((u: boolean) => {
 			uploading = u
 		})
 
 		return () => {
 			unsubFilterOptions()
-			unsubCsvStore()
-			unsubCsvUploading()
+			unsubDatabaseStore()
+			unsubDatabaseUploading()
 		}
 	})
 

@@ -47,7 +47,7 @@
 		<p class="text-xl font-semibold text-base-content">Upload your data</p>
 		<p class="max-w-sm text-sm text-base-content/60">
 			Click the <span class="font-medium text-primary">Upload</span> button in the
-			header to import your MoneyWiz CSV export
+			header to import your MoneyWiz SQLite database
 		</p>
 	</div>
 	<div

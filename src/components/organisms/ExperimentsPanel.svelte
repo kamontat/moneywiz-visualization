@@ -4,7 +4,6 @@
 	import { onMount } from 'svelte'
 
 	import Panel from '$components/atoms/Panel.svelte'
-	import ExperimentCalendarHeatmap from '$components/molecules/ExperimentCalendarHeatmap.svelte'
 	import ExperimentCategoryBubble from '$components/molecules/ExperimentCategoryBubble.svelte'
 	import ExperimentCategoryVolatility from '$components/molecules/ExperimentCategoryVolatility.svelte'
 	import ExperimentOutlierTimeline from '$components/molecules/ExperimentOutlierTimeline.svelte'
@@ -12,7 +11,6 @@
 	import ExperimentRegimeTimeline from '$components/molecules/ExperimentRegimeTimeline.svelte'
 	import ExperimentSavingsTarget from '$components/molecules/ExperimentSavingsTarget.svelte'
 	import {
-		byCalendarHeatmap,
 		byCategoryBubble,
 		byCategoryVolatility,
 		byCumulativeSavings,
@@ -34,7 +32,6 @@
 	let monthlyTarget = $state(0)
 	let hydrated = $state(false)
 
-	const heatmap = $derived(transform(transactions, byCalendarHeatmap))
 	const volatility = $derived(transform(transactions, byCategoryVolatility))
 	const bubbles = $derived(transform(transactions, byCategoryBubble))
 	const refundImpact = $derived(transform(transactions, byRefundImpact))
@@ -94,28 +91,21 @@
 	)}
 	{...rest}
 >
-	<Panel title="1) Calendar Heatmap">
-		<p class="mb-3 text-sm text-base-content/70">
-			Shows daily net flow intensity to reveal streaks and spikes.
-		</p>
-		<ExperimentCalendarHeatmap cells={heatmap} />
-	</Panel>
-
-	<Panel title="2) Category Volatility">
+	<Panel title="1) Category Volatility">
 		<p class="mb-3 text-sm text-base-content/70">
 			Compares average spend vs variability to surface unstable categories.
 		</p>
 		<ExperimentCategoryVolatility points={volatility} />
 	</Panel>
 
-	<Panel title="3) Category Bubble">
+	<Panel title="2) Category Bubble">
 		<p class="mb-3 text-sm text-base-content/70">
 			Highlights transaction frequency, total spend, and average ticket size.
 		</p>
 		<ExperimentCategoryBubble points={bubbles} />
 	</Panel>
 
-	<Panel title="4) Savings vs Target">
+	<Panel title="3) Savings vs Target">
 		<p class="mb-3 text-sm text-base-content/70">
 			Compares cumulative savings against your editable monthly target line.
 		</p>
@@ -126,21 +116,21 @@
 		/>
 	</Panel>
 
-	<Panel title="5) Refund Impact">
+	<Panel title="4) Refund Impact">
 		<p class="mb-3 text-sm text-base-content/70">
 			Shows how refunds change gross expenses into net expenses.
 		</p>
 		<ExperimentRefundImpact points={refundImpact} />
 	</Panel>
 
-	<Panel title="6) Regime Timeline">
+	<Panel title="5) Regime Timeline">
 		<p class="mb-3 text-sm text-base-content/70">
 			Classifies each month as stable, stressed, or deficit.
 		</p>
 		<ExperimentRegimeTimeline segments={regimes} />
 	</Panel>
 
-	<Panel title="7) Outlier Timeline">
+	<Panel title="6) Outlier Timeline">
 		<p class="mb-3 text-sm text-base-content/70">
 			Marks unusually large days against a rolling baseline.
 		</p>
