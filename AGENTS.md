@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-SvelteKit 2 + Svelte 5 static site for visualizing MoneyWiz CSV exports.
+SvelteKit 2 + Svelte 5 static site for visualizing MoneyWiz SQLite database exports.
 Uses Tailwind CSS 4 + DaisyUI 5, IndexedDB persistence, and Chart.js
 for analytics and dashboard charts.
 
@@ -17,7 +17,7 @@ moneywiz-visualization/
 ├── src/
 │   ├── routes/           # SvelteKit file-based routing (+page.svelte, +layout.svelte)
 │   ├── components/       # Atomic Design: atoms/molecules/organisms (see AGENTS.md)
-│   ├── lib/              # Domain modules: analytics/csv/charts/themes/transactions/etc.
+│   ├── lib/              # Domain modules: analytics/database/charts/themes/transactions/etc.
 │   ├── utils/            # Data layer: db, stores, states, types (see AGENTS.md)
 │   └── css/              # Global styles (Tailwind + DaisyUI config)
 ├── e2e/                  # Playwright E2E tests
@@ -30,14 +30,12 @@ moneywiz-visualization/
 - `static/data/` and `static/database/` are local-only and gitignored.
 - Never load runtime data, test fixtures, or docs source inputs from those
   folders.
-- For tests, generate fixtures in code (see `e2e/utils/csv-generator.ts`).
+- For tests, generate fixtures in code.
 
 ## REFERENCE DOCS (REQUIRED)
 
-- For any read/write/modify/condition change related to CSV behavior, consult
-  [RULES.md](RULES.md).
 - For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md).
+  behavior, consult [RULES.md](RULES.md) and [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md).
 
 ## WHERE TO LOOK
 
@@ -45,12 +43,12 @@ moneywiz-visualization/
 | ------------------ | --------------------------------------------- | -------------------------------------------------------------------- |
 | Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load                |
 | Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                                 |
-| Add business logic | `src/lib/{domain}/`                           | analytics, charts, csv, themes, transactions, formatters             |
+| Add business logic | `src/lib/{domain}/`                           | analytics, charts, database, themes, transactions, formatters        |
 | Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                                    |
 | Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                            |
 | Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                                    |
 | Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                                        |
-| Test fixture data  | `e2e/utils/csv-generator.ts`                  | Generate in test code; never read `static/data` or `static/database` |
+| Test fixture data  | `e2e/utils/`                                  | Generate in test code; never read `static/data` or `static/database` |
 
 ## CONVENTIONS
 
@@ -77,17 +75,17 @@ import { ... } from './...'        // 4. Relative
 ```typescript
 // ✅ CORRECT - import types from */models
 import type { ParsedTransaction } from '$lib/transactions/models'
-import type { CsvRow } from '$lib/csv/models'
+import type { DatabaseState } from '$lib/database/models'
 import type { TransformBy } from './models'
 
 // ❌ WRONG - never import types from package index
 import type { ParsedTransaction } from '$lib/transactions'
-import type { CsvRow } from '$lib/csv'
+import type { DatabaseState } from '$lib/database'
 ```
 
 **Rules:**
 
-1. **Domain `index.ts`** (e.g., `$lib/csv/index.ts`) — export functions only, NO type re-exports
+1. **Domain `index.ts`** (e.g., `$lib/database/index.ts`) — export functions only, NO type re-exports
 2. **`models/index.ts`** — CAN use barrel exports to aggregate types within the folder
 3. **Types belong in `models/`** — never define types in implementation files
 

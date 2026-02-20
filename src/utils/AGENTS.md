@@ -99,7 +99,7 @@ export const myStore = newStore(indexDBV1, myState, {
 ### Current v1 Schema Tables
 
 - `mw_theme_v1`: persisted theme settings
-- `mw_csv_v1`: uploaded CSV metadata
+- `mw_db_v1`: uploaded database file metadata
 - `mw_filter_options_v1`: filter panel selections
 - `mw_transaction_v1`: parsed transactions + indexes (`date`, `type`, `account`)
 
@@ -115,7 +115,6 @@ export const myStore = newStore(indexDBV1, myState, {
 
 ## REFERENCE DOCS (REQUIRED)
 
-- For any read/write/modify/condition change related to CSV behavior, consult
-  [RULES.md](../../RULES.md).
 - For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).
+  behavior, consult [RULES.md](../../RULES.md) and
+  [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).

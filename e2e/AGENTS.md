@@ -10,14 +10,12 @@
 - Do not load fixtures from `static/data` or `static/database`.
 - Those folders are local-only, gitignored, and unavailable in GitHub
   Actions.
-- Generate test input in code, for example with
-  `e2e/utils/csv-generator.ts`.
+- Generate test input in code.
 
 ## Reference Docs (Required)
 
-- For CSV condition changes in tests, check [RULES.md](../RULES.md) first.
 - For SQLite/database condition changes in tests or fixtures, check
-  [DATABASE_SCHEMA.md](../DATABASE_SCHEMA.md) first.
+  [RULES.md](../RULES.md) and [DATABASE_SCHEMA.md](../DATABASE_SCHEMA.md) first.
 
 ## Patterns
 

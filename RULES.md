@@ -1,22 +1,21 @@
-# MoneyWiz CSV Analyzer - Logic Summary
+# MoneyWiz SQLite Analyzer - Logic Summary
 
 ## Repository Constraint
 
 - `static/data/` and `static/database/` are gitignored local folders.
 - Do not use them as runtime/test data sources or as required inputs for docs.
-- For tests, generate fixtures inline (for example with
-  `e2e/utils/csv-generator.ts`).
+- For tests, generate fixtures in code.
 
-- [1. CSV Parsing Rules](#1-csv-parsing-rules)
-  - [1.1 File Preprocessing](#11-file-preprocessing)
-  - [1.2 CSV Structure](#12-csv-structure)
-  - [1.3 Row Classification](#13-row-classification)
-  - [1.4 Field Parsing](#14-field-parsing)
-    - [Date Parsing](#date-parsing)
-    - [Amount Parsing](#amount-parsing)
-    - [Category Parsing](#category-parsing)
-    - [Account Parsing](#account-parsing)
-    - [Tag Parsing](#tag-parsing)
+- [1. SQLite Import Rules](#1-sqlite-import-rules)
+  - [1.1 File Loading](#11-file-loading)
+  - [1.2 Database Structure](#12-database-structure)
+  - [1.3 Entity Type Mapping](#13-entity-type-mapping)
+  - [1.4 Field Conversion](#14-field-conversion)
+    - [Date Conversion](#date-conversion)
+    - [Amount Conversion](#amount-conversion)
+    - [Category Conversion](#category-conversion)
+    - [Account Type Mapping](#account-type-mapping)
+    - [Tag Conversion](#tag-conversion)
   - [1.5 Transaction Classification](#15-transaction-classification)
 - [2. Filter Chain (Applied in UI)](#2-filter-chain-applied-in-ui)
   - [Tag Filter Logic](#tag-filter-logic)
@@ -24,110 +23,91 @@
 - [3. Special Category Handling](#3-special-category-handling)
 - [4. Category Tree Structure](#4-category-tree-structure)
 
-## 1. CSV Parsing Rules
+## 1. SQLite Import Rules
 
-### 1.1 File Preprocessing
+### 1.1 File Loading
 
-Before parsing, the CSV file is preprocessed:
+The SQLite file is loaded in the browser using `@sqlite.org/sqlite-wasm`:
 
-1. **BOM removal**: Strip UTF-8 BOM (`\uFEFF`) if present
-2. **Line splitting**: Split by `\r?\n` (Unix and Windows line endings)
-3. **Empty line skipping**: Skip leading empty lines
-4. **Separator preamble detection**: MoneyWiz exports may start with `sep=,`
-5. **Empty line filtering**: Remove all empty lines from content
+1. **Read file**: Read as `ArrayBuffer`
+2. **WAL patch**: If header bytes 18-19 indicate WAL mode, patch to legacy
+3. **Deserialize**: Load into in-memory SQLite via `sqlite3_deserialize`
+4. **Lookup tables**: Parse `Z_PRIMARYKEY` for entity name mapping
+5. **Extract data**: Parse accounts, payees, categories, tags, users
+6. **Build relations**: Map categories and tags to transactions
+7. **Parse transactions**: Convert `ZSYNCOBJECT` rows to `SQLiteTransaction`
 
-**Separator preamble example:**
+### 1.2 Database Structure
 
-```csv
-sep=,
-"Name","Current balance","Account",...
-```
+MoneyWiz uses a Core Data SQLite schema with:
 
-### 1.2 CSV Structure
+- **`Z_PRIMARYKEY`**: Maps entity IDs (`Z_ENT`) to logical model names
+- **`ZSYNCOBJECT`**: Polymorphic table storing all entity subtypes
+- **`ZCATEGORYASSIGMENT`**: Links transactions to categories
+- **`Z_36TAGS`**: Links transactions to tags
 
-MoneyWiz exports use these column headers:
+See [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) for the full ER diagram.
 
-| Column          | CSV Key       | Description                        |
-| --------------- | ------------- | ---------------------------------- |
-| Name            | `Name`        | Account name (header rows only)    |
-| Current balance | -             | Account balance (header rows only) |
-| Account         | `Account`     | Account name for transaction       |
-| Transfers       | `Transfers`   | Target account for transfers       |
-| Description     | `Description` | Transaction description            |
-| Payee           | `Payee`       | Payee name                         |
-| Category        | `Category`    | Category (hierarchical)            |
-| Date            | `Date`        | Transaction date                   |
-| Time            | `Time`        | Transaction time                   |
-| Memo            | `Memo`        | Additional notes                   |
-| Amount          | `Amount`      | Transaction amount                 |
-| Currency        | `Currency`    | Currency code                      |
-| Check #         | `Check #`     | Check number                       |
-| Tags            | `Tags`        | Tag list                           |
-| Balance         | -             | Running balance (not parsed)       |
+### 1.3 Entity Type Mapping
 
-### 1.3 Row Classification
+SQLite entity names map to transaction entity types:
 
-During import, each CSV row is classified before transaction parsing:
+| Entity Name                   | Z_ENT | Role                 |
+| ----------------------------- | ----- | -------------------- |
+| `DepositTransaction`          | 37    | Income/Refund        |
+| `WithdrawTransaction`         | 47    | Expense              |
+| `TransferDepositTransaction`  | 45    | Transfer (receiving) |
+| `TransferWithdrawTransaction` | 46    | Transfer (sending)   |
+| `TransferBudgetTransaction`   | 44    | Transfer (budget)    |
+| `InvestmentBuyTransaction`    | 40    | Buy                  |
+| `InvestmentSellTransaction`   | 41    | Sell                 |
+| `ReconcileTransaction`        | 42    | NewBalance           |
+| `RefundTransaction`           | 43    | Refund               |
 
-| Condition                                  | Classification      | Action                   |
-| ------------------------------------------ | ------------------- | ------------------------ |
-| `Name` filled AND `Current balance` filled | **Account Header**  | Skip (not a transaction) |
-| otherwise                                  | **Transaction Row** | Parse as transaction     |
+### 1.4 Field Conversion
 
-**Account header example:**
+#### Date Conversion
 
-```csv
-"Cash wallet [THB] (W)","1,380.00","THB","","","","","","","","","","","",""
-```
-
-### 1.4 Field Parsing
-
-#### Date Parsing
-
-- **Format**: `DD/MM/YYYY` with optional `HH:MM`
+- **Source**: Core Data timestamp (seconds since 2001-01-01 00:00:00 UTC)
+- **Conversion**: `new Date(APPLE_REFERENCE_EPOCH_MS + timestamp * 1000)`
 - **Output**: JavaScript `Date`
-- **Empty date**: Returns `new Date(0)`
+- **Missing date**: Returns `new Date(0)`
 
-#### Amount Parsing
+#### Amount Conversion
 
-- **Format**: `1,234.56` or `-1,234.56`
-- **Processing**: Strip commas, parse float
-- **NaN handling**: Returns `0` for invalid values
-- **Default currency**: `THB` if not specified
+- **Source**: `ZAMOUNT` / `ZAMOUNT1` numeric columns
+- **Output**: `{ value: number, currency: string }`
+- **Default currency**: `THB` if not available from account or transaction
+- **Missing amount**: Returns `0`
 
-#### Category Parsing
+#### Category Conversion
 
-- **Format**: `Parent > Child` or `Parent ► Child`
+- **Source**: `ZCATEGORYASSIGMENT` join table → `SQLiteCategoryRef`
+- **Format**: `parentName > name` (when parent exists)
 - **Output**: `{ category: string, subcategory: string }`
-- **Single level**: `{ category: "Food", subcategory: "" }`
-- **Two levels**: `{ category: "Food", subcategory: "Restaurants" }`
+- **No categories**: Empty string (treated as no category)
 
-#### Account Parsing
+#### Account Type Mapping
 
-- **Format**: `<name> [<extra>] (<type>)`
-- **Components**:
-  - `name`: account display name
-  - `extra`: optional metadata in `[]`
-  - `type`: account type code in `()`
+Account types are derived from the SQLite entity ID of the account:
 
-| Code | Account Type   |
-| ---- | -------------- |
-| `A`  | Checking       |
-| `C`  | CreditCard     |
-| `D`  | DebitCard      |
-| `I`  | Investment     |
-| `L`  | Loan           |
-| `W`  | Wallet         |
-| `OW` | OnlineWallet   |
-| `CT` | Cryptocurrency |
-| -    | Unknown        |
+| Entity Name         | Z_ENT | Account Type |
+| ------------------- | ----- | ------------ |
+| `CashAccount`       | 12    | Wallet       |
+| `BankChequeAccount` | 10    | Checking     |
+| `BankSavingAccount` | 11    | Checking     |
+| `CreditCardAccount` | 13    | CreditCard   |
+| `LoanAccount`       | 14    | Loan         |
+| `InvestmentAccount` | 15    | Investment   |
+| `ForexAccount`      | 16    | Unknown      |
 
-#### Tag Parsing
+#### Tag Conversion
 
-- **Format**: `category: name; category2: name2`
+- **Source**: `Z_36TAGS` join table → `SQLiteTagRef`
 - **Output**: `Array<{ category: string, name: string }>`
-- **Special mapping**: `Zvent` -> `Event`
-- **No category**: `{ category: "", name: "tag" }`
+- **Category**: Parsed from tag name via `"Category: Name"` encoding (e.g. `"Group: KcNt"` → `{ category: 'Group', name: 'KcNt' }`)
+- **Alias**: `Zvent` is mapped to `Event` by `parseTag()`
+- **No category**: Tags without `": "` separator get `category: ""` and are excluded from filter grouping
 
 ### 1.5 Transaction Classification
 
@@ -139,15 +119,19 @@ Transactions are classified in this priority order:
 | 2        | Category = `Other Incomes > Debt Repayment`                                     | `DebtRepayment`                 |
 | 3        | Category = `Other Incomes > Windfall`                                           | `Windfall`                      |
 | 4        | Category = `Other Expenses > Giveaways`                                         | `Giveaway`                      |
-| 5        | `Category` empty AND `Description` = `new balance` (CI)                         | `NewBalance`                    |
-| 6        | `Transfers` filled AND `Category` filled                                        | `Income` / `Expense` / `Refund` |
-| 7        | `Transfers` filled AND `Category` empty                                         | `Transfer`                      |
-| 8        | Account = Investment AND `Category` empty AND `Amount > 0`                      | `Sell`                          |
-| 9        | Account = Investment AND `Category` empty AND `Amount < 0`                      | `Buy`                           |
-| 10       | `Amount > 0` AND category parent is in income prefixes                          | `Income`                        |
-| 11       | `Amount < 0`                                                                    | `Expense`                       |
-| 12       | `Category` filled AND category parent NOT in income prefixes AND no prior match | `Refund`                        |
-| 13       | No prior match                                                                  | `Unknown`                       |
+| 5        | Entity = `ReconcileTransaction` (42)                                            | `NewBalance`                    |
+| 6        | `Category` empty AND `Description` = `new balance` (CI)                         | `NewBalance`                    |
+| 7        | Entity is Transfer type AND `Category` filled                                   | `Income` / `Expense` / `Refund` |
+| 8        | Entity is Transfer type AND `Category` empty                                    | `Transfer`                      |
+| 9        | Entity = `RefundTransaction` (43)                                               | `Refund`                        |
+| 10       | Entity = `InvestmentBuyTransaction` (40)                                        | `Buy`                           |
+| 11       | Entity = `InvestmentSellTransaction` (41)                                       | `Sell`                          |
+| 12       | Account = Investment AND `Category` empty AND `Amount > 0`                      | `Sell`                          |
+| 13       | Account = Investment AND `Category` empty AND `Amount < 0`                      | `Buy`                           |
+| 14       | `Amount > 0` AND category parent is in income prefixes                          | `Income`                        |
+| 15       | `Amount < 0`                                                                    | `Expense`                       |
+| 16       | `Category` filled AND category parent NOT in income prefixes AND no prior match | `Refund`                        |
+| 17       | No prior match                                                                  | `Unknown`                       |
 
 **Income category prefixes:**
 

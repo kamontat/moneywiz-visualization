@@ -13,8 +13,9 @@ lib/
 │   ├── filters/        # Filter transactions + filter option state/store
 │   └── transforms/     # Aggregate data (category totals, tree, time series, summarize)
 ├── charts/             # Chart.js adapters + chart options + theme palette mapping
-├── csv/                # CSV metadata state/store APIs
-├── transactions/       # Transaction models, CSV parsing, classification, import
+├── database/           # Database metadata state/store APIs
+├── sqlite/             # SQLite file parsing, Web Worker, session management
+├── transactions/       # Transaction models, SQLite classification, import
 ├── themes/             # Theme state, store, DaisyUI theme switching helpers
 ├── formatters/         # Amount, date, category display formatters
 ├── loggers/            # Debug logging with namespaced loggers
@@ -25,8 +26,9 @@ lib/
 
 | Task                 | Location                                                              |
 | -------------------- | --------------------------------------------------------------------- |
-| Parse CSV rows       | `transactions/csv.ts` + `transactions/import.ts`                      |
+| Import SQLite file   | `transactions/import.ts`                                              |
 | Classify transaction | `transactions/classifier.ts`                                          |
+| SQLite parsing       | `sqlite/parser.ts` + `sqlite/engine.ts`                               |
 | Add filter           | `analytics/filters/` + export from `analytics/filters/index.ts`       |
 | Add transform        | `analytics/transforms/` + export from `analytics/transforms/index.ts` |
 | Add chart adapter    | `charts/adapters/` + export from `charts/adapters/index.ts`           |
@@ -52,8 +54,8 @@ lib/
 ### Logger Usage
 
 ```typescript
-import { csv } from '$lib/loggers'
-const log = csv.extends('parser')
+import { database } from '$lib/loggers'
+const log = database.extends('import')
 log.debug('parsing file: %s', filename)
 ```
 
@@ -81,7 +83,7 @@ export const byX: TransformByFunc<Args, Output> = (
 ## ANTI-PATTERNS
 
 - Don't import Svelte components here (use `$components`)
-- Don't access IndexedDB directly (use store APIs from `csv/apis.ts`)
+- Don't access IndexedDB directly (use store APIs from `database/apis.ts`)
 - Don't put UI-specific code in transforms/filters
 - Don't export types from domain `index.ts` files (use `models/`)
 - Don't load fixtures or source data from `static/data` or
@@ -89,37 +91,9 @@ export const byX: TransformByFunc<Args, Output> = (
 
 ## REFERENCE DOCS (REQUIRED)
 
-- For any read/write/modify/condition change related to CSV behavior, consult
-  [RULES.md](../../RULES.md).
 - For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).
-
-## MONEYWIZ CSV FORMAT
-
-MoneyWiz CSV exports have a specific structure with account header rows that must be skipped during import.
-
-### CSV Structure
-
-```csv
-sep=,
-"Name","Current balance","Account","Transfers","Description","Payee","Category","Date","Time","Memo","Amount","Currency","Check #","Tags","Balance"
-"Cash wallet [THB] (W)","1,380.00","THB","","","","","","","","","","","",""   ← Account header (skip)
-"","","Cash wallet [THB] (W)","","Description","Payee","Category","21/12/2025","20:33","","-310.00","THB","","","1,380.00"   ← Transaction row
-```
-
-### Account Header Rows
-
-- Have `Name` column filled (account name)
-- Have `Date` column empty
-- These are balance summary rows, NOT transactions
-- Use `isAccountHeaderRow()` from `transactions/csv.ts` to detect and skip
-
-### Transaction Rows
-
-- Have `Name` column empty
-- Have `Date` column filled
-- `Account` column contains the account name
-- `Transfers` column non-empty indicates a transfer transaction
+  behavior, consult [RULES.md](../../RULES.md) and
+  [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).
 
 ## NOTES
 
