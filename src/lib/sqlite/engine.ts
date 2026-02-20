@@ -12,7 +12,25 @@ let sqlite3Promise: Promise<Sqlite3Static> | undefined
 
 export const getSqlite3 = (): Promise<Sqlite3Static> => {
 	if (!sqlite3Promise) {
-		sqlite3Promise = import('@sqlite.org/sqlite-wasm').then((m) => m.default())
+		// Suppress OPFS warning that occurs when SQLite tries to initialize OPFS VFS in main thread
+		const originalWarn = console.warn
+		console.warn = (...args) => {
+			const message = args.join(' ')
+			if (
+				message.includes('OPFS sqlite3_vfs') &&
+				message.includes('Atomics.wait')
+			) {
+				return // Suppress this specific warning
+			}
+			originalWarn.apply(console, args)
+		}
+
+		sqlite3Promise = import('@sqlite.org/sqlite-wasm')
+			.then((m) => m.default())
+			.finally(() => {
+				// Restore original console.warn
+				console.warn = originalWarn
+			})
 	}
 	return sqlite3Promise
 }

@@ -275,3 +275,15 @@ export const extractCategories = (
 		return getCategoryFullName(a).localeCompare(getCategoryFullName(b))
 	})
 }
+
+export const extractAccounts = (
+	transactions: { account?: ParsedAccount }[]
+): string[] => {
+	const accountSet = new Set<string>()
+	for (const trx of transactions) {
+		if (trx.account !== undefined && trx.account.name !== '') {
+			accountSet.add(trx.account.name)
+		}
+	}
+	return Array.from(accountSet).sort((a, b) => a.localeCompare(b))
+}
