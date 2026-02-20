@@ -16,6 +16,7 @@
 	import QuickSummary from '$components/organisms/QuickSummary.svelte'
 	import {
 		filter,
+		byAccount,
 		byDateRange,
 		byCategory,
 		byPayee,
@@ -26,6 +27,10 @@
 		loadPersistedDateRange,
 		persistDateRange,
 	} from '$lib/analytics/filters/dateRangePersistence'
+	import {
+		loadPersistedFilterSelection,
+		persistFilterSelection,
+	} from '$lib/analytics/filters/filterSelectionPersistence'
 	import { filterOptionsStore } from '$lib/analytics/filters/init'
 	import { emptyFilterState } from '$lib/analytics/filters/models/state'
 	import {
@@ -40,6 +45,7 @@
 		extractCategories,
 		extractPayees,
 		extractTagCategories,
+		extractAccounts,
 		getTransactionCount,
 		getTransactions,
 	} from '$lib/transactions'
@@ -50,6 +56,7 @@
 	let totalCount = $state(0)
 	let availableCategories = $state(extractCategories([]))
 	let availablePayees = $state<string[]>([])
+	let availableAccounts = $state<string[]>([])
 	let tagCategories = $state(extractTagCategories([]))
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
 	let fileInfo = $state<DatabaseState | undefined>(undefined)
@@ -70,6 +77,20 @@
 		if (cached && (fileMatches || !fileInfo)) {
 			availableCategories = cached.categories
 			tagCategories = cached.tags
+			// Load payees and accounts from cache if available, otherwise extract from transactions
+			availablePayees =
+				cached.payees ?? extractPayees(allTransactions as { payee?: string }[])
+			availableAccounts = cached.accounts ?? extractAccounts(allTransactions)
+			// Update cache with payees and accounts if they were missing
+			if (!cached.payees || !cached.accounts) {
+				if (fileInfo?.fileName && fileInfo?.modifiedAt) {
+					await filterOptionsStore.setAsync({
+						...cached,
+						payees: availablePayees,
+						accounts: availableAccounts,
+					})
+				}
+			}
 			return
 		}
 
@@ -80,11 +101,14 @@
 			categoryTransactions as { category?: ParsedCategory }[]
 		)
 		availablePayees = extractPayees(allTransactions as { payee?: string }[])
+		availableAccounts = extractAccounts(allTransactions)
 		tagCategories = extractTagCategories(allTransactions)
 		if (fileInfo?.fileName && fileInfo?.modifiedAt) {
 			await filterOptionsStore.setAsync({
 				categories: availableCategories,
 				tags: tagCategories,
+				payees: availablePayees,
+				accounts: availableAccounts,
 				fileName: fileInfo.fileName,
 				modifiedAt: fileInfo.modifiedAt,
 			})
@@ -92,25 +116,41 @@
 	}
 
 	onMount(() => {
-		const persistedDateRange = loadPersistedDateRange()
-		if (persistedDateRange) {
-			filterState = {
-				...filterState,
-				dateRange: persistedDateRange,
-			}
-		}
-		didHydrateDateFilter = true
-
 		cachedFilterOptions = get(filterOptionsStore)
 		const unsubFilterOptions = filterOptionsStore.subscribe(
 			(options: FilterOptions | undefined) => {
 				cachedFilterOptions = options
 			}
 		)
-		loadData()
+		loadData().then(() => {
+			// Load persisted filters after data is loaded
+			const persistedDateRange = loadPersistedDateRange()
+			const persistedFilterSelection = loadPersistedFilterSelection()
+
+			if (persistedDateRange || persistedFilterSelection) {
+				filterState = {
+					...filterState,
+					dateRange: persistedDateRange || filterState.dateRange,
+					...persistedFilterSelection,
+				}
+			}
+			didHydrateDateFilter = true
+		})
 		const unsubDatabaseStore = databaseStore.subscribe((state) => {
 			fileInfo = state
-			loadData()
+			loadData().then(() => {
+				// Re-apply persisted filters after data reload
+				const persistedDateRange = loadPersistedDateRange()
+				const persistedFilterSelection = loadPersistedFilterSelection()
+
+				if (persistedDateRange || persistedFilterSelection) {
+					filterState = {
+						...filterState,
+						dateRange: persistedDateRange || filterState.dateRange,
+						...persistedFilterSelection,
+					}
+				}
+			})
 		})
 		const unsubDatabaseUploading = databaseUploading.subscribe((u: boolean) => {
 			uploading = u
@@ -126,6 +166,14 @@
 	$effect(() => {
 		if (!didHydrateDateFilter) return
 		persistDateRange(filterState.dateRange)
+	})
+
+	$effect(() => {
+		if (!didHydrateDateFilter) return
+		// Persist all filter selections except date range
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { dateRange, ...filterSelection } = filterState
+		persistFilterSelection(filterSelection)
 	})
 
 	const applyNonDateFilters = (
@@ -166,6 +214,10 @@
 
 		if (filterState.payees.length > 0) {
 			filters.push(byPayee({ payees: filterState.payees }))
+		}
+
+		if (filterState.accounts.length > 0) {
+			filters.push(byAccount({ accounts: filterState.accounts }))
 		}
 
 		if (filters.length > 0) {
@@ -240,6 +292,7 @@
 		endDate={filteredSummary?.dateRange.end}
 		totalRows={totalCount}
 		filteredRows={filteredCount}
+		data-testid="transaction-count"
 	/>
 
 	{#if totalCount > 0}
@@ -247,6 +300,7 @@
 			bind:filterState
 			{availableCategories}
 			{availablePayees}
+			{availableAccounts}
 			availableTagCategories={tagCategories}
 			class="mt-4"
 		/>
