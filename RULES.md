@@ -61,7 +61,7 @@ SQLite entity names map to transaction entity types:
 | `TransferBudgetTransaction`   | 44    | Transfer (budget)    |
 | `InvestmentBuyTransaction`    | 40    | Buy                  |
 | `InvestmentSellTransaction`   | 41    | Sell                 |
-| `ReconcileTransaction`        | 42    | NewBalance           |
+| `ReconcileTransaction`        | 42    | Reconcile            |
 | `RefundTransaction`           | 43    | Refund               |
 
 ### 1.4 Field Conversion
@@ -111,6 +111,10 @@ Account types are derived from the SQLite entity ID of the account:
 
 ### 1.5 Transaction Classification
 
+**Pre-import filtering:** Transactions with no category and a description
+matching "new balance" (case-insensitive) are excluded during import and
+never reach classification.
+
 Transactions are classified in this priority order:
 
 | Priority | Condition                                                                       | Type                            |
@@ -119,19 +123,18 @@ Transactions are classified in this priority order:
 | 2        | Category = `Other Incomes > Debt Repayment`                                     | `DebtRepayment`                 |
 | 3        | Category = `Other Incomes > Windfall`                                           | `Windfall`                      |
 | 4        | Category = `Other Expenses > Giveaways`                                         | `Giveaway`                      |
-| 5        | Entity = `ReconcileTransaction` (42)                                            | `NewBalance`                    |
-| 6        | `Category` empty AND `Description` = `new balance` (CI)                         | `NewBalance`                    |
-| 7        | Entity is Transfer type AND `Category` filled                                   | `Income` / `Expense` / `Refund` |
-| 8        | Entity is Transfer type AND `Category` empty                                    | `Transfer`                      |
-| 9        | Entity = `RefundTransaction` (43)                                               | `Refund`                        |
-| 10       | Entity = `InvestmentBuyTransaction` (40)                                        | `Buy`                           |
-| 11       | Entity = `InvestmentSellTransaction` (41)                                       | `Sell`                          |
-| 12       | Account = Investment AND `Category` empty AND `Amount > 0`                      | `Sell`                          |
-| 13       | Account = Investment AND `Category` empty AND `Amount < 0`                      | `Buy`                           |
-| 14       | `Amount > 0` AND category parent is in income prefixes                          | `Income`                        |
-| 15       | `Amount < 0`                                                                    | `Expense`                       |
-| 16       | `Category` filled AND category parent NOT in income prefixes AND no prior match | `Refund`                        |
-| 17       | No prior match                                                                  | `Unknown`                       |
+| 5        | Entity = `ReconcileTransaction` (42)                                            | `Reconcile`                     |
+| 6        | Entity is Transfer type AND `Category` filled                                   | `Income` / `Expense` / `Refund` |
+| 7        | Entity is Transfer type AND `Category` empty                                    | `Transfer`                      |
+| 8        | Entity = `RefundTransaction` (43)                                               | `Refund`                        |
+| 9        | Entity = `InvestmentBuyTransaction` (40)                                        | `Buy`                           |
+| 10       | Entity = `InvestmentSellTransaction` (41)                                       | `Sell`                          |
+| 11       | Account = Investment AND `Category` empty AND `Amount > 0`                      | `Sell`                          |
+| 12       | Account = Investment AND `Category` empty AND `Amount < 0`                      | `Buy`                           |
+| 13       | `Amount > 0` AND category parent is in income prefixes                          | `Income`                        |
+| 14       | `Amount < 0`                                                                    | `Expense`                       |
+| 15       | `Category` filled AND category parent NOT in income prefixes AND no prior match | `Refund`                        |
+| 16       | No prior match                                                                  | `Unknown`                       |
 
 **Income category prefixes:**
 

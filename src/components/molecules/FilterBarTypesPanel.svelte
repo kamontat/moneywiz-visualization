@@ -31,7 +31,7 @@
 		'Expense',
 		'Giveaway',
 		'Income',
-		'NewBalance',
+		'Reconcile',
 		'Refund',
 		'Sell',
 		'Transfer',

@@ -1,9 +1,11 @@
 import type { ImportOptions, ParsedTransaction } from './models'
 import type { SQLiteParseProgress } from '$lib/sqlite/models'
 import { classifySQLiteTransaction } from './classifier'
+import { isNewBalanceDescription } from './utils'
 
 import { transaction } from '$lib/loggers'
 import { parseSQLiteFile } from '$lib/sqlite'
+import { SQLITE_ENTITY_ID } from '$lib/sqlite/constants'
 import { indexDBV1, STATE_TRX_V1 } from '$utils/stores'
 
 const log = transaction.extends('import')
@@ -87,6 +89,13 @@ export const importTransactionsFromFile = async (
 	})
 
 	for (const sqliteTransaction of result.transactions) {
+		if (
+			sqliteTransaction.entityId !== SQLITE_ENTITY_ID.ReconcileTransaction &&
+			sqliteTransaction.categories.length === 0 &&
+			isNewBalanceDescription(sqliteTransaction.description)
+		) {
+			continue
+		}
 		const trx = classifySQLiteTransaction(sqliteTransaction)
 		batch.push(trx)
 

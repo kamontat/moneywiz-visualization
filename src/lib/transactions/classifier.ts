@@ -7,7 +7,7 @@ import type {
 	ParsedExpenseTransaction,
 	ParsedGiveawayTransaction,
 	ParsedIncomeTransaction,
-	ParsedNewBalanceTransaction,
+	ParsedReconcileTransaction,
 	ParsedRefundTransaction,
 	ParsedSellTransaction,
 	ParsedTransferTransaction,
@@ -21,7 +21,6 @@ import {
 	isDebtRepaymentCategory,
 	isGiveawayCategory,
 	isIncomeCategory,
-	isNewBalanceDescription,
 	isWindfallCategory,
 	parseCategory,
 	parseTag,
@@ -183,19 +182,10 @@ export const classifySQLiteTransaction = (
 	if (isReconcileEntity(row.entityId)) {
 		return {
 			...base,
-			type: 'NewBalance',
+			type: 'Reconcile',
 			payee,
 			checkNumber,
-		} as ParsedNewBalanceTransaction
-	}
-
-	if (!hasCategory && isNewBalanceDescription(description)) {
-		return {
-			...base,
-			type: 'NewBalance',
-			payee,
-			checkNumber,
-		} as ParsedNewBalanceTransaction
+		} as ParsedReconcileTransaction
 	}
 
 	// Transfer classification:

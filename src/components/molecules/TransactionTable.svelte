@@ -78,7 +78,7 @@
 									class:d-badge-secondary={trx.type === 'Sell'}
 									class:d-badge-success={trx.type === 'Income'}
 									class:d-badge-info={trx.type === 'Transfer'}
-									class:d-badge-accent={trx.type === 'NewBalance'}
+									class:d-badge-neutral={trx.type === 'Reconcile'}
 									class:d-badge-warning={trx.type === 'Refund'}
 								>
 									{formatTransactionType(trx.type)}

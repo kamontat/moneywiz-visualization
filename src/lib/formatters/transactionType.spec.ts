@@ -7,11 +7,11 @@ describe('formatTransactionType', () => {
 	it('should format single-word transaction types', () => {
 		expect(formatTransactionType('Expense')).toBe('Expense')
 		expect(formatTransactionType('Refund')).toBe('Refund')
+		expect(formatTransactionType('Reconcile')).toBe('Reconcile')
 	})
 
 	it('should format PascalCase transaction types', () => {
 		expect(formatTransactionType('DebtRepayment')).toBe('Debt Repayment')
-		expect(formatTransactionType('NewBalance')).toBe('New Balance')
 	})
 
 	it('should format all known transaction types without empty output', () => {
@@ -22,7 +22,7 @@ describe('formatTransactionType', () => {
 			'Expense',
 			'Giveaway',
 			'Income',
-			'NewBalance',
+			'Reconcile',
 			'Refund',
 			'Sell',
 			'Transfer',

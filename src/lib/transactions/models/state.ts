@@ -5,7 +5,7 @@ import type {
 	ParsedExpenseTransaction,
 	ParsedGiveawayTransaction,
 	ParsedIncomeTransaction,
-	ParsedNewBalanceTransaction,
+	ParsedReconcileTransaction,
 	ParsedRefundTransaction,
 	ParsedSellTransaction,
 	ParsedTransferTransaction,
@@ -19,7 +19,7 @@ export type ParsedTransaction =
 	| ParsedRefundTransaction
 	| ParsedIncomeTransaction
 	| ParsedSellTransaction
-	| ParsedNewBalanceTransaction
+	| ParsedReconcileTransaction
 	| ParsedTransferTransaction
 	| ParsedDebtTransaction
 	| ParsedDebtRepaymentTransaction

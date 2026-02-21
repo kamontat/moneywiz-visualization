@@ -140,6 +140,16 @@ let {
 | Editing `.svelte-kit/*`                         | Generated; changes overwritten                            |
 | Loading from `static/data` or `static/database` | Gitignored local-only data; unavailable on GitHub Actions |
 
+## TRANSACTION CLASSIFICATION RULES
+
+- Entity 42 (`ReconcileTransaction`) maps to `Reconcile` type — represents
+  gaps in recorded data (reconciliation entries)
+- Transactions with no category and description matching "new balance"
+  (case-insensitive) are **filtered out at import time** — these are noise,
+  not real transactions
+- `Reconcile` uses `d-badge-neutral` styling to visually signal missing data
+- For the full classification priority table, see [RULES.md](RULES.md)
+
 ## KNOWN ISSUES (TODOs in code)
 
 | Location                     | Issue                                                       |

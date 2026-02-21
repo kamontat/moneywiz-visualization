@@ -57,8 +57,8 @@ export interface ParsedSellTransaction extends ParsedBaseTransaction {
 	checkNumber: string
 }
 
-export interface ParsedNewBalanceTransaction extends ParsedBaseTransaction {
-	type: 'NewBalance'
+export interface ParsedReconcileTransaction extends ParsedBaseTransaction {
+	type: 'Reconcile'
 	payee: string
 	checkNumber: string
 }
