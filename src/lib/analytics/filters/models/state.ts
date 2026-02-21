@@ -1,6 +1,6 @@
+import type { TransactionTypeFilterMode as TypeMode } from '../byTransactionType'
 import type { FilterCategoryMode } from './category'
 import type { FilterTagMode as TagMode } from './tags'
-import type { TransactionTypeFilterMode as TypeMode } from '../byTransactionType'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 
 export interface FilterState {
