@@ -9,6 +9,16 @@ type PersistedDateRange = {
 	end?: number
 }
 
+export const getDefaultDateRange = (): { start: Date; end: Date } => {
+	const now = new Date()
+	const year = now.getFullYear()
+	const month = now.getMonth()
+	return {
+		start: new Date(year, month - 24, 1, 0, 0, 0, 0),
+		end: new Date(year, month, 0, 23, 59, 59, 999),
+	}
+}
+
 export const loadPersistedDateRange = ():
 	| FilterState['dateRange']
 	| undefined => {

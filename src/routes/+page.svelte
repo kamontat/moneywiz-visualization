@@ -24,6 +24,7 @@
 		byTags,
 	} from '$lib/analytics/filters'
 	import {
+		getDefaultDateRange,
 		loadPersistedDateRange,
 		persistDateRange,
 	} from '$lib/analytics/filters/dateRangePersistence'
@@ -61,7 +62,10 @@
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
 	let fileInfo = $state<DatabaseState | undefined>(undefined)
 	let uploading = $state(false)
-	let filterState = $state<FilterState>(emptyFilterState())
+	let filterState = $state<FilterState>({
+		...emptyFilterState(),
+		dateRange: getDefaultDateRange(),
+	})
 	let limit = $state(DEFAULT_LIMIT)
 	let didHydrateDateFilter = $state(false)
 
@@ -127,12 +131,10 @@
 			const persistedDateRange = loadPersistedDateRange()
 			const persistedFilterSelection = loadPersistedFilterSelection()
 
-			if (persistedDateRange || persistedFilterSelection) {
-				filterState = {
-					...filterState,
-					dateRange: persistedDateRange || filterState.dateRange,
-					...persistedFilterSelection,
-				}
+			filterState = {
+				...filterState,
+				dateRange: persistedDateRange || getDefaultDateRange(),
+				...persistedFilterSelection,
 			}
 			didHydrateDateFilter = true
 		})
@@ -143,12 +145,10 @@
 				const persistedDateRange = loadPersistedDateRange()
 				const persistedFilterSelection = loadPersistedFilterSelection()
 
-				if (persistedDateRange || persistedFilterSelection) {
-					filterState = {
-						...filterState,
-						dateRange: persistedDateRange || filterState.dateRange,
-						...persistedFilterSelection,
-					}
+				filterState = {
+					...filterState,
+					dateRange: persistedDateRange || getDefaultDateRange(),
+					...persistedFilterSelection,
 				}
 			})
 		})
@@ -176,63 +176,9 @@
 		persistFilterSelection(filterSelection)
 	})
 
-	const applyNonDateFilters = (
+	const applyDateFilter = (
 		transactions: ParsedTransaction[]
 	): ParsedTransaction[] => {
-		let result = transactions
-		const filters = []
-
-		if (filterState.transactionTypes.length > 0) {
-			filters.push(
-				byTransactionType({
-					types: filterState.transactionTypes,
-					mode: filterState.transactionTypeMode,
-				})
-			)
-		}
-
-		if (filterState.categories.length > 0) {
-			filters.push(
-				byCategory({
-					categories: filterState.categories,
-					mode: filterState.categoryMode,
-				})
-			)
-		}
-
-		if (filterState.tags.length > 0) {
-			filters.push(
-				byTags(
-					...filterState.tags.map((t) => ({
-						category: t.category,
-						values: t.values,
-						mode: t.mode,
-					}))
-				)
-			)
-		}
-
-		if (filterState.payees.length > 0) {
-			filters.push(byPayee({ payees: filterState.payees }))
-		}
-
-		if (filterState.accounts.length > 0) {
-			filters.push(byAccount({ accounts: filterState.accounts }))
-		}
-
-		if (filters.length > 0) {
-			result = filter(transactions, ...filters)
-		}
-
-		return result
-	}
-
-	const nonDateFilteredTransactions = $derived(
-		applyNonDateFilters(allTransactions)
-	)
-
-	const filteredTransactions = $derived.by(() => {
-		let result = nonDateFilteredTransactions
 		const dateFilters = []
 
 		if (filterState.dateRange.start && filterState.dateRange.end) {
@@ -245,12 +191,111 @@
 			dateFilters.push(byDateRange(new Date(0), filterState.dateRange.end))
 		}
 
-		if (dateFilters.length > 0) {
-			result = filter(result, ...dateFilters)
+		return dateFilters.length > 0
+			? filter(transactions, ...dateFilters)
+			: transactions
+	}
+
+	const applyTypeFilter = (
+		transactions: ParsedTransaction[]
+	): ParsedTransaction[] => {
+		if (filterState.transactionTypes.length > 0) {
+			return filter(
+				transactions,
+				byTransactionType({
+					types: filterState.transactionTypes,
+					mode: filterState.transactionTypeMode,
+				})
+			)
+		}
+		return transactions
+	}
+
+	const applySecondLayerFilters = (
+		transactions: ParsedTransaction[]
+	): ParsedTransaction[] => {
+		const filters = []
+
+		if (filterState.categories.length > 0) {
+			filters.push(
+				byCategory({
+					categories: filterState.categories,
+					mode: filterState.categoryMode,
+				})
+			)
 		}
 
-		return result
+		if (filterState.payees.length > 0) {
+			filters.push(byPayee({ payees: filterState.payees }))
+		}
+
+		if (filterState.accounts.length > 0) {
+			filters.push(byAccount({ accounts: filterState.accounts }))
+		}
+
+		return filters.length > 0 ? filter(transactions, ...filters) : transactions
+	}
+
+	const applyTagFilters = (
+		transactions: ParsedTransaction[]
+	): ParsedTransaction[] => {
+		if (filterState.tags.length > 0) {
+			return filter(
+				transactions,
+				byTags(
+					...filterState.tags.map((t) => ({
+						category: t.category,
+						values: t.values,
+						mode: t.mode,
+					}))
+				)
+			)
+		}
+		return transactions
+	}
+
+	// Cascading filter pipeline: Date → Types → Category/Payee/Account → Tags
+	const dateFilteredTransactions = $derived(applyDateFilter(allTransactions))
+
+	const dateAndTypeFilteredTransactions = $derived(
+		applyTypeFilter(dateFilteredTransactions)
+	)
+
+	const secondLayerFilteredTransactions = $derived(
+		applySecondLayerFilters(dateAndTypeFilteredTransactions)
+	)
+
+	const filteredTransactions = $derived(
+		applyTagFilters(secondLayerFilteredTransactions)
+	)
+
+	// Recalculate available Categories/Payees/Accounts when date/type filters change
+	$effect(() => {
+		const transactions = dateAndTypeFilteredTransactions
+		const id = requestAnimationFrame(() => {
+			const catTrx = transactions.filter((t) => 'category' in t)
+			availableCategories = extractCategories(
+				catTrx as { category?: ParsedCategory }[]
+			)
+			availablePayees = extractPayees(transactions as { payee?: string }[])
+			availableAccounts = extractAccounts(transactions)
+		})
+		return () => cancelAnimationFrame(id)
 	})
+
+	// Recalculate available Tags when category/payee/account filters change
+	$effect(() => {
+		const transactions = secondLayerFilteredTransactions
+		const id = requestAnimationFrame(() => {
+			tagCategories = extractTagCategories(transactions)
+		})
+		return () => cancelAnimationFrame(id)
+	})
+
+	// nonDateFilteredTransactions: used for stats comparison (all filters except date)
+	const nonDateFilteredTransactions = $derived(
+		applyTagFilters(applySecondLayerFilters(applyTypeFilter(allTransactions)))
+	)
 
 	const statsCurrentRange = $derived(
 		deriveCurrentRange(

@@ -3,6 +3,7 @@
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
 	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
+	import { getDefaultDateRange } from '$lib/analytics/filters/dateRangePersistence'
 	import { mergeClass } from '$lib/components'
 
 	type Props = BaseProps &
@@ -93,6 +94,10 @@
 				label: 'Last Year',
 				start: new Date(year - 1, 0, 1),
 				end: new Date(year - 1, 11, 31, 23, 59, 59, 999),
+			},
+			{
+				label: 'Last 2 Years',
+				...getDefaultDateRange(),
 			},
 		]
 	}

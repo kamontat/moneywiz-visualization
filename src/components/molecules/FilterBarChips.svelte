@@ -68,8 +68,9 @@
 	)}
 	{...rest}
 >
+	<!-- Group 1: Dates, Types -->
 	<FilterChipButton
-		label="Date"
+		label="Dates"
 		active={hasDateFilter}
 		expanded={openPanel === 'date'}
 		aria-expanded={openPanel === 'date'}
@@ -93,8 +94,12 @@
 		{/snippet}
 	</FilterChipButton>
 
+	<!-- Separator between Group 1 and Group 2 -->
+	<div class="h-5 w-px bg-base-content/20"></div>
+
+	<!-- Group 2: Categories, Payees, Accounts -->
 	<FilterChipButton
-		label="Category"
+		label="Categories"
 		active={hasCategoryFilter}
 		expanded={openPanel === 'category'}
 		count={filterState.categories.length}
@@ -107,7 +112,7 @@
 	</FilterChipButton>
 
 	<FilterChipButton
-		label="Payee"
+		label="Payees"
 		active={hasPayeeFilter}
 		expanded={openPanel === 'payee'}
 		count={filterState.payees.length}
@@ -121,7 +126,7 @@
 	</FilterChipButton>
 
 	<FilterChipButton
-		label="Account"
+		label="Accounts"
 		active={hasAccountFilter}
 		expanded={openPanel === 'account'}
 		count={filterState.accounts.length}
@@ -134,6 +139,12 @@
 		{/snippet}
 	</FilterChipButton>
 
+	<!-- Separator between Group 2 and Group 3 (only if tag categories exist) -->
+	{#if availableTagCategories.length > 0}
+		<div class="h-5 w-px bg-base-content/20"></div>
+	{/if}
+
+	<!-- Group 3: Tag categories -->
 	{#each availableTagCategories as tagCategory (tagCategory.category)}
 		{@const activeCount = getCategoryActiveCount(tagCategory.category)}
 		<FilterChipButton
