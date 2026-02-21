@@ -42,6 +42,7 @@
 		filterState = {
 			dateRange: { start: undefined, end: undefined },
 			transactionTypes: [],
+			transactionTypeMode: 'include',
 			categories: [],
 			categoryMode: 'include',
 			tags: [],

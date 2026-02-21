@@ -1,5 +1,6 @@
 import type { FilterCategoryMode } from './category'
 import type { FilterTagMode as TagMode } from './tags'
+import type { TransactionTypeFilterMode as TypeMode } from '../byTransactionType'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 
 export interface FilterState {
@@ -8,6 +9,7 @@ export interface FilterState {
 		end: Date | undefined
 	}
 	transactionTypes: ParsedTransactionType[]
+	transactionTypeMode: TypeMode
 	categories: string[]
 	categoryMode: FilterCategoryMode
 	tags: TagFilter[]
@@ -27,6 +29,7 @@ export const emptyFilterState = (): FilterState => ({
 		end: undefined,
 	},
 	transactionTypes: [],
+	transactionTypeMode: 'include',
 	categories: [],
 	categoryMode: 'include',
 	tags: [],
@@ -47,3 +50,4 @@ export const hasActiveFilters = (state: FilterState): boolean => {
 }
 
 export type { FilterTagMode } from './tags'
+export type { TransactionTypeFilterMode } from '../byTransactionType'

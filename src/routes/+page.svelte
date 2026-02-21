@@ -186,7 +186,7 @@
 			filters.push(
 				byTransactionType({
 					types: filterState.transactionTypes,
-					mode: 'include',
+					mode: filterState.transactionTypeMode,
 				})
 			)
 		}

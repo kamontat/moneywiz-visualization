@@ -55,6 +55,7 @@ describe('filterSelectionPersistence', () => {
 			categories: ['Food > Restaurant'],
 			categoryMode: 'exclude',
 			transactionTypes: ['Expense'],
+			transactionTypeMode: 'exclude',
 			tags: [
 				{
 					category: 'Event',
@@ -87,6 +88,10 @@ describe('filterSelectionPersistence', () => {
 		expect(localStorageMock.setItem).toHaveBeenCalledWith(
 			storageKey,
 			expect.stringContaining('"accounts":["Test Account"]')
+		)
+		expect(localStorageMock.setItem).toHaveBeenCalledWith(
+			storageKey,
+			expect.stringContaining('"transactionTypeMode":"exclude"')
 		)
 
 		// Load and verify
@@ -133,6 +138,7 @@ describe('filterSelectionPersistence', () => {
 			categories: [],
 			categoryMode: 'include',
 			transactionTypes: [],
+			transactionTypeMode: 'include',
 			tags: [],
 		})
 	})

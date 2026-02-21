@@ -1,4 +1,9 @@
-import type { FilterState, FilterCategoryMode, TagFilter } from './models'
+import type {
+	FilterCategoryMode,
+	FilterState,
+	TagFilter,
+	TransactionTypeFilterMode,
+} from './models'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 import { analytic } from '$lib/loggers'
 
@@ -11,6 +16,7 @@ type PersistedFilterSelection = {
 	categories: string[]
 	categoryMode: FilterCategoryMode
 	transactionTypes: ParsedTransactionType[]
+	transactionTypeMode: TransactionTypeFilterMode
 	tags: TagFilter[]
 }
 
@@ -28,6 +34,7 @@ export const loadPersistedFilterSelection = ():
 			categories: parsed.categories || [],
 			categoryMode: parsed.categoryMode || 'include',
 			transactionTypes: parsed.transactionTypes || [],
+			transactionTypeMode: parsed.transactionTypeMode || 'include',
 			tags: parsed.tags || [],
 		}
 	} catch (error) {
@@ -59,6 +66,7 @@ export const persistFilterSelection = (
 			categories: filterState.categories,
 			categoryMode: filterState.categoryMode,
 			transactionTypes: filterState.transactionTypes,
+			transactionTypeMode: filterState.transactionTypeMode,
 			tags: filterState.tags,
 		}
 		window.localStorage.setItem(
