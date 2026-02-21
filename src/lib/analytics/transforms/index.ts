@@ -22,6 +22,7 @@ export { byWindfallGiveaway } from './byWindfallGiveaway'
 export { byPayeeSpend } from './byPayeeSpend'
 export { byStatsDashboard } from './byStatsDashboard'
 export { byTopPayeesPerCategory } from './byTopPayeesPerCategory'
+export { toNetWorthSummary } from './byNetWorth'
 export {
 	deriveBaselineRange,
 	deriveCurrentRange,

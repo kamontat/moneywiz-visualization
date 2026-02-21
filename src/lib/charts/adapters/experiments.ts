@@ -6,6 +6,7 @@ import type {
 	CumulativeSavingsPoint,
 	DebtMonthPoint,
 	GiveawayPoint,
+	NetWorthPoint,
 	OutlierPoint,
 	PayeeCashFlowEntry,
 	RefundImpactPoint,
@@ -56,6 +57,42 @@ export const toMonthlyWaterfallData = (
 				backgroundColor: withAlpha(colors.info, 0.125, '#3b82f6'),
 				pointRadius: 2,
 				tension: 0.2,
+			},
+		],
+	}
+}
+
+export const toNetWorthChartData = (
+	points: NetWorthPoint[]
+): ChartConfiguration['data'] => {
+	const colors = getThemeColors()
+
+	return {
+		labels: points.map((point) => point.label),
+		datasets: [
+			{
+				type: 'line' as const,
+				label: 'Net Worth',
+				data: points.map((point) => point.netWorth),
+				borderColor: colors.primary,
+				backgroundColor: withAlpha(colors.primary, 0.16, '#6366f1'),
+				fill: true,
+				tension: 0.3,
+				pointRadius: 2,
+			},
+			{
+				type: 'bar' as const,
+				label: 'Monthly Change',
+				data: points.map((point) => point.monthlyChange),
+				backgroundColor: points.map((point) => {
+					if (point.monthlyChange > 0) {
+						return withAlpha(colors.success, 0.56, '#22c55e')
+					}
+					if (point.monthlyChange < 0) {
+						return withAlpha(colors.error, 0.56, '#ef4444')
+					}
+					return withAlpha(colors.neutral, 0.4, '#6b7280')
+				}),
 			},
 		],
 	}

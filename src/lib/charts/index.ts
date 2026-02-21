@@ -13,6 +13,7 @@ export {
 	toDebtData,
 	toGiveawayData,
 	toMonthlyWaterfallData,
+	toNetWorthChartData,
 	toOutlierTimelineData,
 	toPayeeDebtData,
 	toPayeeGiveawayData,

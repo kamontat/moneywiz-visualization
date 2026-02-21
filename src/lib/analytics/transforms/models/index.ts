@@ -35,6 +35,7 @@ export type {
 	WindfallGiveawayPoint,
 	WindfallPoint,
 } from './experiments'
+export type { NetWorthPoint, NetWorthSummary } from './netWorth'
 export type {
 	TopPayeeEntry,
 	TopPayeesCategoryGroup,
