@@ -52,7 +52,8 @@
 	})
 
 	const baseClass = newTwClass([
-		'd-stat',
+		'relative',
+		'overflow-hidden',
 		'w-full',
 		'min-w-0',
 		'rounded-box',
@@ -67,20 +68,36 @@
 	{...rest}
 >
 	{#if icon}
-		<div class={mergeClass(['d-stat-figure'], iconClass(variant))}>
+		<div
+			class={mergeClass(
+				['pointer-events-none', 'absolute', 'top-4', 'right-4', 'opacity-80'],
+				iconClass(variant)
+			)}
+		>
 			{@render icon()}
 		</div>
 	{/if}
-	<div class="d-stat-title text-base-content/70">{title}</div>
+	<div class="pr-12 text-sm font-medium text-base-content/70">{title}</div>
 	<div
 		class={mergeClass(
-			['d-stat-value', 'min-w-0', 'text-xl', 'md:text-2xl', 'xl:text-3xl'],
+			[
+				'min-w-0',
+				'pr-12',
+				'text-xl',
+				'leading-tight',
+				'font-bold',
+				'tracking-tight',
+				'md:text-2xl',
+				'xl:text-3xl',
+			],
 			valueClass(variant)
 		)}
 	>
 		{value}
 	</div>
 	{#if description}
-		<div class="d-stat-desc mt-1 text-base-content/50">{description}</div>
+		<div class="mt-2 text-sm break-words text-base-content/50">
+			{description}
+		</div>
 	{/if}
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { StatsRange } from '$lib/analytics/transforms/models'
+	import type { StatsRange, Summarize } from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
@@ -27,14 +27,19 @@
 			cashFlowCurrentRange?: StatsRange | null
 			cashFlowBaselineRange?: StatsRange | null
 			totalCount?: number
-			limit?: number
+			page?: number
+			pageSize?: number
+			totalPages?: number
 			hasData?: boolean
-			uploading?: boolean
+			loading?: boolean
 			statsTransactions?: ParsedTransaction[]
 			statsBaselineTransactions?: ParsedTransaction[]
 			statsCurrentRange?: StatsRange | null
 			statsBaselineRange?: StatsRange | null
-			onlimitchange?: (limit: number) => void
+			summary?: Summarize
+			baselineSummary?: Summarize
+			onpagechange?: (page: number) => void
+			onpagesizechange?: (pageSize: number) => void
 		}>
 
 	let {
@@ -44,26 +49,57 @@
 		cashFlowCurrentRange = null,
 		cashFlowBaselineRange = null,
 		totalCount = 0,
-		limit = 0,
+		page = 1,
+		pageSize = 10,
+		totalPages = 1,
 		hasData = false,
-		uploading = false,
+		loading = false,
 		statsTransactions = [],
 		statsBaselineTransactions = [],
 		statsCurrentRange = null,
 		statsBaselineRange = null,
-		onlimitchange,
+		summary,
+		baselineSummary,
+		onpagechange,
+		onpagesizechange,
 		class: className,
 		...rest
 	}: Props = $props()
 
-	let activeTab = $state('analytics')
+	let activeTab = $state('overview')
 
 	const tabs = [
-		{ id: 'analytics', label: 'Analytics', icon: ChartPieIcon },
-		{ id: 'categories', label: 'Categories', icon: FolderIcon },
-		{ id: 'stats', label: 'Stats', icon: TrendingUpIcon },
-		{ id: 'cashflow', label: 'Cash Flow', icon: LandmarkIcon },
-		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
+		{
+			id: 'overview',
+			label: 'Overview',
+			icon: ChartPieIcon,
+			question: 'Summary of financial position for the selected period.',
+		},
+		{
+			id: 'flow',
+			label: 'Flow',
+			icon: LandmarkIcon,
+			question:
+				'Trend and baseline comparison of income, expenses, and net flow.',
+		},
+		{
+			id: 'drivers',
+			label: 'Drivers',
+			icon: FolderIcon,
+			question: 'Breakdown of categories and payees contributing to results.',
+		},
+		{
+			id: 'risk',
+			label: 'Risk',
+			icon: TrendingUpIcon,
+			question: 'Stability, anomalies, and data-quality indicators over time.',
+		},
+		{
+			id: 'transactions',
+			label: 'Transactions',
+			icon: BanknoteIcon,
+			question: 'Detailed transaction records behind current analytics.',
+		},
 	]
 </script>
 
@@ -73,8 +109,8 @@
 	{/if}
 
 	<div class="rounded-box bg-base-100 shadow-sm">
-		{#key `${$themeStore.theme.name}:${activeTab}:${hasData}:${uploading}`}
-			{#if uploading}
+		{#key `${$themeStore.theme.name}:${activeTab}:${hasData}:${loading}`}
+			{#if loading}
 				<div class="flex flex-col gap-4 p-4 sm:p-6">
 					<div class="flex flex-col gap-4">
 						<Skeleton variant="text" class="h-6 w-48" />
@@ -96,16 +132,24 @@
 					<TransactionPanel
 						{transactions}
 						{totalCount}
-						{limit}
-						{onlimitchange}
+						{page}
+						{pageSize}
+						{totalPages}
+						{onpagechange}
+						{onpagesizechange}
 						title="Transactions"
+						question="Detailed transaction records behind current analytics."
 					/>
 				</div>
-			{:else if activeTab === 'analytics'}
+			{:else if activeTab === 'overview'}
 				<div class="p-4 sm:p-6">
-					<AnalyticsPanel transactions={_allTransactions} />
+					<AnalyticsPanel
+						transactions={_allTransactions}
+						{summary}
+						{baselineSummary}
+					/>
 				</div>
-			{:else if activeTab === 'cashflow'}
+			{:else if activeTab === 'flow'}
 				<div class="p-4 sm:p-6">
 					<CashFlowPanel
 						transactions={_allTransactions}
@@ -114,7 +158,7 @@
 						baselineRange={cashFlowBaselineRange}
 					/>
 				</div>
-			{:else if activeTab === 'stats'}
+			{:else if activeTab === 'risk'}
 				<div class="p-4 sm:p-6">
 					<StatsPanel
 						transactions={statsTransactions}
@@ -123,7 +167,7 @@
 						baselineRange={statsBaselineRange}
 					/>
 				</div>
-			{:else if activeTab === 'categories'}
+			{:else if activeTab === 'drivers'}
 				<div class="p-4 sm:p-6">
 					<CategoriesPanel transactions={_allTransactions} />
 				</div>

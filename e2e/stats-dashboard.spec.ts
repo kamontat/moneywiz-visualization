@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test'
 
 import { generateSQLite } from './utils/sqlite-generator'
 
-test.describe('Stats dashboard', () => {
+test.describe('Risk dashboard', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/')
 	})
 
-	test('renders stats panels without numeric title prefixes', async ({
+	test('renders risk panels without legacy sections', async ({
 		page,
 	}, testInfo) => {
 		const buffer = generateSQLite({
@@ -48,29 +48,32 @@ test.describe('Stats dashboard', () => {
 			timeout: 10000,
 		})
 
-		await page.getByRole('tab', { name: 'Stats' }).click()
+		await page.getByRole('tab', { name: 'Risk' }).click()
 
 		for (const title of [
-			'KPI Snapshot',
-			'Period Comparison',
 			'Money Flow Composition',
-			'Concentration',
-			'Risk & Stability',
-			'Cadence & Hygiene',
+			'Risk and Stability',
+			'Cadence and Data Quality',
 		]) {
 			await expect(page.getByText(title, { exact: true })).toBeVisible()
 		}
 
-		for (const oldTitle of [
-			'1) KPI Snapshot',
-			'2) Period Comparison',
-			'3) Money Flow Composition',
-			'4) Concentration',
-			'5) Risk & Stability',
-			'6) Cadence & Hygiene',
-		]) {
-			await expect(page.getByText(oldTitle, { exact: true })).toHaveCount(0)
-		}
+		await expect(
+			page.getByText('Daily net-flow intensity calendar.')
+		).toBeVisible()
+		await expect(page.getByText('KPI Snapshot', { exact: true })).toHaveCount(0)
+		await expect(
+			page.getByText('Period Comparison', { exact: true })
+		).toHaveCount(0)
+		await expect(page.getByText('Concentration', { exact: true })).toHaveCount(
+			0
+		)
+		await expect(
+			page.getByText('Risk & Stability', { exact: true })
+		).toHaveCount(0)
+		await expect(
+			page.getByText('Cadence & Hygiene', { exact: true })
+		).toHaveCount(0)
 
 		const screenshotPath = testInfo.outputPath('stats-dashboard.png')
 		await page.screenshot({ path: screenshotPath, fullPage: true })

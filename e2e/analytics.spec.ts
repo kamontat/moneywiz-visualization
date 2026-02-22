@@ -50,31 +50,48 @@ const uploadFixture = async (page: import('@playwright/test').Page) => {
 	await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 }
 
-test.describe('Analytics tab', () => {
+test.describe('Overview tab', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/')
 	})
 
-	test('renders net worth panel with cards and chart', async ({ page }) => {
+	test('renders overview panels with snapshot and trend', async ({ page }) => {
 		await uploadFixture(page)
-		await page.getByRole('tab', { name: 'Analytics' }).click()
+		await page.getByRole('tab', { name: 'Overview' }).click()
 
-		await expect(page.getByRole('heading', { name: 'Net Worth' })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'Financial Snapshot' })
+		).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'Net Worth Trend' })
+		).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'Top Expense Drivers' })
+		).toBeVisible()
+		await expect(page.getByText('Total Income')).toBeVisible()
+		await expect(page.getByText('Total Expenses')).toBeVisible()
+		await expect(page.getByText('Net Flow')).toBeVisible()
 		await expect(page.getByText('Current Net Worth')).toBeVisible()
 		await expect(page.getByText('Monthly Change')).toBeVisible()
 		await expect(page.getByText('Peak Net Worth')).toBeVisible()
 		await expect(page.getByText('Avg Monthly Change')).toBeVisible()
 		await expect(page.locator('canvas').first()).toBeVisible()
 		await expect(
-			page.getByText('Tracks cumulative balance from the period start')
-		).toBeVisible()
+			page.getByRole('heading', { name: 'Monthly Waterfall' })
+		).toHaveCount(0)
+		await expect(
+			page.getByRole('heading', { name: 'Income vs Expenses' })
+		).toHaveCount(0)
+		await expect(
+			page.getByRole('heading', { name: 'Payee Spend Insights' })
+		).toHaveCount(0)
 	})
 
-	test('shows analytics empty state when filters remove all transactions', async ({
+	test('shows overview empty state when filters remove all transactions', async ({
 		page,
 	}) => {
 		await uploadFixture(page)
-		await page.getByRole('tab', { name: 'Analytics' }).click()
+		await page.getByRole('tab', { name: 'Overview' }).click()
 		await page.getByRole('button', { name: 'Date' }).click()
 
 		await page.locator('#start-date').fill('2030-01-01')

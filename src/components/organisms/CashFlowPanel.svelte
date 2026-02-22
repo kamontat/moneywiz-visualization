@@ -10,10 +10,8 @@
 
 	import Panel from '$components/atoms/Panel.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
-	import ExpenseBreakdownChart from '$components/molecules/ExpenseBreakdownChart.svelte'
 	import ExperimentMonthlyWaterfall from '$components/molecules/ExperimentMonthlyWaterfall.svelte'
-	import IncomeBreakdownChart from '$components/molecules/IncomeBreakdownChart.svelte'
-	import IncomeExpenseComparisonChart from '$components/molecules/IncomeExpenseComparisonChart.svelte'
+	import IncomeExpenseChart from '$components/molecules/IncomeExpenseChart.svelte'
 	import { byCashFlowDashboard, transform } from '$lib/analytics/transforms'
 	import { mergeClass } from '$lib/components'
 	import { formatCurrency } from '$lib/formatters/amount'
@@ -146,7 +144,10 @@
 			</p>
 		</Panel>
 	{:else}
-		<Panel title="Cash Flow Snapshot">
+		<Panel
+			title="Flow Snapshot"
+			question="Key flow KPIs and baseline deltas for the selected range."
+		>
 			<p class="mb-4 text-sm text-base-content/70">
 				Current: {dashboard.currentRange.label}
 				{#if dashboard.baselineRange}
@@ -165,38 +166,18 @@
 			</div>
 		</Panel>
 
-		<Panel title="Inflow vs Outflow Trend">
-			<p class="mb-3 text-sm text-base-content/70">
-				Compares period income and expenses with net difference.
-			</p>
-			<IncomeExpenseComparisonChart timeSeries={dashboard.trend} />
+		<Panel
+			title="Income and Expense Trend"
+			question="Income and expense trajectories over time."
+		>
+			<IncomeExpenseChart timeSeries={dashboard.trend} />
 		</Panel>
 
-		<Panel title="Monthly Flow Decomposition">
-			<p class="mb-3 text-sm text-base-content/70">
-				Breaks monthly net flow into income, expense, debt, and buy/sell impact.
-			</p>
+		<Panel
+			title="Monthly Flow Decomposition"
+			question="Monthly flow components with running end-balance trend."
+		>
 			<ExperimentMonthlyWaterfall steps={dashboard.decomposition} />
-		</Panel>
-
-		<Panel title="Category Drivers">
-			<p class="mb-3 text-sm text-base-content/70">
-				Top inflow and outflow category shares for the current period.
-			</p>
-			<div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-				<div>
-					<p class="mb-2 text-sm font-semibold text-base-content/80">
-						Inflow Categories
-					</p>
-					<IncomeBreakdownChart categoryData={dashboard.categoryDrivers} />
-				</div>
-				<div>
-					<p class="mb-2 text-sm font-semibold text-base-content/80">
-						Outflow Categories
-					</p>
-					<ExpenseBreakdownChart categoryData={dashboard.categoryDrivers} />
-				</div>
-			</div>
 		</Panel>
 	{/if}
 </div>

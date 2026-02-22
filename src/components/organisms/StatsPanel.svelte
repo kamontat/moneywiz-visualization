@@ -2,8 +2,6 @@
 	import type { ChartData } from 'chart.js'
 	import type {
 		StatsDashboard,
-		StatsDeltaMetric,
-		StatsKpiItem,
 		StatsRange,
 	} from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
@@ -12,13 +10,16 @@
 
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import Panel from '$components/atoms/Panel.svelte'
-	import StatCard from '$components/atoms/StatCard.svelte'
-	import { byStatsDashboard, transform } from '$lib/analytics/transforms'
+	import ExperimentCalendarHeatmap from '$components/molecules/ExperimentCalendarHeatmap.svelte'
+	import {
+		byCalendarHeatmap,
+		byStatsDashboard,
+		transform,
+	} from '$lib/analytics/transforms'
 	import {
 		barChartOptions,
 		doughnutChartOptions,
 		getCategoryPalette,
-		horizontalBarChartOptions,
 	} from '$lib/charts'
 	import { mergeClass } from '$lib/components'
 	import { formatCurrency } from '$lib/formatters/amount'
@@ -48,12 +49,12 @@
 			byStatsDashboard(baselineTransactions, {
 				currentRange: currentRange ?? undefined,
 				baselineRange,
-				topCategoryLimit: 5,
-				topPayeeLimit: 8,
 				volatilityLimit: 5,
 			})
 		)
 	})
+
+	const calendarCells = $derived(transform(transactions, byCalendarHeatmap))
 
 	const flowMixChartData = $derived.by<ChartData<'doughnut'>>(() => {
 		if (!stats) return { labels: [], datasets: [] }
@@ -66,26 +67,6 @@
 					data: stats.flowMix.map((item) => Math.abs(item.amount)),
 					backgroundColor: colors,
 					borderWidth: 2,
-				},
-			],
-		}
-	})
-
-	const concentrationChartData = $derived.by<ChartData<'bar'>>(() => {
-		if (!stats || stats.concentration.topCategories.length === 0) {
-			return { labels: [], datasets: [] }
-		}
-
-		const colors = getCategoryPalette(stats.concentration.topCategories.length)
-
-		return {
-			labels: stats.concentration.topCategories.map((item) => item.name),
-			datasets: [
-				{
-					label: 'Share',
-					data: stats.concentration.topCategories.map((item) => item.share),
-					backgroundColor: colors,
-					borderWidth: 0,
 				},
 			],
 		}
@@ -111,93 +92,14 @@
 		}
 	})
 
-	const weekdayChartData = $derived.by<ChartData<'bar'>>(() => {
-		if (!stats) return { labels: [], datasets: [] }
-		const colors = getCategoryPalette(stats.cadence.weekdaySpend.length)
-		return {
-			labels: stats.cadence.weekdaySpend.map((item) => item.weekday),
-			datasets: [
-				{
-					label: 'Spend',
-					data: stats.cadence.weekdaySpend.map((item) => item.amount),
-					backgroundColor: colors,
-					borderWidth: 0,
-				},
-			],
-		}
-	})
-
 	const flowMixOptions = $derived(doughnutChartOptions())
-	const concentrationOptions = $derived(horizontalBarChartOptions())
 	const regimeOptions = $derived(barChartOptions())
-	const weekdayOptions = $derived(barChartOptions())
 
 	const formatPercent = (value: number): string => {
 		return `${value.toLocaleString('th-TH', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		})}%`
-	}
-
-	const formatMetricValue = (metric: {
-		unit: string
-		value: number
-	}): string => {
-		if (metric.unit === 'currency') return formatCurrency(metric.value)
-		if (metric.unit === 'percent') return formatPercent(metric.value)
-		return metric.value.toLocaleString('th-TH', {
-			maximumFractionDigits: 2,
-		})
-	}
-
-	const formatDelta = (metric: StatsDeltaMetric | StatsKpiItem): string => {
-		if (metric.delta.delta === null || metric.delta.baseline === null) {
-			return 'No baseline period data'
-		}
-
-		const deltaValue = metric.delta.delta
-		const sign = deltaValue > 0 ? '+' : ''
-		const isPercentMetric =
-			('unit' in metric && metric.unit === 'percent') ||
-			metric.id === 'savingsRate'
-		const valueLabel = isPercentMetric
-			? `${sign}${deltaValue.toLocaleString('th-TH', {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2,
-				})}pp`
-			: `${sign}${formatCurrency(deltaValue)}`
-
-		if (metric.delta.deltaPct === null) {
-			return `vs baseline: ${valueLabel}`
-		}
-
-		return `vs baseline: ${valueLabel} (${sign}${metric.delta.deltaPct.toLocaleString(
-			'th-TH',
-			{ minimumFractionDigits: 2, maximumFractionDigits: 2 }
-		)}%)`
-	}
-
-	const isFavorable = (
-		metric: StatsDeltaMetric | StatsKpiItem
-	): boolean | null => {
-		if (metric.delta.delta === null) return null
-		if (metric.betterWhen === 'neutral') return null
-		if (metric.betterWhen === 'higher') return metric.delta.delta >= 0
-		return metric.delta.delta <= 0
-	}
-
-	const metricVariant = (
-		metric: StatsDeltaMetric | StatsKpiItem
-	): 'plain' | 'income' | 'expense' | 'neutral' | 'highlight' => {
-		const favorable = isFavorable(metric)
-		if (favorable === null) return 'neutral'
-		return favorable ? 'income' : 'expense'
-	}
-
-	const concentrationLabel = (hhi: number): string => {
-		if (hhi >= 0.25) return 'High concentration'
-		if (hhi >= 0.15) return 'Moderate concentration'
-		return 'Diversified'
 	}
 
 	let mixedCurrencyNotificationId = $state<string | undefined>(undefined)
@@ -245,52 +147,10 @@
 			</p>
 		</Panel>
 	{:else}
-		<Panel title="KPI Snapshot">
-			<p class="mb-4 text-sm text-base-content/70">
-				Current: {stats.currentRange.label}
-				{#if stats.baselineRange}
-					• Baseline: {stats.baselineRange.label}
-				{/if}
-			</p>
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-				{#each stats.kpis as metric (metric.id)}
-					<StatCard
-						variant={metricVariant(metric)}
-						title={metric.label}
-						value={formatMetricValue(metric)}
-						description={formatDelta(metric)}
-					/>
-				{/each}
-			</div>
-		</Panel>
-
-		<Panel title="Period Comparison">
-			<div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-				{#each stats.comparison as metric (metric.id)}
-					<div
-						class={mergeClass(
-							['rounded-box', 'border', 'p-4', 'transition-colors'],
-							metricVariant(metric) === 'income'
-								? 'border-success/30 bg-success/10'
-								: undefined,
-							metricVariant(metric) === 'expense'
-								? 'border-error/30 bg-error/10'
-								: undefined,
-							metricVariant(metric) === 'neutral'
-								? 'border-base-300 bg-base-200/40'
-								: undefined
-						)}
-					>
-						<p class="text-sm text-base-content/70">{metric.label}</p>
-						<p class="mt-2 text-sm font-medium text-base-content">
-							{formatDelta(metric)}
-						</p>
-					</div>
-				{/each}
-			</div>
-		</Panel>
-
-		<Panel title="Money Flow Composition">
+		<Panel
+			title="Money Flow Composition"
+			question="Share of activity by transaction flow type."
+		>
 			<div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
 				<div class="mx-auto w-full max-w-sm">
 					<ChartCanvas
@@ -322,71 +182,10 @@
 			</div>
 		</Panel>
 
-		<Panel title="Concentration">
-			<div class="grid grid-cols-1 gap-6 2xl:grid-cols-2">
-				<div>
-					<p class="mb-3 text-sm text-base-content/70">
-						Expense categories: {concentrationLabel(
-							stats.concentration.categoryHhi
-						)}
-						(HHI {stats.concentration.categoryHhi.toFixed(3)})
-					</p>
-					{#if (concentrationChartData.labels?.length ?? 0) > 0}
-						<ChartCanvas
-							type="bar"
-							data={concentrationChartData}
-							options={concentrationOptions}
-						/>
-					{:else}
-						<p class="py-8 text-center text-sm text-base-content/60">
-							No category concentration data.
-						</p>
-					{/if}
-				</div>
-
-				<div class="grid grid-cols-1 gap-6">
-					<div class="overflow-x-auto">
-						<p class="mb-2 text-sm font-semibold text-base-content/80">
-							Top Categories
-						</p>
-						<table class="d-table-compact d-table">
-							<tbody>
-								{#each stats.concentration.topCategories as item (item.name)}
-									<tr>
-										<td>{item.name}</td>
-										<td class="text-right">{formatCurrency(item.amount)}</td>
-										<td class="text-right">{formatPercent(item.share)}</td>
-									</tr>
-								{/each}
-							</tbody>
-						</table>
-					</div>
-
-					<div class="overflow-x-auto">
-						<p class="mb-2 text-sm font-semibold text-base-content/80">
-							Top Payees
-						</p>
-						<p class="mb-2 text-xs text-base-content/60">
-							{concentrationLabel(stats.concentration.payeeHhi)} (HHI
-							{stats.concentration.payeeHhi.toFixed(3)})
-						</p>
-						<table class="d-table-compact d-table">
-							<tbody>
-								{#each stats.concentration.topPayees as item (item.name)}
-									<tr>
-										<td>{item.name}</td>
-										<td class="text-right">{formatCurrency(item.amount)}</td>
-										<td class="text-right">{formatPercent(item.share)}</td>
-									</tr>
-								{/each}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</Panel>
-
-		<Panel title="Risk & Stability">
+		<Panel
+			title="Risk and Stability"
+			question="Regime distribution and most volatile spending categories."
+		>
 			<div class="grid grid-cols-1 gap-6 2xl:grid-cols-2">
 				<div>
 					<p class="mb-3 text-sm text-base-content/70">
@@ -432,14 +231,16 @@
 			</div>
 		</Panel>
 
-		<Panel title="Cadence & Hygiene">
+		<Panel
+			title="Cadence and Data Quality"
+			question="Daily activity heatmap with cadence and metadata quality indicators."
+		>
 			<div class="grid grid-cols-1 gap-6 2xl:grid-cols-2">
 				<div>
-					<ChartCanvas
-						type="bar"
-						data={weekdayChartData}
-						options={weekdayOptions}
-					/>
+					<p class="mb-3 text-sm text-base-content/70">
+						Daily net-flow intensity calendar.
+					</p>
+					<ExperimentCalendarHeatmap cells={calendarCells} />
 				</div>
 
 				<div class="space-y-2 text-sm">

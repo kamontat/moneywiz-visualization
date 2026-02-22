@@ -54,60 +54,28 @@ const uploadFixture = async (page: import('@playwright/test').Page) => {
 	await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 }
 
-test.describe('Experiments tab', () => {
+test.describe('Flow tab', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/')
 	})
 
-	test('renders all experiment panels and updates target input', async ({
-		page,
-	}) => {
+	test('renders redesigned flow panels', async ({ page }) => {
 		await uploadFixture(page)
 
-		await page.getByRole('tab', { name: 'Experiments' }).click()
+		await page.getByRole('tab', { name: 'Flow' }).click()
 
 		for (const title of [
-			'1) Category Volatility',
-			'2) Category Bubble',
-			'3) Savings vs Target',
-			'4) Refund Impact',
-			'5) Regime Timeline',
-			'6) Outlier Timeline',
-		]) {
-			await expect(page.getByText(title)).toBeVisible()
-		}
-
-		await expect(page.locator('canvas').first()).toBeVisible()
-
-		const input = page.locator('input[type="number"]').first()
-		await input.fill('999')
-		await expect(input).toHaveValue('999')
-	})
-})
-
-test.describe('Cash Flow tab', () => {
-	test.beforeEach(async ({ page }) => {
-		await page.goto('/')
-	})
-
-	test('renders redesigned cash flow panels', async ({ page }) => {
-		await uploadFixture(page)
-
-		await page.getByRole('tab', { name: 'Cash Flow' }).click()
-
-		for (const title of [
-			'Cash Flow Snapshot',
-			'Inflow vs Outflow Trend',
+			'Flow Snapshot',
+			'Income and Expense Trend',
 			'Monthly Flow Decomposition',
-			'Category Drivers',
 		]) {
 			await expect(page.getByRole('heading', { name: title })).toBeVisible()
 		}
 
 		for (const oldTitle of [
-			'1) Debt & Repayment',
-			'2) Windfall',
-			'3) Giveaway',
+			'Category Drivers',
+			'Inflow vs Outflow Trend',
+			'Cash Flow Snapshot',
 		]) {
 			await expect(page.getByText(oldTitle, { exact: true })).toHaveCount(0)
 		}
@@ -118,7 +86,7 @@ test.describe('Cash Flow tab', () => {
 	}) => {
 		await uploadFixture(page)
 
-		await page.getByRole('tab', { name: 'Cash Flow' }).click()
+		await page.getByRole('tab', { name: 'Flow' }).click()
 		await page.getByRole('button', { name: 'Date' }).click()
 
 		await page.locator('#start-date').fill('2026-01-01')

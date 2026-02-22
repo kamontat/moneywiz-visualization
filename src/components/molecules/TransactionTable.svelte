@@ -10,15 +10,33 @@
 		CustomProps<{
 			transactions: ParsedTransaction[]
 			totalCount?: number
+			page?: number
+			pageSize?: number
 		}>
 
-	let { transactions, totalCount = 0, class: className }: Props = $props()
+	let {
+		transactions,
+		totalCount = 0,
+		page = 1,
+		pageSize = 10,
+		class: className,
+	}: Props = $props()
 
 	const stripNumberPrefix = (name: string): string =>
 		name.replace(/^\d+\s+/, '')
 
 	const baseClass = newTwClass(['w-full'])
 	let finalClass = $derived(mergeClass(baseClass, className))
+	const pageStart = $derived.by(() => {
+		if (transactions.length === 0 || totalCount === 0) return 0
+		const safePage = Math.max(1, Math.trunc(page))
+		const safePageSize = Math.max(1, Math.trunc(pageSize))
+		return (safePage - 1) * safePageSize + 1
+	})
+	const pageEnd = $derived.by(() => {
+		if (transactions.length === 0 || totalCount === 0) return 0
+		return Math.min(totalCount, pageStart + transactions.length - 1)
+	})
 </script>
 
 <div class={finalClass}>
@@ -153,7 +171,11 @@
 		<p class="mt-4 text-sm text-base-content/60">
 			Showing
 			<span class="font-medium text-base-content">
-				{Math.min(transactions.length, totalCount)}
+				{pageStart.toLocaleString()}
+			</span>
+			-
+			<span class="font-medium text-base-content">
+				{pageEnd.toLocaleString()}
 			</span>
 			of
 			<span class="font-medium text-base-content">

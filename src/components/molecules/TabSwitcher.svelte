@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { ComponentType } from 'svelte'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import CircleHelpIcon from '@iconify-svelte/lucide/circle-help'
+
 	import { mergeClass } from '$lib/components'
 
 	type Tab = {
 		id: string
 		label: string
 		icon?: ComponentType
+		question?: string
 	}
 
 	type Props = BaseProps &
@@ -43,7 +46,16 @@
 				{@const Icon = tab.icon}
 				<Icon class="size-4" />
 			{/if}
-			{tab.label}
+			<span>{tab.label}</span>
+			{#if tab.question}
+				<span
+					class="mw-tooltip d-tooltip d-tooltip-bottom text-base-content/60"
+					data-tip={tab.question}
+					aria-hidden="true"
+				>
+					<CircleHelpIcon class="size-3.5" />
+				</span>
+			{/if}
 		</button>
 	{/each}
 </div>

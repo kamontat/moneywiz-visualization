@@ -14,7 +14,6 @@
 	import BodyHeader from '$components/organisms/BodyHeader.svelte'
 	import Dashboard from '$components/organisms/Dashboard.svelte'
 	import FilterBar from '$components/organisms/FilterBar.svelte'
-	import QuickSummary from '$components/organisms/QuickSummary.svelte'
 	import {
 		filter,
 		byAccount,
@@ -57,7 +56,8 @@
 		getTransactions,
 	} from '$lib/transactions'
 
-	const DEFAULT_LIMIT = 20
+	const DEFAULT_TRANSACTION_PAGE_SIZE = 10
+	const TRANSACTION_PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 
 	let allTransactions = $state<ParsedTransaction[]>([])
 	let totalCount = $state(0)
@@ -67,12 +67,15 @@
 	let tagCategories = $state(extractTagCategories([]))
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
 	let fileInfo = $state<DatabaseState | undefined>(undefined)
+	let dataLoading = $state(true)
+	let dataLoadRequestId = 0
 	let uploading = $state(false)
 	let filterState = $state<FilterState>({
 		...emptyFilterState(),
 		dateRange: getDefaultDateRange(),
 	})
-	let limit = $state(DEFAULT_LIMIT)
+	let transactionPage = $state(1)
+	let transactionPageSize = $state(DEFAULT_TRANSACTION_PAGE_SIZE)
 	let didHydrateDateFilter = $state(false)
 	let fxRateTable = $state<FxRateTable>({
 		baseCurrency: 'THB',
@@ -166,15 +169,14 @@
 		}
 	}
 
-	onMount(() => {
-		cachedFilterOptions = get(filterOptionsStore)
-		const unsubFilterOptions = filterOptionsStore.subscribe(
-			(options: FilterOptions | undefined) => {
-				cachedFilterOptions = options
-			}
-		)
-		loadData().then(() => {
-			// Load persisted filters after data is loaded
+	const reloadData = async () => {
+		const requestId = ++dataLoadRequestId
+		dataLoading = true
+
+		try {
+			await loadData()
+			if (requestId !== dataLoadRequestId) return
+
 			const persistedDateRange = loadPersistedDateRange()
 			const persistedFilterSelection = loadPersistedFilterSelection()
 
@@ -184,20 +186,23 @@
 				...persistedFilterSelection,
 			}
 			didHydrateDateFilter = true
-		})
+		} finally {
+			if (requestId === dataLoadRequestId) {
+				dataLoading = false
+			}
+		}
+	}
+
+	onMount(() => {
+		cachedFilterOptions = get(filterOptionsStore)
+		const unsubFilterOptions = filterOptionsStore.subscribe(
+			(options: FilterOptions | undefined) => {
+				cachedFilterOptions = options
+			}
+		)
 		const unsubDatabaseStore = databaseStore.subscribe((state) => {
 			fileInfo = state
-			loadData().then(() => {
-				// Re-apply persisted filters after data reload
-				const persistedDateRange = loadPersistedDateRange()
-				const persistedFilterSelection = loadPersistedFilterSelection()
-
-				filterState = {
-					...filterState,
-					dateRange: persistedDateRange || getDefaultDateRange(),
-					...persistedFilterSelection,
-				}
-			})
+			void reloadData()
 		})
 		const unsubDatabaseUploading = databaseUploading.subscribe((u: boolean) => {
 			uploading = u
@@ -515,17 +520,52 @@
 		return transform(cashFlowBaselineTransactions, bySummarize())
 	})
 
-	const displayTransactions = $derived(
-		filteredTransactions
-			.toSorted((a, b) => b.date.getTime() - a.date.getTime())
-			.slice(0, limit)
+	const sortedFilteredTransactions = $derived(
+		filteredTransactions.toSorted((a, b) => b.date.getTime() - a.date.getTime())
 	)
-	const filteredCount = $derived(filteredTransactions.length)
+
+	const filteredCount = $derived(sortedFilteredTransactions.length)
+
+	const totalTransactionPages = $derived(
+		Math.max(1, Math.ceil(filteredCount / transactionPageSize))
+	)
+
+	$effect(() => {
+		if (sortedFilteredTransactions) {
+			transactionPage = 1
+		}
+	})
+
+	const setTransactionPage = (nextPage: number) => {
+		const safePage = Math.min(
+			totalTransactionPages,
+			Math.max(1, Math.trunc(nextPage))
+		)
+		transactionPage = safePage
+	}
+
+	const setTransactionPageSize = (nextPageSize: number) => {
+		if (!TRANSACTION_PAGE_SIZE_OPTIONS.includes(nextPageSize)) return
+		transactionPageSize = nextPageSize
+		transactionPage = 1
+	}
+
+	$effect(() => {
+		if (transactionPage > totalTransactionPages) {
+			transactionPage = totalTransactionPages
+		}
+	})
+
+	const displayTransactions = $derived.by(() => {
+		const start = (transactionPage - 1) * transactionPageSize
+		const end = start + transactionPageSize
+		return sortedFilteredTransactions.slice(start, end)
+	})
 </script>
 
 <AppBody>
 	<BodyHeader
-		fileName={fileInfo?.fileName}
+		fileName={dataLoading ? 'Loading saved data...' : fileInfo?.fileName}
 		startDate={filteredSummary?.dateRange.start}
 		endDate={filteredSummary?.dateRange.end}
 		baselineStartDate={cashFlowBaselineRange?.start}
@@ -546,14 +586,6 @@
 		/>
 	{/if}
 
-	{#if filteredSummary}
-		<QuickSummary
-			summary={filteredSummary}
-			baselineSummary={quickSummaryBaseline}
-			class="mt-6"
-		/>
-	{/if}
-
 	<Dashboard
 		transactions={displayTransactions}
 		allTransactions={convertedFilteredTransactions}
@@ -565,9 +597,14 @@
 		{statsCurrentRange}
 		{statsBaselineRange}
 		totalCount={filteredCount}
-		{uploading}
-		{limit}
-		onlimitchange={(newLimit) => (limit = newLimit)}
+		loading={uploading || dataLoading || fxRateLoading}
+		page={transactionPage}
+		pageSize={transactionPageSize}
+		totalPages={totalTransactionPages}
+		summary={filteredSummary}
+		baselineSummary={quickSummaryBaseline}
+		onpagechange={setTransactionPage}
+		onpagesizechange={setTransactionPageSize}
 		hasData={totalCount > 0}
 		class="mt-6 mb-8"
 	/>

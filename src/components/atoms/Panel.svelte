@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import CircleHelpIcon from '@iconify-svelte/lucide/circle-help'
+
 	import { mergeClass, newTwClass } from '$lib/components'
 
 	type Props = BaseProps &
 		CustomProps<{
 			title?: string
+			question?: string
 		}>
 
-	let { title, children, class: className, ...rest }: Props = $props()
+	let { title, question, children, class: className, ...rest }: Props = $props()
 
 	const baseClass = newTwClass([
 		'rounded-box',
@@ -19,7 +22,21 @@
 
 <div class={mergeClass(baseClass, className)} {...rest}>
 	{#if title}
-		<h3 class="mb-4 text-lg font-semibold text-base-content">{title}</h3>
+		<div class="mb-4 flex items-center gap-2">
+			<h3 class="text-lg font-semibold text-base-content">{title}</h3>
+			{#if question}
+				<button
+					type="button"
+					class="mw-tooltip d-tooltip d-tooltip-right cursor-help border-0
+						bg-transparent
+						p-0 text-base-content/50 hover:text-base-content/70"
+					data-tip={question}
+					aria-label={`About ${title}`}
+				>
+					<CircleHelpIcon class="size-4" />
+				</button>
+			{/if}
+		</div>
 	{/if}
 	{@render children?.()}
 </div>

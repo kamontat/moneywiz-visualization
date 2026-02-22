@@ -58,3 +58,16 @@ body {
 	background-image: none;
 	background-color: var(--color-base-100);
 }
+
+/*
+ * Keep custom DaisyUI tooltips readable and within viewport on smaller screens.
+ * We intentionally avoid browser-native title tooltips for these elements.
+ */
+.mw-tooltip::before {
+	max-width: min(16rem, calc(100vw - 2rem));
+	white-space: normal;
+	overflow-wrap: break-word;
+	text-wrap: pretty;
+	line-height: 1.3;
+	text-align: left;
+}
