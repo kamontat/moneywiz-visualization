@@ -72,14 +72,31 @@
 							</td>
 							<td class="py-3">
 								<span
-									class="d-badge d-badge-sm font-medium"
-									class:d-badge-primary={trx.type === 'Buy'}
-									class:d-badge-error={trx.type === 'Expense'}
-									class:d-badge-secondary={trx.type === 'Sell'}
-									class:d-badge-success={trx.type === 'Income'}
-									class:d-badge-info={trx.type === 'Transfer'}
-									class:d-badge-neutral={trx.type === 'Reconcile'}
-									class:d-badge-warning={trx.type === 'Refund'}
+									class="d-badge border-0 d-badge-sm font-medium whitespace-nowrap"
+									class:bg-cyan-200={trx.type === 'Buy'}
+									class:text-cyan-900={trx.type === 'Buy'}
+									class:bg-red-200={trx.type === 'Expense'}
+									class:text-red-900={trx.type === 'Expense'}
+									class:bg-indigo-200={trx.type === 'Sell'}
+									class:text-indigo-900={trx.type === 'Sell'}
+									class:bg-emerald-200={trx.type === 'Income'}
+									class:text-emerald-900={trx.type === 'Income'}
+									class:bg-sky-200={trx.type === 'Transfer'}
+									class:text-sky-900={trx.type === 'Transfer'}
+									class:bg-slate-100={trx.type === 'Reconcile'}
+									class:text-slate-800={trx.type === 'Reconcile'}
+									class:bg-amber-100={trx.type === 'Refund'}
+									class:text-amber-800={trx.type === 'Refund'}
+									class:bg-orange-50={trx.type === 'Debt'}
+									class:text-orange-700={trx.type === 'Debt'}
+									class:bg-lime-50={trx.type === 'DebtRepayment'}
+									class:text-lime-700={trx.type === 'DebtRepayment'}
+									class:bg-teal-50={trx.type === 'Windfall'}
+									class:text-teal-700={trx.type === 'Windfall'}
+									class:bg-fuchsia-50={trx.type === 'Giveaway'}
+									class:text-fuchsia-700={trx.type === 'Giveaway'}
+									class:bg-zinc-200={trx.type === 'Unknown'}
+									class:text-zinc-800={trx.type === 'Unknown'}
 								>
 									{formatTransactionType(trx.type)}
 								</span>
