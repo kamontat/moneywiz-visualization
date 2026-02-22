@@ -8,6 +8,8 @@
 	} from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
+	import { onDestroy } from 'svelte'
+
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import Panel from '$components/atoms/Panel.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
@@ -20,6 +22,7 @@
 	} from '$lib/charts'
 	import { mergeClass } from '$lib/components'
 	import { formatCurrency } from '$lib/formatters/amount'
+	import { dismissNotification, pushNotification } from '$lib/notifications'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -196,6 +199,42 @@
 		if (hhi >= 0.15) return 'Moderate concentration'
 		return 'Diversified'
 	}
+
+	let mixedCurrencyNotificationId = $state<string | undefined>(undefined)
+	let mixedCurrencyNotificationText = $state<string | undefined>(undefined)
+
+	$effect(() => {
+		const currency = stats?.currency
+		if (!currency?.mixedCurrency) {
+			if (mixedCurrencyNotificationId) {
+				dismissNotification(mixedCurrencyNotificationId)
+			}
+			mixedCurrencyNotificationId = undefined
+			mixedCurrencyNotificationText = undefined
+			return
+		}
+
+		const text = `Mixed currencies detected. Stats are displayed in ${currency.primaryCurrency}.`
+		if (mixedCurrencyNotificationId && mixedCurrencyNotificationText === text) {
+			return
+		}
+
+		if (mixedCurrencyNotificationId) {
+			dismissNotification(mixedCurrencyNotificationId)
+		}
+
+		mixedCurrencyNotificationId = pushNotification({
+			variant: 'warning',
+			text,
+		})
+		mixedCurrencyNotificationText = text
+	})
+
+	onDestroy(() => {
+		if (mixedCurrencyNotificationId) {
+			dismissNotification(mixedCurrencyNotificationId)
+		}
+	})
 </script>
 
 <div class={mergeClass(['flex', 'flex-col', 'gap-6'], className)} {...rest}>
@@ -206,15 +245,6 @@
 			</p>
 		</Panel>
 	{:else}
-		{#if stats.currency.mixedCurrency}
-			<div class="d-alert rounded-box d-alert-warning">
-				<span>
-					Mixed currencies detected. Stats are displayed in
-					{stats.currency.primaryCurrency}.
-				</span>
-			</div>
-		{/if}
-
 		<Panel title="KPI Snapshot">
 			<p class="mb-4 text-sm text-base-content/70">
 				Current: {stats.currentRange.label}

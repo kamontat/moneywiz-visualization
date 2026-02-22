@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 
 	import Button from '$components/atoms/Button.svelte'
 	import Panel from '$components/atoms/Panel.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
+	import { dismissNotification, pushNotification } from '$lib/notifications'
 
 	const REFRESH_INTERVAL = 30000
 	const DETAIL_LABELS: Record<string, string> = {
@@ -65,14 +66,13 @@
 	const formatPercent = (value: number): string => `${value.toFixed(1)}%`
 
 	let resetting = $state(false)
-	let resetError = $state<string | undefined>(undefined)
-	let resetSuccess = $state(false)
 	let showConfirm = $state(false)
+	let unsupportedNotificationId = $state<string | undefined>(undefined)
+	let usageErrorNotificationId = $state<string | undefined>(undefined)
+	let usageErrorNotificationText = $state<string | undefined>(undefined)
 
 	const resetAllData = async () => {
 		resetting = true
-		resetError = undefined
-		resetSuccess = false
 		try {
 			localStorage.clear()
 
@@ -100,11 +100,18 @@
 				await Promise.all(registrations.map((r) => r.unregister()))
 			}
 
-			resetSuccess = true
+			pushNotification({
+				variant: 'success',
+				text: 'All browser storage data has been cleared successfully.',
+			})
 			showConfirm = false
 			await refreshUsage()
 		} catch (thrown) {
-			resetError = thrown instanceof Error ? thrown.message : String(thrown)
+			const message = thrown instanceof Error ? thrown.message : String(thrown)
+			pushNotification({
+				variant: 'error',
+				text: `Failed to reset storage: ${message}`,
+			})
 		} finally {
 			resetting = false
 		}
@@ -149,6 +156,50 @@
 		}
 	}
 
+	$effect(() => {
+		if (!supported) {
+			if (!unsupportedNotificationId) {
+				unsupportedNotificationId = pushNotification({
+					variant: 'warning',
+					text: 'navigator.storage.estimate() is not supported in this browser.',
+				})
+			}
+			return
+		}
+
+		if (unsupportedNotificationId) {
+			dismissNotification(unsupportedNotificationId)
+		}
+		unsupportedNotificationId = undefined
+	})
+
+	$effect(() => {
+		const nextError = error
+		if (!nextError) {
+			if (usageErrorNotificationId) {
+				dismissNotification(usageErrorNotificationId)
+			}
+			usageErrorNotificationId = undefined
+			usageErrorNotificationText = undefined
+			return
+		}
+
+		const nextText = `Failed to read storage usage: ${nextError}`
+		if (usageErrorNotificationId && usageErrorNotificationText === nextText) {
+			return
+		}
+
+		if (usageErrorNotificationId) {
+			dismissNotification(usageErrorNotificationId)
+		}
+
+		usageErrorNotificationId = pushNotification({
+			variant: 'error',
+			text: nextText,
+		})
+		usageErrorNotificationText = nextText
+	})
+
 	onMount(() => {
 		void refreshUsage()
 		const onFocus = () => {
@@ -162,6 +213,15 @@
 		return () => {
 			window.removeEventListener('focus', onFocus)
 			window.clearInterval(interval)
+		}
+	})
+
+	onDestroy(() => {
+		if (unsupportedNotificationId) {
+			dismissNotification(unsupportedNotificationId)
+		}
+		if (usageErrorNotificationId) {
+			dismissNotification(usageErrorNotificationId)
 		}
 	})
 </script>
@@ -204,32 +264,6 @@
 			</Button>
 		</div>
 	</div>
-
-	{#if !supported}
-		<div class="mb-4 d-alert text-sm d-alert-warning">
-			<span>
-				`navigator.storage.estimate()` is not supported in this browser.
-			</span>
-		</div>
-	{/if}
-
-	{#if error}
-		<div class="mb-4 d-alert text-sm d-alert-error">
-			<span>Failed to read storage usage: {error}</span>
-		</div>
-	{/if}
-
-	{#if resetSuccess}
-		<div class="mb-4 d-alert text-sm d-alert-success">
-			<span>All browser storage data has been cleared successfully.</span>
-		</div>
-	{/if}
-
-	{#if resetError}
-		<div class="mb-4 d-alert text-sm d-alert-error">
-			<span>Failed to reset storage: {resetError}</span>
-		</div>
-	{/if}
 
 	{#if showConfirm}
 		<div class="d-modal-open d-modal">

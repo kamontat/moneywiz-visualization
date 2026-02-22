@@ -1,7 +1,6 @@
 <script lang="ts">
 	import HardDriveIcon from '@iconify-svelte/lucide/hard-drive'
 
-	import Alert, { type Variant } from '$components/atoms/Alert.svelte'
 	import Container from '$components/atoms/Container.svelte'
 	import Header from '$components/atoms/Header.svelte'
 	import Link from '$components/atoms/Link.svelte'
@@ -10,29 +9,18 @@
 	import NameHeader from '$components/molecules/NameHeader.svelte'
 	import ThemeSelect from '$components/molecules/ThemeSelect.svelte'
 	import { databaseStore } from '$lib/database'
-	import { component } from '$lib/loggers'
+	import { pushNotification } from '$lib/notifications'
 
-	type Message = {
-		id: string
-		variant: Variant
-		text: string
-	}
-	let messages = $state<Message[]>([])
 	let uploading = $state(false)
-	const log = component.extends('AppHeader')
 
 	const onClearSuccess = () => {
-		const len = messages.length
-		messages.unshift({
-			id: `C${len + 1}`,
+		pushNotification({
 			variant: 'success',
 			text: 'Database cleared successfully',
 		})
 	}
 	const onClearError = (err: Error) => {
-		const len = messages.length
-		messages.unshift({
-			id: `C${len + 1}`,
+		pushNotification({
 			variant: 'error',
 			text: `Database clear failed: ${err.message}`,
 		})
@@ -41,25 +29,16 @@
 		uploading = loading
 	}
 	const onUploadSuccess = (count: number) => {
-		const len = messages.length
-		messages.unshift({
-			id: `U${len + 1}`,
+		pushNotification({
 			variant: 'success',
 			text: `Imported ${count.toLocaleString()} transactions successfully`,
 		})
 	}
 	const onUploadError = (err: Error) => {
-		const len = messages.length
-		messages.unshift({
-			id: `U${len + 1}`,
+		pushNotification({
 			variant: 'error',
 			text: `Database upload failed: ${err.message}`,
 		})
-	}
-
-	const onAlertDismiss = (id?: string) => {
-		messages = messages.filter((message) => message.id !== id)
-		log.debug(`dismissed alert message: ${id} (%d remaining)`, messages.length)
 	}
 </script>
 
@@ -89,11 +68,3 @@
 		<ThemeSelect />
 	</Container>
 </Header>
-
-<div class="d-stack">
-	{#each messages as message (message.id)}
-		<Alert id={message.id} variant={message.variant} onclose={onAlertDismiss}>
-			{message.text}; Click to dismiss ({messages.length} remaining)
-		</Alert>
-	{/each}
-</div>

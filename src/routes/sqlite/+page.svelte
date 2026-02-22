@@ -11,6 +11,7 @@
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
+	import { pushNotification } from '$lib/notifications'
 	import { createSQLiteSession } from '$lib/sqlite'
 
 	const DEFAULT_PAGE_SIZE = 200
@@ -35,7 +36,6 @@
 
 	let fileInput = $state<Input | null>(null)
 	let loadingFile = $state(false)
-	let error = $state<string | undefined>(undefined)
 	let progress = $state<SQLiteParseProgress | undefined>(undefined)
 	let session = $state<SQLiteSession | undefined>(undefined)
 	let overview = $state<SQLiteSession['overview'] | undefined>(undefined)
@@ -134,6 +134,13 @@
 		})
 	}
 
+	const getSectionLabel = (targetSection: SQLiteSection): string => {
+		const option = SECTION_OPTIONS.find(
+			(entry) => entry.value === targetSection
+		)
+		return option?.label ?? targetSection
+	}
+
 	const closeSession = async () => {
 		const active = session
 		pageRequestTokens = createSectionRecord(0)
@@ -175,6 +182,10 @@
 		} catch (thrown) {
 			if (token !== pageRequestTokens[targetSection]) return
 			panel.error = thrown instanceof Error ? thrown.message : String(thrown)
+			pushNotification({
+				variant: 'error',
+				text: `Failed to load ${getSectionLabel(targetSection)} page ${safePage.toLocaleString()}: ${panel.error}`,
+			})
 		} finally {
 			if (token === pageRequestTokens[targetSection]) {
 				panel.loading = false
@@ -183,7 +194,6 @@
 	}
 
 	const onUpload: ChangeEventHandler<HTMLInputElement> = async (event) => {
-		error = undefined
 		progress = undefined
 		const file = event.currentTarget.files?.[0]
 		if (!file) return
@@ -205,7 +215,11 @@
 				})
 			)
 		} catch (thrown) {
-			error = thrown instanceof Error ? thrown.message : String(thrown)
+			const message = thrown instanceof Error ? thrown.message : String(thrown)
+			pushNotification({
+				variant: 'error',
+				text: `Failed to open SQLite file: ${message}`,
+			})
 		} finally {
 			loadingFile = false
 		}
@@ -282,12 +296,6 @@
 						/{progress.total.toLocaleString()}
 					{/if})
 				</p>
-			{/if}
-
-			{#if error}
-				<div class="d-alert text-sm d-alert-error">
-					<span>{error}</span>
-				</div>
 			{/if}
 
 			{#if overview}
@@ -399,12 +407,6 @@
 										</span>
 									{/if}
 								</div>
-
-								{#if panel.error}
-									<div class="d-alert text-sm d-alert-error">
-										<span>{panel.error}</span>
-									</div>
-								{/if}
 
 								<details
 									class="rounded-lg border border-base-300 bg-base-200"
