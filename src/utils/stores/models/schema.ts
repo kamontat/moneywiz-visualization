@@ -4,8 +4,10 @@ import type {
 	STATE_THEME_V1,
 	STATE_TRX_V1,
 	STATE_FILTER_OPTIONS_V1,
+	STATE_FX_RATE_CACHE_V1,
 } from '../constants'
 import type { FilterOptions } from '$lib/analytics/filters/models'
+import type { FxRateCacheState } from '$lib/currency/models'
 import type { DatabaseState } from '$lib/database/models'
 import type { ParsedTheme } from '$lib/themes/models'
 import type { ParsedTransaction } from '$lib/transactions/models'
@@ -26,6 +28,11 @@ type FilterOptionsTableSchemaV1 = ISchemaTable<
 	[ISchemaState<'default', FilterOptions | undefined>]
 >
 
+type FxRateCacheTableSchemaV1 = ISchemaTable<
+	typeof STATE_FX_RATE_CACHE_V1,
+	[ISchemaState<'default', FxRateCacheState>]
+>
+
 export type TransactionTableSchemaV1 = ISchemaTable<
 	typeof STATE_TRX_V1,
 	[
@@ -42,6 +49,7 @@ export type StoreSchema = ISchemaDB<{
 		ThemeTableSchemaV1,
 		DatabaseTableSchemaV1,
 		FilterOptionsTableSchemaV1,
+		FxRateCacheTableSchemaV1,
 		TransactionTableSchemaV1,
 	]
 }>

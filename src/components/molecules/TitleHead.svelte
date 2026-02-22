@@ -12,7 +12,8 @@
 
 <Title
 	tag="h1"
-	class="text-2xl font-bold tracking-tight text-base-content sm:text-3xl"
+	class="max-w-full text-xl leading-tight font-bold tracking-tight
+		break-words text-base-content sm:text-2xl lg:text-3xl"
 >
 	{name}
 </Title>

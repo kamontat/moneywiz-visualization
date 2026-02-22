@@ -79,6 +79,23 @@ SQLite entity names map to transaction entity types:
 - **Output**: `{ value: number, currency: string }`
 - **Default currency**: `THB` if not available from account or transaction
 - **Missing amount**: Returns `0`
+- **Analytics normalization target**: `THB` (historical conversion at transaction date)
+
+#### Analytics Currency Normalization
+
+Analytics values are normalized to THB with this priority:
+
+1. **Exact raw THB amount**: When transaction raw data includes both
+   `amount` (THB) and `originalAmount` (foreign), and magnitudes differ,
+   use raw `amount` directly.
+2. **Historical date rate**: For remaining non-THB values, convert using
+   historical FX near the transaction date (same day or nearest prior
+   market day).
+3. **Unresolved fallback**: If no rate can be resolved, the transaction is
+   excluded from analytics totals and surfaced in warning metadata.
+
+Historical rates are cached in local storage-backed state to avoid
+refetching during filter/tab interactions.
 
 #### Category Conversion
 
@@ -111,9 +128,13 @@ Account types are derived from the SQLite entity ID of the account:
 
 ### 1.5 Transaction Classification
 
-**Pre-import filtering:** Transactions with no category and a description
-matching "new balance" (case-insensitive) are excluded during import and
-never reach classification.
+**Pre-import filtering:**
+
+- Transactions with no category and a description matching "new balance"
+  (case-insensitive) are excluded during import and never reach
+  classification.
+- Transactions classified as `Income` or `Expense` with missing payee or
+  missing category are excluded during import (legacy incomplete records).
 
 Transactions are classified in this priority order:
 

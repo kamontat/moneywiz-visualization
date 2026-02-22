@@ -6,25 +6,39 @@ const uploadFixture = async (page: import('@playwright/test').Page) => {
 	const buffer = generateSQLite({
 		transactions: [
 			{
-				payee: 'Salary',
+				payee: 'Salary Dec',
 				category: 'Salary',
 				parentCategory: 'Compensation',
-				date: new Date(Date.UTC(2026, 0, 1)),
-				amount: 2000,
+				date: new Date(Date.UTC(2025, 11, 5)),
+				amount: 1800,
 			},
 			{
-				payee: 'Groceries',
-				category: 'Groceries',
-				parentCategory: 'Food',
-				date: new Date(Date.UTC(2026, 0, 3)),
-				amount: -150,
+				payee: 'Rent Dec',
+				category: 'Rent',
+				parentCategory: 'Housing',
+				date: new Date(Date.UTC(2025, 11, 10)),
+				amount: -900,
 			},
 			{
-				payee: 'Refund',
+				payee: 'Salary Jan',
+				category: 'Salary',
+				parentCategory: 'Compensation',
+				date: new Date(Date.UTC(2026, 0, 5)),
+				amount: 2200,
+			},
+			{
+				payee: 'Groceries Jan',
 				category: 'Groceries',
 				parentCategory: 'Food',
-				date: new Date(Date.UTC(2026, 0, 4)),
-				amount: 30,
+				date: new Date(Date.UTC(2026, 0, 8)),
+				amount: -700,
+			},
+			{
+				payee: 'Refund Jan',
+				category: 'Groceries',
+				parentCategory: 'Food',
+				date: new Date(Date.UTC(2026, 0, 12)),
+				amount: 100,
 			},
 		],
 	})
@@ -76,13 +90,42 @@ test.describe('Cash Flow tab', () => {
 		await page.goto('/')
 	})
 
-	test('renders all cash flow panels', async ({ page }) => {
+	test('renders redesigned cash flow panels', async ({ page }) => {
 		await uploadFixture(page)
 
 		await page.getByRole('tab', { name: 'Cash Flow' }).click()
 
-		for (const title of ['1) Debt & Repayment', '2) Windfall', '3) Giveaway']) {
-			await expect(page.getByText(title)).toBeVisible()
+		for (const title of [
+			'Cash Flow Snapshot',
+			'Inflow vs Outflow Trend',
+			'Monthly Flow Decomposition',
+			'Category Drivers',
+		]) {
+			await expect(page.getByRole('heading', { name: title })).toBeVisible()
 		}
+
+		for (const oldTitle of [
+			'1) Debt & Repayment',
+			'2) Windfall',
+			'3) Giveaway',
+		]) {
+			await expect(page.getByText(oldTitle, { exact: true })).toHaveCount(0)
+		}
+	})
+
+	test('shows previous-period comparison after setting date range', async ({
+		page,
+	}) => {
+		await uploadFixture(page)
+
+		await page.getByRole('tab', { name: 'Cash Flow' }).click()
+		await page.getByRole('button', { name: 'Date' }).click()
+
+		await page.locator('#start-date').fill('2026-01-01')
+		await page.locator('#end-date').fill('2026-01-31')
+
+		await expect(page.getByText(/Baseline:/)).toBeVisible()
+		await expect(page.getByText(/vs baseline:/)).toBeVisible()
+		await expect(page.getByText('No baseline period data')).toHaveCount(0)
 	})
 })

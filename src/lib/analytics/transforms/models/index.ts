@@ -42,6 +42,14 @@ export type {
 	TopPayeesPerCategoryResult,
 } from './topPayeesPerCategory'
 export type {
+	CashFlowDashboard,
+	CashFlowDashboardOptions,
+	CashFlowDelta,
+	CashFlowKpi,
+	CashFlowKpiDirection,
+	CashFlowKpiId,
+} from './cashFlowDashboard'
+export type {
 	StatsCadence,
 	StatsConcentration,
 	StatsConcentrationItem,

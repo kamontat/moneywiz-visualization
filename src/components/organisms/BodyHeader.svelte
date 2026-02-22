@@ -12,6 +12,8 @@
 			fileName?: string
 			startDate?: Date
 			endDate?: Date
+			baselineStartDate?: Date
+			baselineEndDate?: Date
 			totalRows?: number
 			filteredRows?: number
 		}> &
@@ -21,6 +23,8 @@
 		fileName = 'No file loaded',
 		startDate,
 		endDate,
+		baselineStartDate,
+		baselineEndDate,
 		totalRows = 0,
 		filteredRows,
 		class: _className,
@@ -32,6 +36,8 @@
 	<SubtitleHead
 		{startDate}
 		{endDate}
+		{baselineStartDate}
+		{baselineEndDate}
 		total={totalRows}
 		filtered={filteredRows}
 	/>

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { FilterOptions } from '$lib/analytics/filters/models/options'
 	import type { FilterState } from '$lib/analytics/filters/models/state'
+	import type { FxRateTable } from '$lib/currency/models'
 	import type { DatabaseState } from '$lib/database/models'
 	import type {
 		ParsedCategory,
 		ParsedTransaction,
 	} from '$lib/transactions/models'
-	import { onMount } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import { get } from 'svelte/store'
 
 	import AppBody from '$components/organisms/AppBody.svelte'
@@ -41,7 +42,12 @@
 		sliceByDateRange,
 		transform,
 	} from '$lib/analytics/transforms'
+	import {
+		convertTransactionsToTHB,
+		prepareHistoricalRateTable,
+	} from '$lib/currency'
 	import { databaseStore, databaseUploading } from '$lib/database'
+	import { dismissNotification, pushNotification } from '$lib/notifications'
 	import {
 		extractCategories,
 		extractPayees,
@@ -68,10 +74,51 @@
 	})
 	let limit = $state(DEFAULT_LIMIT)
 	let didHydrateDateFilter = $state(false)
+	let fxRateTable = $state<FxRateTable>({
+		baseCurrency: 'THB',
+		rates: {},
+	})
+	let fxRateLoading = $state(false)
+	let fxRateError = $state<string | undefined>(undefined)
+	let fxRateRequestId = 0
+	let fxRateLoadingNotificationId = $state<string | undefined>(undefined)
+	let fxRateErrorNotificationId = $state<string | undefined>(undefined)
+	let fxRateErrorNotificationText = $state<string | undefined>(undefined)
+	let normalizationNotificationId = $state<string | undefined>(undefined)
+	let normalizationNotificationText = $state<string | undefined>(undefined)
+
+	const refreshHistoricalRateTable = async (
+		transactions: ParsedTransaction[]
+	): Promise<void> => {
+		const requestId = ++fxRateRequestId
+		fxRateLoading = true
+		fxRateError = undefined
+		fxRateTable = {
+			baseCurrency: 'THB',
+			rates: {},
+		}
+
+		try {
+			const next = await prepareHistoricalRateTable(transactions)
+			if (requestId !== fxRateRequestId) return
+			fxRateTable = next
+		} catch (error) {
+			if (requestId !== fxRateRequestId) return
+			fxRateError =
+				error instanceof Error
+					? error.message
+					: 'Unable to prepare historical FX rates'
+		} finally {
+			if (requestId === fxRateRequestId) {
+				fxRateLoading = false
+			}
+		}
+	}
 
 	const loadData = async () => {
 		totalCount = await getTransactionCount()
 		allTransactions = await getTransactions()
+		void refreshHistoricalRateTable(allTransactions)
 		const cached = cachedFilterOptions
 		const fileMatches =
 			cached?.fileName !== undefined &&
@@ -297,9 +344,129 @@
 		applyTagFilters(applySecondLayerFilters(applyTypeFilter(allTransactions)))
 	)
 
+	const convertedFilteredResult = $derived.by(() => {
+		if (fxRateLoading) return undefined
+		return convertTransactionsToTHB(filteredTransactions, fxRateTable)
+	})
+
+	const convertedFilteredTransactions = $derived(
+		convertedFilteredResult?.transactions ?? []
+	)
+
+	const convertedNonDateFilteredTransactions = $derived.by(() => {
+		if (fxRateLoading) return []
+		return convertTransactionsToTHB(nonDateFilteredTransactions, fxRateTable)
+			.transactions
+	})
+
+	const filteredConversionSummary = $derived(convertedFilteredResult?.summary)
+	const showNormalizationAlert = $derived.by(() => {
+		if (!filteredConversionSummary) return false
+
+		return (
+			filteredConversionSummary.estimatedCount > 0 ||
+			filteredConversionSummary.unresolvedCount > 0
+		)
+	})
+
+	const unresolvedCurrenciesLabel = $derived.by(() => {
+		if (!filteredConversionSummary) return ''
+		return Object.entries(filteredConversionSummary.unresolvedByCurrency)
+			.map(([currency, count]) => `${currency} (${count})`)
+			.join(', ')
+	})
+
+	$effect(() => {
+		if (!totalCount || !fxRateLoading) {
+			if (fxRateLoadingNotificationId) {
+				dismissNotification(fxRateLoadingNotificationId)
+			}
+			fxRateLoadingNotificationId = undefined
+			return
+		}
+
+		if (!fxRateLoadingNotificationId) {
+			fxRateLoadingNotificationId = pushNotification({
+				variant: 'info',
+				text: 'Preparing historical FX rates. Analytics panels will update when ready.',
+			})
+		}
+	})
+
+	$effect(() => {
+		if (!fxRateError) {
+			if (fxRateErrorNotificationId) {
+				dismissNotification(fxRateErrorNotificationId)
+			}
+			fxRateErrorNotificationId = undefined
+			fxRateErrorNotificationText = undefined
+			return
+		}
+
+		if (
+			fxRateErrorNotificationId &&
+			fxRateErrorNotificationText === fxRateError
+		) {
+			return
+		}
+
+		if (fxRateErrorNotificationId) {
+			dismissNotification(fxRateErrorNotificationId)
+		}
+
+		fxRateErrorNotificationId = pushNotification({
+			variant: 'error',
+			text: fxRateError,
+		})
+		fxRateErrorNotificationText = fxRateError
+	})
+
+	$effect(() => {
+		if (!showNormalizationAlert || !filteredConversionSummary) {
+			if (normalizationNotificationId) {
+				dismissNotification(normalizationNotificationId)
+			}
+			normalizationNotificationId = undefined
+			normalizationNotificationText = undefined
+			return
+		}
+
+		const unresolvedMessage =
+			filteredConversionSummary.unresolvedCount > 0
+				? ` Unresolved: ${filteredConversionSummary.unresolvedCount.toLocaleString()} (${unresolvedCurrenciesLabel}). These are excluded from analytics totals.`
+				: ''
+		const text = `Analytics amounts are normalized to THB using historical rates by transaction date. Estimated conversions: ${filteredConversionSummary.estimatedCount.toLocaleString()}.${unresolvedMessage}`
+
+		if (normalizationNotificationId && normalizationNotificationText === text) {
+			return
+		}
+
+		if (normalizationNotificationId) {
+			dismissNotification(normalizationNotificationId)
+		}
+
+		normalizationNotificationId = pushNotification({
+			variant: 'info',
+			text,
+		})
+		normalizationNotificationText = text
+	})
+
+	onDestroy(() => {
+		if (fxRateLoadingNotificationId) {
+			dismissNotification(fxRateLoadingNotificationId)
+		}
+		if (fxRateErrorNotificationId) {
+			dismissNotification(fxRateErrorNotificationId)
+		}
+		if (normalizationNotificationId) {
+			dismissNotification(normalizationNotificationId)
+		}
+	})
+
 	const statsCurrentRange = $derived(
 		deriveCurrentRange(
-			nonDateFilteredTransactions,
+			convertedNonDateFilteredTransactions,
 			filterState.dateRange.start,
 			filterState.dateRange.end
 		)
@@ -308,18 +475,44 @@
 	const statsBaselineRange = $derived(deriveBaselineRange(statsCurrentRange))
 
 	const statsCurrentTransactions = $derived(
-		sliceByDateRange(nonDateFilteredTransactions, statsCurrentRange)
+		sliceByDateRange(convertedNonDateFilteredTransactions, statsCurrentRange)
 	)
 
 	const statsBaselineTransactions = $derived(
-		sliceByDateRange(nonDateFilteredTransactions, statsBaselineRange)
+		sliceByDateRange(convertedNonDateFilteredTransactions, statsBaselineRange)
 	)
 
 	const filteredSummary = $derived.by(() => {
-		if (filteredTransactions.length > 0) {
-			return transform(filteredTransactions, bySummarize())
+		if (convertedFilteredTransactions.length > 0) {
+			return transform(convertedFilteredTransactions, bySummarize())
 		}
 		return undefined
+	})
+
+	const cashFlowCurrentRange = $derived.by(() => {
+		if (!filteredSummary) return null
+
+		return deriveCurrentRange(
+			convertedNonDateFilteredTransactions,
+			filteredSummary.dateRange.start,
+			filteredSummary.dateRange.end
+		)
+	})
+
+	const cashFlowBaselineRange = $derived(
+		deriveBaselineRange(cashFlowCurrentRange)
+	)
+
+	const cashFlowBaselineTransactions = $derived(
+		sliceByDateRange(
+			convertedNonDateFilteredTransactions,
+			cashFlowBaselineRange
+		)
+	)
+
+	const quickSummaryBaseline = $derived.by(() => {
+		if (cashFlowBaselineTransactions.length === 0) return undefined
+		return transform(cashFlowBaselineTransactions, bySummarize())
 	})
 
 	const displayTransactions = $derived(
@@ -335,6 +528,8 @@
 		fileName={fileInfo?.fileName}
 		startDate={filteredSummary?.dateRange.start}
 		endDate={filteredSummary?.dateRange.end}
+		baselineStartDate={cashFlowBaselineRange?.start}
+		baselineEndDate={cashFlowBaselineRange?.end}
 		totalRows={totalCount}
 		filteredRows={filteredCount}
 		data-testid="transaction-count"
@@ -352,12 +547,19 @@
 	{/if}
 
 	{#if filteredSummary}
-		<QuickSummary summary={filteredSummary} class="mt-6" />
+		<QuickSummary
+			summary={filteredSummary}
+			baselineSummary={quickSummaryBaseline}
+			class="mt-6"
+		/>
 	{/if}
 
 	<Dashboard
 		transactions={displayTransactions}
-		allTransactions={filteredTransactions}
+		allTransactions={convertedFilteredTransactions}
+		{cashFlowBaselineTransactions}
+		{cashFlowCurrentRange}
+		{cashFlowBaselineRange}
 		statsTransactions={statsCurrentTransactions}
 		{statsBaselineTransactions}
 		{statsCurrentRange}

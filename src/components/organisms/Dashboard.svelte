@@ -23,6 +23,9 @@
 		CustomProps<{
 			transactions: ParsedTransaction[]
 			allTransactions?: ParsedTransaction[]
+			cashFlowBaselineTransactions?: ParsedTransaction[]
+			cashFlowCurrentRange?: StatsRange | null
+			cashFlowBaselineRange?: StatsRange | null
 			totalCount?: number
 			limit?: number
 			hasData?: boolean
@@ -37,6 +40,9 @@
 	let {
 		transactions,
 		allTransactions: _allTransactions = [],
+		cashFlowBaselineTransactions = [],
+		cashFlowCurrentRange = null,
+		cashFlowBaselineRange = null,
 		totalCount = 0,
 		limit = 0,
 		hasData = false,
@@ -56,8 +62,8 @@
 		{ id: 'analytics', label: 'Analytics', icon: ChartPieIcon },
 		{ id: 'categories', label: 'Categories', icon: FolderIcon },
 		{ id: 'stats', label: 'Stats', icon: TrendingUpIcon },
-		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
 		{ id: 'cashflow', label: 'Cash Flow', icon: LandmarkIcon },
+		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
 	]
 </script>
 
@@ -101,7 +107,12 @@
 				</div>
 			{:else if activeTab === 'cashflow'}
 				<div class="p-4 sm:p-6">
-					<CashFlowPanel transactions={_allTransactions} />
+					<CashFlowPanel
+						transactions={_allTransactions}
+						baselineTransactions={cashFlowBaselineTransactions}
+						currentRange={cashFlowCurrentRange}
+						baselineRange={cashFlowBaselineRange}
+					/>
 				</div>
 			{:else if activeTab === 'stats'}
 				<div class="p-4 sm:p-6">
