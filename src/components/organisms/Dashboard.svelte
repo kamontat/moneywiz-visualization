@@ -4,7 +4,6 @@
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
 	import ChartPieIcon from '@iconify-svelte/lucide/chart-pie'
-	import FlaskConicalIcon from '@iconify-svelte/lucide/flask-conical'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
 	import LandmarkIcon from '@iconify-svelte/lucide/landmark'
 	import TrendingUpIcon from '@iconify-svelte/lucide/trending-up'
@@ -16,7 +15,6 @@
 	import AnalyticsPanel from '$components/organisms/AnalyticsPanel.svelte'
 	import CashFlowPanel from '$components/organisms/CashFlowPanel.svelte'
 	import CategoriesPanel from '$components/organisms/CategoriesPanel.svelte'
-	import ExperimentsPanel from '$components/organisms/ExperimentsPanel.svelte'
 	import StatsPanel from '$components/organisms/StatsPanel.svelte'
 	import { mergeClass } from '$lib/components'
 	import { themeStore } from '$lib/themes'
@@ -60,7 +58,6 @@
 		{ id: 'stats', label: 'Stats', icon: TrendingUpIcon },
 		{ id: 'transactions', label: 'Transactions', icon: BanknoteIcon },
 		{ id: 'cashflow', label: 'Cash Flow', icon: LandmarkIcon },
-		{ id: 'experiments', label: 'Experiments', icon: FlaskConicalIcon },
 	]
 </script>
 
@@ -105,10 +102,6 @@
 			{:else if activeTab === 'cashflow'}
 				<div class="p-4 sm:p-6">
 					<CashFlowPanel transactions={_allTransactions} />
-				</div>
-			{:else if activeTab === 'experiments'}
-				<div class="p-4 sm:p-6">
-					<ExperimentsPanel transactions={_allTransactions} />
 				</div>
 			{:else if activeTab === 'stats'}
 				<div class="p-4 sm:p-6">
