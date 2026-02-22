@@ -9,6 +9,7 @@
 	import DatabaseUploadButton from '$components/molecules/DatabaseUploadButton.svelte'
 	import NameHeader from '$components/molecules/NameHeader.svelte'
 	import ThemeSelect from '$components/molecules/ThemeSelect.svelte'
+	import { databaseStore } from '$lib/database'
 	import { component } from '$lib/loggers'
 
 	type Message = {
@@ -78,11 +79,13 @@
 			onsuccess={onClearSuccess}
 			onfail={onClearError}
 		/>
-		<DatabaseUploadButton
-			onsuccess={onUploadSuccess}
-			onfail={onUploadError}
-			onloadingchange={onUploadLoading}
-		/>
+		{#if !$databaseStore || uploading}
+			<DatabaseUploadButton
+				onsuccess={onUploadSuccess}
+				onfail={onUploadError}
+				onloadingchange={onUploadLoading}
+			/>
+		{/if}
 		<ThemeSelect />
 	</Container>
 </Header>
