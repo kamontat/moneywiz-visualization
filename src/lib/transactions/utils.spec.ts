@@ -1,3 +1,8 @@
+import type {
+	ParsedExpenseTransaction,
+	ParsedIncomeTransaction,
+	ParsedTransaction,
+} from './models'
 import { describe, it, expect } from 'vitest'
 
 import {
@@ -7,6 +12,7 @@ import {
 	isDebtRepaymentCategory,
 	isGiftCategory,
 	isGiveawayCategory,
+	isIncompleteIncomeOrExpense,
 	isIncomeCategory,
 	isNewBalanceDescription,
 	isSpecialCategory,
@@ -224,6 +230,71 @@ describe('isNewBalanceDescription', () => {
 	it('should return false for other descriptions', () => {
 		expect(isNewBalanceDescription('balance adjustment')).toBe(false)
 		expect(isNewBalanceDescription('newbalance')).toBe(false)
+	})
+})
+
+describe('isIncompleteIncomeOrExpense', () => {
+	const base = {
+		account: { type: 'Checking' as const, name: 'Main', extra: null },
+		description: 'Test',
+		amount: { value: -100, currency: 'THB' },
+		date: new Date('2026-01-01T00:00:00.000Z'),
+		memo: '',
+		tags: [],
+		raw: {},
+	}
+
+	const createExpense = (
+		overrides: Partial<ParsedExpenseTransaction> = {}
+	): ParsedExpenseTransaction => ({
+		...base,
+		type: 'Expense',
+		payee: 'Merchant',
+		category: { category: 'Food', subcategory: '' },
+		checkNumber: '',
+		...overrides,
+	})
+
+	const createIncome = (
+		overrides: Partial<ParsedIncomeTransaction> = {}
+	): ParsedIncomeTransaction => ({
+		...base,
+		type: 'Income',
+		payee: 'Employer',
+		category: { category: 'Compensation', subcategory: 'Salary' },
+		checkNumber: '',
+		...overrides,
+	})
+
+	const createUnknown = (): ParsedTransaction => ({
+		...base,
+		type: 'Unknown',
+	})
+
+	it('returns true when expense has no category', () => {
+		const transaction = createExpense({
+			category: { category: '', subcategory: '' },
+		})
+		expect(isIncompleteIncomeOrExpense(transaction)).toBe(true)
+	})
+
+	it('returns true when expense has no payee', () => {
+		const transaction = createExpense({ payee: '' })
+		expect(isIncompleteIncomeOrExpense(transaction)).toBe(true)
+	})
+
+	it('returns true when income has no payee', () => {
+		const transaction = createIncome({ payee: '' })
+		expect(isIncompleteIncomeOrExpense(transaction)).toBe(true)
+	})
+
+	it('returns false when income and expense are complete', () => {
+		expect(isIncompleteIncomeOrExpense(createExpense())).toBe(false)
+		expect(isIncompleteIncomeOrExpense(createIncome())).toBe(false)
+	})
+
+	it('returns false for non-income and non-expense transactions', () => {
+		expect(isIncompleteIncomeOrExpense(createUnknown())).toBe(false)
 	})
 })
 

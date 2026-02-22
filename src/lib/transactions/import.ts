@@ -1,7 +1,7 @@
 import type { ImportOptions, ParsedTransaction } from './models'
 import type { SQLiteParseProgress } from '$lib/sqlite/models'
 import { classifySQLiteTransaction } from './classifier'
-import { isNewBalanceDescription } from './utils'
+import { isIncompleteIncomeOrExpense, isNewBalanceDescription } from './utils'
 
 import { transaction } from '$lib/loggers'
 import { parseSQLiteFile } from '$lib/sqlite'
@@ -97,6 +97,9 @@ export const importTransactionsFromFile = async (
 			continue
 		}
 		const trx = classifySQLiteTransaction(sqliteTransaction)
+		if (isIncompleteIncomeOrExpense(trx)) {
+			continue
+		}
 		batch.push(trx)
 
 		if (batch.length >= normalizedBatchSize) {

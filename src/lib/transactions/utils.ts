@@ -4,6 +4,7 @@ import type {
 	ParsedAmount,
 	ParsedCategory,
 	ParsedTag,
+	ParsedTransaction,
 } from './models'
 import type { TagCategoryGroup } from './models/tag'
 import {
@@ -181,6 +182,18 @@ export const parseDate = (
 
 export const isNewBalanceDescription = (description: string): boolean => {
 	return description.trim().toLowerCase() === 'new balance'
+}
+
+export const isIncompleteIncomeOrExpense = (
+	transaction: ParsedTransaction
+): boolean => {
+	if (transaction.type !== 'Income' && transaction.type !== 'Expense') {
+		return false
+	}
+	return (
+		transaction.category.category.trim() === '' ||
+		transaction.payee.trim() === ''
+	)
 }
 
 export const isIncomeCategory = (category: ParsedCategory): boolean => {
