@@ -6,17 +6,13 @@
 		CustomProps,
 		ElementProps,
 	} from '$lib/components/models'
-	import type { ImportProgress } from '$lib/transactions/models'
+	import type { SessionProgress } from '$lib/session/models'
 	import UploadIcon from '@iconify-svelte/lucide/upload'
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
-	import { databaseAPIs, databaseUploading } from '$lib/database'
 	import { component } from '$lib/loggers'
-	import {
-		importTransactionsFromFile,
-		clearTransactions,
-	} from '$lib/transactions'
+	import { sessionAPIs } from '$lib/session'
 
 	type Props = Omit<BaseProps, 'children'> &
 		Pick<ElementProps<'input'>, 'onchange'> &
@@ -25,7 +21,7 @@
 		CustomProps<{
 			onsuccess?: (count: number) => void
 			onfail?: (err: Error) => void
-			onprogress?: (progress: ImportProgress) => void
+			onprogress?: (progress: SessionProgress) => void
 			onloadingchange?: (loading: boolean) => void
 		}>
 
@@ -41,11 +37,10 @@
 	const log = component.extends('DatabaseUploadButton')
 	let fileInput = $state<Input | null>(null)
 	let loading = $state(false)
-	let progress = $state<ImportProgress | null>(null)
+	let progress = $state<SessionProgress | null>(null)
 
 	const onchange: ChangeEventHandler<HTMLInputElement> = async (event) => {
 		loading = true
-		databaseUploading.set(true)
 		onloadingchange?.(true)
 		progress = null
 		const target = event.currentTarget
@@ -54,29 +49,22 @@
 		if (!file) {
 			log.info('no file selected')
 			loading = false
-			databaseUploading.set(false)
 			onloadingchange?.(false)
 			return
 		}
 
 		log.info('file selected: %s', file.name)
 		try {
-			await clearTransactions()
-			const count = await importTransactionsFromFile(file, {
-				onProgress: (p) => {
-					progress = p
-					onprogress?.(p)
-				},
+			const count = await sessionAPIs.upload(file, (p) => {
+				progress = p
+				onprogress?.(p)
 			})
-
-			await databaseAPIs.parse(file)
 			onsuccess?.(count)
 		} catch (error) {
 			onfail?.(error as Error)
 		} finally {
 			_onchange?.(event)
 			loading = false
-			databaseUploading.set(false)
 			onloadingchange?.(false)
 			progress = null
 		}

@@ -1,4 +1,7 @@
-import { Database } from 'bun:sqlite'
+import { execFileSync } from 'node:child_process'
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 const APPLE_REFERENCE_EPOCH_MS = Date.UTC(2001, 0, 1, 0, 0, 0)
 
@@ -30,11 +33,32 @@ export const defaultRecord: MoneyWizRecord = {
 	currency: 'THB',
 }
 
+const escapeSql = (value: string): string => {
+	return value.replaceAll("'", "''")
+}
+
+const runSqliteScript = (dbPath: string, script: string) => {
+	try {
+		execFileSync('sqlite3', [dbPath], {
+			input: script,
+			stdio: ['pipe', 'pipe', 'pipe'],
+		})
+	} catch (error) {
+		throw new Error(
+			`failed to execute sqlite3 CLI for e2e fixture generation: ${String(error)}`
+		)
+	}
+}
+
 export const generateSQLite = (options: SQLiteFixtureOptions = {}): Buffer => {
 	const records = options.transactions ?? [defaultRecord]
-	const db = new Database(':memory:')
 
-	db.exec(`
+	const tmp = mkdtempSync(join(tmpdir(), 'mw-e2e-'))
+	const dbPath = join(tmp, 'fixture.sqlite')
+
+	const statements: string[] = []
+
+	statements.push(`
 		CREATE TABLE Z_PRIMARYKEY (
 			Z_ENT INTEGER,
 			Z_NAME TEXT
@@ -109,7 +133,7 @@ export const generateSQLite = (options: SQLiteFixtureOptions = {}): Buffer => {
 		);
 	`)
 
-	db.exec(`
+	statements.push(`
 		INSERT INTO Z_PRIMARYKEY (Z_ENT, Z_NAME) VALUES
 			(10, 'BankChequeAccount'),
 			(19, 'Category'),
@@ -130,88 +154,98 @@ export const generateSQLite = (options: SQLiteFixtureOptions = {}): Buffer => {
 	let nextId = 200
 
 	const getOrCreatePayee = (name: string): number => {
-		if (payeeIds.has(name)) return payeeIds.get(name)!
+		const existing = payeeIds.get(name)
+		if (existing !== undefined) return existing
+
 		const id = nextId++
-		db.run('INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES (?, 28, ?)', [
-			id,
-			name,
-		])
+		statements.push(
+			`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME6) VALUES (${id}, 28, '${escapeSql(name)}');`
+		)
 		payeeIds.set(name, id)
 		return id
 	}
 
 	const getOrCreateCategory = (name: string, parentName?: string): number => {
 		const key = parentName ? `${parentName}>${name}` : name
-		if (categoryIds.has(key)) return categoryIds.get(key)!
+		const existing = categoryIds.get(key)
+		if (existing !== undefined) return existing
 
 		let parentId: number | undefined
 		if (parentName) {
-			if (!parentCategoryIds.has(parentName)) {
-				const pid = nextId++
-				db.run(
-					'INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES (?, 19, ?)',
-					[pid, parentName]
+			const existingParent = parentCategoryIds.get(parentName)
+			if (existingParent !== undefined) {
+				parentId = existingParent
+			} else {
+				parentId = nextId++
+				statements.push(
+					`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES (${parentId}, 19, '${escapeSql(parentName)}');`
 				)
-				parentCategoryIds.set(parentName, pid)
+				parentCategoryIds.set(parentName, parentId)
 			}
-			parentId = parentCategoryIds.get(parentName)
 		}
 
 		const id = nextId++
 		if (parentId !== undefined) {
-			db.run(
-				'INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2, ZPARENTCATEGORY) VALUES (?, 19, ?, ?)',
-				[id, name, parentId]
+			statements.push(
+				`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2, ZPARENTCATEGORY) VALUES (${id}, 19, '${escapeSql(name)}', ${parentId});`
 			)
 		} else {
-			db.run(
-				'INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES (?, 19, ?)',
-				[id, name]
+			statements.push(
+				`INSERT INTO ZSYNCOBJECT (Z_PK, Z_ENT, ZNAME2) VALUES (${id}, 19, '${escapeSql(name)}');`
 			)
 		}
+
 		categoryIds.set(key, id)
 		return id
 	}
 
-	const insertTrx = db.prepare(
-		`INSERT INTO ZSYNCOBJECT (
-			Z_PK, Z_ENT, ZDATE1, ZAMOUNT1, ZORIGINALAMOUNT, ZORIGINALCURRENCY,
-			ZACCOUNT2, ZPAYEE2, ZDESC2, ZNOTES1, ZSTATUS1, ZRECONCILED
-		) VALUES (?, ?, ?, ?, ?, ?, 100, ?, ?, '', 2, 1)`
-	)
-	const insertCat = db.prepare(
-		'INSERT INTO ZCATEGORYASSIGMENT (ZTRANSACTION, ZCATEGORY) VALUES (?, ?)'
-	)
-
 	for (let i = 0; i < records.length; i++) {
-		const rec = records[i]
+		const record = records[i]
 		const id = nextId++
 		const date = toCoreDataTimestamp(
-			rec.date ?? new Date(Date.UTC(2026, 0, i + 1))
+			record.date ?? new Date(Date.UTC(2026, 0, i + 1))
 		)
-		const amount = rec.amount ?? -100
-		const currency = rec.currency ?? 'THB'
+		const amount = record.amount ?? -100
+		const currency = record.currency ?? 'THB'
 		const entityId = amount >= 0 ? 37 : 47
-		const payeeId = getOrCreatePayee(rec.payee ?? 'Test Payee')
+		const payeeId = getOrCreatePayee(record.payee ?? 'Test Payee')
 
-		insertTrx.run(
-			id,
-			entityId,
-			date,
-			amount,
-			amount,
-			currency,
-			payeeId,
-			rec.description ?? `Transaction ${i + 1}`
-		)
+		statements.push(`
+			INSERT INTO ZSYNCOBJECT (
+				Z_PK, Z_ENT, ZDATE1, ZAMOUNT1, ZORIGINALAMOUNT, ZORIGINALCURRENCY,
+				ZACCOUNT2, ZPAYEE2, ZDESC2, ZNOTES1, ZSTATUS1, ZRECONCILED
+			) VALUES (
+				${id},
+				${entityId},
+				${date},
+				${amount},
+				${amount},
+				'${escapeSql(currency)}',
+				100,
+				${payeeId},
+				'${escapeSql(record.description ?? `Transaction ${i + 1}`)}',
+				'',
+				2,
+				1
+			);
+		`)
 
-		if (rec.category) {
-			const catId = getOrCreateCategory(rec.category, rec.parentCategory)
-			insertCat.run(id, catId)
+		if (record.category) {
+			const categoryId = getOrCreateCategory(
+				record.category,
+				record.parentCategory
+			)
+			statements.push(
+				`INSERT INTO ZCATEGORYASSIGMENT (ZTRANSACTION, ZCATEGORY) VALUES (${id}, ${categoryId});`
+			)
 		}
 	}
 
-	const bytes = db.serialize()
-	db.close()
-	return Buffer.from(bytes)
+	runSqliteScript(dbPath, `BEGIN;\n${statements.join('\n')}\nCOMMIT;\n`)
+
+	try {
+		return readFileSync(dbPath)
+	} finally {
+		rmSync(tmp, { recursive: true, force: true })
+	}
 }

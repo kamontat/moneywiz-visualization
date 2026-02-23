@@ -8,10 +8,12 @@ import type {
 } from '../constants'
 import type { FilterOptions } from '$lib/analytics/filters/models'
 import type { FxRateCacheState } from '$lib/currency/models'
-import type { DatabaseState } from '$lib/database/models'
+import type { SourceManifest } from '$lib/session/models'
 import type { ParsedTheme } from '$lib/themes/models'
 import type { ParsedTransaction } from '$lib/transactions/models'
 import type { ISchemaDB, ISchemaState, ISchemaTable } from '$utils/db/models'
+
+type DatabaseState = Pick<SourceManifest, 'fileName' | 'size' | 'modifiedAt'>
 
 type ThemeTableSchemaV1 = ISchemaTable<
 	typeof STATE_THEME_V1,

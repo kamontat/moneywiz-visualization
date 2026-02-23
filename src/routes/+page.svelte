@@ -2,7 +2,7 @@
 	import type { FilterOptions } from '$lib/analytics/filters/models/options'
 	import type { FilterState } from '$lib/analytics/filters/models/state'
 	import type { FxRateTable } from '$lib/currency/models'
-	import type { DatabaseState } from '$lib/database/models'
+	import type { SourceManifest } from '$lib/session/models'
 	import type {
 		ParsedCategory,
 		ParsedTransaction,
@@ -45,16 +45,18 @@
 		convertTransactionsToTHB,
 		prepareHistoricalRateTable,
 	} from '$lib/currency'
-	import { databaseStore, databaseUploading } from '$lib/database'
+	import {
+		getLedgerTransactionCount,
+		getLedgerTransactions,
+	} from '$lib/ledger/repository'
 	import { dismissNotification, pushNotification } from '$lib/notifications'
+	import { sessionStore, sessionUploading } from '$lib/session'
 	import {
 		extractCategories,
 		extractPayees,
 		extractTagCategories,
 		extractAccounts,
-		getTransactionCount,
-		getTransactions,
-	} from '$lib/transactions'
+	} from '$lib/transactions/utils'
 
 	const DEFAULT_TRANSACTION_PAGE_SIZE = 10
 	const TRANSACTION_PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
@@ -66,7 +68,7 @@
 	let availableAccounts = $state<string[]>([])
 	let tagCategories = $state(extractTagCategories([]))
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
-	let fileInfo = $state<DatabaseState | undefined>(undefined)
+	let fileInfo = $state<SourceManifest | undefined>(undefined)
 	let dataLoading = $state(true)
 	let dataLoadRequestId = 0
 	let uploading = $state(false)
@@ -119,8 +121,8 @@
 	}
 
 	const loadData = async () => {
-		totalCount = await getTransactionCount()
-		allTransactions = await getTransactions()
+		totalCount = await getLedgerTransactionCount()
+		allTransactions = await getLedgerTransactions()
 		void refreshHistoricalRateTable(allTransactions)
 		const cached = cachedFilterOptions
 		const fileMatches =
@@ -200,18 +202,18 @@
 				cachedFilterOptions = options
 			}
 		)
-		const unsubDatabaseStore = databaseStore.subscribe((state) => {
-			fileInfo = state
+		const unsubSessionStore = sessionStore.subscribe((state) => {
+			fileInfo = state.source
 			void reloadData()
 		})
-		const unsubDatabaseUploading = databaseUploading.subscribe((u: boolean) => {
+		const unsubSessionUploading = sessionUploading.subscribe((u: boolean) => {
 			uploading = u
 		})
 
 		return () => {
 			unsubFilterOptions()
-			unsubDatabaseStore()
-			unsubDatabaseUploading()
+			unsubSessionStore()
+			unsubSessionUploading()
 		}
 	})
 

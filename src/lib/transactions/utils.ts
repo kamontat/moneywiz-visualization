@@ -15,11 +15,6 @@ import {
 
 const noNaN = (val: number) => (isNaN(val) ? 0 : val)
 
-/**
- * parseAccount syntax: `<name> [<extra>] (<type>)`
- * @param text input raw account name
- * @returns parsed account
- */
 export const parseAccount = (text: string): ParsedAccount => {
 	const typeRegex = /\(([^)]+)\)$/
 	const extraRegex = /\[([^\]]+)\]$/
@@ -43,20 +38,6 @@ export const parseAccount = (text: string): ParsedAccount => {
 	return { type, name, extra }
 }
 
-/**
- * parseAccountType as following:
- *   1. A => 'Checking'
- *   2. C => 'CreditCard'
- *   3. D => 'DebitCard'
- *   4. I => 'Investment'
- *   5. L => 'Loan'
- *   6. W => 'Wallet'
- *   7. OW => 'OnlineWallet'
- *   8. CT => 'Cryptocurrency'
- *   9. otherwise => 'Unknown'
- * @param text input raw account type
- * @returns parsed account type
- */
 export const parseAccountType = (text: string): ParsedAccountType => {
 	switch (text) {
 		case 'A':

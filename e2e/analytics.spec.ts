@@ -72,7 +72,9 @@ test.describe('Overview tab', () => {
 		await expect(page.getByText('Total Expenses')).toBeVisible()
 		await expect(page.getByText('Net Flow')).toBeVisible()
 		await expect(page.getByText('Current Net Worth')).toBeVisible()
-		await expect(page.getByText('Monthly Change')).toBeVisible()
+		await expect(
+			page.getByText('Monthly Change', { exact: true })
+		).toBeVisible()
 		await expect(page.getByText('Peak Net Worth')).toBeVisible()
 		await expect(page.getByText('Avg Monthly Change')).toBeVisible()
 		await expect(page.locator('canvas').first()).toBeVisible()

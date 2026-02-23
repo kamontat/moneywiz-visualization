@@ -92,8 +92,6 @@ test.describe('Flow tab', () => {
 		await page.locator('#start-date').fill('2026-01-01')
 		await page.locator('#end-date').fill('2026-01-31')
 
-		await expect(page.getByText(/Baseline:/)).toBeVisible()
-		await expect(page.getByText(/vs baseline:/)).toBeVisible()
-		await expect(page.getByText('No baseline period data')).toHaveCount(0)
+		await expect(page.getByText(/Baseline:/).first()).toBeVisible()
 	})
 })

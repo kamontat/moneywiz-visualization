@@ -9,8 +9,7 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import { filterOptionsStore } from '$lib/analytics/filters/init'
-	import { databaseAPIs, databaseStore } from '$lib/database'
-	import { clearTransactions } from '$lib/transactions'
+	import { sessionAPIs, sessionStore } from '$lib/session'
 
 	type Props = Omit<BaseProps, 'children'> &
 		ComponentProps<typeof Button> &
@@ -33,9 +32,7 @@
 	const onclick: MouseEventHandler<HTMLButtonElement> = async (event) => {
 		loading = true
 		try {
-			// Clear transactions first to avoid race condition with databaseStore subscribers
-			await clearTransactions()
-			await databaseAPIs.reset()
+			await sessionAPIs.clear()
 			await filterOptionsStore.resetAsync()
 			onsuccess?.()
 		} catch (error) {
@@ -48,7 +45,7 @@
 	}
 </script>
 
-{#if $databaseStore && !uploading}
+{#if $sessionStore.source && !uploading}
 	<Button
 		variant="danger"
 		aria-label="Clear loaded database"

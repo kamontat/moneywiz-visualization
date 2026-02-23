@@ -8,8 +8,8 @@
 	import DatabaseUploadButton from '$components/molecules/DatabaseUploadButton.svelte'
 	import NameHeader from '$components/molecules/NameHeader.svelte'
 	import ThemeSelect from '$components/molecules/ThemeSelect.svelte'
-	import { databaseStore } from '$lib/database'
 	import { pushNotification } from '$lib/notifications'
+	import { sessionStore } from '$lib/session'
 
 	let uploading = $state(false)
 
@@ -58,7 +58,7 @@
 			onsuccess={onClearSuccess}
 			onfail={onClearError}
 		/>
-		{#if !$databaseStore || uploading}
+		{#if !$sessionStore.source || uploading}
 			<DatabaseUploadButton
 				onsuccess={onUploadSuccess}
 				onfail={onUploadError}

@@ -4,7 +4,7 @@ import { generateSQLite, type MoneyWizRecord } from './utils/sqlite-generator'
 
 test.describe('Filter Persistence', () => {
 	test.beforeEach(async ({ page }) => {
-		await page.goto('http://localhost:5173')
+		await page.goto('/')
 		// Wait for the page to load completely
 		await page.waitForLoadState('networkidle')
 	})
@@ -72,7 +72,6 @@ test.describe('Filter Persistence', () => {
 		await expect(transactionCountElement).toBeVisible()
 
 		const transactionCountText = await transactionCountElement.textContent()
-		console.log('Transaction count:', transactionCountText)
 
 		// Parse the number from text like "4 transactions"
 		const countMatch = transactionCountText?.match(/(\d+)/)
@@ -82,8 +81,6 @@ test.describe('Filter Persistence', () => {
 		// Check if the filter bar is visible
 		const filterBar = page.locator('[data-testid="filter-bar"]')
 		await expect(filterBar).toBeVisible()
-
-		console.log('Filter bar is visible - proceeding with filter tests')
 
 		// Open the payee filter
 		await page.click('[data-testid="filter-payee-chip"]')
@@ -95,7 +92,6 @@ test.describe('Filter Persistence', () => {
 		const payeeCountText = await page
 			.locator('[data-testid="payee-count-text"]')
 			.textContent()
-		console.log('Payee count text before refresh:', payeeCountText)
 		expect(payeeCountText).not.toContain('0 payees')
 
 		// Open the account filter
@@ -108,7 +104,6 @@ test.describe('Filter Persistence', () => {
 		const accountCountText = await page
 			.locator('[data-testid="account-count-text"]')
 			.textContent()
-		console.log('Account count text before refresh:', accountCountText)
 		expect(accountCountText).not.toContain('0 accounts')
 
 		// Now refresh the page
@@ -122,10 +117,6 @@ test.describe('Filter Persistence', () => {
 		await expect(transactionCountElement).toBeVisible()
 		const transactionCountAfterRefresh =
 			await transactionCountElement.textContent()
-		console.log(
-			'Transaction count after refresh:',
-			transactionCountAfterRefresh
-		)
 		expect(transactionCountAfterRefresh).toContain(transactionCount.toString())
 
 		// Check if filter bar is still visible after refresh
@@ -140,7 +131,6 @@ test.describe('Filter Persistence', () => {
 		const payeeCountAfterRefresh = await page
 			.locator('[data-testid="payee-count-text"]')
 			.textContent()
-		console.log('Payee count after refresh:', payeeCountAfterRefresh)
 
 		// Check account filter again after refresh
 		await page.click('[data-testid="filter-account-chip"]')
@@ -151,7 +141,6 @@ test.describe('Filter Persistence', () => {
 		const accountCountAfterRefresh = await page
 			.locator('[data-testid="account-count-text"]')
 			.textContent()
-		console.log('Account count after refresh:', accountCountAfterRefresh)
 
 		// The counts should be the same before and after refresh
 		expect(payeeCountAfterRefresh).toBe(payeeCountText)
