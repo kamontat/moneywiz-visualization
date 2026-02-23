@@ -1,6 +1,6 @@
 import { openLedgerDB } from './open-ledger-db'
 
-import { STORE_LEDGER_META_V2 } from '$lib/ledger/models'
+import { STORE_LEDGER_META_V2 } from '$lib/transactions/models'
 
 export const getLedgerMetaRecords = async (): Promise<
 	Array<{ key: string; value: unknown }>

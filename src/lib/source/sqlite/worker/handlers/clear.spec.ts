@@ -14,7 +14,7 @@ const {
 	clearSourceByBackendMock: vi.fn(),
 }))
 
-vi.mock('$lib/ledger/repository', () => ({
+vi.mock('$lib/transactions/repository', () => ({
 	clearLedgerMeta: clearLedgerMetaMock,
 	clearLedgerTransactions: clearLedgerTransactionsMock,
 	clearSessionManifest: clearSessionManifestMock,

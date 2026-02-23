@@ -28,6 +28,7 @@ export interface SQLiteAccount {
 	entityName: string
 	name: string
 	currency?: string
+	openingBalance: number
 	isArchived: boolean
 }
 

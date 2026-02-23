@@ -1,6 +1,6 @@
 import type { StatusWorkerResult } from '$lib/source/sqlite/models'
-import { getSnapshotStatus } from '$lib/ledger/repository'
 import { isSourceAvailable } from '$lib/source/sqlite/worker/backends'
+import { getSnapshotStatus } from '$lib/transactions/repository'
 
 export const handleStatus = async (): Promise<StatusWorkerResult> => {
 	const snapshot = await getSnapshotStatus()

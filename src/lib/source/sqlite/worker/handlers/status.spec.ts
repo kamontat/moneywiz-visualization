@@ -5,7 +5,7 @@ const { getSnapshotStatusMock, isSourceAvailableMock } = vi.hoisted(() => ({
 	isSourceAvailableMock: vi.fn(),
 }))
 
-vi.mock('$lib/ledger/repository', () => ({
+vi.mock('$lib/transactions/repository', () => ({
 	getSnapshotStatus: getSnapshotStatusMock,
 }))
 

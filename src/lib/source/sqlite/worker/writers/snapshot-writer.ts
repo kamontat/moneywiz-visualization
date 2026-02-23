@@ -1,24 +1,25 @@
 import type { Database } from '@sqlite.org/sqlite-wasm'
-import type { ParsedTransaction } from '$lib/ledger/models'
 import type { SessionProgress } from '$lib/session/models'
-import { mapSQLiteTransaction } from '$lib/ledger/importer'
-import {
-	shouldSkipParsedTransaction,
-	shouldSkipSQLiteTransaction,
-} from '$lib/ledger/importer/filter-rules'
-import {
-	clearLedgerMeta,
-	clearLedgerTransactions,
-	markSnapshotReady,
-	putLedgerTransactionBatch,
-	setLedgerMeta,
-} from '$lib/ledger/repository'
+import type { ParsedTransaction } from '$lib/transactions/models'
 import {
 	extractLookups,
 	extractRelations,
 	streamTransactions,
 } from '$lib/source/sqlite/worker/extractors'
 import { flushBatch, yieldToWorkerLoop } from '$lib/source/sqlite/worker/utils'
+import { mapSQLiteTransaction } from '$lib/transactions/importer'
+import {
+	shouldSkipParsedTransaction,
+	shouldSkipSQLiteTransaction,
+} from '$lib/transactions/importer/filter-rules'
+import {
+	clearLedgerMeta,
+	clearLedgerTransactions,
+	setLedgerNetWorthBaseline,
+	markSnapshotReady,
+	putLedgerTransactionBatch,
+	setLedgerMeta,
+} from '$lib/transactions/repository'
 
 const DEFAULT_BATCH_SIZE = 1000
 const YIELD_EVERY = 500
@@ -109,6 +110,18 @@ export const rebuildSnapshotFromDatabase = async (
 
 	await Promise.all([
 		markSnapshotReady(persistedCount),
+		setLedgerNetWorthBaseline({
+			version: 1,
+			generatedAt: new Date().toISOString(),
+			accounts: lookups.accounts.map((account) => ({
+				accountId: account.id,
+				name: account.name,
+				entityId: account.entityId,
+				currency: account.currency,
+				isArchived: account.isArchived,
+				openingBalance: account.openingBalance,
+			})),
+		}),
 		setLedgerMeta('syncObjectRows', summary.syncObjectRows),
 		setLedgerMeta('sourceProcessedRows', sourceProcessed),
 	])

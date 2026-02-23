@@ -3,8 +3,8 @@ import type {
 	SourceBackend,
 	SourceManifest,
 } from '$lib/session/models'
-import { setSessionManifest } from '$lib/ledger/repository'
 import { SNAPSHOT_SCHEMA_VERSION } from '$lib/session/persistence'
+import { setSessionManifest } from '$lib/transactions/repository'
 
 export const writeSessionSnapshotManifest = async (input: {
 	backend: SourceBackend

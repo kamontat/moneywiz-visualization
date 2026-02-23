@@ -1,11 +1,11 @@
+import type { SQLiteTransaction } from '$lib/source/sqlite/models'
 import type {
 	ParsedAccount,
 	ParsedAmount,
 	ParsedBaseTransaction,
 	ParsedRefundTransaction,
 	ParsedTransaction,
-} from '$lib/ledger/models'
-import type { SQLiteTransaction } from '$lib/source/sqlite/models'
+} from '$lib/transactions/models'
 import {
 	classifyDebtCategory,
 	classifyIncomeExpenseFallback,

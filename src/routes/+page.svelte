@@ -4,6 +4,7 @@
 	import type { FxRateTable } from '$lib/currency/models'
 	import type { SourceManifest } from '$lib/session/models'
 	import type {
+		LedgerAccountBalanceRow,
 		ParsedCategory,
 		ParsedTransaction,
 	} from '$lib/transactions/models'
@@ -35,9 +36,11 @@
 	import { filterOptionsStore } from '$lib/analytics/filters/init'
 	import { emptyFilterState } from '$lib/analytics/filters/models/state'
 	import {
+		byNetWorthFromBalances,
 		bySummarize,
 		deriveBaselineRange,
 		deriveCurrentRange,
+		selectNetWorthTransactions,
 		sliceByDateRange,
 		transform,
 	} from '$lib/analytics/transforms'
@@ -45,12 +48,13 @@
 		convertTransactionsToTHB,
 		prepareHistoricalRateTable,
 	} from '$lib/currency'
-	import {
-		getLedgerTransactionCount,
-		getLedgerTransactions,
-	} from '$lib/ledger/repository'
 	import { dismissNotification, pushNotification } from '$lib/notifications'
 	import { sessionStore, sessionUploading } from '$lib/session'
+	import {
+		getLedgerNetWorthBaseline,
+		getLedgerTransactionCount,
+		getLedgerTransactions,
+	} from '$lib/transactions/repository'
 	import {
 		extractCategories,
 		extractPayees,
@@ -91,6 +95,7 @@
 	let fxRateErrorNotificationText = $state<string | undefined>(undefined)
 	let normalizationNotificationId = $state<string | undefined>(undefined)
 	let normalizationNotificationText = $state<string | undefined>(undefined)
+	let netWorthAccountBalances = $state<LedgerAccountBalanceRow[]>([])
 
 	const refreshHistoricalRateTable = async (
 		transactions: ParsedTransaction[]
@@ -121,8 +126,14 @@
 	}
 
 	const loadData = async () => {
-		totalCount = await getLedgerTransactionCount()
-		allTransactions = await getLedgerTransactions()
+		const [count, transactions, netWorthBaseline] = await Promise.all([
+			getLedgerTransactionCount(),
+			getLedgerTransactions(),
+			getLedgerNetWorthBaseline(),
+		])
+		totalCount = count
+		allTransactions = transactions
+		netWorthAccountBalances = netWorthBaseline?.accounts ?? []
 		void refreshHistoricalRateTable(allTransactions)
 		const cached = cachedFilterOptions
 		const fileMatches =
@@ -360,6 +371,16 @@
 		convertedFilteredResult?.transactions ?? []
 	)
 
+	const netWorthTransactions = $derived(
+		selectNetWorthTransactions(allTransactions, filterState)
+	)
+
+	const convertedNetWorthTransactions = $derived.by(() => {
+		if (fxRateLoading) return []
+		return convertTransactionsToTHB(netWorthTransactions, fxRateTable)
+			.transactions
+	})
+
 	const convertedNonDateFilteredTransactions = $derived.by(() => {
 		if (fxRateLoading) return []
 		return convertTransactionsToTHB(nonDateFilteredTransactions, fxRateTable)
@@ -522,6 +543,16 @@
 		return transform(cashFlowBaselineTransactions, bySummarize())
 	})
 
+	const netWorthSummary = $derived(
+		transform(
+			convertedNetWorthTransactions,
+			byNetWorthFromBalances({
+				accountBalances: netWorthAccountBalances,
+				selectedAccounts: filterState.accounts,
+			})
+		)
+	)
+
 	const sortedFilteredTransactions = $derived(
 		filteredTransactions.toSorted((a, b) => b.date.getTime() - a.date.getTime())
 	)
@@ -605,6 +636,7 @@
 		totalPages={totalTransactionPages}
 		summary={filteredSummary}
 		baselineSummary={quickSummaryBaseline}
+		{netWorthSummary}
 		onpagechange={setTransactionPage}
 		onpagesizechange={setTransactionPageSize}
 		hasData={totalCount > 0}

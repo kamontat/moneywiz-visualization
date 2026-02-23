@@ -1,6 +1,6 @@
-import type { ParsedTransaction } from '$lib/ledger/models'
 import type { SQLiteTransaction } from '$lib/source/sqlite/models'
-import { classifySQLiteTransaction } from '$lib/ledger/classifier'
+import type { ParsedTransaction } from '$lib/transactions/models'
+import { classifySQLiteTransaction } from '$lib/transactions/classifier'
 
 export const mapSQLiteTransaction = (
 	transaction: SQLiteTransaction

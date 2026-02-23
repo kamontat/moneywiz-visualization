@@ -1,5 +1,8 @@
 <script lang="ts">
-	import type { Summarize } from '$lib/analytics/transforms/models'
+	import type {
+		NetWorthSummary,
+		Summarize,
+	} from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import Panel from '$components/atoms/Panel.svelte'
@@ -19,18 +22,20 @@
 			transactions: ParsedTransaction[]
 			summary?: Summarize
 			baselineSummary?: Summarize
+			netWorthSummary?: NetWorthSummary
 		}>
 
 	let {
 		transactions,
 		summary,
 		baselineSummary,
+		netWorthSummary,
 		class: className,
 		...rest
 	}: Props = $props()
 
 	const waterfall = $derived(transform(transactions, byMonthlyWaterfall))
-	const netWorth = $derived(toNetWorthSummary(waterfall))
+	const netWorth = $derived(netWorthSummary ?? toNetWorthSummary(waterfall))
 	const categoryTotals = $derived(transform(transactions, byCategoryTotal))
 
 	const topExpenseDrivers = $derived.by(() => {

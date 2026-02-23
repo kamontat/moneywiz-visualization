@@ -1,5 +1,8 @@
-import type { ParsedBaseTransaction, ParsedCategory } from '$lib/ledger/models'
 import type { SQLiteTransaction } from '$lib/source/sqlite/models'
+import type {
+	ParsedBaseTransaction,
+	ParsedCategory,
+} from '$lib/transactions/models'
 import { describe, expect, it } from 'vitest'
 
 import { classifyTransferEntity } from './transfer'

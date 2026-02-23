@@ -1,7 +1,7 @@
-import type { ParsedTransaction } from '$lib/ledger/models'
+import type { ParsedTransaction } from '$lib/transactions/models'
 import { openLedgerDB } from './open-ledger-db'
 
-import { STORE_LEDGER_TRANSACTIONS_V2 } from '$lib/ledger/models'
+import { STORE_LEDGER_TRANSACTIONS_V2 } from '$lib/transactions/models'
 
 export const getLedgerTransactionCount = async (): Promise<number> => {
 	const database = await openLedgerDB()

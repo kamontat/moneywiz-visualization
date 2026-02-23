@@ -1,15 +1,20 @@
-import type { LedgerMetaRecord, SnapshotStatus } from '$lib/ledger/models'
 import type { SessionManifest } from '$lib/session/models'
+import type {
+	LedgerMetaRecord,
+	LedgerNetWorthBaselineMeta,
+	SnapshotStatus,
+} from '$lib/transactions/models'
 import { openLedgerDB } from './open-ledger-db'
 import { getLedgerTransactionCount } from './transaction-read-repo'
 
 import {
 	STORE_LEDGER_META_V2,
 	STORE_SESSION_MANIFEST_V2,
-} from '$lib/ledger/models'
+} from '$lib/transactions/models'
 
 const SNAPSHOT_READY_KEY = 'snapshotReady'
 const SNAPSHOT_COUNT_KEY = 'transactionCount'
+const NET_WORTH_BASELINE_KEY = 'netWorthBaselineV1'
 
 export const getSessionManifest = async (): Promise<
 	SessionManifest | undefined
@@ -65,6 +70,20 @@ export const setLedgerMeta = async (
 	} finally {
 		database.close()
 	}
+}
+
+export const getLedgerNetWorthBaseline = async (): Promise<
+	LedgerNetWorthBaselineMeta | undefined
+> => {
+	const value = await getLedgerMeta(NET_WORTH_BASELINE_KEY)
+	if (!value || typeof value !== 'object') return undefined
+	return value as LedgerNetWorthBaselineMeta
+}
+
+export const setLedgerNetWorthBaseline = async (
+	value: LedgerNetWorthBaselineMeta
+): Promise<void> => {
+	await setLedgerMeta(NET_WORTH_BASELINE_KEY, value)
 }
 
 export const clearLedgerMeta = async (): Promise<void> => {

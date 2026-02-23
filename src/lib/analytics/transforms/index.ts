@@ -23,7 +23,9 @@ export { byPayeeSpend } from './byPayeeSpend'
 export { byCashFlowDashboard } from './byCashFlowDashboard'
 export { byStatsDashboard } from './byStatsDashboard'
 export { byTopPayeesPerCategory } from './byTopPayeesPerCategory'
+export { byNetWorthFromBalances } from './byNetWorthFromBalances'
 export { toNetWorthSummary } from './byNetWorth'
+export { selectNetWorthTransactions } from './selectNetWorthTransactions'
 export {
 	deriveBaselineRange,
 	deriveCurrentRange,

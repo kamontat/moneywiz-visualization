@@ -13,7 +13,7 @@ const {
 	writeSessionSnapshotManifestMock: vi.fn(),
 }))
 
-vi.mock('$lib/ledger/repository', () => ({
+vi.mock('$lib/transactions/repository', () => ({
 	getSessionManifest: getSessionManifestMock,
 }))
 

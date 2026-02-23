@@ -1,5 +1,5 @@
 import type { DBSchema } from 'idb'
-import type { ParsedTransaction } from './transaction'
+import type { ParsedTransaction } from './state'
 import type { SessionManifest } from '$lib/session/models'
 
 export const LEDGER_DB_NAME = 'moneywiz-ledger-v2' as const

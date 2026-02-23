@@ -1,4 +1,4 @@
-import type { LedgerDBSchema } from '$lib/ledger/models'
+import type { LedgerDBSchema } from '$lib/transactions/models'
 import { openDB, type IDBPDatabase } from 'idb'
 
 import {
@@ -7,7 +7,7 @@ import {
 	STORE_LEDGER_META_V2,
 	STORE_LEDGER_TRANSACTIONS_V2,
 	STORE_SESSION_MANIFEST_V2,
-} from '$lib/ledger/models'
+} from '$lib/transactions/models'
 
 export const openLedgerDB = async (): Promise<IDBPDatabase<LedgerDBSchema>> => {
 	return openDB<LedgerDBSchema>(LEDGER_DB_NAME, LEDGER_DB_VERSION, {

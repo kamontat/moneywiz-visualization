@@ -4,9 +4,11 @@ export {
 	clearLedgerMeta,
 	clearSessionManifest,
 	getLedgerMeta,
+	getLedgerNetWorthBaseline,
 	getSessionManifest,
 	getSnapshotStatus,
 	markSnapshotReady,
+	setLedgerNetWorthBaseline,
 	setLedgerMeta,
 	setSessionManifest,
 } from './snapshot-health-repo'

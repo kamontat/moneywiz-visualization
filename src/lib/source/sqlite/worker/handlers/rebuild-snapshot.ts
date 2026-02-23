@@ -1,11 +1,11 @@
 import type { SessionProgress } from '$lib/session/models'
 import type { BootstrapWorkerResult } from '$lib/source/sqlite/models'
-import { getSessionManifest } from '$lib/ledger/repository'
 import { openExistingOpfsSource } from '$lib/source/sqlite/worker/backends'
 import {
 	rebuildSnapshotFromDatabase,
 	writeSessionSnapshotManifest,
 } from '$lib/source/sqlite/worker/writers'
+import { getSessionManifest } from '$lib/transactions/repository'
 
 export const handleRebuildSnapshot = async (
 	onProgress?: (progress: SessionProgress) => void

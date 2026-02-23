@@ -1,5 +1,9 @@
 <script lang="ts">
-	import type { StatsRange, Summarize } from '$lib/analytics/transforms/models'
+	import type {
+		NetWorthSummary,
+		StatsRange,
+		Summarize,
+	} from '$lib/analytics/transforms/models'
 	import type { BaseProps, CustomProps } from '$lib/components/models'
 	import type { ParsedTransaction } from '$lib/transactions/models'
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
@@ -38,6 +42,7 @@
 			statsBaselineRange?: StatsRange | null
 			summary?: Summarize
 			baselineSummary?: Summarize
+			netWorthSummary?: NetWorthSummary
 			onpagechange?: (page: number) => void
 			onpagesizechange?: (pageSize: number) => void
 		}>
@@ -60,6 +65,7 @@
 		statsBaselineRange = null,
 		summary,
 		baselineSummary,
+		netWorthSummary,
 		onpagechange,
 		onpagesizechange,
 		class: className,
@@ -147,6 +153,7 @@
 						transactions={_allTransactions}
 						{summary}
 						{baselineSummary}
+						{netWorthSummary}
 					/>
 				</div>
 			{:else if activeTab === 'flow'}

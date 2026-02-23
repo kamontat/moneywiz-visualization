@@ -5,7 +5,7 @@ import type {
 	ParsedIncomeTransaction,
 	ParsedRefundTransaction,
 	ParsedUnknownTransaction,
-} from '$lib/ledger/models'
+} from '$lib/transactions/models'
 import { isIncomeCategory } from '$lib/transactions/utils'
 
 const CHECK_NUMBER = ''

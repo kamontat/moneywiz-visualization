@@ -53,7 +53,8 @@ export const extractLookups = (db: Database): SQLiteLookups => {
 	const accounts: SQLiteAccount[] = readRows(
 		db,
 		`SELECT Z_PK, Z_ENT, ZNAME, ZNAME1, ZNAME2, ZNAME3, ZNAME4, ZNAME5, ZNAME6,
-			ZCURRENCYNAME, ZCURRENCYNAME1, ZCURRENCYNAME2, ZCURRENCYNAME3, ZARCHIVED
+			ZCURRENCYNAME, ZCURRENCYNAME1, ZCURRENCYNAME2, ZCURRENCYNAME3,
+			ZOPENINGBALANCE, ZOPENINGBALANCE1, ZARCHIVED
 		FROM ZSYNCOBJECT
 		WHERE Z_ENT BETWEEN ${SQLITE_ACCOUNT_ENTITY_RANGE.min}
 			AND ${SQLITE_ACCOUNT_ENTITY_RANGE.max}
@@ -74,6 +75,8 @@ export const extractLookups = (db: Database): SQLiteLookups => {
 					'ZCURRENCYNAME2',
 					'ZCURRENCYNAME3',
 				]),
+				openingBalance:
+					getNumberValue(row, ['ZOPENINGBALANCE', 'ZOPENINGBALANCE1']) ?? 0,
 				isArchived: toBoolean(getNumberValue(row, ['ZARCHIVED'])) ?? false,
 			} as SQLiteAccount
 		})

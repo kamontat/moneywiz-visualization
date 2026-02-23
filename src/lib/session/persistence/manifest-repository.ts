@@ -3,7 +3,7 @@ import {
 	clearSessionManifest,
 	getSessionManifest,
 	setSessionManifest,
-} from '$lib/ledger/repository'
+} from '$lib/transactions/repository'
 
 export const readSessionManifest = async (): Promise<
 	SessionManifest | undefined

@@ -1,5 +1,5 @@
-import type { ParsedTransaction } from '$lib/ledger/models'
 import type { SQLiteTransaction } from '$lib/source/sqlite/models'
+import type { ParsedTransaction } from '$lib/transactions/models'
 import {
 	shouldSkipParsedTransaction,
 	shouldSkipSQLiteTransaction,

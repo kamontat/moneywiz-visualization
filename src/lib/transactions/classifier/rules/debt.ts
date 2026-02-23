@@ -5,7 +5,7 @@ import type {
 	ParsedDebtTransaction,
 	ParsedGiveawayTransaction,
 	ParsedWindfallTransaction,
-} from '$lib/ledger/models'
+} from '$lib/transactions/models'
 import {
 	isDebtCategory,
 	isDebtRepaymentCategory,

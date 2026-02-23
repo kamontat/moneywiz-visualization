@@ -1,3 +1,4 @@
+import type { SQLiteTransaction } from '$lib/source/sqlite/models'
 import type {
 	ParsedAccount,
 	ParsedBaseTransaction,
@@ -7,8 +8,7 @@ import type {
 	ParsedRefundTransaction,
 	ParsedTransferTransaction,
 	ParsedUnknownTransaction,
-} from '$lib/ledger/models'
-import type { SQLiteTransaction } from '$lib/source/sqlite/models'
+} from '$lib/transactions/models'
 import { SQLITE_ENTITY_ID } from '$lib/source/sqlite/models'
 import { isIncomeCategory } from '$lib/transactions/utils'
 

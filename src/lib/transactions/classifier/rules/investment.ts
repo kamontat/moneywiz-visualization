@@ -1,9 +1,9 @@
+import type { SQLiteTransaction } from '$lib/source/sqlite/models'
 import type {
 	ParsedBaseTransaction,
 	ParsedBuyTransaction,
 	ParsedSellTransaction,
-} from '$lib/ledger/models'
-import type { SQLiteTransaction } from '$lib/source/sqlite/models'
+} from '$lib/transactions/models'
 import { SQLITE_ENTITY_ID } from '$lib/source/sqlite/models'
 
 const CHECK_NUMBER = ''
