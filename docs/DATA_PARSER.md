@@ -1,11 +1,5 @@
 # MoneyWiz SQLite Analyzer - Logic Summary
 
-## Repository Constraint
-
-- `static/data/` and `static/database/` are gitignored local folders.
-- Do not use them as runtime/test data sources or as required inputs for docs.
-- For tests, generate fixtures in code.
-
 - [1. SQLite Import Rules](#1-sqlite-import-rules)
   - [1.1 File Loading](#11-file-loading)
   - [1.2 Database Structure](#12-database-structure)
@@ -13,6 +7,7 @@
   - [1.4 Field Conversion](#14-field-conversion)
     - [Date Conversion](#date-conversion)
     - [Amount Conversion](#amount-conversion)
+    - [Analytics Currency Normalization](#analytics-currency-normalization)
     - [Category Conversion](#category-conversion)
     - [Account Type Mapping](#account-type-mapping)
     - [Tag Conversion](#tag-conversion)
@@ -46,7 +41,7 @@ MoneyWiz uses a Core Data SQLite schema with:
 - **`ZCATEGORYASSIGMENT`**: Links transactions to categories
 - **`Z_36TAGS`**: Links transactions to tags
 
-See [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) for the full ER diagram.
+See [SQLITE_SCHEMA.md](SQLITE_SCHEMA.md) for the full ER diagram.
 
 ### 1.3 Entity Type Mapping
 

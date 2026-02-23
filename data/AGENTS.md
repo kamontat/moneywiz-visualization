@@ -22,5 +22,5 @@ exceptions for example files.
 
 ## REFERENCES
 
-- **SQLite Import/Behavior**: See [RULES.md](../RULES.md)
-- **Database Schema**: See [DATABASE_SCHEMA.md](../DATABASE_SCHEMA.md)
+- **SQLite Import/Behavior**: See [docs/DATA_PARSER.md](../docs/DATA_PARSER.md)
+- **Database Schema**: See [docs/SQLITE_SCHEMA.md](../docs/SQLITE_SCHEMA.md)

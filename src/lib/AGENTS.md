@@ -92,8 +92,8 @@ export const byX: TransformByFunc<Args, Output> = (
 ## REFERENCE DOCS (REQUIRED)
 
 - For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [RULES.md](../../RULES.md) and
-  [DATABASE_SCHEMA.md](../../DATABASE_SCHEMA.md).
+  behavior, consult [docs/DATA_PARSER.md](../../docs/DATA_PARSER.md) and
+  [docs/SQLITE_SCHEMA.md](../../docs/SQLITE_SCHEMA.md).
 
 ## NOTES
 

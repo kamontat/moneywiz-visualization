@@ -15,7 +15,7 @@
 ## Reference Docs (Required)
 
 - For SQLite/database condition changes in tests or fixtures, check
-  [RULES.md](../RULES.md) and [DATABASE_SCHEMA.md](../DATABASE_SCHEMA.md) first.
+  [docs/DATA_PARSER.md](../docs/DATA_PARSER.md) and [docs/SQLITE_SCHEMA.md](../docs/SQLITE_SCHEMA.md) first.
 
 ## Patterns
 

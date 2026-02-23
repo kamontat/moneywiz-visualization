@@ -27,7 +27,7 @@ moneywiz-visualization/
 
 ## CI DATA CONSTRAINT
 
-- `static/data/` and `static/database/` are local-only and gitignored.
+- `data/` are local-only and gitignored.
 - Never load runtime data, test fixtures, or docs source inputs from those
   folders.
 - For tests, generate fixtures in code.
@@ -35,7 +35,7 @@ moneywiz-visualization/
 ## REFERENCE DOCS (REQUIRED)
 
 - For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [RULES.md](RULES.md) and [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md).
+  behavior, consult [docs/DATA_PARSER.md](docs/DATA_PARSER.md) and [docs/SQLITE_SCHEMA.md](docs/SQLITE_SCHEMA.md).
 
 ## WHERE TO LOOK
 
@@ -148,7 +148,7 @@ let {
   (case-insensitive) are **filtered out at import time** — these are noise,
   not real transactions
 - `Reconcile` uses `d-badge-neutral` styling to visually signal missing data
-- For the full classification priority table, see [RULES.md](RULES.md)
+- For the full classification priority table, see [docs/DATA_PARSER.md](docs/DATA_PARSER.md)
 
 ## KNOWN ISSUES (TODOs in code)
 

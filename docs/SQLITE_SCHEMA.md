@@ -1,7 +1,6 @@
 # iPad MoneyWiz SQLite Schema Diagram
 
 Source: local MoneyWiz SQLite export (private, not committed to repository).
-Generated from live table metadata on 2026-02-11.
 
 ## Notes
 
@@ -12,8 +11,6 @@ Generated from live table metadata on 2026-02-11.
   entity subtypes (Account, Budget, Category, Transaction, Tag, etc.).
 - Relationship labels below are inferred from column names and
   `Z_PRIMARYKEY` entity mappings.
-- The source database is intentionally outside `static/database/` because
-  that folder is gitignored and unavailable in CI.
 
 ## Mermaid ER Diagram
 
