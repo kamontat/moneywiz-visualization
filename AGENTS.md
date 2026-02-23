@@ -1,204 +1,83 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-10
-**Commit:** db5c576
+**Generated:** 2026-02-23
 **Branch:** main
 
 ## OVERVIEW
 
-SvelteKit 2 + Svelte 5 static site for visualizing MoneyWiz SQLite database exports.
-Uses Tailwind CSS 4 + DaisyUI 5, IndexedDB persistence, and Chart.js
-for analytics and dashboard charts.
+SvelteKit 2 + Svelte 5 static site for MoneyWiz SQLite visualization.
+SQLite ingestion is worker-only. Snapshot data is persisted in IndexedDB.
 
-## STRUCTURE
+## V2 STRUCTURE
 
-```
-moneywiz-visualization/
-├── src/
-│   ├── routes/           # SvelteKit file-based routing (+page.svelte, +layout.svelte)
-│   ├── components/       # Atomic Design: atoms/molecules/organisms (see AGENTS.md)
-│   ├── lib/              # Domain modules: analytics/database/charts/themes/transactions/etc.
-│   ├── utils/            # Data layer: db, stores, states, types (see AGENTS.md)
-│   └── css/              # Global styles (Tailwind + DaisyUI config)
-├── e2e/                  # Playwright E2E tests
-├── static/               # Static web assets only (no test/dev fixtures)
-└── .github/workflows/    # GitHub Pages deployment
-```
-
-## CI DATA CONSTRAINT
-
-- `data/` are local-only and gitignored.
-- Never load runtime data, test fixtures, or docs source inputs from those
-  folders.
-- For tests, generate fixtures in code.
-
-## REFERENCE DOCS (REQUIRED)
-
-- For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [docs/DATA_PARSER.md](docs/DATA_PARSER.md) and [docs/SQLITE_SCHEMA.md](docs/SQLITE_SCHEMA.md).
-
-## WHERE TO LOOK
-
-| Task               | Location                                      | Notes                                                                |
-| ------------------ | --------------------------------------------- | -------------------------------------------------------------------- |
-| Add new page       | `src/routes/`                                 | Create `+page.svelte`, optionally `+page.ts` for load                |
-| Add UI component   | `src/components/atoms\|molecules\|organisms/` | Follow atomic design                                                 |
-| Add business logic | `src/lib/{domain}/`                           | analytics, charts, database, themes, transactions, formatters        |
-| Add persistence    | `src/utils/stores/` + `src/utils/db/`         | Schema-first, see utils AGENTS.md                                    |
-| Add chart adapter  | `src/lib/charts/adapters/`                    | Convert analytics output to Chart.js data                            |
-| Add E2E test       | `e2e/*.spec.ts`                               | Playwright, webServer auto-builds                                    |
-| Add unit test      | `src/lib/**/*.spec.ts`                        | Vitest, colocated with source                                        |
-| Test fixture data  | `e2e/utils/`                                  | Generate in test code; never read `static/data` or `static/database` |
-
-## CONVENTIONS
-
-### Path Aliases (svelte.config.js)
-
-- `$lib` → `src/lib` (SvelteKit default)
-- `$components` → `src/components`
-- `$utils` → `src/utils`
-- `$css` → `src/css`
-
-### Import Order (ESLint enforced)
-
-```typescript
-import type { ... } from '...'     // 1. Types first
-import { ... } from 'svelte'       // 2. Builtin/external
-import { ... } from '$lib/...'     // 3. Internal aliases
-import { ... } from './...'        // 4. Relative
+```text
+src/
+  routes/
+  components/
+  lib/
+    session/          # session workflow APIs and store
+    source/sqlite/    # worker client/protocol/runtime
+    ledger/           # classify/import/repository/models
+    analytics/
+    charts/
+    currency/
+    themes/
+    formatters/
+    loggers/
+  utils/
+    db/
+    apis/
+    states/
+    stores/
+    types/
 ```
 
-### Type Import Convention (MANDATORY)
+## HARD RULES
 
-**All types must be imported from `*/models` paths only.**
+1. SQLite parsing/extraction must run in worker thread only.
+2. `src/components` and `src/routes` must never import `src/utils` directly.
+3. `src/utils` can be imported only by `src/lib` or `src/utils`.
+4. Non-test source files in `src/lib` and `src/utils` must stay `<= 300` LOC.
+5. Prefer split folders with `index.ts` aggregators for multi-operation modules.
 
-```typescript
-// ✅ CORRECT - import types from */models
-import type { ParsedTransaction } from '$lib/transactions/models'
-import type { DatabaseState } from '$lib/database/models'
-import type { TransformBy } from './models'
+## REQUIRED REFERENCE DOCS
 
-// ❌ WRONG - never import types from package index
-import type { ParsedTransaction } from '$lib/transactions'
-import type { DatabaseState } from '$lib/database'
-```
+For any SQLite/database read/write/condition change, consult:
 
-**Rules:**
+- `docs/DATA_PARSER.md`
+- `docs/SQLITE_SCHEMA.md`
 
-1. **Domain `index.ts`** (e.g., `$lib/database/index.ts`) — export functions only, NO type re-exports
-2. **`models/index.ts`** — CAN use barrel exports to aggregate types within the folder
-3. **Types belong in `models/`** — never define types in implementation files
+For V2 architecture decisions, also consult:
 
-**Structure:**
-
-```
-src/lib/{domain}/
-├── index.ts              # Functions only, no type exports
-├── models/
-│   ├── index.ts          # Barrel: export * from './foo'
-│   ├── foo.ts            # Type definitions
-│   └── bar.ts            # Type definitions
-└── implementation.ts     # Imports types from './models'
-```
-
-### Component Props Pattern
-
-```typescript
-type Props = BaseProps & VariantProps<Variant> & ElementProps<'button'>
-let {
-	variant = 'primary',
-	children,
-	class: className,
-	...rest
-}: Props = $props()
-```
-
-### Svelte 5 Runes
-
-- Use `$state()`, `$derived()`, `$effect()`, `$props()`
-- Render children: `{@render children?.()}`
-
-### DaisyUI Classes
-
-- Prefixed with `d-` (e.g., `d-btn`, `d-btn-primary`)
-- Configured in `src/css/global.css`
-
-### Formatting
-
-- Tabs (not spaces)
-- No semicolons
-- Single quotes
-- 80 char line width
-
-## ANTI-PATTERNS
-
-| Pattern                                         | Why Forbidden                                             |
-| ----------------------------------------------- | --------------------------------------------------------- |
-| `as any`, `@ts-ignore`                          | Type safety; fix the type instead                         |
-| Empty `catch(e) {}`                             | Always handle or log errors                               |
-| Direct localStorage for data                    | Use `src/utils/stores` with DB abstraction                |
-| Editing `.svelte-kit/*`                         | Generated; changes overwritten                            |
-| Loading from `static/data` or `static/database` | Gitignored local-only data; unavailable on GitHub Actions |
-
-## TRANSACTION CLASSIFICATION RULES
-
-- Entity 42 (`ReconcileTransaction`) maps to `Reconcile` type — represents
-  gaps in recorded data (reconciliation entries)
-- Transactions with no category and description matching "new balance"
-  (case-insensitive) are **filtered out at import time** — these are noise,
-  not real transactions
-- `Reconcile` uses `d-badge-neutral` styling to visually signal missing data
-- For the full classification priority table, see [docs/DATA_PARSER.md](docs/DATA_PARSER.md)
-
-## KNOWN ISSUES (TODOs in code)
-
-| Location                     | Issue                                                       |
-| ---------------------------- | ----------------------------------------------------------- |
-| `src/lib/transactions/db.ts` | TODO: implement transaction storage initialization          |
-| `src/css/global.css`         | FIXME: remove workaround after daisyui PR `#4373` is merged |
+- `docs/ARCHITECTURE_V2.md`
+- `docs/INGESTION_WORKER_PIPELINE.md`
+- `docs/STORAGE_MODEL_V2.md`
+- `docs/WORKER_PROTOCOL_V2.md`
+- `docs/FILE_SPLITTING_STANDARD.md`
 
 ## COMMANDS
 
 ```bash
-# Development
-bun install              # Install deps (uses Bun)
-bun run dev              # Start dev server
-
-# Quality
-bun run check            # Format + lint + svelte-check
-bun run fix              # Auto-fix format + lint
-
-# Testing
-bun run test:unit        # Vitest unit tests
-bun run test:coverage    # Vitest with coverage
-bun run test:e2e         # Playwright E2E (builds first)
-bun run test             # Both
-
-# Build
-bun run build            # Production build → ./build/
-bun run preview          # Preview production build
+bun run dev
+bun run fix
+bun run check
+bun run build
+bun run test:unit
+bun run test:e2e
 ```
 
-## TESTING
+## QUALITY GATES
 
-- **Unit tests**: Vitest, colocated as `*.spec.ts` next to source
-- **Component tests**: `*.svelte.spec.ts`, run in browser via Playwright provider
-- **E2E tests**: `e2e/*.spec.ts`, Playwright with auto webServer
-- Config split: `vite.config.ts` defines `server` (Node) and `client` (browser) projects
-- E2E config: `playwright.config.ts` runs `bun run build && bun run preview` on port `4173`
+`bun run check` must pass:
 
-## DEPLOYMENT
-
-- Static site via `@sveltejs/adapter-static`
-- GitHub Actions → GitHub Pages
-- `BASE_PATH` set to repo name for subpath hosting
+- format check
+- lint check
+- import boundary check
+- LOC check
+- svelte-check
 
 ## NOTES
 
-- **Bun required**: Scripts use `bun run`; npm/pnpm work for individual commands
-- **IndexedDB + localStorage triggers**: Cross-tab sync via storage events
-- **Prerendered**: All routes have `prerender = true`
-- **Thai locale default**: Amount formatting uses `th-TH` locale
-- **Verification workflow**: Always run `bun run fix` then `bun run check` for full validation (format → lint → svelte-check)
-- **Fixture policy**: Never depend on `static/data` or `static/database`; CI
-  does not have these folders.
+- `data/` is local-only and gitignored.
+- Do not depend on `static/data` or `static/database` in runtime/tests.
+- Use generated fixtures for tests.

@@ -1,103 +1,64 @@
-# src/lib — Domain Modules
+# src/lib — Domain Modules (V2)
 
-## OVERVIEW
+## CORE MODULES
 
-Domain-specific business logic organized by feature. Each domain keeps
-its own public API via `index.ts`, with types in `models/`.
-
-## STRUCTURE
-
-```
-lib/
-├── analytics/          # Data transforms and filters for visualization
-│   ├── filters/        # Filter transactions + filter option state/store
-│   └── transforms/     # Aggregate data (category totals, tree, time series, summarize)
-├── charts/             # Chart.js adapters + chart options + theme palette mapping
-├── database/           # Database metadata state/store APIs
-├── sqlite/             # SQLite file parsing, Web Worker, session management
-├── transactions/       # Transaction models, SQLite classification, import
-├── themes/             # Theme state, store, DaisyUI theme switching helpers
-├── formatters/         # Amount, date, category display formatters
-├── loggers/            # Debug logging with namespaced loggers
-└── components/         # Component utilities (NOT Svelte components)
+```text
+src/lib/
+  session/          # bootstrap/upload/clear/status orchestration
+  source/sqlite/    # worker client + worker runtime + backends/extractors/writers
+  ledger/           # importer/classifier/repository/models
 ```
 
-## WHERE TO LOOK
+## WORKFLOW CONTRACT
 
-| Task                 | Location                                                              |
-| -------------------- | --------------------------------------------------------------------- |
-| Import SQLite file   | `transactions/import.ts`                                              |
-| Classify transaction | `transactions/classifier.ts`                                          |
-| SQLite parsing       | `sqlite/parser.ts` + `sqlite/engine.ts`                               |
-| Add filter           | `analytics/filters/` + export from `analytics/filters/index.ts`       |
-| Add transform        | `analytics/transforms/` + export from `analytics/transforms/index.ts` |
-| Add chart adapter    | `charts/adapters/` + export from `charts/adapters/index.ts`           |
-| Tune chart options   | `charts/config/defaults.ts`                                           |
-| Format display value | `formatters/`                                                         |
-| Add theme            | `themes/models/constants.ts`                                          |
-| Debug logging        | Import from `loggers/constants.ts`                                    |
+1. Upload:
 
-## CONVENTIONS
+- `session/apis/upload.ts` -> worker `upload`
+- worker imports source (OPFS preferred)
+- worker extracts/classifies/writes snapshot + manifest
 
-### Module Structure
+2. Reopen:
 
-```
-{module}/
-├── index.ts           # Public API (functions only)
-├── models/            # Types and interfaces
-│   └── index.ts       # Type barrel
-├── store.ts           # Svelte store (if stateful)
-├── state.ts           # State definition (empty, normalize, equal)
-└── *.spec.ts          # Colocated tests
-```
+- `session/apis/bootstrap.ts` -> worker `bootstrap`
+- load from IndexedDB snapshot first
 
-### Logger Usage
+3. Recovery:
 
-```typescript
-import { database } from '$lib/loggers'
-const log = database.extends('import')
-log.debug('parsing file: %s', filename)
-```
+- if snapshot invalid and source backend is OPFS, run `rebuild_snapshot`
 
-### Filter Pattern
+4. Clear:
 
-```typescript
-export const byX: FilterByFunc<[Args]> = (args): FilterBy => {
-	const by: FilterBy = (trx /* return boolean */) => (by.type = 'X')
-	return by
-}
+- `session/apis/clear.ts` -> worker `clear`
+- clear snapshot + manifest + OPFS source (if exists)
+
+## DEPENDENCY RULES
+
+- `session` may depend on `source/sqlite` and `ledger`.
+- `source/sqlite` owns its own `models`, `worker/runtime`, and `worker/utils`.
+- `src/lib/*` may use `src/utils/*`.
+- `src/lib/*` must keep UI concerns out of worker/parser logic.
+
+## SPLIT-FIRST PATTERN
+
+- For multi-operation concerns, use folder split:
+
+```text
+feature/
+  apis/
+    index.ts
+    upload.ts
+    clear.ts
 ```
 
-### Transform Pattern
+- `index.ts` re-exports only.
+- Implementation files should be single-responsibility.
+- Keep source files under 300 LOC (target ~220).
 
-```typescript
-export const byX: TransformByFunc<Args, Output> = (
-	args
-): TransformBy<Output> => {
-	const by: TransformBy<Output> = (trxs /* return aggregated data */) =>
-		(by.type = 'X')
-	return by
-}
-```
+## REQUIRED DOCS
 
-## ANTI-PATTERNS
+Before changing SQLite logic, read:
 
-- Don't import Svelte components here (use `$components`)
-- Don't access IndexedDB directly (use store APIs from `database/apis.ts`)
-- Don't put UI-specific code in transforms/filters
-- Don't export types from domain `index.ts` files (use `models/`)
-- Don't load fixtures or source data from `static/data` or
-  `static/database`; CI workflows do not include those paths.
-
-## REFERENCE DOCS (REQUIRED)
-
-- For any read/write/modify/condition change related to SQLite/database
-  behavior, consult [docs/DATA_PARSER.md](../../docs/DATA_PARSER.md) and
-  [docs/SQLITE_SCHEMA.md](../../docs/SQLITE_SCHEMA.md).
-
-## NOTES
-
-- `lib/components/` contains TypeScript utilities for component styling, NOT Svelte components
-- Filters compose with `byAND`, `byOR`, `byNOT`
-- All logging uses `debug` package; enable via `DEBUG=*` or `DEBUG=libs:*`
-- `transactions/db.ts` currently has a TODO for storage initialization
+- `../../docs/DATA_PARSER.md`
+- `../../docs/SQLITE_SCHEMA.md`
+- `../../docs/INGESTION_WORKER_PIPELINE.md`
+- `../../docs/WORKER_PROTOCOL_V2.md`
