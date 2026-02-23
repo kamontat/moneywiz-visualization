@@ -31,7 +31,7 @@ git diff --name-only
 4. Run targeted tests first:
 
 ```bash
-bun run test:unit <path-to-spec>
+bun run test:unit -- <path-to-spec>
 bun run test:e2e -- <path-to-e2e-spec>
 ```
 

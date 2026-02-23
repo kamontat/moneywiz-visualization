@@ -23,7 +23,7 @@ bun run test:unit
 ## Targeted Commands
 
 ```bash
-bun run test:unit <path-to-spec>
+bun run test:unit -- <path-to-spec>
 bun run test:e2e -- <path-to-e2e-spec>
 # or full suite
 bun run test:e2e
