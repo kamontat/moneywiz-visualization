@@ -1,0 +1,4 @@
+interface:
+  display_name: "Data Expert"
+  short_description: "Design and verify database data logic using real SQLite rows"
+  default_prompt: "Use $data-expert to implement or update parser and loading logic against data/ipadMoneyWiz.sqlite using real SQL evidence."
