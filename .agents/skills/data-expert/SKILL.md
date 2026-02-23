@@ -9,30 +9,31 @@ Use this workflow for any SQLite-related data task.
 
 ## 1) Read required project docs first
 
-1. Read `RULES.md`.
-2. Read `DATABASE_SCHEMA.md`.
+1. Read `docs/DATA_PARSER.md`.
+2. Read `docs/SQLITE_SCHEMA.md`.
 3. Record relevant entities, join keys, and classification constraints before editing code.
 
 ## 2) Inspect real database content
 
-Always inspect `data/ipadMoneyWiz.sqlite` before implementing or reviewing logic.
+Always inspect `data/ipadMoneyWiz.sqlite` before implementing or
+reviewing logic.
 
 ```bash
-python3 .agents/skills/data-expert/scripts/inspect_sqlite.py \
+bash .agents/skills/data-expert/scripts/inspect_sqlite.sh \
   --db data/ipadMoneyWiz.sqlite --tables
 ```
 
 Use the helper script for schema and data checks:
 
 ```bash
-python3 .agents/skills/data-expert/scripts/inspect_sqlite.py \
+bash .agents/skills/data-expert/scripts/inspect_sqlite.sh \
   --db data/ipadMoneyWiz.sqlite --schema ZSYNCOBJECT
 
-python3 .agents/skills/data-expert/scripts/inspect_sqlite.py \
+bash .agents/skills/data-expert/scripts/inspect_sqlite.sh \
   --db data/ipadMoneyWiz.sqlite \
   --query "SELECT Z_ENT, COUNT(*) FROM ZSYNCOBJECT GROUP BY Z_ENT LIMIT 20"
 
-python3 .agents/skills/data-expert/scripts/inspect_sqlite.py \
+bash .agents/skills/data-expert/scripts/inspect_sqlite.sh \
   --db data/ipadMoneyWiz.sqlite \
   --query "SELECT Z_ENT, ZAMOUNT, ZDESC FROM ZSYNCOBJECT \
            WHERE Z_ENT IN (36, 42) LIMIT 20"
@@ -79,3 +80,5 @@ Include:
 ## References
 
 - Workflow checklist: `references/sqlite-workflow.md`
+- Parser rules: `docs/DATA_PARSER.md`
+- SQLite schema: `docs/SQLITE_SCHEMA.md`
