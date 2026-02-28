@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"prepare": "svelte-kit sync || echo ''",
+		"prepare:db": "bash scripts/prepare-db.sh",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
