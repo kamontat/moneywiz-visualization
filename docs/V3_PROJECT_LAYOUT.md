@@ -4,10 +4,10 @@ New version of project layout (v3).
 
 ## Workflow
 
-- Load snapshot from indexdb
-    - If snapshot available, use it
-    - If OPFS available, rebuilt snapshot and use it
-    - If no file, skiped loading and show empty page
+- When load page
+    - Load snapshot from indexdb
+    - Rebuilt snapshot from OPFS
+    - Return empty page
 - When user click upload file
     - Upload file to OPFS
     - Rebuilt snapshot and use it
@@ -18,19 +18,19 @@ New version of project layout (v3).
 
 ## Dependencies rule
 
-- src/routes can import
-    - $lib/app
+- **src/routes** / **$components** can import
     - $lib/ui
-    - $lib/types
-    - $lib/utils
-- **$lib/app** can import
     - $lib/app
-    - $lib/apis
+    - $lib/types
     - $lib/utils
 - **$lib/ui** can import
     - $lib/types
     - $lib/utils
+- **$lib/app** can import
+    - $lib/apis
+    - $lib/utils
 - **$lib/apis** can import
+    - $lib/apis
     - $lib/providers
     - $lib/utils
 - **$lib/providers** can import
@@ -40,11 +40,18 @@ New version of project layout (v3).
 
 ## $lib/app
 
-Contains webapp controllers and business logic
+Contains business logic, orchestration, and application state.
+
+### $lib/app/controllers
+
+Controllers for workflow orchestration.
+
+- Orchestrate data workflows (when to load from OPFS vs snapshot)
+- Choose appropriate pipelines from `$lib/apis` for specific UI use cases
 
 ### $lib/app/sessions
 
-Session class with svelte-store support.
+Manage application state session with svelte-store support.
 
 On bootstrap:
 - Use indexdb provider to load snapshot data (if needed)
@@ -89,18 +96,17 @@ interface SessionStore {
 }
 ```
 
-### $lib/app/pipelines
+## $lib/apis
 
-Composable data transformation layer over snapshot records.
-Receives raw data from `$lib/apis/record` and produces derived views consumed by `src/routes` and `$components/organisms`.
+Contains pure data access and management APIs.
 
-- $lib/app/pipelines/models - internal types
-- $lib/app/pipelines/filters/index.ts
-    - $lib/app/pipelines/filters/byXXX.ts
-- $lib/app/pipelines/maps/index.ts
-    - $lib/app/pipelines/maps/byXXX.ts
-- $lib/app/pipelines/reduces/index.ts
-    - $lib/app/pipelines/reduces/byXXX.ts
+### $lib/apis/pipelines
+
+Composable data transformation layer over DataRecord.
+Receives **DataRecord** from `$lib/apis/record` and
+produces derived views consumed by `$lib/app`.
+
+- $lib/apis/pipelines/types - internal types
 
 ```typescript
 type FilterFn<I> = (input: I[]) => I[]
@@ -108,9 +114,12 @@ type MapFn<I, O> = (input: I[]) => O[]
 type ReduceFn<I, O> = (init: O, input: I[]) => O
 ```
 
-## $lib/apis
-
-Contains data apis implementation
+- $lib/apis/pipelines/filters/index.ts
+    - $lib/apis/pipelines/filters/byXXX.ts
+- $lib/apis/pipelines/maps/index.ts
+    - $lib/apis/pipelines/maps/byXXX.ts
+- $lib/apis/pipelines/reduces/index.ts
+    - $lib/apis/pipelines/reduces/byXXX.ts
 
 ### $lib/apis/record
 
@@ -118,60 +127,88 @@ Create record apis to parse data from sqlite.
 
 Directory layout should be as following:
 - $lib/apis/record/index.ts - entrypoint for import
-- $lib/apis/record/accounts
-    - /index.ts  - entrypoint for import
-    - /models.ts - account data record
-
-    ```typescript
-    interface DataAccount { /* TODO: implement account record */ }
-    interface DataAccounts extends DataRecord {
-      accounts: DataAccount[]
-    }
-    ```
-
-    - /parse.ts  - account data parse
-- $lib/apis/record/transactions
-    - /index.ts  - entrypoint for import
-    - /models.ts - transaction data record
-
-    ```typescript
-    interface DataBaseTransaction {
-      /* TODO: implement transaction record */
-    }
-
-    interface DataExpenseTransaction extends DataBaseTransaction {
-      /* TODO: implement transaction record */
-    }
-    interface DataIncomeTransaction extends DataBaseTransaction {
-      /* TODO: implement transaction record */
-    }
-    interface DataTransferTransaction extends DataBaseTransaction {
-      /* TODO: implement transaction record */
-    }
-    type DataTransaction =
-      | DataExpenseTransaction
-      | DataIncomeTransaction
-      | DataTransferTransaction
-    interface DataTransactions extends DataRecord {
-      transactions: DataTransaction[]
-    }
-    ```
-
-    - /parse.ts  - transaction data parse
-- $lib/apis/record/... - others record (if any)
-
-- $lib/apis/record/models - internal types
+- $lib/apis/record/types.ts - internal types
 
 ```typescript
-type RecordParser<DB, V extends DataRecord> = (db: DB) => Promise<V>
+type Querier<DB extends Queriable, R> = (db: DB) => Promise<R>
+type Classifier<R, D extends DataRecord> = (raw: R) => Promise<D>
+```
+
+The workflow of record apis is as following:
+- Use querier to query data to raw object
+    - querier/index.ts - entrypoint for import
+    - querier/types.ts - Raw object
+    - querier/query.ts - query sqlite to raw object
+- Use classifier to classify raw object to expected data object
+    - classifier/index.ts - entrypoint for import
+    - querier/types.ts - DataRecord object
+    - classifier/classify.ts - classify raw to data object
+    - classifier/rules/*.ts - classification rules
+
+Below section is the example of record implementation
+for account list and transaction list.
+
+#### $lib/apis/record/accounts
+
+```typescript
+interface DataBaseAccount {
+  id: number
+  name: string
+  /* TODO: implement transaction record */
+}
+interface DataCheckingAccount extends DataBaseAccount {
+  type: "checking"
+  /* TODO: implement transaction record */
+}
+interface DataCreditCardAccount extends DataBaseAccount {
+  type: "creditcard"
+  /* TODO: implement transaction record */
+}
+// ... (more types)
+type DataAccount =
+  | DataCheckingAccount
+  | DataCreditCardAccount
+interface DataAccounts extends DataRecord {
+  accounts: DataAccount[]
+}
+```
+
+#### $lib/apis/record/transactions
+
+```typescript
+interface DataBaseTransaction {
+  /* TODO: implement transaction record */
+}
+interface DataExpenseTransaction extends DataBaseTransaction {
+  type: "expense"
+  /* TODO: implement transaction record */
+}
+interface DataIncomeTransaction extends DataBaseTransaction {
+  type: "income"
+  /* TODO: implement transaction record */
+}
+// ... (more types)
+type DataTransaction =
+  | DataExpenseTransaction
+  | DataIncomeTransaction
+interface DataTransactions extends DataRecord {
+  transactions: DataTransaction[]
+}
 ```
 
 - $lib/apis/record/v1.ts - apis v1
 
+The RecordGetter should do as following:
+- Use snapshot data (if existed)
+- Use querier to query data to raw object
+- Use classifier to classify raw object to expected data object
+
 ```typescript
+type RecordGetter<D extends DataRecord> = () => Promise<D>
+
 interface RecordApiV1 extends Versionable<"record", 1> {
-  parseAccounts: RecordParser<Queriable, DataAccounts>
-  parseTransactions: RecordParser<Queriable, DataTransactions>
+  getAccounts: RecordGetter<DataAccounts>
+  getTransactions: RecordGetter<DataTransactions>
   // ... (more methods)
 }
 ```
@@ -368,8 +405,20 @@ export const opfs = setupOpfsProviderV1()
 
 ## $lib/ui
 
-Contains interfaces, prop types, and Svelte utility functions.
-May depend on Svelte (runes, stores, actions). Must not import $lib/app, $lib/apis, or $lib/providers.
+Contains pure UI utilities, components.
+
+**Responsibilities:**
+- Component prop types and interfaces
+- UI helpers (className utilities, styling)
+- Svelte-specific utilities (actions, stores, runes)
+- Theme management and visual concerns
+- No business logic or data decisions
+
+**Contains:**
+- Component prop types and interfaces
+- UI utility functions and helpers
+- Theme and styling management
+- Svelte-specific utilities
 
 ### $lib/ui/components
 
