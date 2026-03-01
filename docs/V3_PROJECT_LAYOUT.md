@@ -26,7 +26,6 @@ New version of project layout (v3).
 - **$lib/app** can import
     - $lib/app
     - $lib/apis
-    - $lib/providers
     - $lib/utils
 - **$lib/ui** can import
     - $lib/types
@@ -93,6 +92,7 @@ interface SessionStore {
 ### $lib/app/pipelines
 
 Composable data transformation layer over snapshot records.
+Receives raw data from `$lib/apis/record` and produces derived views consumed by `src/routes` and `$components/organisms`.
 
 - $lib/app/pipelines/models - internal types
 - $lib/app/pipelines/filters/index.ts
@@ -183,6 +183,12 @@ Create sqlite apis and web-worker.
 This will depends on **$lib/providers** to read/write data from
 both OPFS (sqlite file) and indexdb (snapshot).
 
+**Important rule** is all SQLite parsing and extracting must
+run inside the worker thread only.
+And the client module is a main-thread façade that
+communicates with the worker via message passing.
+No SQLite logic may run on the main thread.
+
 ```typescript
 type OnProgress<S> = (state: S) => void
 
@@ -256,6 +262,12 @@ Entrypoint for client (main-thread façade for sqlite web-worker)
 
 Create bank apis
 
+- $lib/apis/bank/currency
+
+```typescript
+type CurrencyConverter = (amount: number, from: string, to: string) => Promise<number>
+```
+
 - $lib/apis/bank/index.ts
 
 ```typescript
@@ -264,12 +276,6 @@ interface BankApiV1 extends Versionable<"bank", 1> {
   // ...
 }
 declare const bank: BankApiV1
-```
-
-- $lib/apis/bank/currency
-
-```typescript
-type CurrencyConverter = (amount: number, from: string, to: string) => Promise<number>
 ```
 
 ## $lib/providers
@@ -362,7 +368,8 @@ export const opfs = setupOpfsProviderV1()
 
 ## $lib/ui
 
-Contains interfaces, prop types, and svelte utilities functions
+Contains interfaces, prop types, and Svelte utility functions.
+May depend on Svelte (runes, stores, actions). Must not import $lib/app, $lib/apis, or $lib/providers.
 
 ### $lib/ui/components
 
