@@ -5,16 +5,34 @@ New version of project layout (v3).
 ## Workflow
 
 - When load page
-    - Load snapshot from indexdb
-    - Rebuilt snapshot from OPFS
-    - Return empty page
-- When user click upload file
-    - Upload file to OPFS
-    - Rebuilt snapshot and use it
-- When user click clear
-    - Remove file from OPFS
-    - Remove snapshot from indexdb
-    - Show empty page
+    1. Try load snapshot from indexdb (if existed)
+    2. Try rebuilt snapshot from OPFS (if existed)
+    3. Return empty page (if no data available)
+- When user click upload file (only shown when OPFS is missing)
+    1. Upload file to OPFS
+    2. Rebuilt snapshot
+    3. Update page
+- When user click clear (only shown when OPFS is existed)
+    1. Remove file from OPFS
+    2. Remove snapshot from indexdb
+    3. Show empty page
+- When user click refresh (only shown when OPFS is existed)
+    1. Rebuilt snapshot from OPFS
+    2. Update page
+
+## Features
+
+- Open the website, will show loading phase (if data is existed) or a clear empty state
+- Upload a MoneyWiz SQLite file and see data appear without reloading the page
+- See visible progress while data is loading, rebuilding, uploading, or clearing
+- Receive clear success, warning, and error messages in one consistent notification area
+    - Support stacking when contains more than one notification
+- Refresh imported data from local storage with one action when source data changes
+- Clear all imported data with one action and return to a clean empty state
+- Keep data available between visits on the same browser/device
+- Support offline usage via Service Worker (PWA), allowing the app to load and process existing data without an internet connection
+- Detect invalid or unsupported upload files and explain how to fix the issue
+- Work on desktop and mobile with equivalent core data-management flows
 
 ## Dependencies rule
 
@@ -299,7 +317,11 @@ Entrypoint for client (main-thread façade for sqlite web-worker)
 
 Create bank apis
 
-- $lib/apis/bank/currency
+#### $lib/apis/bank/currency
+
+Use `indexdb` to store and retrieve historical exchange rates.
+If rates are missing or outdated, fetch new rates from an external provider
+(e.g., fixer.io, openexchangerates.org) and update the local cache.
 
 ```typescript
 type CurrencyConverter = (amount: number, from: string, to: string) => Promise<number>
@@ -427,15 +449,15 @@ Contains pure UI utilities, components.
 
 ### $lib/ui/charts
 
-charts management
+Charts management
 
 ### $lib/ui/notifications
 
-notifications management
+Notifications management
 
 ### $lib/ui/themes
 
-theme management
+Theme management; use `astorage` for global preferences.
 
 ## $lib/utils
 
