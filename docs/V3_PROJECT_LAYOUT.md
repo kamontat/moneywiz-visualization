@@ -46,14 +46,18 @@ New version of project layout (v3).
     - $lib/utils
 - **$lib/app** can import
     - $lib/apis
+    - $lib/types
     - $lib/utils
 - **$lib/apis** can import
     - $lib/apis
     - $lib/providers
+    - $lib/types
     - $lib/utils
 - **$lib/providers** can import
+    - $lib/types
     - $lib/utils
 - **$lib/utils** can import
+    - $lib/types
     - $lib/utils
 
 ## $lib/app
