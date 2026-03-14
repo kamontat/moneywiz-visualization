@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Select from '$components/atoms/Select.svelte'
-	import { themeStore, themeState, themeList } from '$lib/themes'
+	import { themeStore, themeState, themeList } from '$lib/ui'
 
 	let current = $state($themeStore.current)
 

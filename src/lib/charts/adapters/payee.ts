@@ -1,8 +1,5 @@
 import type { ChartData } from 'chart.js'
-import type {
-	PayeeSpendSeries,
-	PayeeSpendTotal,
-} from '$lib/analytics/transforms/models'
+import type { PayeeSpendSeries, PayeeSpendTotal } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '../theme'
 
 export const toPayeeSpendBarData = (

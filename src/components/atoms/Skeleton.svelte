@@ -1,15 +1,11 @@
 <script lang="ts">
-	import type {
-		BaseProps,
-		CustomProps,
-		VariantProps,
-	} from '$lib/components/models'
+	import type { BaseProps, CustomProps, VariantProps } from '$lib/ui/models'
 	import {
 		mergeClass,
 		newBaseClass,
 		newVariantClass,
 		newTwClass,
-	} from '$lib/components'
+	} from '$lib/ui'
 
 	type Variant = 'plain' | 'text' | 'circle' | 'rectangle'
 	type Props = BaseProps &

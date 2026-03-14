@@ -1,21 +1,13 @@
 <script lang="ts">
-	import type {
-		NetWorthSummary,
-		Summarize,
-	} from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	import type { NetWorthSummary, Summarize } from '$lib/app/dashboard'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import Panel from '$components/atoms/Panel.svelte'
 	import NetWorthChart from '$components/molecules/NetWorthChart.svelte'
 	import QuickSummary from '$components/organisms/QuickSummary.svelte'
-	import {
-		byCategoryTotal,
-		byMonthlyWaterfall,
-		toNetWorthSummary,
-		transform,
-	} from '$lib/analytics/transforms'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+	import { buildOverviewPanelData } from '$lib/app/dashboard'
+	import { mergeClass } from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -34,32 +26,12 @@
 		...rest
 	}: Props = $props()
 
-	const waterfall = $derived(transform(transactions, byMonthlyWaterfall))
-	const netWorth = $derived(netWorthSummary ?? toNetWorthSummary(waterfall))
-	const categoryTotals = $derived(transform(transactions, byCategoryTotal))
+	const overview = $derived(
+		buildOverviewPanelData(transactions, netWorthSummary)
+	)
+	const netWorth = $derived(overview.netWorth)
 
-	const topExpenseDrivers = $derived.by(() => {
-		const entries = Object.entries(categoryTotals.Expense?.parents ?? {})
-		const total = entries.reduce(
-			(sum, [, parent]) => sum + Math.abs(parent.total),
-			0
-		)
-
-		return entries
-			.sort(
-				([, left], [, right]) => Math.abs(right.total) - Math.abs(left.total)
-			)
-			.slice(0, 5)
-			.map(([name, parent], index) => {
-				const amount = Math.abs(parent.total)
-				return {
-					rank: index + 1,
-					name,
-					amount,
-					share: total === 0 ? 0 : (amount / total) * 100,
-				}
-			})
-	})
+	const topExpenseDrivers = $derived(overview.topExpenseDrivers)
 
 	const formatPercent = (value: number): string => {
 		return `${value.toLocaleString('th-TH', {

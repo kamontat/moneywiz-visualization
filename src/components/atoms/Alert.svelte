@@ -1,16 +1,12 @@
 <script lang="ts">
-	import type {
-		BaseProps,
-		CustomProps,
-		VariantProps,
-	} from '$lib/components/models'
+	import type { BaseProps, CustomProps, VariantProps } from '$lib/ui/models'
 	import SuccessIcon from '@iconify-svelte/lucide/badge-check'
 	import ErrorIcon from '@iconify-svelte/lucide/circle-x'
 	import InfoIcon from '@iconify-svelte/lucide/info'
 	import WarnIcon from '@iconify-svelte/lucide/triangle-alert'
 
-	import { mergeClass, newBaseClass, newVariantClass } from '$lib/components'
-	import { component } from '$lib/loggers'
+	import { mergeClass, newBaseClass, newVariantClass } from '$lib/ui'
+	import { component } from '$lib/utils'
 
 	export type Variant = 'plain' | 'info' | 'success' | 'warning' | 'error'
 	type Props = BaseProps &

@@ -8,8 +8,8 @@
 	import DatabaseUploadButton from '$components/molecules/DatabaseUploadButton.svelte'
 	import NameHeader from '$components/molecules/NameHeader.svelte'
 	import ThemeSelect from '$components/molecules/ThemeSelect.svelte'
-	import { pushNotification } from '$lib/notifications'
-	import { sessionStore } from '$lib/session'
+	import { sessionStore } from '$lib/app'
+	import { pushNotification } from '$lib/ui'
 
 	let uploading = $state(false)
 

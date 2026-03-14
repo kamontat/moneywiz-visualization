@@ -1,5 +1,5 @@
 import type { ChartConfiguration } from 'chart.js'
-import type { PayeeCashFlowEntry } from '$lib/analytics/transforms/models'
+import type { PayeeCashFlowEntry } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '$lib/charts/theme'
 
 export const toPayeeDebtData = (

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { BaseProps } from '$lib/components/models'
+	import type { BaseProps } from '$lib/ui/models'
 	import FileSpreadsheetIcon from '@iconify-svelte/lucide/file-spreadsheet'
 	import UploadIcon from '@iconify-svelte/lucide/upload'
 
-	import { mergeClass, newTwClass } from '$lib/components'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = Omit<BaseProps, 'children'>
 

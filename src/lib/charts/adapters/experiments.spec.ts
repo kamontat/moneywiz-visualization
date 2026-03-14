@@ -1,4 +1,4 @@
-import type { NetWorthPoint } from '$lib/analytics/transforms/models'
+import type { NetWorthPoint } from '$lib/app/dashboard'
 import { describe, expect, it } from 'vitest'
 
 import { toNetWorthChartData } from './experiments'

@@ -5,7 +5,7 @@
 	import Panel from '$components/atoms/Panel.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
-	import { dismissNotification, pushNotification } from '$lib/notifications'
+	import { dismissNotification, pushNotification } from '$lib/ui'
 
 	const REFRESH_INTERVAL = 30000
 	const DETAIL_LABELS: Record<string, string> = {

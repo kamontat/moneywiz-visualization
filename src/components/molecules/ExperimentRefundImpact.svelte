@@ -1,9 +1,12 @@
 <script lang="ts">
-	import type { RefundImpactPoint } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { RefundImpactPoint } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
-	import { stackedBarChartOptions, toRefundImpactData } from '$lib/charts'
-	import { mergeClass } from '$lib/components'
+	import {
+		stackedBarChartOptions,
+		toRefundImpactData,
+		mergeClass,
+	} from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

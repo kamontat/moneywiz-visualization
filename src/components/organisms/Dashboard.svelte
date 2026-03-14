@@ -3,9 +3,9 @@
 		NetWorthSummary,
 		StatsRange,
 		Summarize,
-	} from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	} from '$lib/app/dashboard'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import BanknoteIcon from '@iconify-svelte/lucide/banknote'
 	import ChartPieIcon from '@iconify-svelte/lucide/chart-pie'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
@@ -20,8 +20,7 @@
 	import CashFlowPanel from '$components/organisms/CashFlowPanel.svelte'
 	import CategoriesPanel from '$components/organisms/CategoriesPanel.svelte'
 	import StatsPanel from '$components/organisms/StatsPanel.svelte'
-	import { mergeClass } from '$lib/components'
-	import { themeStore } from '$lib/themes'
+	import { mergeClass, themeStore } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

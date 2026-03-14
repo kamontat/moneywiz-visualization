@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import CircleHelpIcon from '@iconify-svelte/lucide/circle-help'
 
-	import { mergeClass, newTwClass } from '$lib/components'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

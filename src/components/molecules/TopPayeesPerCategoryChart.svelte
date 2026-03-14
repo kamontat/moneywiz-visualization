@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { TopPayeesPerCategoryResult } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+	import type { TopPayeesPerCategoryResult } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
+	import { mergeClass } from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

@@ -1,10 +1,7 @@
 <script lang="ts">
 	import type { ChartData } from 'chart.js'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type {
-		ParsedTransaction,
-		ParsedTransactionType,
-	} from '$lib/transactions/models'
+	import type { ParsedTransaction, ParsedTransactionType } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import Panel from '$components/atoms/Panel.svelte'
 	import CategoryTreeView from '$components/molecules/CategoryTreeView.svelte'
@@ -12,16 +9,13 @@
 	import IncomeBreakdownChart from '$components/molecules/IncomeBreakdownChart.svelte'
 	import PayeeSpendInsightsChart from '$components/molecules/PayeeSpendInsightsChart.svelte'
 	import TopPayeesPerCategoryChart from '$components/molecules/TopPayeesPerCategoryChart.svelte'
+	import { buildDriversPanelData } from '$lib/app/dashboard'
 	import {
-		byCategoryTotal,
-		byCategoryTree,
-		byPayeeSpend,
-		byTopPayeesPerCategory,
-		transform,
-	} from '$lib/analytics/transforms'
-	import { getCategoryPalette, horizontalBarChartOptions } from '$lib/charts'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+		getCategoryPalette,
+		horizontalBarChartOptions,
+		mergeClass,
+	} from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -33,48 +27,15 @@
 	let topPayeesType = $state<ParsedTransactionType>('Expense')
 	let topN = $state(5)
 
-	const expenseTree = $derived(
-		transform(transactions, byCategoryTree('Expense'))
+	const drivers = $derived(
+		buildDriversPanelData(transactions, topPayeesType, topN)
 	)
-	const incomeTree = $derived(transform(transactions, byCategoryTree('Income')))
-	const categoryTotals = $derived(transform(transactions, byCategoryTotal))
-	const payeeSpend = $derived(transform(transactions, byPayeeSpend(20)))
-	const topPayeesResult = $derived(
-		transform(transactions, byTopPayeesPerCategory(topPayeesType, topN))
-	)
-
-	const concentration = $derived.by(() => {
-		const categoryParents = Object.entries(
-			categoryTotals.Expense?.parents ?? {}
-		)
-		const total = categoryParents.reduce(
-			(sum, [, entry]) => sum + Math.abs(entry.total),
-			0
-		)
-		const topCategories = categoryParents
-			.sort(
-				([, left], [, right]) => Math.abs(right.total) - Math.abs(left.total)
-			)
-			.slice(0, 8)
-			.map(([name, entry]) => {
-				const amount = Math.abs(entry.total)
-				return {
-					name,
-					amount,
-					share: total === 0 ? 0 : (amount / total) * 100,
-				}
-			})
-		const hhi = categoryParents.reduce((sum, [, entry]) => {
-			const amount = Math.abs(entry.total)
-			const share = total === 0 ? 0 : amount / total
-			return sum + share * share
-		}, 0)
-
-		return {
-			topCategories,
-			hhi,
-		}
-	})
+	const expenseTree = $derived(drivers.expenseTree)
+	const incomeTree = $derived(drivers.incomeTree)
+	const categoryTotals = $derived(drivers.categoryTotals)
+	const payeeSpend = $derived(drivers.payeeSpend)
+	const topPayeesResult = $derived(drivers.topPayeesResult)
+	const concentration = $derived(drivers.concentration)
 
 	const concentrationChartData = $derived.by<ChartData<'bar'>>(() => {
 		if (concentration.topCategories.length === 0) {

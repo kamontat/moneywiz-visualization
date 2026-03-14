@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { BaseProps } from '$lib/components/models'
+	import type { BaseProps } from '$lib/ui/models'
 	import Container from './Container.svelte'
 
-	import { mergeClass, newTwClass } from '$lib/components'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = BaseProps
 	let { class: className, children }: Props = $props()

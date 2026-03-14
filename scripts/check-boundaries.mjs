@@ -28,6 +28,20 @@ const hasForbiddenUtilsImport = (content) => {
 	)
 }
 
+/** Legacy paths that have been fully deleted and must not be re-introduced. */
+const DELETED_LEGACY_PATHS = [
+	/from\s+['"]\$lib\/analytics['"/]/,
+	/from\s+['"]\$lib\/session\/apis['"/]/,
+	/from\s+['"]\$lib\/session\/state['"/]/,
+	/from\s+['"]\$lib\/session\/store['"/]/,
+	/from\s+['"]\$lib\/session\/index/,
+	/from\s+['"]\$lib\/session['"]\s/,
+]
+
+const hasDeletedLegacyImport = (content) => {
+	return DELETED_LEGACY_PATHS.some((pattern) => pattern.test(content))
+}
+
 const walk = async (dir) => {
 	const entries = await readdir(dir, { withFileTypes: true })
 	const files = []
@@ -50,32 +64,52 @@ const toWorkspacePath = (path) => {
 
 const run = async () => {
 	const files = await walk(ROOT)
-	const violations = []
+	const utilsViolations = []
+	const legacyViolations = []
 
 	for (const fullPath of files) {
 		const path = toWorkspacePath(fullPath)
 		if (isIgnored(path)) continue
 		if (!ALLOWED_EXTENSIONS.has(extname(path))) continue
-		if (isAllowedImporter(path)) continue
 
 		const content = await readFile(fullPath, 'utf8')
-		if (hasForbiddenUtilsImport(content)) {
-			violations.push(path)
+
+		if (!isAllowedImporter(path) && hasForbiddenUtilsImport(content)) {
+			utilsViolations.push(path)
+		}
+
+		if (hasDeletedLegacyImport(content)) {
+			legacyViolations.push(path)
 		}
 	}
 
-	if (violations.length === 0) {
-		console.log('Import boundary check passed')
-		return
+	let failed = false
+
+	if (utilsViolations.length > 0) {
+		console.error(
+			'Import boundary check failed: src/utils can only be imported from src/lib or src/utils'
+		)
+		for (const path of utilsViolations) {
+			console.error(`- ${path}`)
+		}
+		failed = true
 	}
 
-	console.error(
-		'Import boundary check failed: src/utils can only be imported from src/lib or src/utils'
-	)
-	for (const path of violations) {
-		console.error(`- ${path}`)
+	if (legacyViolations.length > 0) {
+		console.error(
+			'Import boundary check failed: imports from deleted legacy paths detected'
+		)
+		for (const path of legacyViolations) {
+			console.error(`- ${path}`)
+		}
+		failed = true
 	}
-	process.exit(1)
+
+	if (failed) {
+		process.exit(1)
+	}
+
+	console.log('Import boundary check passed')
 }
 
 await run()

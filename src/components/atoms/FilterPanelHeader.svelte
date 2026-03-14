@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BaseProps, Children, CustomProps } from '$lib/components/models'
-	import { mergeClass, newTwClass } from '$lib/components'
+	import type { BaseProps, Children, CustomProps } from '$lib/ui/models'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = Omit<BaseProps, 'children'> &
 		CustomProps<{

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { FilterState } from '$components/molecules/models/filterBar'
-	import type { TransactionTypeFilterMode } from '$lib/analytics/filters/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransactionType } from '$lib/transactions/models'
+	import type { TransactionTypeFilterMode } from '$lib/app/filters'
+	import type { ParsedTransactionType } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
 	import FilterOptionBadge from '$components/atoms/FilterOptionBadge.svelte'
 	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
-	import { mergeClass } from '$lib/components'
-	import { formatTransactionType } from '$lib/formatters/transactionType'
+	import { mergeClass } from '$lib/ui'
+	import { formatTransactionType } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

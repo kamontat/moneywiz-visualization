@@ -3,14 +3,13 @@
 		FilterState,
 		TagCategory,
 	} from '$components/molecules/models/filterBar'
-	import type { TagFilter } from '$lib/analytics/filters/models/state'
-	import type { FilterTagMode } from '$lib/analytics/filters/models/tags'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { TagFilter, FilterTagMode } from '$lib/app/filters'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
 	import FilterOptionBadge from '$components/atoms/FilterOptionBadge.svelte'
 	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
 	import FilterSearchInput from '$components/atoms/FilterSearchInput.svelte'
-	import { mergeClass } from '$lib/components'
+	import { mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

@@ -1,10 +1,8 @@
 <script lang="ts">
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
-	import { mergeClass, newTwClass } from '$lib/components'
-	import { formatAmount } from '$lib/formatters/amount'
-	import { formatDate } from '$lib/formatters/date'
-	import { formatTransactionType } from '$lib/formatters/transactionType'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
+	import { mergeClass, newTwClass } from '$lib/ui'
+	import { formatAmount, formatDate, formatTransactionType } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

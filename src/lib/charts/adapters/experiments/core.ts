@@ -7,7 +7,7 @@ import type {
 	NetWorthPoint,
 	RefundImpactPoint,
 	WaterfallStep,
-} from '$lib/analytics/transforms/models'
+} from '$lib/app/dashboard'
 import {
 	getCategoryPalette,
 	getThemeColors,

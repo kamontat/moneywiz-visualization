@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { ComponentType } from 'svelte'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import CircleHelpIcon from '@iconify-svelte/lucide/circle-help'
 
-	import { mergeClass } from '$lib/components'
+	import { mergeClass } from '$lib/ui'
 
 	type Tab = {
 		id: string

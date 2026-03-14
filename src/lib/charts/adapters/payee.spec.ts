@@ -1,7 +1,4 @@
-import type {
-	PayeeSpendSeries,
-	PayeeSpendTotal,
-} from '$lib/analytics/transforms/models'
+import type { PayeeSpendSeries, PayeeSpendTotal } from '$lib/app/dashboard'
 import { describe, expect, it } from 'vitest'
 
 import { toPayeeSpendBarData, toPayeeSpendTrendData } from './payee'

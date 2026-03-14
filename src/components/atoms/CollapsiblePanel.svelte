@@ -1,10 +1,6 @@
 <script lang="ts">
-	import type {
-		BaseProps,
-		CustomProps,
-		ElementProps,
-	} from '$lib/components/models'
-	import { mergeClass, newTwClass } from '$lib/components'
+	import type { BaseProps, CustomProps, ElementProps } from '$lib/ui/models'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

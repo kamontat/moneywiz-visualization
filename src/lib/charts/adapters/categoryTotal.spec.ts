@@ -1,4 +1,4 @@
-import type { CategoryTotal } from '$lib/analytics/transforms/models'
+import type { CategoryTotal } from '$lib/app/dashboard'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 import { describe, expect, it } from 'vitest'
 

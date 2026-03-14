@@ -1,9 +1,5 @@
 <script lang="ts">
-	import type {
-		BaseProps,
-		CustomProps,
-		ElementProps,
-	} from '$lib/components/models'
+	import type { BaseProps, CustomProps, ElementProps } from '$lib/ui'
 	import SubtitleHead from '$components/molecules/SubtitleHead.svelte'
 	import TitleHead from '$components/molecules/TitleHead.svelte'
 

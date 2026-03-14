@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { BaseProps } from '$lib/components/models'
+	import type { BaseProps } from '$lib/ui/models'
 	import Body from '$components/atoms/Body.svelte'
-	import { mergeClass, newTwClass } from '$lib/components'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = BaseProps
 

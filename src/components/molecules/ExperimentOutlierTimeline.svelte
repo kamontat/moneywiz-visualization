@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { OutlierPoint } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { OutlierPoint } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
-	import { lineChartOptions, toOutlierTimelineData } from '$lib/charts'
-	import { mergeClass } from '$lib/components'
+	import { lineChartOptions, toOutlierTimelineData, mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

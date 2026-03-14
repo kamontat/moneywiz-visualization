@@ -1,15 +1,11 @@
 <script lang="ts">
 	import type { MouseEventHandler } from 'svelte/elements'
-	import type {
-		BaseProps,
-		ComponentProps,
-		CustomProps,
-	} from '$lib/components/models'
+	import type { BaseProps, ComponentProps, CustomProps } from '$lib/ui'
 	import TrashIcon from '@iconify-svelte/lucide/trash-2'
 
 	import Button from '$components/atoms/Button.svelte'
-	import { filterOptionsStore } from '$lib/analytics/filters/init'
-	import { sessionAPIs, sessionStore } from '$lib/session'
+	import { sessionAPIs, sessionStore } from '$lib/app'
+	import { filterOptionsStore } from '$lib/app/filters'
 
 	type Props = Omit<BaseProps, 'children'> &
 		ComponentProps<typeof Button> &

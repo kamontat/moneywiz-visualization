@@ -1,29 +1,23 @@
 <script lang="ts">
 	import type { ChartData } from 'chart.js'
-	import type {
-		StatsDashboard,
-		StatsRange,
-	} from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	import type { StatsDashboard, StatsRange } from '$lib/app/dashboard'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import { onDestroy } from 'svelte'
 
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import Panel from '$components/atoms/Panel.svelte'
 	import ExperimentCalendarHeatmap from '$components/molecules/ExperimentCalendarHeatmap.svelte'
-	import {
-		byCalendarHeatmap,
-		byStatsDashboard,
-		transform,
-	} from '$lib/analytics/transforms'
+	import { buildStatsPanelData } from '$lib/app/dashboard'
 	import {
 		barChartOptions,
 		doughnutChartOptions,
 		getCategoryPalette,
-	} from '$lib/charts'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
-	import { dismissNotification, pushNotification } from '$lib/notifications'
+		mergeClass,
+		dismissNotification,
+		pushNotification,
+	} from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -42,19 +36,16 @@
 		...rest
 	}: Props = $props()
 
-	const stats = $derived.by<StatsDashboard | undefined>(() => {
-		if (transactions.length === 0) return undefined
-		return transform(
+	const panelData = $derived(
+		buildStatsPanelData(
 			transactions,
-			byStatsDashboard(baselineTransactions, {
-				currentRange: currentRange ?? undefined,
-				baselineRange,
-				volatilityLimit: 5,
-			})
+			baselineTransactions,
+			currentRange,
+			baselineRange
 		)
-	})
-
-	const calendarCells = $derived(transform(transactions, byCalendarHeatmap))
+	)
+	const stats = $derived(panelData.stats as StatsDashboard | undefined)
+	const calendarCells = $derived(panelData.calendarCells)
 
 	const flowMixChartData = $derived.by<ChartData<'doughnut'>>(() => {
 		if (!stats) return { labels: [], datasets: [] }

@@ -1,15 +1,11 @@
 <script lang="ts">
-	import type {
-		BaseProps,
-		ElementProps,
-		VariantProps,
-	} from '$lib/components/models'
+	import type { BaseProps, ElementProps, VariantProps } from '$lib/ui/models'
 	import {
 		mergeClass,
 		newBaseClass,
 		newTwClass,
 		newVariantClass,
-	} from '$lib/components'
+	} from '$lib/ui'
 
 	type Variant = 'plain' | 'primary' | 'secondary' | 'danger'
 	type Props = Omit<BaseProps, 'children'> &

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { CategoryTree } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { CategoryTree } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChevronDownIcon from '@iconify-svelte/lucide/chevron-down'
 	import { SvelteSet } from 'svelte/reactivity'
 
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+	import { mergeClass } from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

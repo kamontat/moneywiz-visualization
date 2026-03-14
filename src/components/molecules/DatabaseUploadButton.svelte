@@ -1,18 +1,20 @@
 <script lang="ts">
 	import type { ChangeEventHandler } from 'svelte/elements'
+	import type { BootstrapProgress, UploadProgress } from '$lib/apis/sqlite'
 	import type {
 		BaseProps,
 		ComponentProps,
 		CustomProps,
 		ElementProps,
-	} from '$lib/components/models'
-	import type { SessionProgress } from '$lib/session/models'
+	} from '$lib/ui'
 	import UploadIcon from '@iconify-svelte/lucide/upload'
 
 	import Button from '$components/atoms/Button.svelte'
 	import Input from '$components/atoms/Input.svelte'
-	import { component } from '$lib/loggers'
-	import { sessionAPIs } from '$lib/session'
+	import { sessionAPIs } from '$lib/app'
+	import { component } from '$lib/utils'
+
+	type UploadSessionProgress = BootstrapProgress | UploadProgress
 
 	type Props = Omit<BaseProps, 'children'> &
 		Pick<ElementProps<'input'>, 'onchange'> &
@@ -21,7 +23,7 @@
 		CustomProps<{
 			onsuccess?: (count: number) => void
 			onfail?: (err: Error) => void
-			onprogress?: (progress: SessionProgress) => void
+			onprogress?: (progress: UploadSessionProgress) => void
 			onloadingchange?: (loading: boolean) => void
 		}>
 
@@ -37,7 +39,7 @@
 	const log = component.extends('DatabaseUploadButton')
 	let fileInput = $state<Input | null>(null)
 	let loading = $state(false)
-	let progress = $state<SessionProgress | null>(null)
+	let progress = $state<UploadSessionProgress | null>(null)
 
 	const onchange: ChangeEventHandler<HTMLInputElement> = async (event) => {
 		loading = true
@@ -92,7 +94,11 @@
 	{...rest}
 >
 	{#if loading}
-		<span class="tabular-nums">{progress?.percentage ?? 0}%</span>
+		<span class="tabular-nums"
+			>{progress
+				? Math.round((progress.processed / (progress.total || 1)) * 100)
+				: 0}%</span
+		>
 	{:else}
 		<UploadIcon class="h-5 w-5" aria-hidden="true" />
 		<span class="ml-2 hidden sm:inline">Upload</span>

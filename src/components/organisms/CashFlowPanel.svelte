@@ -3,19 +3,18 @@
 		CashFlowDashboard,
 		CashFlowKpi,
 		StatsRange,
-	} from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	} from '$lib/app/dashboard'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import { onDestroy } from 'svelte'
 
 	import Panel from '$components/atoms/Panel.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
 	import ExperimentMonthlyWaterfall from '$components/molecules/ExperimentMonthlyWaterfall.svelte'
 	import IncomeExpenseChart from '$components/molecules/IncomeExpenseChart.svelte'
-	import { byCashFlowDashboard, transform } from '$lib/analytics/transforms'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
-	import { dismissNotification, pushNotification } from '$lib/notifications'
+	import { buildCashFlowDashboard } from '$lib/app/dashboard'
+	import { mergeClass, dismissNotification, pushNotification } from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -37,13 +36,11 @@
 	}: Props = $props()
 
 	const dashboard = $derived.by<CashFlowDashboard | undefined>(() => {
-		if (transactions.length === 0) return undefined
-		return transform(
+		return buildCashFlowDashboard(
 			transactions,
-			byCashFlowDashboard(baselineTransactions, {
-				currentRange: currentRange ?? undefined,
-				baselineRange,
-			})
+			baselineTransactions,
+			currentRange,
+			baselineRange
 		)
 	})
 

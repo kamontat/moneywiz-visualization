@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { CategoryBubblePoint } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { CategoryBubblePoint } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
-	import { bubbleChartOptions, toCategoryBubbleData } from '$lib/charts'
-	import { mergeClass } from '$lib/components'
+	import { bubbleChartOptions, toCategoryBubbleData, mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ActiveElement, Chart, ChartEvent, TooltipItem } from 'chart.js'
-	import type { PayeeSpendAnalysis } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { PayeeSpendAnalysis } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import { onMount } from 'svelte'
 
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
@@ -10,9 +10,9 @@
 		lineChartOptions,
 		toPayeeSpendBarData,
 		toPayeeSpendTrendData,
-	} from '$lib/charts'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+		mergeClass,
+	} from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

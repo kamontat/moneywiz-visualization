@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import Panel from '$components/atoms/Panel.svelte'
 	import Select from '$components/atoms/Select.svelte'
 	import TransactionTable from '$components/molecules/TransactionTable.svelte'
-	import { mergeClass } from '$lib/components'
+	import { mergeClass } from '$lib/ui'
 
 	const PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 

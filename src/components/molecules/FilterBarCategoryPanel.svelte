@@ -1,16 +1,16 @@
 <script lang="ts">
 	import type { FilterState } from '$components/molecules/models/filterBar'
-	import type { FilterCategoryMode } from '$lib/analytics/filters/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedCategory } from '$lib/transactions/models'
+	import type { FilterCategoryMode } from '$lib/app/filters'
+	import type { ParsedCategory } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import { SvelteSet } from 'svelte/reactivity'
 
 	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
 	import FilterOptionBadge from '$components/atoms/FilterOptionBadge.svelte'
 	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
 	import FilterSearchInput from '$components/atoms/FilterSearchInput.svelte'
-	import { mergeClass } from '$lib/components'
-	import { getCategoryFullName } from '$lib/transactions/utils'
+	import { getCategoryFullName } from '$lib/app'
+	import { mergeClass } from '$lib/ui'
 
 	type _CategoryOption = {
 		fullName: string

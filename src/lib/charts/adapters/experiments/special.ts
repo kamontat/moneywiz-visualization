@@ -4,7 +4,7 @@ import type {
 	GiveawayPoint,
 	WindfallGiveawayPoint,
 	WindfallPoint,
-} from '$lib/analytics/transforms/models'
+} from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '$lib/charts/theme'
 
 export const toDebtData = (

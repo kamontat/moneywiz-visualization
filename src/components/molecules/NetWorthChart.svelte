@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { TooltipItem } from 'chart.js'
-	import type { NetWorthSummary } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { NetWorthSummary } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import LandmarkIcon from '@iconify-svelte/lucide/landmark'
 	import TrendingDownIcon from '@iconify-svelte/lucide/trending-down'
 	import TrendingUpIcon from '@iconify-svelte/lucide/trending-up'
@@ -9,9 +9,8 @@
 
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
-	import { barChartOptions, toNetWorthChartData } from '$lib/charts'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+	import { barChartOptions, toNetWorthChartData, mergeClass } from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

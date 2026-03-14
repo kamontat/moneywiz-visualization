@@ -5,8 +5,8 @@
 		ElementTagProps,
 		ComponentTagProps,
 		AnyComponent,
-	} from '$lib/components/models'
-	import { mergeClass, newBaseClass, newVariantClass } from '$lib/components'
+	} from '$lib/ui/models'
+	import { mergeClass, newBaseClass, newVariantClass } from '$lib/ui'
 
 	type TagName = 'span' | 'a' | 'button'
 	type Variant = 'plain' | 'small' | 'medium' | 'large'

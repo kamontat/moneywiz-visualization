@@ -6,7 +6,7 @@ import type {
 	STATE_FILTER_OPTIONS_V1,
 	STATE_FX_RATE_CACHE_V1,
 } from '../constants'
-import type { FilterOptions } from '$lib/analytics/filters/models'
+import type { FilterOptions } from '$lib/app/filters'
 import type { FxRateCacheState } from '$lib/currency/models'
 import type { SourceManifest } from '$lib/session/models'
 import type { ParsedTheme } from '$lib/themes/models'

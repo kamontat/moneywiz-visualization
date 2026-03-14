@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransaction } from '$lib/transactions/models'
+	import type { ParsedTransaction } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import { onMount } from 'svelte'
 
 	import Panel from '$components/atoms/Panel.svelte'
@@ -10,16 +10,8 @@
 	import ExperimentRefundImpact from '$components/molecules/ExperimentRefundImpact.svelte'
 	import ExperimentRegimeTimeline from '$components/molecules/ExperimentRegimeTimeline.svelte'
 	import ExperimentSavingsTarget from '$components/molecules/ExperimentSavingsTarget.svelte'
-	import {
-		byCategoryBubble,
-		byCategoryVolatility,
-		byCumulativeSavings,
-		byOutlierTimeline,
-		byRefundImpact,
-		byRegimeTimeline,
-		transform,
-	} from '$lib/analytics/transforms'
-	import { mergeClass } from '$lib/components'
+	import { buildExperimentsPanelData } from '$lib/app/dashboard'
+	import { mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{
@@ -32,14 +24,15 @@
 	let monthlyTarget = $state(0)
 	let hydrated = $state(false)
 
-	const volatility = $derived(transform(transactions, byCategoryVolatility))
-	const bubbles = $derived(transform(transactions, byCategoryBubble))
-	const refundImpact = $derived(transform(transactions, byRefundImpact))
-	const regimes = $derived(transform(transactions, byRegimeTimeline))
-	const outliers = $derived(transform(transactions, byOutlierTimeline))
-	const savings = $derived(
-		transform(transactions, byCumulativeSavings(monthlyTarget))
+	const panelData = $derived(
+		buildExperimentsPanelData(transactions, monthlyTarget)
 	)
+	const volatility = $derived(panelData.volatility)
+	const bubbles = $derived(panelData.bubbles)
+	const refundImpact = $derived(panelData.refundImpact)
+	const regimes = $derived(panelData.regimes)
+	const outliers = $derived(panelData.outliers)
+	const savings = $derived(panelData.savings)
 
 	const defaultTarget = $derived.by(() => {
 		const nets = savings.map((point) => point.net)

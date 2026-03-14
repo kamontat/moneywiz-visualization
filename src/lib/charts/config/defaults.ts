@@ -1,5 +1,5 @@
 import type { ChartOptions, TooltipItem } from 'chart.js'
-import type { CalendarCell } from '$lib/analytics/transforms/models'
+import type { CalendarCell } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '../theme'
 
 import { formatCurrency } from '$lib/formatters/amount'

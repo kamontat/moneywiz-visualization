@@ -1,5 +1,5 @@
 import type { ChartConfiguration, ChartData } from 'chart.js'
-import type { TimeSeries } from '$lib/analytics/transforms/models'
+import type { TimeSeries } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '../theme'
 
 export const toIncomeExpenseChartData = (

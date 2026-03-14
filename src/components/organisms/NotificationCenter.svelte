@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Alert from '$components/atoms/Alert.svelte'
-	import { dismissNotification, notificationsStore } from '$lib/notifications'
+	import { dismissNotification, notificationsStore } from '$lib/ui'
 
 	const onAlertDismiss = (id?: string) => {
 		dismissNotification(id)

@@ -4,13 +4,13 @@
 		CustomProps,
 		ElementProps,
 		VariantProps,
-	} from '$lib/components/models'
+	} from '$lib/ui/models'
 	import {
 		mergeClass,
 		newBaseClass,
 		newTwClass,
 		newVariantClass,
-	} from '$lib/components'
+	} from '$lib/ui'
 
 	type Value = string | { label: string; value: string }
 	type Variant = 'plain'

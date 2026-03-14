@@ -1,8 +1,5 @@
 import type { ChartData } from 'chart.js'
-import type {
-	CategoryTotal,
-	TopCategoryTotal,
-} from '$lib/analytics/transforms/models'
+import type { CategoryTotal, TopCategoryTotal } from '$lib/app/dashboard'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 import { getCategoryPalette } from '../theme'
 

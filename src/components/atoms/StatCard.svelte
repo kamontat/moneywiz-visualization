@@ -4,8 +4,8 @@
 		Children,
 		CustomProps,
 		VariantProps,
-	} from '$lib/components/models'
-	import { mergeClass, newTwClass, newVariantClass } from '$lib/components'
+	} from '$lib/ui/models'
+	import { mergeClass, newTwClass, newVariantClass } from '$lib/ui'
 
 	type Variant = 'plain' | 'income' | 'expense' | 'neutral' | 'highlight'
 	type Props = Omit<BaseProps, 'children'> &

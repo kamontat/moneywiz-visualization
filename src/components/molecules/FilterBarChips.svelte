@@ -3,7 +3,7 @@
 		FilterState,
 		TagCategory,
 	} from '$components/molecules/models/filterBar'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 	import FolderIcon from '@iconify-svelte/lucide/folder'
 	import HashIcon from '@iconify-svelte/lucide/hash'
@@ -14,8 +14,8 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import FilterChipButton from '$components/atoms/FilterChipButton.svelte'
-	import { hasActiveFilters } from '$lib/analytics/filters/models/state'
-	import { mergeClass } from '$lib/components'
+	import { hasActiveFilters } from '$lib/app/filters'
+	import { mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

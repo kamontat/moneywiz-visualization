@@ -4,10 +4,10 @@
 		Children,
 		CustomProps,
 		ElementProps,
-	} from '$lib/components/models'
+	} from '$lib/ui/models'
 	import ChevronDown from '@iconify-svelte/lucide/chevron-down'
 
-	import { mergeClass, newTwClass } from '$lib/components'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = Omit<BaseProps, 'children'> &
 		CustomProps<{

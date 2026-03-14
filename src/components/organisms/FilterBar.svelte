@@ -3,8 +3,8 @@
 		FilterState,
 		TagCategory,
 	} from '$components/molecules/models/filterBar'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedCategory } from '$lib/transactions/models'
+	import type { ParsedCategory } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import FilterBarAccountPanel from '../molecules/FilterBarAccountPanel.svelte'
 	import FilterBarCategoryPanel from '../molecules/FilterBarCategoryPanel.svelte'
 	import FilterBarChips from '../molecules/FilterBarChips.svelte'
@@ -13,7 +13,7 @@
 	import FilterBarTagPanel from '../molecules/FilterBarTagPanel.svelte'
 	import FilterBarTypesPanel from '../molecules/FilterBarTypesPanel.svelte'
 
-	import { mergeClass } from '$lib/components'
+	import { mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

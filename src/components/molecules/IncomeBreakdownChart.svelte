@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { ActiveElement, Chart, ChartEvent, TooltipItem } from 'chart.js'
-	import type { CategoryTotal } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
-	import type { ParsedTransactionType } from '$lib/transactions/models'
+	import type { CategoryTotal } from '$lib/app/dashboard'
+	import type { ParsedTransactionType } from '$lib/types'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
-	import { toCategoryDoughnutData, doughnutChartOptions } from '$lib/charts'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+	import {
+		toCategoryDoughnutData,
+		doughnutChartOptions,
+		mergeClass,
+	} from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

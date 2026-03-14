@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { ChartConfiguration } from 'chart.js'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import { Chart, registerables } from 'chart.js'
 	import { onMount, onDestroy } from 'svelte'
 
-	import { mergeClass } from '$lib/components'
+	import { mergeClass } from '$lib/ui'
 
 	const chartPluginRegistryFlag = '__moneywizChartPluginsRegistered__'
 	let chartRegistrationPromise: Promise<void> | undefined

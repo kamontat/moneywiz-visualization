@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CustomProps, BaseProps } from '$lib/components/models'
+	import type { CustomProps, BaseProps } from '$lib/ui'
 	import Title from '$components/atoms/Title.svelte'
 
 	type Props = BaseProps &

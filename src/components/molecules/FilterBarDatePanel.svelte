@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { FilterState } from '$components/molecules/models/filterBar'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import CollapsiblePanel from '$components/atoms/CollapsiblePanel.svelte'
 	import FilterPanelHeader from '$components/atoms/FilterPanelHeader.svelte'
-	import { getDefaultDateRange } from '$lib/analytics/filters/dateRangePersistence'
-	import { mergeClass } from '$lib/components'
+	import { getDefaultDateRange } from '$lib/app/filters'
+	import { mergeClass } from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

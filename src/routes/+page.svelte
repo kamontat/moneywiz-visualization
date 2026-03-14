@@ -1,13 +1,16 @@
 <script lang="ts">
-	import type { FilterOptions } from '$lib/analytics/filters/models/options'
-	import type { FilterState } from '$lib/analytics/filters/models/state'
-	import type { FxRateTable } from '$lib/currency/models'
-	import type { SourceManifest } from '$lib/session/models'
+	import type { DataController } from '$lib/app/controllers/index.js'
+	import type { FilterOptions, FilterState } from '$lib/app/filters'
+	import type { FilterState as AppFilterState } from '$lib/app/sessions/types.js'
 	import type {
-		LedgerAccountBalanceRow,
+		DataTransaction,
+		TransactionType,
+		FxRateTable,
+		SourceManifest,
 		ParsedCategory,
+		ParsedTransactionType,
 		ParsedTransaction,
-	} from '$lib/transactions/models'
+	} from '$lib/types'
 	import { onDestroy, onMount } from 'svelte'
 	import { get } from 'svelte/store'
 
@@ -16,54 +19,36 @@
 	import Dashboard from '$components/organisms/Dashboard.svelte'
 	import FilterBar from '$components/organisms/FilterBar.svelte'
 	import {
-		filter,
-		byAccount,
-		byDateRange,
-		byCategory,
-		byPayee,
-		byTransactionType,
-		byTags,
-	} from '$lib/analytics/filters'
-	import {
-		getDefaultDateRange,
-		loadPersistedDateRange,
-		persistDateRange,
-	} from '$lib/analytics/filters/dateRangePersistence'
-	import {
-		loadPersistedFilterSelection,
-		persistFilterSelection,
-	} from '$lib/analytics/filters/filterSelectionPersistence'
-	import { filterOptionsStore } from '$lib/analytics/filters/init'
-	import { emptyFilterState } from '$lib/analytics/filters/models/state'
-	import {
-		byNetWorthFromBalances,
-		bySummarize,
-		deriveBaselineRange,
-		deriveCurrentRange,
-		selectNetWorthTransactions,
-		sliceByDateRange,
-		transform,
-	} from '$lib/analytics/transforms'
-	import {
-		convertTransactionsToTHB,
-		prepareHistoricalRateTable,
-	} from '$lib/currency'
-	import { dismissNotification, pushNotification } from '$lib/notifications'
-	import { sessionStore, sessionUploading } from '$lib/session'
-	import {
-		getLedgerNetWorthBaseline,
-		getLedgerTransactionCount,
-		getLedgerTransactions,
-	} from '$lib/transactions/repository'
-	import {
+		sessionStore,
+		sessionUploading,
 		extractCategories,
 		extractPayees,
 		extractTagCategories,
 		extractAccounts,
-	} from '$lib/transactions/utils'
+	} from '$lib/app'
+	import { createCurrencyController } from '$lib/app/controllers/index.js'
+	import {
+		deriveBaselineRange,
+		deriveCurrentRange,
+		loadLegacyDashboardSnapshot,
+		sliceByDateRange,
+		summarizeTransactions,
+		toLegacyFxConversionResult,
+	} from '$lib/app/dashboard/index.js'
+	import {
+		getDefaultDateRange,
+		loadPersistedDateRange,
+		persistDateRange,
+		loadPersistedFilterSelection,
+		persistFilterSelection,
+		filterOptionsStore,
+		emptyFilterState,
+	} from '$lib/app/filters'
+	import { dismissNotification, pushNotification } from '$lib/ui'
 
 	const DEFAULT_TRANSACTION_PAGE_SIZE = 10
 	const TRANSACTION_PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
+	const currencyController = createCurrencyController()
 
 	let allTransactions = $state<ParsedTransaction[]>([])
 	let totalCount = $state(0)
@@ -72,6 +57,8 @@
 	let availableAccounts = $state<string[]>([])
 	let tagCategories = $state(extractTagCategories([]))
 	let cachedFilterOptions = $state<FilterOptions | undefined>(undefined)
+	let dataController = $state<DataController | undefined>(undefined)
+	let transactionById = $state(new Map<number, ParsedTransaction>())
 	let fileInfo = $state<SourceManifest | undefined>(undefined)
 	let dataLoading = $state(true)
 	let dataLoadRequestId = 0
@@ -95,10 +82,75 @@
 	let fxRateErrorNotificationText = $state<string | undefined>(undefined)
 	let normalizationNotificationId = $state<string | undefined>(undefined)
 	let normalizationNotificationText = $state<string | undefined>(undefined)
-	let netWorthAccountBalances = $state<LedgerAccountBalanceRow[]>([])
+
+	const PARSED_TO_DATA_TYPE: Record<ParsedTransactionType, TransactionType> = {
+		Income: 'income',
+		Expense: 'expense',
+		Refund: 'refund',
+		Windfall: 'windfall',
+		Giveaway: 'giveaway',
+		Debt: 'debt',
+		DebtRepayment: 'debt_repayment',
+		Transfer: 'transfer',
+		Reconcile: 'reconcile',
+		Buy: 'buy',
+		Sell: 'sell',
+		Unknown: 'unknown',
+	}
+
+	const toControllerFilterState = (
+		state: FilterState,
+		controller: DataController
+	): AppFilterState => {
+		const selectedAccounts = new Set(state.accounts)
+		const accountIds = controller
+			.getAllAccounts()
+			.filter((account) => selectedAccounts.has(account.name))
+			.map((account) => account.id)
+
+		const start = state.dateRange.start
+		const end = state.dateRange.end
+
+		return {
+			dateRange:
+				start || end
+					? {
+							start: start ?? new Date(0),
+							end: end ?? new Date(),
+						}
+					: undefined,
+			transactionTypes: state.transactionTypes.map(
+				(type) => PARSED_TO_DATA_TYPE[type]
+			),
+			transactionTypeMode: state.transactionTypeMode,
+			categories: state.categories,
+			categoryMode: state.categoryMode,
+			payees: state.payees,
+			accounts: accountIds,
+			tags: state.tags,
+		}
+	}
+
+	const queryTransactions = (
+		controller: DataController,
+		state: FilterState
+	): DataTransaction[] => {
+		return controller.getTransactions(
+			toControllerFilterState(state, controller)
+		)
+	}
+
+	const mapTransactions = (
+		transactions: readonly DataTransaction[]
+	): ParsedTransaction[] => {
+		return transactions.flatMap((transaction) => {
+			const parsed = transactionById.get(transaction.id)
+			return parsed ? [parsed] : []
+		})
+	}
 
 	const refreshHistoricalRateTable = async (
-		transactions: ParsedTransaction[]
+		transactions: readonly DataTransaction[]
 	): Promise<void> => {
 		const requestId = ++fxRateRequestId
 		fxRateLoading = true
@@ -109,7 +161,7 @@
 		}
 
 		try {
-			const next = await prepareHistoricalRateTable(transactions)
+			const next = await currencyController.fetchRates(transactions)
 			if (requestId !== fxRateRequestId) return
 			fxRateTable = next
 		} catch (error) {
@@ -126,15 +178,19 @@
 	}
 
 	const loadData = async () => {
-		const [count, transactions, netWorthBaseline] = await Promise.all([
-			getLedgerTransactionCount(),
-			getLedgerTransactions(),
-			getLedgerNetWorthBaseline(),
-		])
-		totalCount = count
-		allTransactions = transactions
-		netWorthAccountBalances = netWorthBaseline?.accounts ?? []
-		void refreshHistoricalRateTable(allTransactions)
+		const { transactionCount, transactions, controller } =
+			await loadLegacyDashboardSnapshot()
+		totalCount = transactionCount
+		dataController = controller
+		allTransactions = [...transactions]
+		transactionById = new Map(
+			transactions.flatMap((transaction) =>
+				transaction.id !== undefined
+					? [[transaction.id, transaction] as const]
+					: []
+			)
+		)
+		void refreshHistoricalRateTable(controller.getAllTransactions())
 		const cached = cachedFilterOptions
 		const fileMatches =
 			cached?.fileName !== undefined &&
@@ -241,97 +297,41 @@
 		persistFilterSelection(filterSelection)
 	})
 
-	const applyDateFilter = (
-		transactions: ParsedTransaction[]
-	): ParsedTransaction[] => {
-		const dateFilters = []
-
-		if (filterState.dateRange.start && filterState.dateRange.end) {
-			dateFilters.push(
-				byDateRange(filterState.dateRange.start, filterState.dateRange.end)
-			)
-		} else if (filterState.dateRange.start) {
-			dateFilters.push(byDateRange(filterState.dateRange.start, new Date()))
-		} else if (filterState.dateRange.end) {
-			dateFilters.push(byDateRange(new Date(0), filterState.dateRange.end))
-		}
-
-		return dateFilters.length > 0
-			? filter(transactions, ...dateFilters)
-			: transactions
-	}
-
-	const applyTypeFilter = (
-		transactions: ParsedTransaction[]
-	): ParsedTransaction[] => {
-		if (filterState.transactionTypes.length > 0) {
-			return filter(
-				transactions,
-				byTransactionType({
-					types: filterState.transactionTypes,
-					mode: filterState.transactionTypeMode,
+	const dateAndTypeFilteredDataTransactions = $derived(
+		dataController
+			? queryTransactions(dataController, {
+					...filterState,
+					categories: [],
+					payees: [],
+					accounts: [],
+					tags: [],
 				})
-			)
-		}
-		return transactions
-	}
-
-	const applySecondLayerFilters = (
-		transactions: ParsedTransaction[]
-	): ParsedTransaction[] => {
-		const filters = []
-
-		if (filterState.categories.length > 0) {
-			filters.push(
-				byCategory({
-					categories: filterState.categories,
-					mode: filterState.categoryMode,
-				})
-			)
-		}
-
-		if (filterState.payees.length > 0) {
-			filters.push(byPayee({ payees: filterState.payees }))
-		}
-
-		if (filterState.accounts.length > 0) {
-			filters.push(byAccount({ accounts: filterState.accounts }))
-		}
-
-		return filters.length > 0 ? filter(transactions, ...filters) : transactions
-	}
-
-	const applyTagFilters = (
-		transactions: ParsedTransaction[]
-	): ParsedTransaction[] => {
-		if (filterState.tags.length > 0) {
-			return filter(
-				transactions,
-				byTags(
-					...filterState.tags.map((t) => ({
-						category: t.category,
-						values: t.values,
-						mode: t.mode,
-					}))
-				)
-			)
-		}
-		return transactions
-	}
-
-	// Cascading filter pipeline: Date → Types → Category/Payee/Account → Tags
-	const dateFilteredTransactions = $derived(applyDateFilter(allTransactions))
+			: []
+	)
 
 	const dateAndTypeFilteredTransactions = $derived(
-		applyTypeFilter(dateFilteredTransactions)
+		mapTransactions(dateAndTypeFilteredDataTransactions)
+	)
+
+	const secondLayerFilteredDataTransactions = $derived(
+		dataController
+			? queryTransactions(dataController, {
+					...filterState,
+					tags: [],
+				})
+			: []
 	)
 
 	const secondLayerFilteredTransactions = $derived(
-		applySecondLayerFilters(dateAndTypeFilteredTransactions)
+		mapTransactions(secondLayerFilteredDataTransactions)
+	)
+
+	const filteredDataTransactions = $derived(
+		dataController ? queryTransactions(dataController, filterState) : []
 	)
 
 	const filteredTransactions = $derived(
-		applyTagFilters(secondLayerFilteredTransactions)
+		mapTransactions(filteredDataTransactions)
 	)
 
 	// Recalculate available Categories/Payees/Accounts when date/type filters change
@@ -357,34 +357,36 @@
 		return () => cancelAnimationFrame(id)
 	})
 
-	// nonDateFilteredTransactions: used for stats comparison (all filters except date)
-	const nonDateFilteredTransactions = $derived(
-		applyTagFilters(applySecondLayerFilters(applyTypeFilter(allTransactions)))
+	const nonDateFilteredDataTransactions = $derived(
+		dataController
+			? queryTransactions(dataController, {
+					...filterState,
+					dateRange: {
+						start: undefined,
+						end: undefined,
+					},
+				})
+			: []
 	)
 
 	const convertedFilteredResult = $derived.by(() => {
 		if (fxRateLoading) return undefined
-		return convertTransactionsToTHB(filteredTransactions, fxRateTable)
+		return toLegacyFxConversionResult(
+			currencyController.convert(filteredDataTransactions, fxRateTable),
+			transactionById
+		)
 	})
 
 	const convertedFilteredTransactions = $derived(
 		convertedFilteredResult?.transactions ?? []
 	)
 
-	const netWorthTransactions = $derived(
-		selectNetWorthTransactions(allTransactions, filterState)
-	)
-
-	const convertedNetWorthTransactions = $derived.by(() => {
-		if (fxRateLoading) return []
-		return convertTransactionsToTHB(netWorthTransactions, fxRateTable)
-			.transactions
-	})
-
 	const convertedNonDateFilteredTransactions = $derived.by(() => {
 		if (fxRateLoading) return []
-		return convertTransactionsToTHB(nonDateFilteredTransactions, fxRateTable)
-			.transactions
+		return toLegacyFxConversionResult(
+			currencyController.convert(nonDateFilteredDataTransactions, fxRateTable),
+			transactionById
+		).transactions
 	})
 
 	const filteredConversionSummary = $derived(convertedFilteredResult?.summary)
@@ -511,10 +513,30 @@
 	)
 
 	const filteredSummary = $derived.by(() => {
-		if (convertedFilteredTransactions.length > 0) {
-			return transform(convertedFilteredTransactions, bySummarize())
-		}
-		return undefined
+		return summarizeTransactions(
+			toLegacyFxConversionResult(
+				currencyController.convert(filteredDataTransactions, fxRateTable),
+				transactionById
+			).transactions.map((transaction) => ({
+				id: transaction.id ?? 0,
+				type: PARSED_TO_DATA_TYPE[transaction.type],
+				date: transaction.date,
+				amount: transaction.amount.value,
+				currency: transaction.amount.currency,
+				category:
+					'category' in transaction ? transaction.category.category : '',
+				subcategory:
+					'category' in transaction ? transaction.category.subcategory : '',
+				payee: 'payee' in transaction ? transaction.payee : '',
+				accountId: 0,
+				accountName: transaction.account.name,
+				notes: transaction.memo,
+				tags: transaction.tags.map((tag) => ({
+					category: tag.category,
+					name: tag.name,
+				})),
+			}))
+		)
 	})
 
 	const cashFlowCurrentRange = $derived.by(() => {
@@ -540,18 +562,28 @@
 
 	const quickSummaryBaseline = $derived.by(() => {
 		if (cashFlowBaselineTransactions.length === 0) return undefined
-		return transform(cashFlowBaselineTransactions, bySummarize())
-	})
-
-	const netWorthSummary = $derived(
-		transform(
-			convertedNetWorthTransactions,
-			byNetWorthFromBalances({
-				accountBalances: netWorthAccountBalances,
-				selectedAccounts: filterState.accounts,
-			})
+		return summarizeTransactions(
+			cashFlowBaselineTransactions.map((transaction) => ({
+				id: transaction.id ?? 0,
+				type: PARSED_TO_DATA_TYPE[transaction.type],
+				date: transaction.date,
+				amount: transaction.amount.value,
+				currency: transaction.amount.currency,
+				category:
+					'category' in transaction ? transaction.category.category : '',
+				subcategory:
+					'category' in transaction ? transaction.category.subcategory : '',
+				payee: 'payee' in transaction ? transaction.payee : '',
+				accountId: 0,
+				accountName: transaction.account.name,
+				notes: transaction.memo,
+				tags: transaction.tags.map((tag) => ({
+					category: tag.category,
+					name: tag.name,
+				})),
+			}))
 		)
-	)
+	})
 
 	const sortedFilteredTransactions = $derived(
 		filteredTransactions.toSorted((a, b) => b.date.getTime() - a.date.getTime())
@@ -636,7 +668,6 @@
 		totalPages={totalTransactionPages}
 		summary={filteredSummary}
 		baselineSummary={quickSummaryBaseline}
-		{netWorthSummary}
 		onpagechange={setTransactionPage}
 		onpagesizechange={setTransactionPageSize}
 		hasData={totalCount > 0}

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Summarize } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { Summarize } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import TrendingDownIcon from '@iconify-svelte/lucide/trending-down'
 	import TrendingUpIcon from '@iconify-svelte/lucide/trending-up'
 
 	import StatCard from '$components/atoms/StatCard.svelte'
-	import { mergeClass } from '$lib/components'
-	import { formatCurrency } from '$lib/formatters/amount'
+	import { mergeClass } from '$lib/ui'
+	import { formatCurrency } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{

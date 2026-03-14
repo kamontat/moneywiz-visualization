@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { TopCategoryTotal } from '$lib/analytics/transforms/models'
-	import type { BaseProps, CustomProps } from '$lib/components/models'
+	import type { TopCategoryTotal } from '$lib/app/dashboard'
+	import type { BaseProps, CustomProps } from '$lib/ui/models'
 	import ChartCanvas from '$components/atoms/ChartCanvas.svelte'
 	import {
 		toTopCategoriesBarData,
 		horizontalBarChartOptions,
-	} from '$lib/charts'
-	import { mergeClass } from '$lib/components'
+		mergeClass,
+	} from '$lib/ui'
 
 	type Props = BaseProps &
 		CustomProps<{

@@ -1,12 +1,8 @@
 <script lang="ts">
-	import type {
-		BaseProps,
-		CustomProps,
-		ElementProps,
-	} from '$lib/components/models'
+	import type { BaseProps, CustomProps, ElementProps } from '$lib/ui/models'
 	import SearchIcon from '@iconify-svelte/lucide/search'
 
-	import { mergeClass, newTwClass } from '$lib/components'
+	import { mergeClass, newTwClass } from '$lib/ui'
 
 	type Props = Omit<BaseProps, 'children'> &
 		CustomProps<{

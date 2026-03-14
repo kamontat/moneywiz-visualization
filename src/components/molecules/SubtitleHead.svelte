@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { CustomProps, BaseProps } from '$lib/components/models'
+	import type { CustomProps, BaseProps } from '$lib/ui'
 	import CalendarIcon from '@iconify-svelte/lucide/calendar'
 	import FileTextIcon from '@iconify-svelte/lucide/file-text'
 
-	import { formatDate } from '$lib/formatters/date'
+	import { formatDate } from '$lib/utils'
 
 	type Props = BaseProps &
 		CustomProps<{
