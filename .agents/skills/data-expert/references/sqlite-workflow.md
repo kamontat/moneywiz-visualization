@@ -4,8 +4,7 @@ Use this checklist for any database-data task.
 
 ## Required sources
 
-1. `docs/DATA_PARSER.md`
-2. `docs/SQLITE_SCHEMA.md`
+1. `docs/DATA_SCHEMA.md`
 3. `data/ipadMoneyWiz.sqlite`
 
 ## Workflow checklist

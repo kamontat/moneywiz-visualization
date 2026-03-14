@@ -43,6 +43,8 @@
 	"json.schemaDownload.trustedDomains": {
 		"https://www.schemastore.org/": true,
 		"https://json-schema.org/": true,
-		"https://opencode.ai/config.json": true
+		"https://opencode.ai/config.json": true,
+		"https://models.dev/model-schema.json": true,
+		"https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json": true
 	}
 }

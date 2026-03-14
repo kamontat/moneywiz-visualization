@@ -1,0 +1,24 @@
+## https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: perf
+      include: scope
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: saturday
+      time: '01:00' ## UTC
+    cooldown:
+      default-days: 14
+      semver-major-days: 60
+    commit-message:
+      prefix: perf
+      include: scope
