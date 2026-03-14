@@ -1,6 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-23
+**Updated:** 2026-03-14
 **Branch:** main
 
 ## OVERVIEW
@@ -8,22 +8,29 @@
 SvelteKit 2 + Svelte 5 static site for MoneyWiz SQLite visualization.
 SQLite ingestion is worker-only. Snapshot data is persisted in IndexedDB.
 
-## V2 STRUCTURE
+## STRUCTURE
 
 ```text
 src/
   routes/
   components/
   lib/
-    session/          # session workflow APIs and store
-    source/sqlite/    # worker client/protocol/runtime
-    ledger/           # classify/import/repository/models
-    analytics/
-    charts/
-    currency/
-    themes/
-    formatters/
-    loggers/
+    apis/             # bank APIs, pipelines, record APIs, SQLite client
+    app/              # controllers, dashboard, filters, sessions, transaction utils
+    charts/           # chart adapters, config, themes
+    components/       # component class helpers, models
+    currency/         # currency conversion, rates, models, store
+    formatters/       # amount, category, date, transaction-type formatters
+    loggers/          # logger models, constants
+    notifications/    # notification models and store
+    providers/        # storage providers (async storage, IndexedDB, OPFS)
+    session/          # session models and persistence
+    source/sqlite/    # worker client/protocol/runtime/backends/extractors/writers
+    themes/           # theme constants, models, state, store
+    transactions/     # classifier, importer, repository, models
+    types/            # core shared types
+    ui/               # UI exports (charts, notifications, themes)
+    utils/            # utility aggregators
   utils/
     db/
     apis/
@@ -42,18 +49,8 @@ src/
 
 ## REQUIRED REFERENCE DOCS
 
-For any SQLite/database read/write/condition change, consult:
-
-- `docs/DATA_PARSER.md`
-- `docs/SQLITE_SCHEMA.md`
-
-For V2 architecture decisions, also consult:
-
-- `docs/ARCHITECTURE_V2.md`
-- `docs/INGESTION_WORKER_PIPELINE.md`
-- `docs/STORAGE_MODEL_V2.md`
-- `docs/WORKER_PROTOCOL_V2.md`
-- `docs/FILE_SPLITTING_STANDARD.md`
+- `docs/ARCHITECTURE.md` — module boundaries, dependency rules, storage model, file splitting standard
+- `docs/DATA_SCHEMA.md` — SQLite schema, data parser rules, SQL queries
 
 ## COMMANDS
 

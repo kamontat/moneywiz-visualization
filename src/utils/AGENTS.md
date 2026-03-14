@@ -36,6 +36,5 @@ utils/
 
 For SQLite/database behavior impacts, check:
 
-- `../../docs/DATA_PARSER.md`
-- `../../docs/SQLITE_SCHEMA.md`
-- `../../docs/STORAGE_MODEL_V2.md`
+- `../../docs/ARCHITECTURE.md`
+- `../../docs/DATA_SCHEMA.md`

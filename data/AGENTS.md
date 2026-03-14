@@ -22,5 +22,4 @@ exceptions for example files.
 
 ## REFERENCES
 
-- **SQLite Import/Behavior**: See [docs/DATA_PARSER.md](../docs/DATA_PARSER.md)
-- **Database Schema**: See [docs/SQLITE_SCHEMA.md](../docs/SQLITE_SCHEMA.md)
+- **SQLite Import/Behavior & Schema**: See [docs/DATA_SCHEMA.md](../docs/DATA_SCHEMA.md)

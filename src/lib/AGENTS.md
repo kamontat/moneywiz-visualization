@@ -1,25 +1,38 @@
-# src/lib — Domain Modules (V2)
+# src/lib — Domain Modules
 
 ## CORE MODULES
 
 ```text
 src/lib/
-  session/          # bootstrap/upload/clear/status orchestration
-  source/sqlite/    # worker client + worker runtime + backends/extractors/writers
-  ledger/           # importer/classifier/repository/models
+  apis/             # bank APIs, pipelines, record APIs, SQLite client
+  app/              # controllers, dashboard, filters, sessions, transaction utils
+  charts/           # chart adapters, config, themes
+  components/       # component class helpers, models
+  currency/         # currency conversion, rates, models, store
+  formatters/       # amount, category, date, transaction-type formatters
+  loggers/          # logger models, constants
+  notifications/    # notification models and store
+  providers/        # storage providers (async storage, IndexedDB, OPFS)
+  session/          # session models and persistence
+  source/sqlite/    # worker client/protocol/runtime/backends/extractors/writers
+  themes/           # theme constants, models, state, store
+  transactions/     # classifier, importer, repository, models
+  types/            # core shared types
+  ui/               # UI exports (charts, notifications, themes)
+  utils/            # utility aggregators
 ```
 
 ## WORKFLOW CONTRACT
 
 1. Upload:
 
-- `session/apis/upload.ts` -> worker `upload`
+- `app/controllers/sessionController.ts` -> worker `upload`
 - worker imports source (OPFS preferred)
 - worker extracts/classifies/writes snapshot + manifest
 
 2. Reopen:
 
-- `session/apis/bootstrap.ts` -> worker `bootstrap`
+- `app/controllers/sessionController.ts` -> worker `bootstrap`
 - load from IndexedDB snapshot first
 
 3. Recovery:
@@ -28,13 +41,13 @@ src/lib/
 
 4. Clear:
 
-- `session/apis/clear.ts` -> worker `clear`
+- `app/controllers/sessionController.ts` -> worker `clear`
 - clear snapshot + manifest + OPFS source (if exists)
 
 ## DEPENDENCY RULES
 
-- `session` may depend on `source/sqlite` and `ledger`.
-- `source/sqlite` owns its own `models`, `worker/runtime`, and `worker/utils`.
+- `app/` orchestrates workflows via `apis/`, `session/`, `source/sqlite/`, and `transactions/`.
+- `source/sqlite/` owns its own `models`, `worker/runtime`, and `worker/utils`.
 - `src/lib/*` may use `src/utils/*`.
 - `src/lib/*` must keep UI concerns out of worker/parser logic.
 
@@ -58,7 +71,5 @@ feature/
 
 Before changing SQLite logic, read:
 
-- `../../docs/DATA_PARSER.md`
-- `../../docs/SQLITE_SCHEMA.md`
-- `../../docs/INGESTION_WORKER_PIPELINE.md`
-- `../../docs/WORKER_PROTOCOL_V2.md`
+- `../../docs/ARCHITECTURE.md`
+- `../../docs/DATA_SCHEMA.md`
