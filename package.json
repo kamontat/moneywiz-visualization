@@ -31,7 +31,7 @@
 	},
 	"devDependencies": {
 		"@eslint/compat": "2.0.2",
-		"@eslint/js": "9.39.2",
+		"@eslint/js": "9.39.3",
 		"@fontsource-variable/jetbrains-mono": "5.2.8",
 		"@fontsource-variable/noto-sans-thai": "5.2.8",
 		"@fontsource-variable/noto-serif-thai": "5.2.7",
