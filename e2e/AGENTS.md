@@ -1,5 +1,15 @@
 # e2e — Playwright Tests
 
+**Updated:** 2026-03-15
+
+## Commands
+
+```bash
+bun run test:e2e          # Run all e2e tests
+bunx playwright test      # Direct Playwright run
+bunx playwright show-report  # View last test report
+```
+
 ## Scope
 
 - End-to-end tests for UI behavior in `e2e/*.spec.ts`.

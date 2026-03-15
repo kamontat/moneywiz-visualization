@@ -1,5 +1,11 @@
 # src/lib — Domain Modules
 
+**Updated:** 2026-03-15
+
+## CHILD DOCS
+
+- `source/sqlite/AGENTS.md` — Worker architecture, protocol, backends, extractors
+
 ## CORE MODULES
 
 ```text
