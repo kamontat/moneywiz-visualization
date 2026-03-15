@@ -1,4 +1,4 @@
-import type { FxRateCacheState } from '$lib/currency/models/index.js'
+import type { FxRateCacheState } from '$lib/currency/models'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
@@ -7,7 +7,7 @@ import {
 	normalizeFxRateCacheState,
 	readFxRateCache,
 	writeFxRateCache,
-} from './cache.js'
+} from './cache'
 
 class MemoryStorage implements Storage {
 	#store = new Map<string, string>()

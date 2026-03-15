@@ -1,8 +1,8 @@
-import type { FxConversionBatch } from '$lib/app/controllers/currencyController.js'
-import type { ParsedTransaction } from '$lib/transactions/models/index.js'
+import type { FxConversionBatch } from '$lib/app/controllers/currencyController'
+import type { ParsedTransaction } from '$lib/transactions/models'
 import { describe, expect, it } from 'vitest'
 
-import { toLegacyFxConversionResult } from './fxConversion.js'
+import { toLegacyFxConversionResult } from './fxConversion'
 
 function parsedTransaction(
 	id: number,

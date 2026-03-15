@@ -1,4 +1,4 @@
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -6,7 +6,7 @@ import {
 	deriveCurrentRange,
 	sliceByDateRange,
 	summarizeTransactions,
-} from './analytics.js'
+} from './analytics'
 
 function tx(
 	id: number,

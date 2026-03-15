@@ -1,4 +1,4 @@
-import type { ChartOptions, TooltipItem } from 'chart.js'
+import type { ChartOptions, TooltipItem } from 'chart'
 import type { CalendarCell } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '../theme'
 

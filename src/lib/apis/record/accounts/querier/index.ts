@@ -1,2 +1,2 @@
-export { queryAccounts } from './query.js'
-export type { RawAccount } from './types.js'
+export { queryAccounts } from './query'
+export type { RawAccount } from './types'

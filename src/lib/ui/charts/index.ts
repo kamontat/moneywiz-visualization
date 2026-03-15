@@ -1,1 +1,1 @@
-export * from '$lib/charts/index.js'
+export * from '$lib/charts'

@@ -1,2 +1,2 @@
-export { LoggerFactory } from './factory.js'
-export type { Logger } from './factory.js'
+export { LoggerFactory } from './factory'
+export type { Logger } from './factory'

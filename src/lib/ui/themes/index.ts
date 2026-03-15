@@ -4,4 +4,4 @@ export {
 	system,
 	themeMap,
 	themeList,
-} from '$lib/themes/index.js'
+} from '$lib/themes'

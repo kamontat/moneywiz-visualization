@@ -1,5 +1,5 @@
 import type { IDBPDatabase, IDBPTransaction } from 'idb'
-import type { Versionable } from '$lib/types/index.js'
+import type { Versionable } from '$lib/types'
 import { openDB } from 'idb'
 
 export type TransactionCallback<R> = (

@@ -5,12 +5,12 @@ import {
 	defaultRecord,
 } from '../../../../../../e2e/utils/sqlite-generator.ts'
 
-import { queryTransactions } from './query.js'
+import { queryTransactions } from './query'
 
-import { classifyAccounts } from '$lib/apis/record/accounts/index.js'
-import { queryAccounts } from '$lib/apis/record/accounts/querier/query.js'
-import { classifyTransactions } from '$lib/apis/record/transactions/classifier/classify.js'
-import { openDatabase } from '$lib/apis/sqlite/worker/runtime/database.js'
+import { classifyAccounts } from '$lib/apis/record/accounts'
+import { queryAccounts } from '$lib/apis/record/accounts/querier/query'
+import { classifyTransactions } from '$lib/apis/record/transactions/classifier/classify'
+import { openDatabase } from '$lib/apis/sqlite/worker/runtime/database'
 
 describe('queryTransactions integration', () => {
 	it('extracts and classifies a generated MoneyWiz fixture', async () => {

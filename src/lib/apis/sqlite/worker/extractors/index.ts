@@ -1,2 +1,2 @@
-export { extractAll } from './extract.js'
-export type { ExtractionResult } from './extract.js'
+export { extractAll } from './extract'
+export type { ExtractionResult } from './extract'

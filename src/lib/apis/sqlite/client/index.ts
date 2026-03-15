@@ -6,8 +6,8 @@ import type {
 	StatusResult,
 	UploadProgress,
 	UploadResult,
-} from '../types/index.js'
-import type { WorkerRequest, WorkerResponse } from './types.js'
+} from '../types'
+import type { WorkerRequest, WorkerResponse } from './types'
 
 interface PendingRequest {
 	resolve: (value: unknown) => void

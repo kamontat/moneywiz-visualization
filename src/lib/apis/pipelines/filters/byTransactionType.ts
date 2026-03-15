@@ -1,8 +1,8 @@
-import type { FilterFn, FilterMode } from '../types.js'
+import type { FilterFn, FilterMode } from '../types'
 import type {
 	DataTransaction,
 	TransactionType,
-} from '$lib/apis/record/transactions/types.js'
+} from '$lib/apis/record/transactions/types'
 
 export function byTransactionType(
 	types: ReadonlyArray<TransactionType>,

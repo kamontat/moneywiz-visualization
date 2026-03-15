@@ -1,8 +1,8 @@
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
-import type { FxRateTable } from '$lib/currency/models/index.js'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
+import type { FxRateTable } from '$lib/currency/models'
 import { describe, expect, it } from 'vitest'
 
-import { createCurrencyController } from './currencyController.js'
+import { createCurrencyController } from './currencyController'
 
 function tx(
 	overrides: Partial<DataTransaction> & { id: number }

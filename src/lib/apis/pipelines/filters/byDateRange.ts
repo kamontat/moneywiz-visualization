@@ -1,5 +1,5 @@
-import type { FilterFn } from '../types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { FilterFn } from '../types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 export function byDateRange(start: Date, end: Date): FilterFn<DataTransaction> {
 	const startMs = start.getTime()

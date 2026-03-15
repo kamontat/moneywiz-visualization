@@ -4,7 +4,7 @@ import type {
 	StatusResult,
 	UploadProgress,
 	UploadResult,
-} from '../types/index.js'
+} from '../types'
 
 // --- Requests (main thread → worker) ---
 

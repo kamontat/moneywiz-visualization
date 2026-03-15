@@ -1,5 +1,5 @@
-import type { FilterFn, TagFilter } from '../types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { FilterFn, TagFilter } from '../types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 /**
  * Filter transactions that have at least one tag matching the given list.

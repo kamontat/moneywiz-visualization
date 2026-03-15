@@ -1,20 +1,20 @@
 export {
 	loadLegacyDashboardSnapshot,
 	toParsedTransaction,
-} from './legacySnapshot.js'
+} from './legacySnapshot'
 export {
 	deriveBaselineRange,
 	deriveCurrentRange,
 	sliceByDateRange,
 	summarizeTransactions,
-} from './analytics.js'
+} from './analytics'
 export {
 	buildCashFlowDashboard,
 	buildDriversPanelData,
 	buildExperimentsPanelData,
 	buildOverviewPanelData,
 	buildStatsPanelData,
-} from './panels.js'
-export { toLegacyFxConversionResult } from './fxConversion.js'
-export type { LegacyDashboardSnapshot } from './legacySnapshot.js'
-export type * from './types.js'
+} from './panels'
+export { toLegacyFxConversionResult } from './fxConversion'
+export type { LegacyDashboardSnapshot } from './legacySnapshot'
+export type * from './types'

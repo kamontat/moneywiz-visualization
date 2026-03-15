@@ -1,7 +1,7 @@
-import type { BootstrapRequest, WorkerResponse } from '../../client/types.js'
-import { extractAll } from '../extractors/index.js'
-import { openDatabase } from '../runtime/index.js'
-import { getSnapshotReader, getSnapshotWriter, workerState } from '../state.js'
+import type { BootstrapRequest, WorkerResponse } from '../../client/types'
+import { extractAll } from '../extractors'
+import { openDatabase } from '../runtime'
+import { getSnapshotReader, getSnapshotWriter, workerState } from '../state'
 
 export async function handleBootstrap(
 	request: BootstrapRequest,

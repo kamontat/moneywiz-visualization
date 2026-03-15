@@ -1,5 +1,5 @@
 import type { FilterBy, FilterByFunc, FilterCategory } from './models'
-import { getCategoryFullName } from '../transactionUtils.js'
+import { getCategoryFullName } from '../transactionUtils'
 
 import { FILTER_TYPES } from './models'
 

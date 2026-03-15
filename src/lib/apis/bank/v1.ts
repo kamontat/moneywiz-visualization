@@ -1,8 +1,8 @@
 import type {
 	CurrencyConverter,
 	RateProviderOptions,
-} from './currency/types.js'
-import { createCurrencyConverter } from './currency/index.js'
+} from './currency/types'
+import { createCurrencyConverter } from './currency'
 
 export interface BankApiV1 {
 	readonly currency: CurrencyConverter

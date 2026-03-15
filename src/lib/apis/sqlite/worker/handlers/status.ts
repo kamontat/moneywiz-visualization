@@ -1,5 +1,5 @@
-import type { StatusRequest, WorkerResponse } from '../../client/types.js'
-import { getSnapshotReader, workerState } from '../state.js'
+import type { StatusRequest, WorkerResponse } from '../../client/types'
+import { getSnapshotReader, workerState } from '../state'
 
 export async function handleStatus(
 	request: StatusRequest,

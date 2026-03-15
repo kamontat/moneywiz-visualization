@@ -34,7 +34,7 @@
 		sliceByDateRange,
 		summarizeTransactions,
 		toLegacyFxConversionResult,
-	} from '$lib/app/dashboard/index.js'
+	} from '$lib/app/dashboard'
 	import {
 		getDefaultDateRange,
 		loadPersistedDateRange,

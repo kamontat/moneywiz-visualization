@@ -12,7 +12,7 @@ export type {
 	FilterState,
 	FilterOptions,
 	Analytics,
-} from './types.js'
+} from './types'
 
 export {
 	createSessionStore,
@@ -24,5 +24,5 @@ export {
 	deriveStatus,
 	deriveTransactionCount,
 	deriveHasData,
-} from './store.js'
-export type { SessionStore } from './store.js'
+} from './store'
+export type { SessionStore } from './store'

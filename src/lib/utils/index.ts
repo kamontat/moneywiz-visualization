@@ -1,6 +1,6 @@
-export { formatAmount, formatCurrency } from '$lib/formatters/amount.js'
-export { formatDate } from '$lib/formatters/date.js'
-export { formatTransactionType } from '$lib/formatters/transactionType.js'
+export { formatAmount, formatCurrency } from '$lib/formatters/amount'
+export { formatDate } from '$lib/formatters/date'
+export { formatTransactionType } from '$lib/formatters/transactionType'
 export {
 	analytic,
 	component,
@@ -14,5 +14,5 @@ export {
 	theme,
 	transaction,
 	utils,
-} from '$lib/loggers/index.js'
-export * from './currency/index.js'
+} from '$lib/loggers'
+export * from './currency'

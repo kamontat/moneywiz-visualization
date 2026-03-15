@@ -8,4 +8,4 @@ export {
 	scatterChartOptions,
 	stackedBarChartOptions,
 	zeroCenteredBarChartOptions,
-} from '$lib/charts/index.js'
+} from '$lib/charts'

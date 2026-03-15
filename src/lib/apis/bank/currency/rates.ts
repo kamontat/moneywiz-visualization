@@ -1,12 +1,12 @@
-import type { DateSpan, FetchLike, RateProviderOptions } from './types.js'
+import type { DateSpan, FetchLike, RateProviderOptions } from './types'
 import type {
 	FxRateCacheState,
 	FxRateTable,
-} from '$lib/currency/models/index.js'
+} from '$lib/currency/models'
 import {
 	createEmptyFxRateCacheState,
 	normalizeFxRateCacheState,
-} from './cache.js'
+} from './cache'
 
 import {
 	BASE_CURRENCY,
@@ -16,7 +16,7 @@ import {
 	normalizeCurrencyCode,
 	toDateKey,
 	toFiniteNumber,
-} from '$lib/utils/currency/index.js'
+} from '$lib/utils/currency'
 
 export const collectRequiredCurrencyDates = (
 	transactions: readonly { currency: string; date: Date }[]

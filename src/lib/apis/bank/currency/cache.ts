@@ -1,10 +1,10 @@
-import type { FxRateCacheState } from '$lib/currency/models/index.js'
-import { AStorageProvider } from '$lib/providers/astorage/index.js'
+import type { FxRateCacheState } from '$lib/currency/models'
+import { AStorageProvider } from '$lib/providers/astorage'
 import {
 	BASE_CURRENCY,
 	FX_CACHE_VERSION,
 	FX_PROVIDER,
-} from '$lib/utils/currency/index.js'
+} from '$lib/utils/currency'
 
 const FX_RATE_CACHE_STORAGE_KEY = 'moneywiz:v3:fx-rates'
 

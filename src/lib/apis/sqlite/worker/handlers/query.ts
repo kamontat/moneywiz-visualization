@@ -1,5 +1,5 @@
-import type { QueryRequest, WorkerResponse } from '../../client/types.js'
-import { workerState } from '../state.js'
+import type { QueryRequest, WorkerResponse } from '../../client/types'
+import { workerState } from '../state'
 
 export async function handleQuery(
 	request: QueryRequest,

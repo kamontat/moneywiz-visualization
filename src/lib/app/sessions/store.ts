@@ -5,7 +5,7 @@ import type {
 	Analytics,
 	BootstrapProgress,
 	UploadProgress,
-} from './types.js'
+} from './types'
 import { writable, derived, type Readable, type Writable } from 'svelte/store'
 
 // --- Session Store ---

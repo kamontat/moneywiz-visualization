@@ -1,1 +1,1 @@
-export type * from '$lib/components/models/index.js'
+export type * from '$lib/components/models'

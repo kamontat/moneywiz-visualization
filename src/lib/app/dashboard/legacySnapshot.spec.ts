@@ -1,7 +1,7 @@
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 import { describe, expect, it } from 'vitest'
 
-import { toParsedTransaction } from './legacySnapshot.js'
+import { toParsedTransaction } from './legacySnapshot'
 
 function tx(
 	overrides: Partial<DataTransaction> & {

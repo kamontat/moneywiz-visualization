@@ -1,4 +1,4 @@
-import type { FxRateCacheState } from '$lib/currency/models/index.js'
+import type { FxRateCacheState } from '$lib/currency/models'
 import { describe, expect, it, vi } from 'vitest'
 
 import {
@@ -8,7 +8,7 @@ import {
 	prepareRateTable,
 	resolveRate,
 	toMissingSpans,
-} from './rates.js'
+} from './rates'
 
 describe('collectRequiredCurrencyDates', () => {
 	it('returns empty map for empty transactions', () => {

@@ -1,4 +1,4 @@
-export { createWorkerClient } from './client/index.js'
+export { createWorkerClient } from './client'
 
 export type {
 	OnProgress,
@@ -14,4 +14,4 @@ export type {
 	UploadResult,
 	StatusResult,
 	SqliteApiV1,
-} from './types/index.js'
+} from './types'

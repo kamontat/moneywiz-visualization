@@ -1,4 +1,4 @@
-import type { Queriable, Versionable } from '$lib/types/index.js'
+import type { Queriable, Versionable } from '$lib/types'
 
 export type OnProgress<S> = (state: S) => void
 

@@ -1,5 +1,5 @@
-import type { ClearRequest, WorkerResponse } from '../../client/types.js'
-import { getSnapshotWriter, workerState } from '../state.js'
+import type { ClearRequest, WorkerResponse } from '../../client/types'
+import { getSnapshotWriter, workerState } from '../state'
 
 export async function handleClear(
 	request: ClearRequest,

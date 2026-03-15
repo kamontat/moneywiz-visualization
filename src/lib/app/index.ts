@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store'
 
-import { createSessionController } from './controllers/index.js'
+import { createSessionController } from './controllers'
 import {
 	createAnalyticsStore,
 	createBootstrapProgressStore,
@@ -8,7 +8,7 @@ import {
 	createFilterStore,
 	createSessionStore,
 	createUploadProgressStore,
-} from './sessions/index.js'
+} from './sessions'
 
 import { browser } from '$app/environment'
 
@@ -19,7 +19,7 @@ export {
 	extractPayees,
 	extractTagCategories,
 	extractAccounts,
-} from './transactionUtils.js'
+} from './transactionUtils'
 
 export const appSessionStore = createSessionStore()
 export const appFilterStore = createFilterStore()

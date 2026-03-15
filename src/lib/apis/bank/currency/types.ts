@@ -1,7 +1,7 @@
 import type {
 	FxRateCacheState,
 	FxRateTable,
-} from '$lib/currency/models/index.js'
+} from '$lib/currency/models'
 
 export interface DateSpan {
 	readonly start: string

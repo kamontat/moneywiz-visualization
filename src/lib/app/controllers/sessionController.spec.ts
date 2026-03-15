@@ -1,14 +1,14 @@
-import type { SqliteApiV1 } from '$lib/apis/sqlite/index.js'
+import type { SqliteApiV1 } from '$lib/apis/sqlite'
 import { get, writable } from 'svelte/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createSessionController } from './sessionController.js'
+import { createSessionController } from './sessionController'
 
-import { createWorkerClient } from '$lib/apis/sqlite/index.js'
-import { createSessionStore } from '$lib/app/sessions/store.js'
+import { createWorkerClient } from '$lib/apis/sqlite'
+import { createSessionStore } from '$lib/app/sessions/store'
 
 // Mock the apis/sqlite module
-vi.mock('$lib/apis/sqlite/index.js', () => ({
+vi.mock('$lib/apis/sqlite', () => ({
 	createWorkerClient: vi.fn(),
 }))
 

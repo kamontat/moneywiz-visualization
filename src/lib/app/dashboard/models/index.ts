@@ -1,28 +1,28 @@
-export type { TransformBy, TransformByFunc } from './transform.js'
-export type { AggregatedTag } from './aggregatedTag.js'
+export type { TransformBy, TransformByFunc } from './transform'
+export type { AggregatedTag } from './aggregatedTag'
 export type {
 	CategoryTotal,
 	CategoryTotalChildren,
 	CategoryTotalParent,
-} from './categoryTotal.js'
+} from './categoryTotal'
 export type {
 	CategoryTree,
 	CategoryTreeChild,
 	CategoryTreeParent,
-} from './categoryTree.js'
-export type { Summarize, SummarizeDateRange } from './summarize.js'
-export type { TopCategoryTotal } from './topCategoryTotal.js'
+} from './categoryTree'
+export type { Summarize, SummarizeDateRange } from './summarize'
+export type { TopCategoryTotal } from './topCategoryTotal'
 export type {
 	TimeSeries,
 	TimeSeriesMode,
 	TimeSeriesPoint,
-} from './timeSeries.js'
+} from './timeSeries'
 export type {
 	PayeeSpendAnalysis,
 	PayeeSpendPoint,
 	PayeeSpendSeries,
 	PayeeSpendTotal,
-} from './payee.js'
+} from './payee'
 export type {
 	CalendarCell,
 	CategoryBubblePoint,
@@ -38,13 +38,13 @@ export type {
 	WaterfallStep,
 	WindfallGiveawayPoint,
 	WindfallPoint,
-} from './experiments.js'
-export type { NetWorthPoint, NetWorthSummary } from './netWorth.js'
+} from './experiments'
+export type { NetWorthPoint, NetWorthSummary } from './netWorth'
 export type {
 	TopPayeeEntry,
 	TopPayeesCategoryGroup,
 	TopPayeesPerCategoryResult,
-} from './topPayeesPerCategory.js'
+} from './topPayeesPerCategory'
 export type {
 	CashFlowDashboard,
 	CashFlowDashboardOptions,
@@ -52,7 +52,7 @@ export type {
 	CashFlowKpi,
 	CashFlowKpiDirection,
 	CashFlowKpiId,
-} from './cashFlowDashboard.js'
+} from './cashFlowDashboard'
 export type {
 	StatsCadence,
 	StatsConcentration,
@@ -68,4 +68,4 @@ export type {
 	StatsRange,
 	StatsTrend,
 	StatsWeekdaySpend,
-} from './stats.js'
+} from './stats'

@@ -1,7 +1,7 @@
-import type { UploadRequest, WorkerResponse } from '../../client/types.js'
-import { extractAll } from '../extractors/index.js'
-import { openDatabase } from '../runtime/index.js'
-import { getSnapshotWriter, workerState } from '../state.js'
+import type { UploadRequest, WorkerResponse } from '../../client/types'
+import { extractAll } from '../extractors'
+import { openDatabase } from '../runtime'
+import { getSnapshotWriter, workerState } from '../state'
 
 export async function handleUpload(
 	request: UploadRequest,

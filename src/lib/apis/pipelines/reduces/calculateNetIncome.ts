@@ -1,5 +1,5 @@
-import type { ReduceFn } from '../types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { ReduceFn } from '../types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 export interface NetIncome {
 	readonly income: number

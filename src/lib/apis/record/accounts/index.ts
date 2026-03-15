@@ -1,6 +1,6 @@
-export { classifyAccounts } from './classify.js'
-export { queryAccounts } from './querier/index.js'
-export type { RawAccount } from './querier/index.js'
+export { classifyAccounts } from './classify'
+export { queryAccounts } from './querier'
+export type { RawAccount } from './querier'
 export type {
 	AccountType,
 	DataAccount,
@@ -12,4 +12,4 @@ export type {
 	DataLoanAccount,
 	DataUnknownAccount,
 	DataWalletAccount,
-} from './types.js'
+} from './types'

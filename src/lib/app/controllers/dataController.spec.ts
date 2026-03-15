@@ -1,13 +1,13 @@
-import type { DataAccounts } from '$lib/apis/record/accounts/types.js'
+import type { DataAccounts } from '$lib/apis/record/accounts/types'
 import type {
 	DataTransaction,
 	DataTransactions,
-} from '$lib/apis/record/transactions/types.js'
-import type { RecordApiV1 } from '$lib/apis/record/v1.js'
-import type { FilterState } from '$lib/app/sessions/types.js'
+} from '$lib/apis/record/transactions/types'
+import type { RecordApiV1 } from '$lib/apis/record/v1'
+import type { FilterState } from '$lib/app/sessions/types'
 import { describe, expect, it, beforeEach } from 'vitest'
 
-import { createDataController, type DataController } from './dataController.js'
+import { createDataController, type DataController } from './dataController'
 
 function tx(
 	overrides: Partial<DataTransaction> & { id: number }

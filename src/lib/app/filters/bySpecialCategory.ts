@@ -4,7 +4,7 @@ import {
 	isDebtRepaymentCategory,
 	isGiftCategory,
 	isSpecialCategory,
-} from '../transactionUtils.js'
+} from '../transactionUtils'
 
 import { FILTER_TYPES } from './models'
 

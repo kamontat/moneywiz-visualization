@@ -1,6 +1,6 @@
-import type { IndexdbTable } from './index.js'
-import type { DataAccounts } from '$lib/apis/record/accounts/types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { IndexdbTable } from '.'
+import type { DataAccounts } from '$lib/apis/record/accounts/types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 export interface SnapshotManifest {
 	readonly version: number

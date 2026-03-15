@@ -1,9 +1,9 @@
-import type { RateProviderOptions } from '$lib/apis/bank/currency/types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
-import type { FxRateTable } from '$lib/currency/models/index.js'
-import { createCurrencyConverter } from '$lib/apis/bank/currency/index.js'
-import { resolveRateMatch } from '$lib/apis/bank/currency/rates.js'
-import { BASE_CURRENCY, toDateKey } from '$lib/utils/currency/index.js'
+import type { RateProviderOptions } from '$lib/apis/bank/currency/types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
+import type { FxRateTable } from '$lib/currency/models'
+import { createCurrencyConverter } from '$lib/apis/bank/currency'
+import { resolveRateMatch } from '$lib/apis/bank/currency/rates'
+import { BASE_CURRENCY, toDateKey } from '$lib/utils/currency'
 
 export interface FxConversionEntry {
 	readonly transactionId: number

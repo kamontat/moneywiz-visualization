@@ -1,6 +1,6 @@
-import type { StatsRange, Summarize } from './models/index.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
-import { formatDate } from '$lib/formatters/date.js'
+import type { StatsRange, Summarize } from './models'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
+import { formatDate } from '$lib/formatters/date'
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 

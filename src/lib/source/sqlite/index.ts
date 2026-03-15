@@ -12,9 +12,9 @@ import type {
 	StatusResult,
 	UploadProgress,
 	UploadResult,
-} from '$lib/apis/sqlite/types/index.js'
+} from '$lib/apis/sqlite/types'
 import type { SourceBackend, SourceManifest } from '$lib/session/models'
-import { createWorkerClient } from '$lib/apis/sqlite/client/index.js'
+import { createWorkerClient } from '$lib/apis/sqlite/client'
 
 let sharedClient: ReturnType<typeof createWorkerClient> | undefined
 

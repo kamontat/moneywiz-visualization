@@ -1,11 +1,11 @@
-import type { FxConversionBatch } from '$lib/app/controllers/currencyController.js'
+import type { FxConversionBatch } from '$lib/app/controllers/currencyController'
 import type {
 	FxConversionResult,
 	FxConversionSummary,
 	FxUnresolvedItem,
-} from '$lib/currency/models/index.js'
-import type { ParsedTransaction } from '$lib/transactions/models/index.js'
-import { BASE_CURRENCY, toDateKey } from '$lib/utils/currency/index.js'
+} from '$lib/currency/models'
+import type { ParsedTransaction } from '$lib/transactions/models'
+import { BASE_CURRENCY, toDateKey } from '$lib/utils/currency'
 
 const cloneAsTHB = (
 	transaction: ParsedTransaction,

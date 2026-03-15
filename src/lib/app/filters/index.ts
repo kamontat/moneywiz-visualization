@@ -5,25 +5,25 @@ export type {
 	FilterTagMode,
 	TagFilter,
 	TransactionTypeFilterMode,
-} from './models/index.js'
-export { emptyFilterState, hasActiveFilters } from './models/index.js'
+} from './models'
+export { emptyFilterState, hasActiveFilters } from './models'
 export {
 	getDefaultDateRange,
 	loadPersistedDateRange,
 	persistDateRange,
-} from './dateRangePersistence.js'
+} from './dateRangePersistence'
 export {
 	loadPersistedFilterSelection,
 	persistFilterSelection,
-} from './filterSelectionPersistence.js'
-export { filterOptionsState, filterOptionsStore } from './init.js'
-export { byAccount } from './byAccount.js'
-export { byCategory } from './byCategory.js'
-export { byCurrency } from './byCurrency.js'
-export { byDateRange } from './byDateRange.js'
-export { byPayee } from './byPayee.js'
-export { bySpecialCategory } from './bySpecialCategory.js'
-export { byTags } from './byTags.js'
-export { byTransactionType } from './byTransactionType.js'
-export { byTransfer } from './byTransfer.js'
-export { filter, byAND, byOR, byNOT } from './filter.js'
+} from './filterSelectionPersistence'
+export { filterOptionsState, filterOptionsStore } from './init'
+export { byAccount } from './byAccount'
+export { byCategory } from './byCategory'
+export { byCurrency } from './byCurrency'
+export { byDateRange } from './byDateRange'
+export { byPayee } from './byPayee'
+export { bySpecialCategory } from './bySpecialCategory'
+export { byTags } from './byTags'
+export { byTransactionType } from './byTransactionType'
+export { byTransfer } from './byTransfer'
+export { filter, byAND, byOR, byNOT } from './filter'

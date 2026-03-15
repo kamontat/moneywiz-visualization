@@ -1,5 +1,5 @@
-import type { FilterFn } from '../types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { FilterFn } from '../types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 export function byPayee(
 	payees: ReadonlyArray<string>

@@ -1,5 +1,5 @@
-import type { FilterFn, FilterMode } from '../types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { FilterFn, FilterMode } from '../types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 /**
  * Filter transactions by category name.

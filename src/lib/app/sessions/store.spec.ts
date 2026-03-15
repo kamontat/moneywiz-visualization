@@ -11,7 +11,7 @@ import {
 	deriveStatus,
 	deriveTransactionCount,
 	deriveHasData,
-} from './store.js'
+} from './store'
 
 describe('createSessionStore', () => {
 	it('starts with idle status and zero transactions', () => {

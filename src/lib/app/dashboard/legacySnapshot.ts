@@ -1,17 +1,17 @@
-import type { DataAccount } from '$lib/apis/record/accounts/types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
-import type { DataController } from '$lib/app/controllers/dataController.js'
+import type { DataAccount } from '$lib/apis/record/accounts/types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
+import type { DataController } from '$lib/app/controllers/dataController'
 import type {
 	ParsedAccount,
 	ParsedAccountType,
 	ParsedCategory,
 	ParsedTransaction,
-} from '$lib/transactions/models/index.js'
+} from '$lib/transactions/models'
 import { openDB } from 'idb'
 
-import { createRecordApi } from '$lib/apis/record/v1.js'
-import { createDataController } from '$lib/app/controllers/dataController.js'
-import { SnapshotReader } from '$lib/providers/indexdb/snapshot.js'
+import { createRecordApi } from '$lib/apis/record/v1'
+import { createDataController } from '$lib/app/controllers/dataController'
+import { SnapshotReader } from '$lib/providers/indexdb/snapshot'
 
 const DB_NAME = 'moneywiz-v3'
 const DB_VERSION = 1
@@ -33,7 +33,7 @@ export interface LegacyDashboardSnapshot {
 }
 
 async function createSnapshotReader(): Promise<SnapshotReader> {
-	const { IndexdbProvider } = await import('$lib/providers/indexdb/index.js')
+	const { IndexdbProvider } = await import('$lib/providers/indexdb')
 	const engine = openDB(DB_NAME, DB_VERSION, {
 		upgrade(db) {
 			for (const store of STORES) {

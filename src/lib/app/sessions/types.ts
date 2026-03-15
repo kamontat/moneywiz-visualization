@@ -1,5 +1,5 @@
-import type { FilterMode, TagFilter } from '$lib/apis/pipelines/types.js'
-import type { TransactionType } from '$lib/apis/record/transactions/types.js'
+import type { FilterMode, TagFilter } from '$lib/apis/pipelines/types'
+import type { TransactionType } from '$lib/apis/record/transactions/types'
 
 // --- Session State ---
 

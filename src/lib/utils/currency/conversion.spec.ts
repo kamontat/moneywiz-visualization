@@ -4,7 +4,7 @@ import {
 	normalizeCurrencyCode,
 	toDateKey,
 	toFiniteNumber,
-} from './conversion.js'
+} from './conversion'
 
 describe('normalizeCurrencyCode', () => {
 	it('returns BASE_CURRENCY for undefined', () => {

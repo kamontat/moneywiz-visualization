@@ -2,8 +2,8 @@ import type {
 	RawCategoryAssignment,
 	RawTagAssignment,
 	RawTransaction,
-} from './types.js'
-import type { Queriable } from '$lib/types/index.js'
+} from './types'
+import type { Queriable } from '$lib/types'
 
 const APPLE_REFERENCE_EPOCH_MS = Date.UTC(2001, 0, 1)
 

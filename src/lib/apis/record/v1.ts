@@ -1,7 +1,7 @@
-import type { DataAccounts } from './accounts/types.js'
-import type { DataTransactions } from './transactions/types.js'
-import type { SnapshotReader } from '$lib/providers/indexdb/snapshot.js'
-import type { Versionable } from '$lib/types/index.js'
+import type { DataAccounts } from './accounts/types'
+import type { DataTransactions } from './transactions/types'
+import type { SnapshotReader } from '$lib/providers/indexdb/snapshot'
+import type { Versionable } from '$lib/types'
 
 export type RecordGetter<D> = () => Promise<D>
 

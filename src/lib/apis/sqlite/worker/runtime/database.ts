@@ -1,4 +1,4 @@
-import type { Queriable } from '$lib/types/index.js'
+import type { Queriable } from '$lib/types'
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm'
 
 /**

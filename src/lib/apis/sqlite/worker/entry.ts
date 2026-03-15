@@ -1,9 +1,9 @@
-import type { WorkerRequest, WorkerResponse } from '../client/types.js'
-import { handleBootstrap } from './handlers/bootstrap.js'
-import { handleClear } from './handlers/clear.js'
-import { handleQuery } from './handlers/query.js'
-import { handleStatus } from './handlers/status.js'
-import { handleUpload } from './handlers/upload.js'
+import type { WorkerRequest, WorkerResponse } from '../client/types'
+import { handleBootstrap } from './handlers/bootstrap'
+import { handleClear } from './handlers/clear'
+import { handleQuery } from './handlers/query'
+import { handleStatus } from './handlers/status'
+import { handleUpload } from './handlers/upload'
 
 function respond(response: WorkerResponse): void {
 	self.postMessage(response)

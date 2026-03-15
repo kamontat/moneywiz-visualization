@@ -1,12 +1,12 @@
-import type { SqliteRuntime } from './runtime/database.js'
+import type { SqliteRuntime } from './runtime/database'
 import { openDB } from 'idb'
 
-import { IndexdbProvider } from '$lib/providers/indexdb/index.js'
+import { IndexdbProvider } from '$lib/providers/indexdb'
 import {
 	SnapshotReader,
 	SnapshotWriter,
-} from '$lib/providers/indexdb/snapshot.js'
-import { OpfsProvider } from '$lib/providers/opfs/index.js'
+} from '$lib/providers/indexdb/snapshot'
+import { OpfsProvider } from '$lib/providers/opfs'
 
 const DB_NAME = 'moneywiz-v3'
 const DB_VERSION = 1

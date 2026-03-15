@@ -1,5 +1,5 @@
-import type { TransactionType } from '../../types.js'
-import type { ClassificationContext, ClassificationRule } from '../types.js'
+import type { TransactionType } from '../../types'
+import type { ClassificationContext, ClassificationRule } from '../types'
 
 const INCOME_PREFIXES = ['Compensation', 'Other Incomes']
 

@@ -1,5 +1,5 @@
-import type { RawAccount } from './querier/types.js'
-import type { AccountType, DataAccount, DataAccounts } from './types.js'
+import type { RawAccount } from './querier/types'
+import type { AccountType, DataAccount, DataAccounts } from './types'
 
 const ACCOUNT_TYPE_MAP: ReadonlyMap<number, AccountType> = new Map([
 	[12, 'wallet'],

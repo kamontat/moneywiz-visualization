@@ -1,9 +1,9 @@
-import type { CurrencyConverter, RateProviderOptions } from './types.js'
-import { readFxRateCache, writeFxRateCache } from './cache.js'
-import { prepareRateTable, resolveRate } from './rates.js'
+import type { CurrencyConverter, RateProviderOptions } from './types'
+import { readFxRateCache, writeFxRateCache } from './cache'
+import { prepareRateTable, resolveRate } from './rates'
 
-export type { CurrencyConverter } from './types.js'
-export type { DateSpan, FetchLike, RateProviderOptions } from './types.js'
+export type { CurrencyConverter } from './types'
+export type { DateSpan, FetchLike, RateProviderOptions } from './types'
 
 export const createCurrencyConverter = (
 	options: RateProviderOptions = {}

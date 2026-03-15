@@ -1,5 +1,5 @@
-import type { MapFn } from '../types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
+import type { MapFn } from '../types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
 
 export interface CategoryGroup {
 	readonly category: string

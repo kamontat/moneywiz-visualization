@@ -1,10 +1,10 @@
-import type { RawTransaction } from '../querier/types.js'
+import type { RawTransaction } from '../querier/types'
 import type {
 	DataTransaction,
 	DataTransactions,
 	TransactionType,
-} from '../types.js'
-import type { ClassificationContext, ClassificationRule } from './types.js'
+} from '../types'
+import type { ClassificationContext, ClassificationRule } from './types'
 import {
 	debtRepaymentRule,
 	debtRule,
@@ -22,7 +22,7 @@ import {
 	transferWithCategoryRule,
 	unknownRule,
 	windfallRule,
-} from './rules/priority.js'
+} from './rules/priority'
 
 const APPLE_REFERENCE_EPOCH_MS = Date.UTC(2001, 0, 1)
 const DEFAULT_CURRENCY = 'THB'

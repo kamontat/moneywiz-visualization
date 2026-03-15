@@ -1,4 +1,4 @@
-import type { DataRecord } from '$lib/types/index.js'
+import type { DataRecord } from '$lib/types'
 
 export type TransactionType =
 	| 'income'

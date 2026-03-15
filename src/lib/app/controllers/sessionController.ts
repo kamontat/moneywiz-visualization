@@ -5,10 +5,10 @@ import type {
 	SqliteApiV1,
 	SqliteSourceMetadata,
 	UploadProgress,
-} from '$lib/apis/sqlite/index.js'
-import type { SessionStore } from '$lib/app/sessions/store.js'
-import type { SourceBackend, SourceMetadata } from '$lib/app/sessions/types.js'
-import { createWorkerClient } from '$lib/apis/sqlite/index.js'
+} from '$lib/apis/sqlite'
+import type { SessionStore } from '$lib/app/sessions/store'
+import type { SourceBackend, SourceMetadata } from '$lib/app/sessions/types'
+import { createWorkerClient } from '$lib/apis/sqlite'
 
 export type SessionProgressCallback = OnProgress<
 	BootstrapProgress | UploadProgress

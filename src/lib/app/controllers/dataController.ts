@@ -1,11 +1,11 @@
-import type { DataAccount } from '$lib/apis/record/accounts/types.js'
-import type { DataTransaction } from '$lib/apis/record/transactions/types.js'
-import type { RecordApiV1 } from '$lib/apis/record/v1.js'
+import type { DataAccount } from '$lib/apis/record/accounts/types'
+import type { DataTransaction } from '$lib/apis/record/transactions/types'
+import type { RecordApiV1 } from '$lib/apis/record/v1'
 import type {
 	FilterState,
 	FilterOptions,
 	Analytics,
-} from '$lib/app/sessions/types.js'
+} from '$lib/app/sessions/types'
 import {
 	byDateRange,
 	byTransactionType,
@@ -13,12 +13,12 @@ import {
 	byPayee,
 	byAccount,
 	byTags,
-} from '$lib/apis/pipelines/filters/index.js'
+} from '$lib/apis/pipelines/filters'
 import {
 	calculateNetIncome,
 	type NetIncome,
-} from '$lib/apis/pipelines/reduces/calculateNetIncome.js'
-import { calculateSavingsRate } from '$lib/apis/pipelines/reduces/calculateSavingsRate.js'
+} from '$lib/apis/pipelines/reduces/calculateNetIncome'
+import { calculateSavingsRate } from '$lib/apis/pipelines/reduces/calculateSavingsRate'
 
 export interface DataController {
 	readonly name: 'data'

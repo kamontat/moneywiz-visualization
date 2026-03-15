@@ -1,2 +1,2 @@
-export { classifyTransactions } from './classify.js'
-export type { ClassificationContext, ClassificationRule } from './types.js'
+export { classifyTransactions } from './classify'
+export type { ClassificationContext, ClassificationRule } from './types'

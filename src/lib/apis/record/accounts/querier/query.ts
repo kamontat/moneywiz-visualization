@@ -1,5 +1,5 @@
-import type { RawAccount } from './types.js'
-import type { Queriable } from '$lib/types/index.js'
+import type { RawAccount } from './types'
+import type { Queriable } from '$lib/types'
 
 const ACCOUNTS_SQL = `
   SELECT

@@ -1,13 +1,13 @@
-export { classifyTransactions } from './classifier/index.js'
+export { classifyTransactions } from './classifier'
 export type {
 	ClassificationContext,
 	ClassificationRule,
-} from './classifier/index.js'
-export { queryTransactions } from './querier/index.js'
-export type { RawTransaction } from './querier/index.js'
+} from './classifier'
+export { queryTransactions } from './querier'
+export type { RawTransaction } from './querier'
 export type {
 	DataBaseTransaction,
 	DataTransaction,
 	DataTransactions,
 	TransactionType,
-} from './types.js'
+} from './types'

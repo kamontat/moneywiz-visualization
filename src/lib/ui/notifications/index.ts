@@ -3,4 +3,4 @@ export {
 	pushNotification,
 	dismissNotification,
 	clearNotifications,
-} from '$lib/notifications/index.js'
+} from '$lib/notifications'

@@ -1,8 +1,8 @@
-import type { CashFlowDashboard, NetWorthSummary, StatsRange } from './types.js'
+import type { CashFlowDashboard, NetWorthSummary, StatsRange } from './types'
 import type {
 	ParsedTransaction,
 	ParsedTransactionType,
-} from '$lib/transactions/models/index.js'
+} from '$lib/transactions/models'
 import {
 	byCategoryBubble,
 	byCategoryVolatility,
@@ -20,7 +20,7 @@ import {
 	byTopPayeesPerCategory,
 	toNetWorthSummary,
 	transform,
-} from './transforms/index.js'
+} from './transforms'
 
 export interface OverviewExpenseDriver {
 	rank: number

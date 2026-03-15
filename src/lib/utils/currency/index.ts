@@ -3,9 +3,9 @@ export {
 	FX_CACHE_VERSION,
 	FX_PROVIDER,
 	FX_PROVIDER_BASE_URL,
-} from './constants.js'
+} from './constants'
 export {
 	normalizeCurrencyCode,
 	toDateKey,
 	toFiniteNumber,
-} from './conversion.js'
+} from './conversion'

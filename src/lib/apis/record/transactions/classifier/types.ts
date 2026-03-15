@@ -1,5 +1,5 @@
-import type { RawTransaction } from '../querier/types.js'
-import type { TransactionType } from '../types.js'
+import type { RawTransaction } from '../querier/types'
+import type { TransactionType } from '../types'
 
 export interface ClassificationContext {
 	readonly raw: RawTransaction

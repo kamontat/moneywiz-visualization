@@ -1,4 +1,4 @@
-import type { Versionable } from '$lib/types/index.js'
+import type { Versionable } from '$lib/types'
 
 export class OpfsProvider implements Versionable<'opfs', 1> {
 	readonly name = 'opfs' as const

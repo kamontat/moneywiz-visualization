@@ -1,4 +1,4 @@
-import { BASE_CURRENCY } from './constants.js'
+import { BASE_CURRENCY } from './constants'
 
 export const normalizeCurrencyCode = (
 	currency: string | undefined | null
