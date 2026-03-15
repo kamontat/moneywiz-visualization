@@ -93,4 +93,5 @@ bun run test:e2e     # Playwright e2e tests
 - `data/` is local-only and gitignored.
 - Do not depend on `static/data` or `static/database` in runtime/tests.
 - Use generated fixtures for tests.
-- Two IndexedDB databases: `v1:app-db` (settings), `moneywiz-v3` (transactions).
+- IndexedDB `moneywiz-v3` stores imported transaction data (manifest, meta, transactions).
+- App settings (theme, filter options, FX rate cache, DB metadata) use `LocalStorageProvider` in `$lib/providers/localstorage`.
