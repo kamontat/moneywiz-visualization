@@ -1,7 +1,7 @@
+import type { MoneyWizRecord } from './utils/sqlite-generator'
 import { test, expect } from '@playwright/test'
 
 import { generateSQLite, defaultRecord } from './utils/sqlite-generator'
-import type { MoneyWizRecord } from './utils/sqlite-generator'
 
 test.describe('Database Upload - Edge Cases', () => {
 	test.beforeEach(async ({ page }) => {
