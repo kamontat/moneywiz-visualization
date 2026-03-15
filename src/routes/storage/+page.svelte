@@ -82,10 +82,39 @@
 					({ name }) =>
 						new Promise<void>((resolve, reject) => {
 							if (!name) return resolve()
+
 							const req = indexedDB.deleteDatabase(name)
-							req.onsuccess = () => resolve()
-							req.onerror = () => reject(req.error)
-							req.onblocked = () => resolve()
+							let resolved = false
+
+							const timeout = setTimeout(() => {
+								// If deletion takes too long (likely blocked indefinitely),
+								// resolve anyway since we've cleared localStorage
+								// The database will be marked for deletion
+								if (!resolved) {
+									resolved = true
+									resolve()
+								}
+							}, 2000)
+
+							req.onsuccess = () => {
+								if (!resolved) {
+									clearTimeout(timeout)
+									resolved = true
+									resolve()
+								}
+							}
+
+							req.onerror = () => {
+								if (!resolved) {
+									clearTimeout(timeout)
+									resolved = true
+									reject(req.error)
+								}
+							}
+
+							req.onblocked = () => {
+								// Blocked - do nothing, wait for timeout or success
+							}
 						})
 				)
 			)
