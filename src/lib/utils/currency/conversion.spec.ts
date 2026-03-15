@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-	normalizeCurrencyCode,
-	toDateKey,
-	toFiniteNumber,
-} from './conversion'
+import { normalizeCurrencyCode, toDateKey, toFiniteNumber } from './conversion'
 
 describe('normalizeCurrencyCode', () => {
 	it('returns BASE_CURRENCY for undefined', () => {

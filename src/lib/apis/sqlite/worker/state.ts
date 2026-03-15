@@ -2,10 +2,7 @@ import type { SqliteRuntime } from './runtime/database'
 import { openDB } from 'idb'
 
 import { IndexdbProvider } from '$lib/providers/indexdb'
-import {
-	SnapshotReader,
-	SnapshotWriter,
-} from '$lib/providers/indexdb/snapshot'
+import { SnapshotReader, SnapshotWriter } from '$lib/providers/indexdb/snapshot'
 import { OpfsProvider } from '$lib/providers/opfs'
 
 const DB_NAME = 'moneywiz-v3'

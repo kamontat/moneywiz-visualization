@@ -1,10 +1,7 @@
 import type { DataAccounts } from '$lib/apis/record/accounts/types'
 import type { DataTransactions } from '$lib/apis/record/transactions/types'
 import type { Queriable } from '$lib/types'
-import {
-	classifyAccounts,
-	queryAccounts,
-} from '$lib/apis/record/accounts'
+import { classifyAccounts, queryAccounts } from '$lib/apis/record/accounts'
 import { classifyTransactions } from '$lib/apis/record/transactions/classifier'
 import { queryTransactions } from '$lib/apis/record/transactions/querier'
 

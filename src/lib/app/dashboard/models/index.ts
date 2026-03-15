@@ -12,11 +12,7 @@ export type {
 } from './categoryTree'
 export type { Summarize, SummarizeDateRange } from './summarize'
 export type { TopCategoryTotal } from './topCategoryTotal'
-export type {
-	TimeSeries,
-	TimeSeriesMode,
-	TimeSeriesPoint,
-} from './timeSeries'
+export type { TimeSeries, TimeSeriesMode, TimeSeriesPoint } from './timeSeries'
 export type {
 	PayeeSpendAnalysis,
 	PayeeSpendPoint,

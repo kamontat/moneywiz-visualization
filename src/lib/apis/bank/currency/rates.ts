@@ -1,12 +1,6 @@
 import type { DateSpan, FetchLike, RateProviderOptions } from './types'
-import type {
-	FxRateCacheState,
-	FxRateTable,
-} from '$lib/currency/models'
-import {
-	createEmptyFxRateCacheState,
-	normalizeFxRateCacheState,
-} from './cache'
+import type { FxRateCacheState, FxRateTable } from '$lib/currency/models'
+import { createEmptyFxRateCacheState, normalizeFxRateCacheState } from './cache'
 
 import {
 	BASE_CURRENCY,

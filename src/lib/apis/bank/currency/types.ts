@@ -1,7 +1,4 @@
-import type {
-	FxRateCacheState,
-	FxRateTable,
-} from '$lib/currency/models'
+import type { FxRateCacheState, FxRateTable } from '$lib/currency/models'
 
 export interface DateSpan {
 	readonly start: string

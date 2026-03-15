@@ -4,8 +4,4 @@ export {
 	FX_PROVIDER,
 	FX_PROVIDER_BASE_URL,
 } from './constants'
-export {
-	normalizeCurrencyCode,
-	toDateKey,
-	toFiniteNumber,
-} from './conversion'
+export { normalizeCurrencyCode, toDateKey, toFiniteNumber } from './conversion'

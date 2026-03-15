@@ -6,9 +6,5 @@ export type { FilterOptions } from './options'
 export type { FilterTags, FilterTagMode } from './tags'
 export type { FilterAccount } from './account'
 export type { FilterPayee } from './payee'
-export type {
-	FilterState,
-	TagFilter,
-	TransactionTypeFilterMode,
-} from './state'
+export type { FilterState, TagFilter, TransactionTypeFilterMode } from './state'
 export { emptyFilterState, hasActiveFilters } from './state'
