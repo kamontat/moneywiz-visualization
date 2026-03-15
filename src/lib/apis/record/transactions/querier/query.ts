@@ -109,11 +109,12 @@ const TAGS_SQL = `
 `
 
 function parseTag(tagName: string): { category: string; name: string } {
-	const sep = tagName.indexOf(': ')
+	const normalized = tagName.replace(/:\s/g, ': ')
+	const sep = normalized.indexOf(': ')
 	if (sep === -1) return { category: '', name: tagName }
 
-	let category = tagName.slice(0, sep)
-	const name = tagName.slice(sep + 2)
+	let category = normalized.slice(0, sep)
+	const name = normalized.slice(sep + 2)
 
 	if (category === 'Zvent') category = 'Event'
 
