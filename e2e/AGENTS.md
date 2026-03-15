@@ -15,7 +15,7 @@
 ## Reference Docs (Required)
 
 - For SQLite/database condition changes in tests or fixtures, check
-  [docs/DATA_SCHEMA.md](../docs/DATA_SCHEMA.md) first.
+  [docs/schema/README.md](../docs/schema/README.md) first.
 
 ## Patterns
 

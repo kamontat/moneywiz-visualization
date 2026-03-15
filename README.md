@@ -12,7 +12,7 @@ Static SvelteKit app for visualizing MoneyWiz SQLite exports.
 ## Documentation
 
 - Agent/project guide: [AGENTS.md](AGENTS.md)
-- Data schema & parser rules: [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md)
+- Data schema & parser rules: [docs/schema/README.md](docs/schema/README.md)
 
 ## Quick start
 

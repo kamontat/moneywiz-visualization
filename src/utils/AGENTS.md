@@ -37,4 +37,4 @@ utils/
 For SQLite/database behavior impacts, check:
 
 - `../../docs/ARCHITECTURE.md`
-- `../../docs/DATA_SCHEMA.md`
+- `../../docs/schema/README.md`

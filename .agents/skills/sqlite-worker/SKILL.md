@@ -11,7 +11,7 @@ Use this skill when modifying anything under `src/lib/source/sqlite/worker/`.
 
 1. Read `references/ingestion-pipeline.md` for the full pipeline sequence.
 2. Read `references/worker-protocol.md` for request/response schemas.
-3. Read `docs/DATA_SCHEMA.md` for entity mapping and classification rules.
+3. Read `docs/schema/README.md` for entity mapping and classification rules.
 
 ## 2) Understand the pipeline
 

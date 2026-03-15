@@ -72,4 +72,4 @@ feature/
 Before changing SQLite logic, read:
 
 - `../../docs/ARCHITECTURE.md`
-- `../../docs/DATA_SCHEMA.md`
+- `../../docs/schema/README.md`

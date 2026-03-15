@@ -9,7 +9,7 @@ Use this workflow for any SQLite-related data task.
 
 ## 1) Read required project docs first
 
-1. Read `docs/DATA_SCHEMA.md`.
+1. Read `docs/schema/README.md`.
 2. Record relevant entities, join keys, and classification constraints before editing code.
 
 ## 2) Inspect real database content
@@ -79,4 +79,4 @@ Include:
 ## References
 
 - Workflow checklist: `references/sqlite-workflow.md`
-- Data schema & parser rules: `docs/DATA_SCHEMA.md`
+- Data schema & parser rules: `docs/schema/README.md`

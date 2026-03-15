@@ -50,7 +50,7 @@ src/
 ## REQUIRED REFERENCE DOCS
 
 - `docs/ARCHITECTURE.md` — module boundaries, dependency rules, storage model, file splitting standard
-- `docs/DATA_SCHEMA.md` — SQLite schema, data parser rules, SQL queries
+- `docs/schema/README.md` — SQLite schema, data parser rules, SQL queries
 
 ## COMMANDS
 

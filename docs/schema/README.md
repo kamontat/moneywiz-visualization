@@ -34,7 +34,7 @@ This directory contains split, comprehensive reference documentation for MoneyWi
 
 ## Purpose
 
-These sections are extracted and reorganized from the consolidated `docs/DATA_SCHEMA.md` (1007 lines) to enable:
+These sections are extracted and reorganized from the original consolidated schema (1007 lines) to enable:
 
 1. **Modular updates**: Each section can be maintained and versioned independently
 2. **Clear navigation**: Developers can jump directly to relevant documentation
@@ -47,10 +47,9 @@ These sections are extracted and reorganized from the consolidated `docs/DATA_SC
 
 - See [AGENTS.md](../../AGENTS.md) for project architecture and hard rules
 - See [ARCHITECTURE.md](../ARCHITECTURE.md) for module boundaries and dependency direction
-- See `docs/DATA_SCHEMA.md` (consolidated source) for the complete reference
 
 ---
 
 ## Status
 
-✅ **Content migrated.** All sections populated from `docs/DATA_SCHEMA.md` (1007 lines split into 4 modular files).
+✅ **Content migrated.** All sections split from original schema into 4 modular files.
