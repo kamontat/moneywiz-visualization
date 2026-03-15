@@ -28,56 +28,44 @@ const createTestState = () => ({
 	}),
 })
 
-const createMockDB = () => {
+const createMockStorage = () => {
 	const storage = new Map<string, unknown>()
 	return {
-		type: 'mock',
-		name: 'test' as const,
-		version: 1 as const,
-		triggerName: 'mock-trigger:test',
 		available: vi.fn(() => true),
-		get: vi.fn(async (_t: string, _k: string) => storage.get('test-key')),
-		set: vi.fn(async (_t: string, _k: string, v: unknown) => {
+		get: vi.fn(() => storage.get('test-key')),
+		set: vi.fn(async (v: unknown) => {
 			storage.set('test-key', v)
 		}),
-		delete: vi.fn(async (..._args: unknown[]) => {}),
-		trigger: vi.fn(),
-		onChange: vi.fn(),
-		onChangeByKey: vi.fn(),
+		del: vi.fn(async () => {}),
 		_storage: storage,
 	}
 }
 
-type MockDB = ReturnType<typeof createMockDB>
+type MockStorage = ReturnType<typeof createMockStorage>
 
-const createStore = (db: MockDB) => {
+const createStore = (mock: MockStorage) => {
 	const state = createTestState()
 	const log = mockLog()
 
-	return newStore(db as never, state, {
+	return newStore(state, {
+		available: mock.available,
+		get: mock.get as () => TestState | null | undefined,
+		set: mock.set as (val: TestState) => Promise<void>,
+		del: mock.del,
 		log,
-		get: async (d: never) =>
-			(d as MockDB).get('table', 'key') as Promise<
-				TestState | null | undefined
-			>,
-		set: async (d: never, val: TestState) =>
-			(d as MockDB).set('table', 'key', val) as Promise<void>,
-		del: async (d: never) => {
-			await (d as MockDB).delete('table' as never)
-		},
 	})
 }
 
 describe('newStore', () => {
-	let db: MockDB
+	let mock: MockStorage
 
 	beforeEach(() => {
-		db = createMockDB()
+		mock = createMockStorage()
 	})
 
 	describe('subscribe', () => {
 		it('should provide initial empty value to subscriber', () => {
-			const store = createStore(db)
+			const store = createStore(mock)
 			let received: TestState | undefined
 
 			const unsub = store.subscribe((v) => {
@@ -89,7 +77,7 @@ describe('newStore', () => {
 		})
 
 		it('should notify subscribers on set', async () => {
-			const store = createStore(db)
+			const store = createStore(mock)
 			const values: TestState[] = []
 
 			const unsub = store.subscribe((v) => {
@@ -108,7 +96,7 @@ describe('newStore', () => {
 
 	describe('setAsync', () => {
 		it('should normalize value before storing', async () => {
-			const store = createStore(db)
+			const store = createStore(mock)
 			await store.setAsync({ value: 'test' })
 
 			let current: TestState | undefined
@@ -120,18 +108,18 @@ describe('newStore', () => {
 			unsub()
 		})
 
-		it('should persist to database', async () => {
-			const store = createStore(db)
+		it('should persist to storage', async () => {
+			const store = createStore(mock)
 			await store.setAsync({ value: 'persisted' })
 
-			expect(db.set).toHaveBeenCalledWith('table', 'key', {
+			expect(mock.set).toHaveBeenCalledWith({
 				value: 'persisted',
 			})
 		})
 
-		it('should still update store even if DB persistence fails', async () => {
-			db.set.mockRejectedValueOnce(new Error('DB write failed'))
-			const store = createStore(db)
+		it('should still update store even if storage persistence fails', async () => {
+			mock.set.mockRejectedValueOnce(new Error('storage write failed'))
+			const store = createStore(mock)
 
 			await store.setAsync({ value: 'despite-error' })
 
@@ -143,9 +131,9 @@ describe('newStore', () => {
 			unsub()
 		})
 
-		it('should resolve even when DB persistence fails', async () => {
-			db.set.mockRejectedValueOnce(new Error('DB write failed'))
-			const store = createStore(db)
+		it('should resolve even when storage persistence fails', async () => {
+			mock.set.mockRejectedValueOnce(new Error('storage write failed'))
+			const store = createStore(mock)
 
 			await expect(
 				store.setAsync({ value: 'should-resolve' })
@@ -155,7 +143,7 @@ describe('newStore', () => {
 
 	describe('updateAsync', () => {
 		it('should update value based on current state', async () => {
-			const store = createStore(db)
+			const store = createStore(mock)
 			await store.setAsync({ value: 'initial' })
 
 			await store.updateAsync((current) => ({
@@ -170,42 +158,39 @@ describe('newStore', () => {
 			unsub()
 		})
 
-		it('should persist to database on value change', async () => {
-			const store = createStore(db)
-			db.set.mockClear()
+		it('should persist to storage on value change', async () => {
+			const store = createStore(mock)
+			mock.set.mockClear()
 
 			await store.updateAsync(() => ({ value: 'new-value' }))
 
-			expect(db.set).toHaveBeenCalledWith('table', 'key', {
+			expect(mock.set).toHaveBeenCalledWith({
 				value: 'new-value',
 			})
 		})
 
-		it('should skip DB persistence when value is equal', async () => {
-			const store = createStore(db)
+		it('should skip storage persistence when value is equal', async () => {
+			const store = createStore(mock)
 			await store.setAsync({ value: 'same' })
-			db.set.mockClear()
+			mock.set.mockClear()
 
-			// BUG (Phase 2.1): updateAsync never settles when equal
-			// because it skips the ctx.set call and the promise never resolves.
-			// For now, we verify the non-equal path works.
 			await store.updateAsync(() => ({ value: 'different' }))
-			expect(db.set).toHaveBeenCalledTimes(1)
+			expect(mock.set).toHaveBeenCalledTimes(1)
 		})
 
-		it('should reject when DB persistence fails on changed value', async () => {
-			const store = createStore(db)
-			db.set.mockRejectedValueOnce(new Error('DB error'))
+		it('should reject when storage persistence fails on changed value', async () => {
+			const store = createStore(mock)
+			mock.set.mockRejectedValueOnce(new Error('storage error'))
 
 			await expect(
 				store.updateAsync(() => ({ value: 'will-fail' }))
-			).rejects.toThrow('DB error')
+			).rejects.toThrow('storage error')
 		})
 	})
 
 	describe('resetAsync', () => {
 		it('should reset store to empty value', async () => {
-			const store = createStore(db)
+			const store = createStore(mock)
 			await store.setAsync({ value: 'has-data' })
 
 			await store.resetAsync()
@@ -218,18 +203,18 @@ describe('newStore', () => {
 			unsub()
 		})
 
-		it('should call delete on database', async () => {
-			const store = createStore(db)
+		it('should call delete on storage', async () => {
+			const store = createStore(mock)
 			await store.resetAsync()
 
-			expect(db.delete).toHaveBeenCalled()
+			expect(mock.del).toHaveBeenCalled()
 		})
 	})
 
-	describe('initial DB load', () => {
-		it('should load initial value from database when available', async () => {
-			db._storage.set('test-key', { value: 'from-db' })
-			const store = createStore(db)
+	describe('initial storage load', () => {
+		it('should load initial value from storage when available', async () => {
+			mock._storage.set('test-key', { value: 'from-db' })
+			const store = createStore(mock)
 
 			// Wait for async initial load
 			await new Promise((r) => setTimeout(r, 10))
@@ -242,9 +227,9 @@ describe('newStore', () => {
 			unsub()
 		})
 
-		it('should keep empty value when database returns null', async () => {
-			db.get.mockResolvedValueOnce(null)
-			const store = createStore(db)
+		it('should keep empty value when storage returns null', async () => {
+			mock.get.mockReturnValueOnce(null)
+			const store = createStore(mock)
 
 			await new Promise((r) => setTimeout(r, 10))
 
@@ -256,13 +241,13 @@ describe('newStore', () => {
 			unsub()
 		})
 
-		it('should not load from DB when unavailable', async () => {
-			db.available.mockReturnValue(false)
-			const store = createStore(db)
+		it('should not load from storage when unavailable', async () => {
+			mock.available.mockReturnValue(false)
+			const store = createStore(mock)
 
 			await new Promise((r) => setTimeout(r, 10))
 
-			expect(db.get).not.toHaveBeenCalled()
+			expect(mock.get).not.toHaveBeenCalled()
 
 			let current: TestState | undefined
 			const unsub = store.subscribe((v) => {
@@ -275,7 +260,7 @@ describe('newStore', () => {
 
 	describe('updateAsync equal-value settlement', () => {
 		it('updateAsync should resolve when value is unchanged', async () => {
-			const store = createStore(db)
+			const store = createStore(mock)
 			await store.setAsync({ value: 'same' })
 
 			const result = Promise.race([

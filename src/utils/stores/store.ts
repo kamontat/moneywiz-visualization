@@ -3,26 +3,18 @@ import type {
 	StoreContext,
 	StoreResetAsyncFn,
 	StoreResetFn,
-	StoreSchema,
 	StoreSetAsyncFn,
 	StoreSetFn,
 	StoreSubscribeFn,
 	StoreUpdateAsyncFn,
 	StoreUpdateFn,
 } from './models'
-import type { Database } from '$utils/db/models'
 import type { AnyState, StateValue } from '$utils/states/models'
-import type { ToKey } from '$utils/types'
 import { writable } from 'svelte/store'
 
-export const newStore = <
-	Name extends ToKey<StoreSchema>,
-	DB extends Database<Name, StoreSchema[Name]>,
-	S extends AnyState,
->(
-	db: DB,
+export const newStore = <S extends AnyState>(
 	state: S,
-	ctx: StoreContext<DB, StateValue<S>>
+	ctx: StoreContext<StateValue<S>>
 ): Store<StateValue<S>> => {
 	const {
 		set: _set,
@@ -42,10 +34,10 @@ export const newStore = <
 		const next = state.normalize(value)
 
 		try {
-			await Promise.resolve(ctx.set(db, next))
-			ctx.log.debug('persist state on %s', db.type)
+			await Promise.resolve(ctx.set(next))
+			ctx.log.debug('persist state')
 		} catch (err) {
-			ctx.log.warn('failed to persist state on %s:', db.type, err)
+			ctx.log.warn('failed to persist state:', err)
 		}
 		return _set(next)
 	}
@@ -59,13 +51,13 @@ export const newStore = <
 			_update((current) => {
 				const next = state.normalize(updater(current))
 				if (!state.equal(next, current)) {
-					Promise.resolve(ctx.set(db, next))
+					Promise.resolve(ctx.set(next))
 						.then(() => {
-							ctx.log.debug('persist state on %s', db.type)
+							ctx.log.debug('persist state')
 							res()
 						})
 						.catch((err) => {
-							ctx.log.warn('failed to persist state on %s:', db.type, err)
+							ctx.log.warn('failed to persist state:', err)
 							rej(err)
 						})
 				} else {
@@ -82,7 +74,7 @@ export const newStore = <
 
 	const resetAsync: StoreResetAsyncFn = async () => {
 		ctx.log.debug('resetting store')
-		await ctx.del(db)
+		await ctx.del()
 		return _set(state.empty)
 	}
 
@@ -90,11 +82,11 @@ export const newStore = <
 		resetAsync()
 	}
 
-	// Load initial value from database
-	if (db.available()) {
-		Promise.resolve(ctx.get(db)).then((val) => {
+	// Load initial value from storage
+	if (ctx.available()) {
+		Promise.resolve(ctx.get()).then((val) => {
 			if (val !== null && val !== undefined) {
-				ctx.log.debug('set initiate value from database')
+				ctx.log.debug('set initiate value from storage')
 				_set(val)
 			}
 		})

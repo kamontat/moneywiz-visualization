@@ -1,18 +1,11 @@
 import type { FxRateCacheState } from './models'
-import type { GetSchemaValue } from '$utils/db/models'
 import type { StateEqualFn, StateNormalizeFn } from '$utils/states/models'
-import type { STATE_FX_RATE_CACHE_V1 } from '$utils/stores'
-import type { StoreSchema } from '$utils/stores/models'
 import { createEmptyFxRateCacheState } from './constants'
 
 import { libs } from '$lib/loggers'
 import { newEmptyState, newState } from '$utils/states'
 
-export type FxRateCacheStoreState = GetSchemaValue<
-	StoreSchema['v1:app-db'],
-	typeof STATE_FX_RATE_CACHE_V1,
-	'default'
->
+export type FxRateCacheStoreState = FxRateCacheState
 
 const log = libs.extends('currency.state')
 

@@ -1,18 +1,12 @@
-import type { GetSchemaValue } from '$utils/db/models'
+import type { ParsedTheme } from './models'
 import type { StateEqualFn, StateNormalizeFn } from '$utils/states/models'
-import type { STATE_THEME_V1 } from '$utils/stores'
-import type { StoreSchema } from '$utils/stores/models'
 import { MediaQuery } from 'svelte/reactivity'
 
 import { themeMap } from './constants'
 
 import { newEmptyState, newState } from '$utils/states'
 
-export type ThemeState = GetSchemaValue<
-	StoreSchema['v1:app-db'],
-	typeof STATE_THEME_V1,
-	'default'
->
+export type ThemeState = ParsedTheme
 
 const resolveSystemTheme = () => {
 	const mq = new MediaQuery('(prefers-color-scheme: dark)')

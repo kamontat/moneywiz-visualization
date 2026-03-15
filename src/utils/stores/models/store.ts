@@ -1,24 +1,14 @@
 import type { Writable } from 'svelte/store'
-import type { StoreSchema } from './schema'
 import type { Log } from '$lib/loggers/models'
-import type { AnyDatabase } from '$utils/db/models'
 import type { PromiseOrVal } from '$utils/types'
 
-/** Get value from database */
-export type StorageGetFn<DB extends AnyDatabase<StoreSchema>, O> = (
-	database: DB
-) => PromiseOrVal<O | null | undefined>
-
-/** Set value to database */
-export type StorageSetFn<DB extends AnyDatabase<StoreSchema>, O> = (
-	database: DB,
-	value: O
-) => PromiseOrVal<void>
-
-/** Delete value from database */
-export type StorageDelFn<DB extends AnyDatabase<StoreSchema>> = (
-	database: DB
-) => PromiseOrVal<void>
+export type StoreContext<O> = {
+	available: () => boolean
+	get: () => PromiseOrVal<O | null | undefined>
+	set: (value: O) => PromiseOrVal<void>
+	del: () => PromiseOrVal<void>
+	log: Log<string, string>
+}
 
 export type StoreSubscribeFn<O> = Writable<O>['subscribe']
 
@@ -34,16 +24,6 @@ export type StoreUpdateAsyncFn<O> = (
 
 export type StoreResetFn = () => void
 export type StoreResetAsyncFn = () => Promise<void>
-
-export type StoreContext<DB extends AnyDatabase<StoreSchema>, O> = {
-	/** Get state */
-	get: StorageGetFn<DB, O>
-	/** Set state */
-	set: StorageSetFn<DB, O>
-	/** Delete state */
-	del: StorageDelFn<DB>
-	log: Log<string, string>
-}
 
 export interface Store<O> {
 	subscribe: StoreSubscribeFn<O>
