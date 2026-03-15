@@ -53,4 +53,4 @@ These sections are extracted and reorganized from the consolidated `docs/DATA_SC
 
 ## Status
 
-⚠️ **Placeholder structure.** Content will be populated from `docs/DATA_SCHEMA.md` in Task 4.
+✅ **Content migrated.** All sections populated from `docs/DATA_SCHEMA.md` (1007 lines split into 4 modular files).

@@ -1,15 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireTrigger, listenForChanges, listenForChangesByKey } from './trigger'
+import type { ISchemaDB, ISchemaState, ISchemaTable } from './models'
 import type { TriggerContext } from './trigger'
-import type {
-	AnySchemaTable,
-	DBFullName,
-	ISchemaDB,
-	ISchemaState,
-	ISchemaTable,
-} from './models'
-import { Log } from '$lib/loggers/models'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { MemoryStorage } from './__tests__/test-helpers'
+import { fireTrigger, listenForChanges, listenForChangesByKey } from './trigger'
+
+import { Log } from '$lib/loggers/models'
 
 type TestTableSchema = ISchemaTable<
 	'items',
