@@ -1,4 +1,4 @@
-import type { ChartConfiguration } from 'chart'
+import type { ChartConfiguration } from 'chart.js'
 import type { PayeeCashFlowEntry } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '$lib/charts/theme'
 

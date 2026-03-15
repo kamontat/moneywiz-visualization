@@ -1,4 +1,4 @@
-import type { ChartData } from 'chart'
+import type { ChartData } from 'chart.js'
 import type { PayeeSpendSeries, PayeeSpendTotal } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '../theme'
 

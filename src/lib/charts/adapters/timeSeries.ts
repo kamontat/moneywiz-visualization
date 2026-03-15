@@ -1,4 +1,4 @@
-import type { ChartConfiguration, ChartData } from 'chart'
+import type { ChartConfiguration, ChartData } from 'chart.js'
 import type { TimeSeries } from '$lib/app/dashboard'
 import { getThemeColors, withAlpha } from '../theme'
 

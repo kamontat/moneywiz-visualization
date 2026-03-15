@@ -1,4 +1,4 @@
-import type { ChartData } from 'chart'
+import type { ChartData } from 'chart.js'
 import type { CategoryTotal, TopCategoryTotal } from '$lib/app/dashboard'
 import type { ParsedTransactionType } from '$lib/transactions/models'
 import { getCategoryPalette } from '../theme'

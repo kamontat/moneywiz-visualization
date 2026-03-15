@@ -1,4 +1,4 @@
-import type { ChartConfiguration } from 'chart'
+import type { ChartConfiguration } from 'chart.js'
 import type {
 	CalendarCell,
 	CategoryBubblePoint,
