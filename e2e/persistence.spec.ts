@@ -285,7 +285,7 @@ test.describe('Data Persistence - IndexedDB', () => {
 		await confirmButton.click()
 
 		await expect(
-			page.getByText('All browser storage data has been cleared successfully')
+			page.getByText('All browser storage data has been cleared. Reloading page...')
 		).toBeVisible({ timeout: 5000 })
 
 		await page.goto('/')
