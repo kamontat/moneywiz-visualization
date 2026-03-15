@@ -81,9 +81,7 @@ test.describe('Database Upload - Edge Cases', () => {
 	})
 
 	test.describe('Re-upload Behavior', () => {
-		test('re-uploads different data and replaces existing data', async ({
-			page,
-		}) => {
+		test('clear and re-upload different data', async ({ page }) => {
 			const firstBuffer = generateSQLite({
 				transactions: [
 					{
@@ -106,6 +104,15 @@ test.describe('Database Upload - Edge Cases', () => {
 
 			await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
+			const clearButton = page.getByRole('button', {
+				name: 'Clear loaded database',
+			})
+			await expect(clearButton).toBeVisible()
+			await clearButton.click()
+			await expect(
+				page.getByText('Database cleared successfully')
+			).toBeVisible()
+
 			const secondBuffer = generateSQLite({
 				transactions: [
 					{
@@ -123,9 +130,6 @@ test.describe('Database Upload - Edge Cases', () => {
 				],
 			})
 
-			await page.reload()
-			await page.waitForLoadState('networkidle')
-
 			const fileInput2 = page.locator('input[type="file"]').first()
 			await fileInput2.waitFor({ state: 'attached' })
 
@@ -140,7 +144,9 @@ test.describe('Database Upload - Edge Cases', () => {
 			await expect(page.locator('table')).toBeVisible()
 		})
 
-		test('re-uploads larger database after smaller one', async ({ page }) => {
+		test('clear and upload larger database after smaller one', async ({
+			page,
+		}) => {
 			const smallBuffer = generateSQLite({
 				transactions: [defaultRecord],
 			})
@@ -156,6 +162,15 @@ test.describe('Database Upload - Edge Cases', () => {
 
 			await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
 
+			const clearButton = page.getByRole('button', {
+				name: 'Clear loaded database',
+			})
+			await expect(clearButton).toBeVisible()
+			await clearButton.click()
+			await expect(
+				page.getByText('Database cleared successfully')
+			).toBeVisible()
+
 			const largeTransactions: MoneyWizRecord[] = Array.from(
 				{ length: 500 },
 				(_, i) => ({
@@ -168,9 +183,6 @@ test.describe('Database Upload - Edge Cases', () => {
 			const largeBuffer = generateSQLite({
 				transactions: largeTransactions,
 			})
-
-			await page.reload()
-			await page.waitForLoadState('networkidle')
 
 			const fileInput2 = page.locator('input[type="file"]').first()
 			await fileInput2.waitFor({ state: 'attached' })
@@ -189,7 +201,9 @@ test.describe('Database Upload - Edge Cases', () => {
 			await expect(page.locator('table')).toBeVisible()
 		})
 
-		test('re-uploads smaller database after larger one', async ({ page }) => {
+		test('clear and upload smaller database after larger one', async ({
+			page,
+		}) => {
 			const largeTransactions: MoneyWizRecord[] = Array.from(
 				{ length: 500 },
 				(_, i) => ({
@@ -216,12 +230,18 @@ test.describe('Database Upload - Edge Cases', () => {
 				timeout: 15000,
 			})
 
+			const clearButton = page.getByRole('button', {
+				name: 'Clear loaded database',
+			})
+			await expect(clearButton).toBeVisible()
+			await clearButton.click()
+			await expect(
+				page.getByText('Database cleared successfully')
+			).toBeVisible()
+
 			const smallBuffer = generateSQLite({
 				transactions: [defaultRecord],
 			})
-
-			await page.reload()
-			await page.waitForLoadState('networkidle')
 
 			const fileInput2 = page.locator('input[type="file"]').first()
 			await fileInput2.waitFor({ state: 'attached' })
@@ -429,14 +449,19 @@ test.describe('Database Upload - Edge Cases', () => {
 		})
 	})
 
-	test.describe('Re-upload with persistence', () => {
-		test('re-upload persists after page reload', async ({ page }) => {
-			const firstBuffer = generateSQLite({
+	test.describe('Session persistence after upload', () => {
+		test('upload persists after page reload', async ({ page }) => {
+			const buffer = generateSQLite({
 				transactions: [
 					{
 						...defaultRecord,
-						description: 'First Upload',
+						description: 'Persistence Test',
 						amount: -100,
+					},
+					{
+						...defaultRecord,
+						description: 'Second Transaction',
+						amount: -200,
 					},
 				],
 			})
@@ -445,38 +470,9 @@ test.describe('Database Upload - Edge Cases', () => {
 			await fileInput.waitFor({ state: 'attached' })
 
 			await fileInput.setInputFiles({
-				name: 'persistence-first.sqlite',
+				name: 'persistence-test.sqlite',
 				mimeType: 'application/x-sqlite3',
-				buffer: firstBuffer,
-			})
-
-			await expect(page.getByText(/Imported [\d,]+ transactions/)).toBeVisible()
-
-			const secondBuffer = generateSQLite({
-				transactions: [
-					{
-						...defaultRecord,
-						description: 'Second Upload',
-						amount: -200,
-					},
-					{
-						...defaultRecord,
-						description: 'Third Upload',
-						amount: -300,
-					},
-				],
-			})
-
-			await page.reload()
-			await page.waitForLoadState('networkidle')
-
-			const fileInput2 = page.locator('input[type="file"]').first()
-			await fileInput2.waitFor({ state: 'attached' })
-
-			await fileInput2.setInputFiles({
-				name: 'persistence-second.sqlite',
-				mimeType: 'application/x-sqlite3',
-				buffer: secondBuffer,
+				buffer,
 			})
 
 			await expect(page.getByText(/Imported 2 transactions/)).toBeVisible()
