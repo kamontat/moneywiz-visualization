@@ -1,12 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { IDBPDatabase, OpenDBCallbacks } from 'idb'
-import { IndexDB } from './indexdb'
 import type {
 	ISchemaDB,
 	ISchemaState,
 	ISchemaTable,
 	ToIDBSchema,
 } from './models'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { IndexDB } from './indexdb'
 
 const { openDBMock, browserEnv } = vi.hoisted(() => ({
 	openDBMock: vi.fn(),
