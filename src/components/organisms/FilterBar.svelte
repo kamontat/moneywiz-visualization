@@ -22,7 +22,9 @@
 			availableTagCategories: TagCategory[]
 			availablePayees?: string[]
 			availableAccounts?: string[]
+			kcntModeEnabled?: boolean
 			onfilterchange?: (state: FilterState) => void
+			onkcntmodechange?: (enabled: boolean) => void
 		}>
 
 	let {
@@ -31,7 +33,9 @@
 		availableTagCategories = [],
 		availablePayees = [],
 		availableAccounts = [],
+		kcntModeEnabled = false,
 		onfilterchange,
+		onkcntmodechange,
 		class: className,
 		...rest
 	}: Props = $props()
@@ -69,8 +73,10 @@
 		{filterState}
 		{availableTagCategories}
 		{openPanel}
+		{kcntModeEnabled}
 		ontogglepanel={togglePanel}
 		onclearfilters={clearFilters}
+		{onkcntmodechange}
 	/>
 
 	<!-- Full-Width Dropdown Panels -->

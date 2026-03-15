@@ -44,6 +44,9 @@
 		filterOptionsStore,
 		emptyFilterState,
 	} from '$lib/app/filters'
+	import { getKcNtModeStore } from '$lib/app/kcnt'
+	import { filterByKcNtMode } from '$lib/app/kcnt/filter'
+	import { reclassifyTransactionsForKcNtMode } from '$lib/app/kcnt/reclassify'
 	import { dismissNotification, pushNotification } from '$lib/ui'
 
 	const DEFAULT_TRANSACTION_PAGE_SIZE = 10
@@ -82,6 +85,9 @@
 	let fxRateErrorNotificationText = $state<string | undefined>(undefined)
 	let normalizationNotificationId = $state<string | undefined>(undefined)
 	let normalizationNotificationText = $state<string | undefined>(undefined)
+	let kcntModeEnabled = $state(false)
+
+	const kcntModeStore = getKcNtModeStore()
 
 	const PARSED_TO_DATA_TYPE: Record<ParsedTransactionType, TransactionType> = {
 		Income: 'income',
@@ -276,11 +282,15 @@
 		const unsubSessionUploading = sessionUploading.subscribe((u: boolean) => {
 			uploading = u
 		})
+		const unsubKcntMode = kcntModeStore.subscribe((state) => {
+			kcntModeEnabled = state?.enabled ?? false
+		})
 
 		return () => {
 			unsubFilterOptions()
 			unsubSessionStore()
 			unsubSessionUploading()
+			unsubKcntMode()
 		}
 	})
 
@@ -330,9 +340,11 @@
 		dataController ? queryTransactions(dataController, filterState) : []
 	)
 
-	const filteredTransactions = $derived(
-		mapTransactions(filteredDataTransactions)
-	)
+	const filteredTransactions = $derived.by(() => {
+		const mapped = mapTransactions(filteredDataTransactions)
+		const kcntFiltered = filterByKcNtMode(mapped, { kcntModeEnabled })
+		return reclassifyTransactionsForKcNtMode(kcntFiltered, { kcntModeEnabled })
+	})
 
 	// Recalculate available Categories/Payees/Accounts when date/type filters change
 	$effect(() => {
@@ -377,9 +389,11 @@
 		)
 	})
 
-	const convertedFilteredTransactions = $derived(
-		convertedFilteredResult?.transactions ?? []
-	)
+	const convertedFilteredTransactions = $derived.by(() => {
+		const converted = convertedFilteredResult?.transactions ?? []
+		const kcntFiltered = filterByKcNtMode(converted, { kcntModeEnabled })
+		return reclassifyTransactionsForKcNtMode(kcntFiltered, { kcntModeEnabled })
+	})
 
 	const convertedNonDateFilteredTransactions = $derived.by(() => {
 		if (fxRateLoading) return []
@@ -504,13 +518,23 @@
 
 	const statsBaselineRange = $derived(deriveBaselineRange(statsCurrentRange))
 
-	const statsCurrentTransactions = $derived(
-		sliceByDateRange(convertedNonDateFilteredTransactions, statsCurrentRange)
-	)
+	const statsCurrentTransactions = $derived.by(() => {
+		const sliced = sliceByDateRange(
+			convertedNonDateFilteredTransactions,
+			statsCurrentRange
+		)
+		const kcntFiltered = filterByKcNtMode(sliced, { kcntModeEnabled })
+		return reclassifyTransactionsForKcNtMode(kcntFiltered, { kcntModeEnabled })
+	})
 
-	const statsBaselineTransactions = $derived(
-		sliceByDateRange(convertedNonDateFilteredTransactions, statsBaselineRange)
-	)
+	const statsBaselineTransactions = $derived.by(() => {
+		const sliced = sliceByDateRange(
+			convertedNonDateFilteredTransactions,
+			statsBaselineRange
+		)
+		const kcntFiltered = filterByKcNtMode(sliced, { kcntModeEnabled })
+		return reclassifyTransactionsForKcNtMode(kcntFiltered, { kcntModeEnabled })
+	})
 
 	const filteredSummary = $derived.by(() => {
 		return summarizeTransactions(
@@ -585,6 +609,10 @@
 		)
 	})
 
+	const handleKcNtModeChange = (enabled: boolean) => {
+		kcntModeStore.set({ enabled })
+	}
+
 	const sortedFilteredTransactions = $derived(
 		filteredTransactions.toSorted((a, b) => b.date.getTime() - a.date.getTime())
 	)
@@ -647,6 +675,8 @@
 			{availablePayees}
 			{availableAccounts}
 			availableTagCategories={tagCategories}
+			{kcntModeEnabled}
+			onkcntmodechange={handleKcNtModeChange}
 			class="mt-4"
 		/>
 	{/if}

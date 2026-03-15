@@ -14,6 +14,7 @@
 
 	import Button from '$components/atoms/Button.svelte'
 	import FilterChipButton from '$components/atoms/FilterChipButton.svelte'
+	import KcNtModeToggle from '$components/atoms/KcNtModeToggle.svelte'
 	import { hasActiveFilters } from '$lib/app/filters'
 	import { mergeClass } from '$lib/ui'
 
@@ -22,16 +23,20 @@
 			filterState: FilterState
 			availableTagCategories: TagCategory[]
 			openPanel: string | null
+			kcntModeEnabled?: boolean
 			ontogglepanel?: (panel: string) => void
 			onclearfilters?: () => void
+			onkcntmodechange?: (enabled: boolean) => void
 		}>
 
 	let {
 		filterState,
 		availableTagCategories = [],
 		openPanel = null,
+		kcntModeEnabled = false,
 		ontogglepanel,
 		onclearfilters,
+		onkcntmodechange,
 		class: className,
 		...rest
 	}: Props = $props()
@@ -160,6 +165,16 @@
 			{/snippet}
 		</FilterChipButton>
 	{/each}
+
+	<!-- Separator before KcNt toggle -->
+	<div class="h-5 w-px bg-base-content/20"></div>
+
+	<!-- KcNt Mode Toggle -->
+	<KcNtModeToggle
+		checked={kcntModeEnabled}
+		oncheckedchange={(checked) => onkcntmodechange?.(checked)}
+		data-testid="kcnt-mode-toggle"
+	/>
 
 	<div class="flex-1"></div>
 
