@@ -5,6 +5,7 @@
 	import Panel from '$components/atoms/Panel.svelte'
 	import StatCard from '$components/atoms/StatCard.svelte'
 	import AppBody from '$components/organisms/AppBody.svelte'
+	import { storage } from '$lib/loggers'
 	import { dismissNotification, pushNotification } from '$lib/ui'
 
 	const REFRESH_INTERVAL = 30000
@@ -73,11 +74,45 @@
 
 	const resetAllData = async () => {
 		resetting = true
+		storage.debug('Starting reset of all storage data')
+		const errors: string[] = []
+
+		// Clear localStorage
 		try {
 			localStorage.clear()
+		} catch (err) {
+			const msg = `localStorage: ${err instanceof Error ? err.message : String(err)}`
+			storage.error('Failed to clear localStorage: %O', err)
+			errors.push(msg)
+		}
 
+		// Clear OPFS (File System storage)
+		if (typeof navigator !== 'undefined' && navigator.storage?.getDirectory) {
+			try {
+				const root = await navigator.storage.getDirectory()
+				const opfsEntries: string[] = []
+				for await (const [name] of root as unknown as AsyncIterable<
+					[string, FileSystemHandle]
+				>) {
+					opfsEntries.push(name)
+					await root.removeEntry(name, { recursive: true })
+				}
+				storage.debug('OPFS cleared (%d entries)', opfsEntries.length)
+			} catch (err) {
+				const msg = `OPFS: ${err instanceof Error ? err.message : String(err)}`
+				storage.error('Failed to clear OPFS: %O', err)
+				errors.push(msg)
+			}
+		}
+
+		// Clear IndexedDB databases
+		try {
 			const idbDatabases = await indexedDB.databases()
-			await Promise.all(
+			storage.debug(
+				'IndexedDB databases to clear: %s',
+				idbDatabases.map((db) => db.name).join(', ') || 'none'
+			)
+			const idbResults = await Promise.allSettled(
 				idbDatabases.map(
 					({ name }) =>
 						new Promise<void>((resolve, reject) => {
@@ -87,19 +122,21 @@
 							let resolved = false
 
 							const timeout = setTimeout(() => {
-								// If deletion takes too long (likely blocked indefinitely),
-								// resolve anyway since we've cleared localStorage
-								// The database will be marked for deletion
 								if (!resolved) {
 									resolved = true
+									storage.debug(
+										'IndexedDB "%s" deletion timed out (blocked)',
+										name
+									)
 									resolve()
 								}
-							}, 2000)
+							}, 3000)
 
 							req.onsuccess = () => {
 								if (!resolved) {
 									clearTimeout(timeout)
 									resolved = true
+									storage.debug('IndexedDB "%s" deleted', name)
 									resolve()
 								}
 							}
@@ -108,42 +145,96 @@
 								if (!resolved) {
 									clearTimeout(timeout)
 									resolved = true
-									reject(req.error)
+									storage.error(
+										'IndexedDB "%s" deletion failed: %O',
+										name,
+										req.error
+									)
+									reject(
+										new Error(
+											`IndexedDB "${name}": ${req.error?.message ?? 'unknown error'}`
+										)
+									)
 								}
 							}
 
 							req.onblocked = () => {
-								// Blocked - do nothing, wait for timeout or success
+								storage.debug('IndexedDB "%s" deletion blocked', name)
 							}
 						})
 				)
 			)
+			for (const result of idbResults) {
+				if (result.status === 'rejected') {
+					errors.push(
+						result.reason instanceof Error
+							? result.reason.message
+							: String(result.reason)
+					)
+				}
+			}
+		} catch (err) {
+			const msg = `IndexedDB: ${err instanceof Error ? err.message : String(err)}`
+			storage.error('Failed to list IndexedDB databases: %O', err)
+			errors.push(msg)
+		}
 
-			if (typeof caches !== 'undefined') {
+		// Clear caches
+		if (typeof caches !== 'undefined') {
+			try {
 				const keys = await caches.keys()
 				await Promise.all(keys.map((k) => caches.delete(k)))
+				storage.debug('Caches cleared (%d caches)', keys.length)
+			} catch (err) {
+				const msg = `Caches: ${err instanceof Error ? err.message : String(err)}`
+				storage.error('Failed to clear caches: %O', err)
+				errors.push(msg)
 			}
+		}
 
-			if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
+		// Unregister service workers
+		if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
+			try {
 				const registrations = await navigator.serviceWorker.getRegistrations()
 				await Promise.all(registrations.map((r) => r.unregister()))
+				storage.debug(
+					'Service workers unregistered (%d workers)',
+					registrations.length
+				)
+			} catch (err) {
+				const msg = `Service Workers: ${err instanceof Error ? err.message : String(err)}`
+				storage.error('Failed to unregister service workers: %O', err)
+				errors.push(msg)
 			}
+		}
 
-			pushNotification({
-				variant: 'success',
-				text: 'All browser storage data has been cleared successfully.',
-			})
-			showConfirm = false
-			await refreshUsage()
-		} catch (thrown) {
-			const message = thrown instanceof Error ? thrown.message : String(thrown)
+		// Handle errors or success
+		if (errors.length > 0) {
+			storage.error('Reset completed with %d error(s)', errors.length)
 			pushNotification({
 				variant: 'error',
-				text: `Failed to reset storage: ${message}`,
+				text: `Failed to clear some storage: ${errors.join('; ')}`,
 			})
-		} finally {
 			resetting = false
+			showConfirm = false
+			return
 		}
+
+		storage.info('All storage cleared, reloading page...')
+
+		// Show success notification and reload page
+		// Reload is necessary to close IndexedDB connections and complete deletion
+		pushNotification({
+			variant: 'success',
+			text: 'All browser storage data has been cleared. Reloading page...',
+		})
+		showConfirm = false
+
+		// Use location.href for a hard reload that ensures all connections are closed
+		setTimeout(() => {
+			window.location.href = window.location.href
+		}, 2000)
+		// Note: don't set resetting = false on success - page will reload
 	}
 
 	const refreshUsage = async () => {

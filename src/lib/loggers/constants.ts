@@ -15,3 +15,4 @@ export const store = utils.extends('store')
 export const components = Log.root.extends('components')
 
 export const pages = Log.root.extends('pages')
+export const storage = pages.extends('storage')
