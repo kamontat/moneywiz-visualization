@@ -50,7 +50,7 @@ export function createMockIndexDB() {
 		deleteDatabase: vi.fn().mockResolvedValue(undefined),
 		databases: vi.fn().mockResolvedValue([]),
 		cmp: vi.fn().mockReturnValue(0),
-	} as any
+	}
 }
 
 export function setupTestStorage() {
