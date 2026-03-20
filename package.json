@@ -36,7 +36,7 @@
 		"@fontsource-variable/noto-sans-thai": "5.2.8",
 		"@fontsource-variable/noto-serif-thai": "5.2.7",
 		"@iconify-svelte/lucide": "1.0.20",
-		"@iconify-svelte/simple-icons": "1.0.16",
+		"@iconify-svelte/simple-icons": "1.0.17",
 		"@neoconfetti/svelte": "2.2.2",
 		"@playwright/test": "1.58.2",
 		"@sveltejs/adapter-static": "3.0.10",
